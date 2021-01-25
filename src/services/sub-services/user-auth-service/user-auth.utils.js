@@ -7,12 +7,12 @@ const storeAccessToken = (apiResponse) => {
   return Promise.all([storageService.storeAccessToken(accessToken)]);
 };
 
-const removeAccessAndRefreshTokens = () => {
-  return Promise.all([storageService.removeAccessToken(), storageService.removeRefreshToken()]);
+const removeAccessToken = () => {
+  return Promise.all([storageService.removeAccessToken()]);
 };
 
-const getAccessAndRefreshTokens = () => {
-  return Promise.all([storageService.getAccessToken(), storageService.getRefreshToken()]);
+const getAccessToken = () => {
+  return Promise.all([storageService.getAccessToken()]);
 };
 
 const constructSignInData = ({ username, password }) => ({
@@ -33,6 +33,6 @@ export default {
   storeAccessToken,
   constructSignInData,
   constructOAuthTokenRefreshData,
-  removeAccessAndRefreshTokens,
-  getAccessAndRefreshTokens,
+  removeAccessToken,
+  getAccessToken,
 };

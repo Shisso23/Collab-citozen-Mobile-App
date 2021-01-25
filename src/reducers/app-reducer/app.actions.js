@@ -3,9 +3,9 @@ import { setIsAuthenticatedAction } from '../user-auth-reducer/user-auth.reducer
 
 export const initAppAction = () => {
   return async (dispatch) => {
-    const { doTokensExistInLocalStorage } = userAuthService;
+    const { doTokenExistInLocalStorage } = userAuthService;
     await dispatch(loadAppDataAction());
-    const tokensExist = await doTokensExistInLocalStorage();
+    const tokensExist = await doTokenExistInLocalStorage();
     if (tokensExist) {
       await dispatch(isAuthenticatedFlowAction());
     }
