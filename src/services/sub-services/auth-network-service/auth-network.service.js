@@ -25,7 +25,7 @@ const refreshTokenLogic = () => {
   };
 
   const _storeNewTokens = (apiResponse) => {
-    return userAuthUtils.storeAccessAndRefreshTokens(apiResponse);
+    return userAuthUtils.storeAccessToken(apiResponse);
   };
 
   return Promise.resolve()

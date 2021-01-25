@@ -7,6 +7,6 @@ export const signInModel = (_apiSignInModel = {}) => ({
 });
 
 export const apiSignInModel = (_appSignInModel = {}) => ({
-  email: _.get(_appSignInModel, 'email', ''),
+  username: _.get(_appSignInModel, 'email', ''),
   password: _.get(_appSignInModel, 'password', ''),
 });

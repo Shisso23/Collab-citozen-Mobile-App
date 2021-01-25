@@ -5,7 +5,7 @@ export default {
   accessTokenKey: 'access_token',
   refreshTokenKey: 'refresh_token',
   hostUrl: HOST_URL,
-  apiUrl: `${HOST_URL}${API_LOCATION}`,
+  apiUrl: `${HOST_URL}/${API_LOCATION}`,
   clientId: CLIENT_ID,
   clientSecret: CLIENT_SECRET,
 };
