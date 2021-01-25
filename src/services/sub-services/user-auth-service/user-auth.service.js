@@ -13,8 +13,8 @@ import {
 const signIn = ({ formData }) => {
   const signInUrl = authUrls.tokenUrl();
   const apiModel = apiSignInModel(formData);
-  const oAuthData = authUtils.constructOAuthSignInData(apiModel);
-  return networkService.post(signInUrl, oAuthData).then(authUtils.storeAccessAndRefreshTokens);
+  const signInData = authUtils.constructSignInData(apiModel);
+  return networkService.post(signInUrl, signInData).then(authUtils.storeAccessToken);
 };
 
 const signOut = () => {
