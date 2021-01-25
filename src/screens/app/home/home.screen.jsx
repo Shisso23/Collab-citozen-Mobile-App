@@ -13,7 +13,7 @@ const HomeScreen = () => {
   const requestSource = CancelToken.source();
   const dispatch = useDispatch();
 
-  useFocusEffect(exitAppOnHardwarePressListener, []);
+  useFocusEffect(exitAppOnHardwarePressListener);
 
   const _signOut = () => {
     dispatch(signOutAction());

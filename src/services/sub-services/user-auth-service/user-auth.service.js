@@ -19,7 +19,7 @@ const signIn = ({ formData }) => {
 
 const signOut = () => {
   // any other signOut logic
-  return authUtils.removeAccessAndRefreshTokens();
+  return authUtils.removeAccessToken();
 };
 
 const register = ({ formData }) => {
@@ -41,12 +41,12 @@ const forgotPassword = ({ formData }) => {
   });
 };
 
-const doTokensExistInLocalStorage = () => {
-  const _trueIfBothExist = (accessToken, refreshToken) => {
-    return !_.isNull(accessToken) && !_.isNull(refreshToken);
+const doTokenExistInLocalStorage = () => {
+  const _trueIfExist = (accessToken) => {
+    return !_.isNull(accessToken);
   };
-  return authUtils.getAccessAndRefreshTokens().then(([accessToken, refreshToken]) => {
-    return _trueIfBothExist(accessToken, refreshToken);
+  return authUtils.getAccessToken().then(([accessToken]) => {
+    return _trueIfExist(accessToken);
   });
 };
 
@@ -55,5 +55,5 @@ export default {
   signOut,
   register,
   forgotPassword,
-  doTokensExistInLocalStorage,
+  doTokenExistInLocalStorage,
 };
