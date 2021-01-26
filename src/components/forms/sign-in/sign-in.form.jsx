@@ -15,16 +15,9 @@ const SignInForm = ({ submitForm, onSuccess, containerStyle, initialValues }) =>
     password: passwordSchema,
   });
 
-  const _handleFormSubmitError = (error, actions, formData) => {
+  const _handleFormSubmitError = (error, actions) => {
     actions.setSubmitting(false);
-    if (_.get(error, 'statusCode') === 422) {
-      const apiErrors = error.errors;
-      actions.resetForm({ values: formData, status: { apiErrors } });
-    } else if (error.statusCode === 400) {
-      actions.setFieldError('email', 'Incorrect login credetials provided');
-    } else {
-      actions.setFieldError('email', error.message);
-    }
+    actions.setFieldError('email', error.message);
   };
 
   const _handleSubmission = (formData, actions) => {
