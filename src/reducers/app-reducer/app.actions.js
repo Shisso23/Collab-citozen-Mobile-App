@@ -1,3 +1,4 @@
+import RNBootSplash from 'react-native-bootsplash';
 import { userAuthService } from '../../services';
 import { setIsAuthenticatedAction } from '../user-auth-reducer/user-auth.reducer';
 
@@ -9,7 +10,7 @@ export const initAppAction = () => {
     if (tokensExist) {
       await dispatch(isAuthenticatedFlowAction());
     }
-    // hide splash
+    RNBootSplash.hide({ fade: true });
   };
 };
 
