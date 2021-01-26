@@ -11,10 +11,20 @@ import {
 } from '../../../models';
 
 const signIn = ({ formData }) => {
+  const { authenticationFailed, storeAccessToken, constructSignInData } = authUtils;
   const signInUrl = authUrls.tokenUrl();
   const apiModel = apiSignInModel(formData);
-  const signInData = authUtils.constructSignInData(apiModel);
-  return networkService.post(signInUrl, signInData).then(authUtils.storeAccessToken);
+  const signInData = constructSignInData(apiModel);
+  return networkService
+    .post(signInUrl, signInData)
+    .then((apiResponse) => {
+      if (authenticationFailed(apiResponse)) {
+        const errorMessage = _.get(apiResponse, 'data');
+        throw new Error(errorMessage);
+      }
+      return apiResponse;
+    })
+    .then(storeAccessToken);
 };
 
 const signOut = () => {

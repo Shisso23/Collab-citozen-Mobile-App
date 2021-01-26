@@ -20,6 +20,11 @@ const constructSignInData = ({ username, password }) => ({
   password,
 });
 
+const authenticationFailed = (apiResponse) => {
+  const responseMessage = _.get(apiResponse, 'data');
+  return responseMessage === 'Auth Failed';
+};
+
 const constructOAuthTokenRefreshData = () => {
   return storageService.getRefreshToken().then((refreshToken) => ({
     grant_type: 'refresh_token',
@@ -35,4 +40,5 @@ export default {
   constructOAuthTokenRefreshData,
   removeAccessToken,
   getAccessToken,
+  authenticationFailed,
 };
