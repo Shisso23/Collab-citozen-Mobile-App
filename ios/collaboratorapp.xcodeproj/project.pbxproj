@@ -19,6 +19,7 @@
 		8B8C6AD156AA83699718518C /* libPods-collaboratorapp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D440EE246175817A94F764B1 /* libPods-collaboratorapp.a */; };
 		BDB45115D9C38DB22013E338 /* libPods-collaboratorapp-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F82FFD7E0BC7905CE8F08CB /* libPods-collaboratorapp-tvOSTests.a */; };
 		D61870245D99CDC4D07E6299 /* libPods-collaboratorapp-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D30270472639CF9B6B0C0569 /* libPods-collaboratorapp-tvOS.a */; };
+		DA3CF3ED25C059F200ECC6D7 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DA3CF3EC25C059F200ECC6D7 /* BootSplash.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -79,6 +80,7 @@
 		DA3CF36925C0469A00ECC6D7 /* EvilIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = EvilIcons.ttf; sourceTree = "<group>"; };
 		DA3CF36A25C0469A00ECC6D7 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SimpleLineIcons.ttf; sourceTree = "<group>"; };
 		DA3CF36B25C0469A00ECC6D7 /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialIcons.ttf; sourceTree = "<group>"; };
+		DA3CF3EC25C059F200ECC6D7 /* BootSplash.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = BootSplash.storyboard; path = collaboratorapp/BootSplash.storyboard; sourceTree = "<group>"; };
 		EC276A748CA433CB3FC6B728 /* Pods-collaboratorapp-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-collaboratorapp-tvOS.release.xcconfig"; path = "Target Support Files/Pods-collaboratorapp-tvOS/Pods-collaboratorapp-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
@@ -146,6 +148,7 @@
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
+				DA3CF3EC25C059F200ECC6D7 /* BootSplash.storyboard */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
@@ -380,6 +383,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				DA3CF3ED25C059F200ECC6D7 /* BootSplash.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
