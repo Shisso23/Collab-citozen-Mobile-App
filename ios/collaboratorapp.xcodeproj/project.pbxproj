@@ -16,7 +16,6 @@
 		2D02E4BF1E0B4AB3006451C7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		2DCD954D1E0B4F2C00145EB5 /* collaboratorappTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* collaboratorappTests.m */; };
 		449CBB1C50E8BFF3AAE4CC70 /* libPods-collaboratorapp-collaboratorappTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 70375BC3AC6D31E9CCF8FC25 /* libPods-collaboratorapp-collaboratorappTests.a */; };
-		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		8B8C6AD156AA83699718518C /* libPods-collaboratorapp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D440EE246175817A94F764B1 /* libPods-collaboratorapp.a */; };
 		BDB45115D9C38DB22013E338 /* libPods-collaboratorapp-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F82FFD7E0BC7905CE8F08CB /* libPods-collaboratorapp-tvOSTests.a */; };
 		D61870245D99CDC4D07E6299 /* libPods-collaboratorapp-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D30270472639CF9B6B0C0569 /* libPods-collaboratorapp-tvOS.a */; };
@@ -143,6 +142,7 @@
 		13B07FAE1A68108700A75B9A /* collaboratorapp */ = {
 			isa = PBXGroup;
 			children = (
+				DA3CF35B25C0469A00ECC6D7 /* Fonts */,
 				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -180,7 +180,6 @@
 				415FB22D3EF9F53BA55DEA59 /* Pods-collaboratorapp-tvOSTests.debug.xcconfig */,
 				71C42F8DF1F7F71380BD9ACE /* Pods-collaboratorapp-tvOSTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -215,6 +214,30 @@
 				2D02E4901E0B4A5D006451C7 /* collaboratorapp-tvOSTests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		DA3CF35B25C0469A00ECC6D7 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				DA3CF35C25C0469A00ECC6D7 /* Fontisto.ttf */,
+				DA3CF35D25C0469A00ECC6D7 /* Octicons.ttf */,
+				DA3CF35E25C0469A00ECC6D7 /* Feather.ttf */,
+				DA3CF35F25C0469A00ECC6D7 /* Entypo.ttf */,
+				DA3CF36025C0469A00ECC6D7 /* FontAwesome5_Brands.ttf */,
+				DA3CF36125C0469A00ECC6D7 /* MaterialCommunityIcons.ttf */,
+				DA3CF36225C0469A00ECC6D7 /* AntDesign.ttf */,
+				DA3CF36325C0469A00ECC6D7 /* Foundation.ttf */,
+				DA3CF36425C0469A00ECC6D7 /* Ionicons.ttf */,
+				DA3CF36525C0469A00ECC6D7 /* FontAwesome5_Solid.ttf */,
+				DA3CF36625C0469A00ECC6D7 /* FontAwesome5_Regular.ttf */,
+				DA3CF36725C0469A00ECC6D7 /* FontAwesome.ttf */,
+				DA3CF36825C0469A00ECC6D7 /* Zocial.ttf */,
+				DA3CF36925C0469A00ECC6D7 /* EvilIcons.ttf */,
+				DA3CF36A25C0469A00ECC6D7 /* SimpleLineIcons.ttf */,
+				DA3CF36B25C0469A00ECC6D7 /* MaterialIcons.ttf */,
+			);
+			name = Fonts;
+			path = "../node_modules/react-native-vector-icons/Fonts";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -359,7 +382,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				DA3CF3ED25C059F200ECC6D7 /* BootSplash.storyboard in Resources */,
 			);
