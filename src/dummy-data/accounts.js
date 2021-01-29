@@ -1,0 +1,32 @@
+export const accounts = [
+  {
+    obj_id: 1,
+    municipality_code: 'W034',
+    account_number: '1',
+    account_name: '6 Abby Park Street',
+    street_name: 'Street Name',
+    street_number: '1',
+    suburb: 'Suburb 1',
+    postal_code: '0001',
+  },
+  {
+    obj_id: 2,
+    municipality_code: 'W035',
+    account_number: '2',
+    account_name: '22 Adelaide Avenue',
+    street_name: 'Street Name',
+    street_number: '2',
+    suburb: 'Suburb 2',
+    postal_code: '0002',
+  },
+  {
+    obj_id: 3,
+    municipality_code: 'W036',
+    account_number: '3',
+    account_name: '33 Airplane Avenue',
+    street_name: 'Street Name',
+    street_number: '3',
+    suburb: 'Suburb 3',
+    postal_code: '0003',
+  },
+];
