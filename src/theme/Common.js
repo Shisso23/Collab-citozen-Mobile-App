@@ -6,7 +6,7 @@ import { StyleSheet } from 'react-native';
  * @return {*}
  */
 
-export default ({ Colors, FontFamily }) =>
+export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
   StyleSheet.create({
     backgroundPrimary: {
       backgroundColor: Colors.primary,
@@ -21,13 +21,13 @@ export default ({ Colors, FontFamily }) =>
     errorStyle: {
       color: Colors.danger,
       fontFamily: FontFamily.primary,
-      fontSize: 15,
-      height: 26,
-      marginBottom: 0,
-      marginLeft: 10,
-      marginTop: 0,
-      paddingBottom: 0,
-      paddingTop: 0,
+      fontSize: FontSize.small,
+    },
+    fabAlignment: {
+      bottom: 0,
+      margin: MetricsSizes.large,
+      position: 'absolute',
+      right: 0,
     },
     headerLogo: {
       width: 200,
@@ -37,13 +37,6 @@ export default ({ Colors, FontFamily }) =>
       fontWeight: 'bold',
     },
     textInput: {
-      backgroundColor: Colors.inputBackground,
-      borderColor: Colors.text,
-      borderWidth: 1,
-      color: Colors.text,
-      marginBottom: 10,
-      marginTop: 10,
-      minHeight: 50,
-      textAlign: 'center',
+      backgroundColor: Colors.transparent,
     },
   });

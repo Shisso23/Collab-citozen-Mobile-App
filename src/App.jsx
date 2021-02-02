@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { LogBox } from 'react-native';
 
 import { useDispatch } from 'react-redux';
 import NavigationContainer from './navigation/root.navigator';
@@ -8,6 +9,7 @@ const App = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    LogBox.ignoreLogs(['Require cycle']);
     dispatch(initAppAction());
   }, []);
 

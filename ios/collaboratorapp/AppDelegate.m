@@ -4,6 +4,8 @@
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 #import "RNBootSplash.h"
+#import <GoogleMaps/GoogleMaps.h>
+#import "ReactNativeConfig.h"
 
 #ifdef FB_SONARKIT_ENABLED
 #import <FlipperKit/FlipperClient.h>
@@ -31,7 +33,8 @@ static void InitializeFlipper(UIApplication *application) {
 #ifdef FB_SONARKIT_ENABLED
   InitializeFlipper(application);
 #endif
-
+  NSString *googleMapsApiKey = [ReactNativeConfig envFor:@"GOOGLE_MAPS_API_KEY"];
+  [GMSServices provideAPIKey:googleMapsApiKey];
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
                                                    moduleName:@"collaboratorapp"

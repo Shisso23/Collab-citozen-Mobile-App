@@ -28,23 +28,23 @@ const DrawerContent = (props) => {
           </View>
         </Drawer.Section>
         <Drawer.Section>
-          <Drawer.Item icon={'home'} label="Home" onPress={() => navigation.navigate('Home')} />
+          <Drawer.Item icon="home" label="Home" onPress={() => navigation.navigate('Home')} />
           <Drawer.Item
-            icon={'information'}
+            icon="information"
             label="Service Requests"
-            onPress={() => console.warn('Service Acccount Pressed')}
+            onPress={() => navigation.navigate('ServiceRequests')}
           />
-          <Drawer.Item icon={'file'} label="Accounts" onPress={() => navigation.navigate('Home')} />
+          <Drawer.Item icon="file" label="Accounts" onPress={() => navigation.navigate('Home')} />
         </Drawer.Section>
 
         <Drawer.Section>
           <Drawer.Item
-            icon={'account'}
+            icon="account"
             label="Profile"
             onPress={() => navigation.navigate('Profile')}
           />
         </Drawer.Section>
-        <Drawer.Item icon={'exit-to-app'} label="Sign Out" onPress={_signOut} />
+        <Drawer.Item icon="exit-to-app" label="Sign Out" onPress={_signOut} />
       </DrawerContentScrollView>
     </View>
   );
