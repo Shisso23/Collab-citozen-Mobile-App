@@ -1,23 +1,15 @@
 import React, { useEffect } from 'react';
 import { View } from 'react-native';
-import { Button } from 'react-native-elements';
+import { Text } from 'react-native-elements';
 import { useFocusEffect } from '@react-navigation/native';
 import axios from 'axios';
-import { useDispatch } from 'react-redux';
 import { exitAppOnHardwarePressListener } from '../../../helpers';
-import { signOutAction } from '../../../reducers/user-auth-reducer/user-auth.actions';
 
 const { CancelToken } = axios;
 
 const HomeScreen = () => {
   const requestSource = CancelToken.source();
-  const dispatch = useDispatch();
-
   useFocusEffect(exitAppOnHardwarePressListener);
-
-  const _signOut = () => {
-    dispatch(signOutAction());
-  };
 
   useEffect(() => {
     return () => {
@@ -27,7 +19,7 @@ const HomeScreen = () => {
 
   return (
     <View>
-      <Button title="Sign Out" onPress={_signOut} />
+      <Text>HOME</Text>
     </View>
   );
 };

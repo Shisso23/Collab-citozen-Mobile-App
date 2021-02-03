@@ -1,20 +1,17 @@
 import authNetworkService from '../auth-network-service/auth-network.service';
 import { userModel, apiUserModel } from '../../../models';
 import userUrls from './user.urls';
+import { mockRequest } from '../../../dummy-data/mock-api';
+import { user } from '../../../dummy-data/users';
 
 const getUser = () => {
   const url = userUrls.userUrl();
   const _createAndReturnUserModel = (apiResponse) => {
-    return userModel(apiResponse.data);
+    return userModel(apiResponse.data.Data);
   };
-  return authNetworkService
+  return mockRequest(user)
     .get(url)
-    .then(_createAndReturnUserModel)
-    .catch((error) => {
-      // eslint-disable-next-line no-console
-      console.warn(error);
-      return Promise.reject(error);
-    });
+    .then(_createAndReturnUserModel);
 };
 
 const updateUser = ({ formData }) => {
