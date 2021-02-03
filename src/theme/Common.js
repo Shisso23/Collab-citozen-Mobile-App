@@ -14,6 +14,10 @@ export default ({ Colors, FontFamily }) =>
     backgroundReset: {
       backgroundColor: Colors.transparent,
     },
+    drawerStyle: {
+      borderBottomRightRadius: 20,
+      borderTopRightRadius: 20,
+    },
     errorStyle: {
       color: Colors.danger,
       fontFamily: FontFamily.primary,

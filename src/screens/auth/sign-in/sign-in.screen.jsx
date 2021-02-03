@@ -17,6 +17,7 @@ const SignInScreen = () => {
   const _onSignInSuccess = () => {
     dispatch(isAuthenticatedFlowAction());
   };
+
   return (
     <FormScreenContainer>
       <SignInForm

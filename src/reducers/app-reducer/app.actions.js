@@ -1,6 +1,7 @@
 import RNBootSplash from 'react-native-bootsplash';
 import { userAuthService } from '../../services';
 import { setIsAuthenticatedAction } from '../user-auth-reducer/user-auth.reducer';
+import { getUserAction } from '../user-reducer/user.actions';
 
 export const initAppAction = () => {
   return async (dispatch) => {
@@ -29,7 +30,7 @@ export const loadAppDataAction = () => {
 };
 
 export const loadAppDataForSignedInUserAction = () => {
-  return () => {
-    return Promise.all([]);
+  return (dispatch) => {
+    return Promise.all([dispatch(getUserAction())]);
   };
 };
