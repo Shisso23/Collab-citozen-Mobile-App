@@ -39,6 +39,10 @@
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Select a location of a service request.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Select an image of the service being requested.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Take an image of the service being requested.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

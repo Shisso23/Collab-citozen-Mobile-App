@@ -21,6 +21,7 @@ import { DropdownSelect } from '../../atoms';
 import { locationSelector } from '../../../reducers/location-reducer/location.reducer';
 import { clearLocationAction } from '../../../reducers/location-reducer/location.actions';
 import { flashService, permissionsService } from '../../../services';
+import UploadDocumentButton from '../../molecules/upload-document-button';
 
 const CreateServiceRequestForm = ({
   submitForm,
@@ -192,19 +193,19 @@ const CreateServiceRequestForm = ({
                 mode="contained"
                 onPress={_handleSelectLocationClick}
                 style={[Gutters.regularTMargin]}
+                disabled={isSubmitting}
+                icon="map-marker"
               >
                 Select location
               </Button>
 
               <View style={[Layout.row, Gutters.regularTMargin]}>
-                <Button
-                  mode="contained"
+                <UploadDocumentButton
+                  title="Take Photo"
                   style={[Layout.fill, Gutters.tinyRMargin]}
-                  onPress={() => null}
                   disabled={isSubmitting}
-                >
-                  Take Photo
-                </Button>
+                  onImageSelect={(image) => setFieldValue('imageUri', image)}
+                />
 
                 <Button
                   mode="contained"

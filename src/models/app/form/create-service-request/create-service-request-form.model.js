@@ -6,4 +6,5 @@ export const createServiceRequestModel = (_initialValues = {}) => ({
   serviceType: _.get(_initialValues, 'serviceType', null),
   description: _.get(_initialValues, 'description', ''),
   location: _.get(_initialValues, 'location', null),
+  imageUri: _.get(_initialValues, 'imageUri', ''),
 });
