@@ -3,6 +3,14 @@ import * as Yup from 'yup';
 export const emailSchema = Yup.string().email('Invalid Email').trim().required('Email is required');
 export const passwordSchema = Yup.string().required('Password is required');
 
+export const selectAccountSchema = Yup.object().typeError('Error: Account is required');
+export const selectServiceTypeSchema = Yup.object().typeError('Error: ServiceType is required');
+export const selectServiceTypeCategorySchema = Yup.string().required(
+  'Error: ServiceType category is required',
+);
+export const locationSchema = Yup.object().typeError('Error: Location is required');
+export const descriptionSchema = Yup.string().required('Error: Description is required');
+
 export const registerPasswordSchema = (edit) => {
   return !edit
     ? Yup.string()

@@ -2,3 +2,8 @@ export * from './auth/forgot-password/forgot-password.model';
 export * from './auth/registration/registration.model';
 export * from './auth/sign-in/sign-in.model';
 export * from './app/user/user.model';
+export * from './app/accounts/accounts.model';
+export * from './app/service-type/service-type.model';
+export * from './app/service-request/service.request.model';
+export * from './app/municipality/municipality.model';
+export * from './app/form/create-service-request/create-service-request-form.model';

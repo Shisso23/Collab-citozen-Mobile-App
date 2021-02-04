@@ -14,11 +14,12 @@ export const Colors = {
   white: '#ffffff',
   black: '#000',
   text: '#212529',
-  primary: '#068D9D',
-  secondary: '#53599A',
+  primary: '#609C3A',
+  secondary: '#0D2B83',
   success: '#95F9E3',
   warning: '#D4B483',
   error: '#C1666B',
+  danger: '#C1666B',
 };
 
 export const NavigationColors = {

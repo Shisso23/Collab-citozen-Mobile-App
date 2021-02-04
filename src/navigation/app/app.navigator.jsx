@@ -4,7 +4,12 @@ import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from '../../screens/app/home/home.screen';
 import ProfileScreen from '../../screens/app/profile/profile.screen';
 import useTheme from '../../theme/hooks/useTheme';
-import DrawerContent from '../../components/molecules/drawer/drawer-content/drawer.content';
+
+import ServiceRequestScreen from '../../screens/app/service-request/service-request.screen';
+import CreateServiceRequestScreen from '../../screens/app/service-request/create-service-request/create-service-request.screen';
+import SelectLocationScreen from '../../screens/app/service-request/select-location/select-location.screen';
+
+import { DrawerContent } from '../../components/molecules';
 
 const Drawer = createDrawerNavigator();
 const AppStack = createStackNavigator();
@@ -18,21 +23,38 @@ const AppNavigator = () => {
         component={DrawerNavigator}
         options={{ headerShown: false }}
       />
+      <AppStack.Screen
+        name="CreateServiceRequest"
+        component={CreateServiceRequestScreen}
+        options={{ headerShown: true, title: 'New Service Request' }}
+      />
+      <AppStack.Screen
+        name="SelectLocationScreen"
+        component={SelectLocationScreen}
+        options={{ headerShown: true, title: 'Select Location' }}
+      />
     </AppStack.Navigator>
   );
 };
 
 const DrawerNavigator = () => {
-  const { Common } = useTheme();
+  const { Common, Custom } = useTheme();
   return (
     <Drawer.Navigator
+      screenOptions={Custom.globalNavigatorScreenOptions}
       drawerContent={(props) => <DrawerContent {...props} />}
       drawerStyle={Common.drawerStyle}
+      initialRouteName="ServiceRequests"
     >
       <Drawer.Screen
         name="Home"
         component={HomeScreen}
         options={{ headerShown: true, title: 'Home' }}
+      />
+      <Drawer.Screen
+        name="ServiceRequests"
+        component={ServiceRequestScreen}
+        options={{ headerShown: true, title: 'Service Requests' }}
       />
       <Drawer.Screen
         name="Profile"
