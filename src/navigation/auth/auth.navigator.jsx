@@ -15,7 +15,7 @@ const AuthNavigator = () => {
         name="SignIn"
         component={SignInScreen}
         options={{
-          title: 'Sign In',
+          headerShown: false,
         }}
       />
       <AuthStack.Screen

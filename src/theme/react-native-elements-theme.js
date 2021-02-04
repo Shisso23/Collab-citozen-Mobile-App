@@ -53,6 +53,10 @@ const theme = {
       borderBottomColor: '#000',
     },
   },
+  Divider: {
+    marginVertical: 10,
+    backgroundColor: 'transparent',
+  },
 };
 
 export default theme;
