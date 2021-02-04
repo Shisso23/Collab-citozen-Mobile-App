@@ -86,6 +86,10 @@ export default () =>
     justifyContentBetween: {
       justifyContent: 'space-between',
     },
+    scrollCenter: {
+      flexGrow: 1,
+      justifyContent: 'center',
+    },
     scrollSpaceAround: {
       flexGrow: 1,
       justifyContent: 'space-around',
