@@ -10,6 +10,7 @@ import CreateServiceRequestScreen from '../../screens/app/service-request/create
 import SelectLocationScreen from '../../screens/app/service-request/select-location/select-location.screen';
 
 import { DrawerContent } from '../../components/molecules';
+import AccountScreen from '../../screens/app/account/account.screen';
 
 const Drawer = createDrawerNavigator();
 const AppStack = createStackNavigator();
@@ -60,6 +61,11 @@ const DrawerNavigator = () => {
         name="Profile"
         component={ProfileScreen}
         options={{ headerShown: true, title: 'Profile' }}
+      />
+      <Drawer.Screen
+        name="Accounts"
+        component={AccountScreen}
+        options={{ headerShown: true, title: 'Accounts' }}
       />
     </Drawer.Navigator>
   );

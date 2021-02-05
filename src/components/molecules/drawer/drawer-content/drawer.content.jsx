@@ -34,7 +34,11 @@ const DrawerContent = (props) => {
             label="Service Requests"
             onPress={() => navigation.navigate('ServiceRequests')}
           />
-          <Drawer.Item icon="file" label="Accounts" onPress={() => navigation.navigate('Home')} />
+          <Drawer.Item
+            icon="file"
+            label="Accounts"
+            onPress={() => navigation.navigate('Accounts')}
+          />
         </Drawer.Section>
 
         <Drawer.Section>
