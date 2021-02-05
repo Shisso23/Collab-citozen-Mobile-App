@@ -1,10 +1,11 @@
 import { setUserAction } from './user.reducer';
-import { userService } from '../../services';
+import { flashService, userService } from '../../services';
 
-export const getUserAction = () => {
-  return (dispatch) => {
-    return userService.getUser().then((_user) => {
-      dispatch(setUserAction(_user));
-    });
-  };
+export const getUserAction = () => async (dispatch) => {
+  try {
+    const user = await userService.getUser();
+    dispatch(setUserAction(user));
+  } catch (error) {
+    flashService.error(error.message);
+  }
 };

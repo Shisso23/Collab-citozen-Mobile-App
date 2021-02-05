@@ -7,10 +7,6 @@ const storeAccessToken = (apiResponse) => {
   return Promise.all([storageService.storeAccessToken(accessToken)]);
 };
 
-const removeAccessToken = () => {
-  return Promise.all([storageService.removeAccessToken()]);
-};
-
 const getAccessToken = () => {
   return Promise.all([storageService.getAccessToken()]);
 };
@@ -38,7 +34,6 @@ export default {
   storeAccessToken,
   constructSignInData,
   constructOAuthTokenRefreshData,
-  removeAccessToken,
   getAccessToken,
   authenticationFailed,
 };
