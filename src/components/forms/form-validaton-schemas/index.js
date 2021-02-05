@@ -2,7 +2,9 @@ import * as Yup from 'yup';
 
 export const emailSchema = Yup.string().email('Invalid Email').trim().required('Email is required');
 export const passwordSchema = Yup.string().required('Password is required');
-
+export const phoneSchema = Yup.string()
+  .matches(/^(\+27|0|27)[6-8][0-9]{8}$/, 'Error: Invalid mobile number')
+  .required('Mobile number is required');
 export const selectAccountSchema = Yup.object().typeError('Error: Account is required');
 export const selectServiceTypeSchema = Yup.object().typeError('Error: ServiceType is required');
 export const selectServiceTypeCategorySchema = Yup.string().required(

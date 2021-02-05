@@ -1,13 +1,12 @@
 import React from 'react';
 import _ from 'lodash';
-import { Text } from 'react-native';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-
-import { Button, Input } from 'react-native-elements';
+import { TextInput, HelperText } from 'react-native-paper';
 import {
   emailSchema,
+  phoneSchema,
   registerPasswordSchema,
   confirmPasswordSchema,
   termsAndConditionsSchema,
@@ -15,16 +14,19 @@ import {
 import { getFormError } from '../form-utils';
 import { TermsAndConditions } from '../../atoms';
 import { flashService } from '../../../services';
+import useTheme from '../../../theme/hooks/useTheme';
 
 const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
+  const { Common } = useTheme();
   const validationSchema = Yup.object().shape({
     email: emailSchema,
-    name: Yup.string().required('Name is required'),
+    firstName: Yup.string().required('First Name is required'),
+    lastName: Yup.string().required('Surname is required'),
+    mobileNumber: phoneSchema,
     password: registerPasswordSchema(edit),
     confirmPassword: confirmPasswordSchema(edit),
     termsAndConditions: termsAndConditionsSchema(edit),
   });
-
   const _handleSubmission = (formData, actions) => {
     submitForm({ formData })
       .then(() => {
@@ -50,37 +52,57 @@ const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
       validationSchema={validationSchema}
       enableReinitialize
     >
-      {({
-        handleChange,
-        handleSubmit,
-        values,
-        errors,
-        isSubmitting,
-        handleBlur,
-        touched,
-        status,
-        setFieldValue,
-      }) => {
+      {({ handleChange, values, errors, handleBlur, touched, status, setFieldValue }) => {
         const error = (name) => getFormError(name, { touched, status, errors });
         return (
           <>
-            <Input
+            <TextInput
+              value={values.firstName}
+              onChangeText={handleChange('firstName')}
+              onBlur={handleBlur('firstName')}
+              label="First Name"
+              mode="outlined"
+              disabled={true}
+            />
+            <HelperText style={[Common.errorStyle]} type={'error'} visible={error('firstName')}>
+              {error('firstName')}
+            </HelperText>
+            <TextInput
+              value={values.lastName}
+              onChangeText={handleChange('lastName')}
+              onBlur={handleBlur('lastName')}
+              label="Surname"
+              mode="outlined"
+              disabled={true}
+            />
+            <HelperText style={[Common.errorStyle]} type={'error'} visible={error('lastName')}>
+              {error('lastName')}
+            </HelperText>
+            <TextInput
+              value={values.mobileNumber}
+              onChangeText={handleChange('mobileNumber')}
+              onBlur={handleBlur('mobileNumber')}
+              label="Number"
+              mode="outlined"
+              disabled={true}
+            />
+            <HelperText style={[Common.errorStyle]} type={'error'} visible={error('mobileNumber')}>
+              {error('mobileNumber')}
+            </HelperText>
+            <TextInput
               value={values.email}
               onChangeText={handleChange('email')}
               onBlur={handleBlur('email')}
               label="Email"
-              errorMessage={error('email')}
+              mode="outlined"
+              disabled={true}
             />
-            <Input
-              value={values.name}
-              onChangeText={handleChange('name')}
-              onBlur={handleBlur('name')}
-              label="Name"
-              errorMessage={error('name')}
-            />
+            <HelperText style={[Common.errorStyle]} type={'error'} visible={error('email')}>
+              {error('email')}
+            </HelperText>
             {!edit && (
               <>
-                <Input
+                <TextInput
                   value={values.password}
                   onChangeText={handleChange('password')}
                   label="Password"
@@ -88,7 +110,7 @@ const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
                   onBlur={handleBlur('password')}
                   errorMessage={error('password')}
                 />
-                <Input
+                <TextInput
                   value={values.confirmPassword}
                   onChangeText={handleChange('confirmPassword')}
                   label="Confirm Password"
@@ -98,18 +120,12 @@ const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
                 />
               </>
             )}
-            <Button
-              title={!edit ? 'Register' : 'Update'}
-              onPress={handleSubmit}
-              loading={isSubmitting}
-            />
             {!edit && (
               <TermsAndConditions
                 checked={values.termsAndConditions}
                 onPress={() => setFieldValue('termsAndConditions', !values.termsAndConditions)}
               />
             )}
-            {__DEV__ && <Text>{JSON.stringify(values, null, 2)}</Text>}
           </>
         );
       }}
