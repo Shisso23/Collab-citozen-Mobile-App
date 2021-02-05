@@ -1,8 +1,12 @@
 import accountsService from '../../services/sub-services/accounts-service/accounts.service';
-import { setAccountsAction } from './accounts.reducer';
+import { setAccountsAction, setIsLoadingAccountsRequestAction } from './accounts.reducer';
 
 export const getAccountsAction = () => (dispatch) => {
-  return accountsService.getAccounts().then((accounts) => {
-    dispatch(setAccountsAction(accounts));
-  });
+  dispatch(setIsLoadingAccountsRequestAction(true));
+  return accountsService
+    .getAccounts()
+    .then((accounts) => {
+      dispatch(setAccountsAction(accounts));
+    })
+    .finally(() => dispatch(setIsLoadingAccountsRequestAction(false)));
 };
