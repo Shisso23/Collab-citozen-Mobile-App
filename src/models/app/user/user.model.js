@@ -6,7 +6,7 @@ export function userModel(_apiUserModel) {
     email: _.get(_apiUserModel, 'email', ''),
     firstName: _.get(_apiUserModel, 'first_name', ''),
     lastName: _.get(_apiUserModel, 'surname', ''),
-    avatar: _.get(_apiUserModel, 'avatarUrl', ''),
+    avatar: `https://loremflickr.com/320/240/landscape?random=${_.random(1000)}`,
     get fullName() {
       return `${this.firstName} ${this.lastName}`;
     },

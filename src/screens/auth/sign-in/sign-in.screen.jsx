@@ -1,4 +1,5 @@
 import React from 'react';
+import RNBootSplash from 'react-native-bootsplash';
 import { useDispatch } from 'react-redux';
 import { Image } from 'react-native-elements';
 import { StyleSheet } from 'react-native';
@@ -17,8 +18,10 @@ const SignInScreen = () => {
 
   const { Gutters, Layout, Images } = useTheme();
 
-  const _onSignInSuccess = () => {
-    dispatch(isAuthenticatedFlowAction());
+  const _onSignInSuccess = async () => {
+    RNBootSplash.show({ fade: true });
+    await dispatch(isAuthenticatedFlowAction());
+    RNBootSplash.hide({ fade: true });
   };
 
   return (

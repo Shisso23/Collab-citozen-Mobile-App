@@ -1,17 +1,24 @@
 import authNetworkService from '../auth-network-service/auth-network.service';
 import { userModel, apiUserModel } from '../../../models';
 import userUrls from './user.urls';
-import { mockRequest } from '../../../dummy-data/mock-api';
-import { user } from '../../../dummy-data/users';
+import storageService from '../storage-service/storage.service';
 
-const getUser = () => {
+const getUser = async () => {
   const url = userUrls.userUrl();
-  const _createAndReturnUserModel = (apiResponse) => {
-    return userModel(apiResponse.data.Data);
+  const _createAndReturnUserModel = ({ data }) => {
+    if (!data.profile) {
+      throw Error('Could not get user profile');
+    }
+    return userModel(data.profile);
   };
-  return mockRequest(user)
-    .get(url)
-    .then(_createAndReturnUserModel);
+  const email = await storageService.getEmail();
+  const data = {
+    taskID: 0,
+    uniqName: 'GetUserProfile',
+    InputValues: `<valRoot><val>${email}</val></valRoot>`,
+  };
+  const apiResponse = await authNetworkService.post(url, data);
+  return _createAndReturnUserModel(apiResponse);
 };
 
 const updateUser = ({ formData }) => {

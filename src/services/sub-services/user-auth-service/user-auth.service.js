@@ -9,27 +9,24 @@ import {
   forgotPasswordModel,
   apiSignInModel,
 } from '../../../models';
+import storageService from '../storage-service/storage.service';
 
-const signIn = ({ formData }) => {
+const signIn = async ({ formData }) => {
   const { authenticationFailed, storeAccessToken, constructSignInData } = authUtils;
   const signInUrl = authUrls.tokenUrl();
   const apiModel = apiSignInModel(formData);
   const signInData = constructSignInData(apiModel);
-  return networkService
-    .post(signInUrl, signInData)
-    .then((apiResponse) => {
-      if (authenticationFailed(apiResponse)) {
-        const errorMessage = _.get(apiResponse, 'data');
-        throw new Error(errorMessage);
-      }
-      return apiResponse;
-    })
-    .then(storeAccessToken);
+
+  const apiResponse = await networkService.post(signInUrl, signInData);
+  if (authenticationFailed(apiResponse)) {
+    const errorMessage = _.get(apiResponse, 'data');
+    throw new Error(errorMessage);
+  }
+  await Promise.all([storeAccessToken(apiResponse), storageService.storeEmail(formData.email)]);
 };
 
 const signOut = () => {
-  // any other signOut logic
-  return authUtils.removeAccessToken();
+  return Promise.all([storageService.removeAccessToken(), storageService.removeEmail()]);
 };
 
 const register = ({ formData }) => {
