@@ -1,12 +1,15 @@
-import { accounts } from '../../../dummy-data/accounts';
-import { mockRequest } from '../../../dummy-data/mock-api';
+import _ from 'lodash';
 import { constructAccountModels } from '../../../models';
+import globalUrl from '../global/global.service.urls';
+import { apiFunctionWithUniqName } from '../../../helpers/api-function-name.helper';
+import authNetworkService from '../auth-network-service/auth-network.service';
 
-const getAccounts = () => {
-  const url = '';
-  return mockRequest(accounts)
-    .get(url)
-    .then((apiResponse) => constructAccountModels(apiResponse.data.Data));
+const getAccounts = async () => {
+  const url = globalUrl.globalFunctionUrl();
+  const data = await apiFunctionWithUniqName('get_accounts');
+  const apiResponse = await authNetworkService.post(url, data);
+  const accounts = _.get(apiResponse.data, 'accounts', []);
+  return constructAccountModels(accounts);
 };
 
 export default {
