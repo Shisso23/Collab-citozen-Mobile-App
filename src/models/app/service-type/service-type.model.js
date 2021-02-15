@@ -10,11 +10,13 @@ const constructServiceTypeModelsArr = (apiServiceTypes) =>
   apiServiceTypes.map((serviceType) => serviceTypeModel(serviceType));
 
 export const constructServiceTypeModels = (apiServiceTypes) =>
-  apiServiceTypes.reduce((acc, current) => {
-    return {
-      ...acc,
-      [current.category]: constructServiceTypeModelsArr(
-        apiServiceTypes.filter((item) => item.category === current.category),
-      ),
-    };
-  }, {});
+  apiServiceTypes
+    ? apiServiceTypes.reduce((acc, current) => {
+        return {
+          ...acc,
+          [current.category]: constructServiceTypeModelsArr(
+            apiServiceTypes.filter((item) => item.category === current.category),
+          ),
+        };
+      }, {})
+    : {};

@@ -3,7 +3,7 @@ import { constructServiceTypeModels } from '../service-type/service-type.model';
 
 export const municipalityModel = (_apiMunicipalityModel = {}) => ({
   id: _.get(_apiMunicipalityModel, 'obj_id', ''),
-  municipalityCode: _.get(_apiMunicipalityModel, 'municipality_code', ''),
+  municipalityCode: _.get(_apiMunicipalityModel, 'code', ''),
   name: _.get(_apiMunicipalityModel, 'name', ''),
   serviceTypes: constructServiceTypeModels(_.get(_apiMunicipalityModel, 'service_types', [])),
 });
@@ -15,6 +15,6 @@ export const constructMunicipalityModels = (apiMunicipalityModel) =>
   apiMunicipalityModel.reduce((acc, current) => {
     return {
       ...acc,
-      [current.municipality_code]: municipalityModel(current),
+      [current.code]: municipalityModel(current),
     };
   }, {});

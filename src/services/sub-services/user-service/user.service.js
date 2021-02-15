@@ -1,28 +1,23 @@
 import authNetworkService from '../auth-network-service/auth-network.service';
 import { userModel, apiUserModel } from '../../../models';
-import userUrls from './user.urls';
-import storageService from '../storage-service/storage.service';
+import globalUrl from '../global/global.service.urls';
+import { apiFunctionWithUniqName } from '../../../helpers/api-function-name.helper';
 
 const getUser = async () => {
-  const url = userUrls.userUrl();
+  const url = globalUrl.globalFunctionUrl();
   const _createAndReturnUserModel = ({ data }) => {
     if (!data.profile) {
       throw Error('Could not get user profile');
     }
     return userModel(data.profile);
   };
-  const email = await storageService.getEmail();
-  const data = {
-    taskID: 0,
-    uniqName: 'GetUserProfile',
-    InputValues: `<valRoot><val>${email}</val></valRoot>`,
-  };
+  const data = await apiFunctionWithUniqName('get_user_profile');
   const apiResponse = await authNetworkService.post(url, data);
   return _createAndReturnUserModel(apiResponse);
 };
 
 const updateUser = ({ formData }) => {
-  const url = userUrls.userUrl();
+  const url = globalUrl.globalFunctionUrl();
   const apiUser = apiUserModel(formData);
   return authNetworkService.patch(url, apiUser).catch((error) => {
     error.errors = userModel(error.errors);

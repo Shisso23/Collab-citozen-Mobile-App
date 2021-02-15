@@ -24,7 +24,7 @@ const ServiceRequestScreen = () => {
   const serviceRequestItem = ({ item }) => {
     return (
       <List.Item
-        title={item.compliantType}
+        title={item.serviceType}
         description={item.address}
         onPress={() => {}}
         left={() => <Avatar.Image rounded size={50} source={{ uri: item.avatarUrl }} />}
