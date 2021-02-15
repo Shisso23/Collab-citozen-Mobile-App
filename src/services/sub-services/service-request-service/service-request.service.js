@@ -28,6 +28,9 @@ const getServiceRequests = async () => {
   const data = await apiFunctionWithUniqName('get_service_requests');
   const apiResponse = await authNetworkService.post(url, data);
   const serviceRequests = _.get(apiResponse.data, 'service_requests', []);
+  if (serviceRequests.length === 0 || !serviceRequests) {
+    throw Error('Could not get service requests');
+  }
   return constructServiceRequestModels(serviceRequests);
 };
 

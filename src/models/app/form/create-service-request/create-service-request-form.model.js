@@ -22,7 +22,7 @@ export const apiCreateServiceRequestModel = (_serviceRequestForm = {}, _userInfo
     { FieldID: 'F3', FieldValue: _.get(_userInformation, 'lastName', '') }, // lastName
     { FieldID: 'F4', FieldValue: _.get(_userInformation, 'mobileNumber', '') }, // User mobile
     { FieldID: 'F5', FieldValue: _.get(_userInformation, 'email', '') }, // User email
-    { FieldID: 'F8', FieldValue: _.get(_serviceRequestForm, 'account.streetName', '') }, //  Street name
+    { FieldID: 'F7', FieldValue: _.get(_serviceRequestForm, 'account.streetName', '') }, //  Street name
     { FieldID: 'F8', FieldValue: _.get(_serviceRequestForm, 'account.streetNumber', '') }, // Street number
     { FieldID: 'F9', FieldValue: _.get(_serviceRequestForm, 'account.suburb', '') }, // Suburb
     { FieldID: 'F10', FieldValue: _.get(_serviceRequestForm, 'description', '') }, // Description

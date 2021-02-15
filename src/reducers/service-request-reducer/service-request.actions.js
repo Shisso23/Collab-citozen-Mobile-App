@@ -1,4 +1,4 @@
-import { serviceRequestService } from '../../services';
+import { flashService, serviceRequestService } from '../../services';
 import {
   setIsLoadingServiceRequestsAction,
   setServiceRequestsAction,
@@ -11,6 +11,7 @@ export const getServiceRequestsAction = () => (dispatch) => {
     .then((serviceRequests) => {
       dispatch(setServiceRequestsAction(serviceRequests));
     })
+    .catch((error) => flashService.error(error.message))
     .finally(() => {
       dispatch(setIsLoadingServiceRequestsAction(false));
     });

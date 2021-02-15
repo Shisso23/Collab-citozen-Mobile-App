@@ -5,7 +5,10 @@ import { useNavigation } from '@react-navigation/native';
 import useTheme from '../../../../theme/hooks/useTheme';
 import { accountsSelector } from '../../../../reducers/accounts-reducer/accounts.reducer';
 import { CreateServiceRequestForm } from '../../../../components/forms';
-import { createServiceRequestAction } from '../../../../reducers/service-request-reducer/service-request.actions';
+import {
+  createServiceRequestAction,
+  getServiceRequestsAction,
+} from '../../../../reducers/service-request-reducer/service-request.actions';
 import { flashService } from '../../../../services';
 import { createServiceRequestModel } from '../../../../models';
 import { municipalitiesSelector } from '../../../../reducers/municipalities-reducer/municipalities.reducer';
@@ -20,6 +23,7 @@ const CreateServiceRequestScreen = () => {
 
   const _onFormSuccess = () => {
     flashService.success('Successfully created request');
+    dispatch(getServiceRequestsAction());
     navigation.popToTop();
   };
 
