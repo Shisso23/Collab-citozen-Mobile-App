@@ -1,20 +1,26 @@
 import _ from 'lodash';
-import { mockRequest } from '../../../dummy-data/mock-api';
-import { createServiceRequest_ } from '../../../dummy-data/service-requests';
-import { constructServiceRequestModels, serviceRequestModel } from '../../../models';
+
+import {
+  constructServiceRequestModels,
+  serviceRequestModel,
+  apiCreateServiceRequestModel,
+} from '../../../models';
 import globalUrl from '../global/global.service.urls';
 import { apiFunctionWithUniqName } from '../../../helpers/api-function-name.helper';
 import authNetworkService from '../auth-network-service/auth-network.service';
+import srUrls from './service-request.urls';
 
-const createServiceRequest = (createServiceRequestForm) => {
-  const url = '';
-  const apiModel = createServiceRequestForm;
-  const mockResponse = createServiceRequest_(createServiceRequestForm);
-  return mockRequest(mockResponse)
-    .post(url, apiModel)
-    .then((apiResponse) => {
-      return serviceRequestModel(apiResponse.data.Data);
-    });
+const createServiceRequest = async (createServiceRequestForm, userInfo) => {
+  const url = srUrls.createSrUrl();
+  const apiModel = apiCreateServiceRequestModel(createServiceRequestForm, userInfo);
+  try {
+    const apiResponse = await authNetworkService.post(url, apiModel);
+    return serviceRequestModel(apiResponse.data.Data);
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.warn(JSON.stringify(err, null, 2));
+    throw err;
+  }
 };
 
 const getServiceRequests = async () => {
