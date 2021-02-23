@@ -26,7 +26,9 @@ const ServiceRequestScreen = () => {
       <List.Item
         title={item.serviceType}
         description={item.address}
-        onPress={() => {}}
+        onPress={() => {
+          navigation.push('ViewServiceRequest', { serviceRequest: item });
+        }}
         left={() => <Avatar.Image rounded size={50} source={{ uri: item.avatarUrl }} />}
       />
     );

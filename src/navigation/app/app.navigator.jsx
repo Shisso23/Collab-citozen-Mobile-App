@@ -11,6 +11,7 @@ import SelectLocationScreen from '../../screens/app/service-request/select-locat
 
 import { DrawerContent } from '../../components/molecules';
 import AccountScreen from '../../screens/app/account/account.screen';
+import ViewServiceRequestScreen from '../../screens/app/service-request/view-service-request/view-service-request.screen';
 
 const Drawer = createDrawerNavigator();
 const AppStack = createStackNavigator();
@@ -33,6 +34,11 @@ const AppNavigator = () => {
         name="SelectLocationScreen"
         component={SelectLocationScreen}
         options={{ headerShown: true, title: 'Select Location' }}
+      />
+      <AppStack.Screen
+        name="ViewServiceRequest"
+        component={ViewServiceRequestScreen}
+        options={{ headerShown: true, title: 'View Service Request' }}
       />
     </AppStack.Navigator>
   );
