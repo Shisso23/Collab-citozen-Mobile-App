@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
-import { ViewPropTypes, View } from 'react-native';
+import { ViewPropTypes, View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { TextInput, Button, HelperText } from 'react-native-paper';
-import { Divider } from 'react-native-elements';
+import { Divider, Input } from 'react-native-elements';
 import { emailSchema, passwordSchema } from '../form-validaton-schemas';
 import { getFormError } from '../form-utils';
 import useTheme from '../../../theme/hooks/useTheme';
+import { Colors } from '../../../theme/Variables';
 
 const SignInForm = ({ submitForm, onSuccess, containerStyle, initialValues }) => {
-  const { Gutters, Common } = useTheme();
+  const { Gutters, Common, Layout } = useTheme();
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
   const validationSchema = Yup.object().shape({
     email: emailSchema,
@@ -51,45 +52,53 @@ const SignInForm = ({ submitForm, onSuccess, containerStyle, initialValues }) =>
           const error = (name) => getFormError(name, { touched, status, errors });
           return (
             <>
-              <TextInput
-                left={<TextInput.Icon name="account" />}
+              <Input
+                leftIcon={<TextInput.Icon name="account" />}
                 value={values.email}
                 onChangeText={handleChange('email')}
-                label="Email"
+                placeholder="Email"
                 onBlur={handleBlur('email')}
-                mode="outlined"
+                leftIconContainerStyle={[Gutters.regularHMargin]}
+                containerStyle={[Common.loginTextInput]}
+                inputContainerStyle={styles.inputContainer}
               />
               <HelperText style={[Common.errorStyle]} type={'error'} visible={error('email')}>
                 {error('email')}
               </HelperText>
               <Divider />
-              <TextInput
-                value={values.password}
-                onChangeText={handleChange('password')}
-                label="Password"
-                onBlur={handleBlur('password')}
-                secureTextEntry={isPasswordHidden}
-                mode="outlined"
-                left={<TextInput.Icon name="lock" />}
-                right={
+              <Input
+                leftIcon={<TextInput.Icon name="lock" />}
+                rightIcon={
                   <TextInput.Icon
-                    name="eye"
+                    name={isPasswordHidden ? 'eye' : 'eye-off'}
                     onPress={() => setIsPasswordHidden(!isPasswordHidden)}
                   />
                 }
+                secureTextEntry={isPasswordHidden}
+                value={values.password}
+                onChangeText={handleChange('password')}
+                placeholder="Password"
+                onBlur={handleBlur('password')}
+                rightIconContainerStyle={[Gutters.largeHMargin]}
+                leftIconContainerStyle={[Gutters.regularHMargin]}
+                containerStyle={[Common.loginTextInput]}
+                inputContainerStyle={styles.inputContainer}
               />
               <HelperText style={[Common.errorStyle]} type={'error'} visible={error('password')}>
                 {error('password')}
               </HelperText>
               <Divider />
-              <Button
-                style={[Gutters.largeMargin]}
-                mode="contained"
-                onPress={handleSubmit}
-                loading={isSubmitting}
-              >
-                Login
-              </Button>
+              <View style={[Layout.center]}>
+                <Button
+                  style={[Gutters.largeMargin, Layout.halfWidth]}
+                  mode="contained"
+                  onPress={handleSubmit}
+                  loading={isSubmitting}
+                  color={Colors.white}
+                >
+                  Login
+                </Button>
+              </View>
             </>
           );
         }}
@@ -109,5 +118,9 @@ SignInForm.defaultProps = {
   onSuccess: () => null,
   containerStyle: {},
 };
-
+const styles = StyleSheet.create({
+  inputContainer: {
+    borderBottomWidth: 0,
+  },
+});
 export default SignInForm;

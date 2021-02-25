@@ -6,4 +6,5 @@
  */
 export default () => ({
   collaboratorLogo: require('../assets/images/Logo.png'),
+  loginBackground: require('../assets/images/loginBackGround.png'),
 });

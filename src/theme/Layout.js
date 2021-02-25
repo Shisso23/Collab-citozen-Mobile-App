@@ -115,6 +115,9 @@ export default () =>
     fullHeight: {
       height: '100%',
     },
+    halfWidth: {
+      width: '50%',
+    },
     /* Operation Layout */
     mirror: {
       transform: [{ scaleX: -1 }],
