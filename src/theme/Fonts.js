@@ -49,4 +49,9 @@ export default ({ FontSize, Colors }) =>
       fontSize: FontSize.small * 2,
       fontWeight: 'bold',
     },
+    titleTiny: {
+      color: Colors.text,
+      fontSize: FontSize.small * 1.5,
+      fontWeight: 'bold',
+    },
   });
