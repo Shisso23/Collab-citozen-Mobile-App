@@ -14,6 +14,9 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
     backgroundReset: {
       backgroundColor: Colors.transparent,
     },
+    backgroundWhite: {
+      backgroundColor: Colors.white,
+    },
     drawerStyle: {
       borderBottomRightRadius: 20,
       borderTopRightRadius: 20,
