@@ -9,12 +9,10 @@ import FormScreenContainer from '../../../components/containers/form-screen-cont
 const ProfileScreen = () => {
   const { user } = useSelector((reducers) => reducers.userReducer);
   const _onFormSuccess = () => {};
-  const { Gutters, Fonts, Layout, Common } = useTheme();
+  const { Gutters, Fonts, Layout } = useTheme();
 
   return (
-    <FormScreenContainer
-      contentContainerStyle={[Gutters.largeHMargin, Layout.fullHeight, Common.backgroundWhite]}
-    >
+    <FormScreenContainer contentContainerStyle={[Gutters.largeHMargin, Layout.fullHeight]}>
       <Text style={[Gutters.smallBMargin, Fonts.titleTiny]}>Profile</Text>
       <UserInfoForm
         edit
