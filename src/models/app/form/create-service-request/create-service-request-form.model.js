@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { apiFormatTime } from '../../../../helpers/time.helper';
 
 const formatCoordinate = ({ location }) => `Point(${location.latitude},${location.longitude})`;
 
@@ -27,7 +28,7 @@ export const apiCreateServiceRequestModel = (_serviceRequestForm = {}, _userInfo
     { FieldID: 'F9', FieldValue: _.get(_serviceRequestForm, 'account.suburb', '') }, // Suburb
     { FieldID: 'F10', FieldValue: _.get(_serviceRequestForm, 'description', '') }, // Description
     { FieldID: 'F11', FieldValue: formatCoordinate(_serviceRequestForm) }, // GPS position
-    { FieldID: 'F12', FieldValue: new Date() }, // Date
+    { FieldID: 'F12', FieldValue: apiFormatTime(new Date()) }, // Date
     { FieldID: 'F13', FieldValue: '12345' }, // mobile referece
     { FieldID: 'F20', FieldValue: _.get(_serviceRequestForm, 'account.municipalityCode', '') }, // municipalityCode
   ],

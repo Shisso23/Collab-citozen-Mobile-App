@@ -34,6 +34,10 @@ export default ({ FontSize, Colors }) =>
       color: Colors.text,
       fontSize: FontSize.small,
     },
+    textTiny: {
+      color: Colors.text,
+      fontSize: FontSize.tiny,
+    },
     titleLarge: {
       color: Colors.text,
       fontSize: FontSize.large * 2,
@@ -47,6 +51,11 @@ export default ({ FontSize, Colors }) =>
     titleSmall: {
       color: Colors.text,
       fontSize: FontSize.small * 2,
+      fontWeight: 'bold',
+    },
+    titleTiny: {
+      color: Colors.text,
+      fontSize: FontSize.small * 1.5,
       fontWeight: 'bold',
     },
   });
