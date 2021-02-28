@@ -61,8 +61,9 @@ const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
               onChangeText={handleChange('firstName')}
               onBlur={handleBlur('firstName')}
               label="First Name"
-              mode="outlined"
+              // mode="outlined"
               disabled={true}
+              style={[Common.textInputWithShadow]}
             />
             <HelperText style={[Common.errorStyle]} type={'error'} visible={error('firstName')}>
               {error('firstName')}
@@ -72,8 +73,8 @@ const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
               onChangeText={handleChange('lastName')}
               onBlur={handleBlur('lastName')}
               label="Surname"
-              mode="outlined"
               disabled={true}
+              style={[Common.textInputWithShadow]}
             />
             <HelperText style={[Common.errorStyle]} type={'error'} visible={error('lastName')}>
               {error('lastName')}
@@ -83,8 +84,8 @@ const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
               onChangeText={handleChange('mobileNumber')}
               onBlur={handleBlur('mobileNumber')}
               label="Number"
-              mode="outlined"
               disabled={true}
+              style={[Common.textInputWithShadow]}
             />
             <HelperText style={[Common.errorStyle]} type={'error'} visible={error('mobileNumber')}>
               {error('mobileNumber')}
@@ -94,8 +95,8 @@ const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
               onChangeText={handleChange('email')}
               onBlur={handleBlur('email')}
               label="Email"
-              mode="outlined"
               disabled={true}
+              style={[Common.textInputWithShadow]}
             />
             <HelperText style={[Common.errorStyle]} type={'error'} visible={error('email')}>
               {error('email')}

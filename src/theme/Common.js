@@ -14,6 +14,9 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
     backgroundReset: {
       backgroundColor: Colors.transparent,
     },
+    backgroundWhite: {
+      backgroundColor: Colors.white,
+    },
     drawerStyle: {
       borderBottomRightRadius: 20,
       borderTopRightRadius: 20,
@@ -48,6 +51,19 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
     link: {
       color: Colors.secondary,
       fontWeight: 'bold',
+    },
+    loginErrorStyle: {
+      color: Colors.white,
+      fontFamily: FontFamily.primary,
+      fontSize: FontSize.small,
+    },
+    loginLogo: {
+      color: Colors.white,
+    },
+    loginTextInput: {
+      backgroundColor: Colors.white,
+      borderRadius: 10,
+      height: 50,
     },
     textInput: {
       backgroundColor: Colors.transparent,

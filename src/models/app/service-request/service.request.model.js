@@ -11,10 +11,11 @@ export const serviceRequestModel = (_apiServiceRequestModel = {}) => ({
   id: _.get(_apiServiceRequestModel, 'obj_id', ''),
   serviceType: _.get(_apiServiceRequestModel, 'service_type_id', ''),
   serviceDescription: _.get(_apiServiceRequestModel, 'description', ''),
-  address: constructAddress(_apiServiceRequestModel),
-  requestedDate: _.get(_apiServiceRequestModel, 'request_date', ''),
+  address: constructAddress(_apiServiceRequestModel).trim(),
+  requestedDate: _.get(_apiServiceRequestModel, 'request_date', '').replace('.', ''),
   referenceNumber: _.get(_apiServiceRequestModel, 'on_premises_ref', ''),
   avatarUrl: `https://loremflickr.com/320/240/landscape?random=${_.random(1000)}`,
+  status: _.get(_apiServiceRequestModel, 'status', ''),
 });
 
 export const constructServiceRequestModels = (apiServiceRequests) =>
