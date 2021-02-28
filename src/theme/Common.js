@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-
+import { DefaultTheme } from '@react-navigation/native';
 /**
  *
  * @param Theme can be spread like {Colors, NavigationColors, Gutters, Layout, Common, ...args}
@@ -32,8 +32,21 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
       position: 'absolute',
       right: 0,
     },
+    headerIcon: {
+      height: 100,
+      width: '100%',
+    },
     headerLogo: {
       width: 200,
+    },
+    headerView: {
+      borderColor: DefaultTheme.colors.background,
+      borderTopLeftRadius: 10,
+      borderTopRightRadius: 10,
+      borderWidth: 10,
+      bottom: 0,
+      position: 'absolute',
+      width: '100%',
     },
     link: {
       color: Colors.secondary,
