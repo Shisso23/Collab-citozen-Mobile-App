@@ -49,7 +49,7 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
       width: '100%',
     },
     link: {
-      color: Colors.secondary,
+      color: Colors.white,
       fontWeight: 'bold',
     },
     loginErrorStyle: {

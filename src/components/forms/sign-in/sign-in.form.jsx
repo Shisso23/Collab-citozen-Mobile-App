@@ -62,7 +62,7 @@ const SignInForm = ({ submitForm, onSuccess, containerStyle, initialValues }) =>
                 containerStyle={[Common.loginTextInput]}
                 inputContainerStyle={styles.inputContainer}
               />
-              <HelperText style={[Common.errorStyle]} type={'error'} visible={error('email')}>
+              <HelperText style={[Common.loginErrorStyle]} type={'error'} visible={error('email')}>
                 {error('email')}
               </HelperText>
               <Divider />
@@ -84,7 +84,11 @@ const SignInForm = ({ submitForm, onSuccess, containerStyle, initialValues }) =>
                 containerStyle={[Common.loginTextInput]}
                 inputContainerStyle={styles.inputContainer}
               />
-              <HelperText style={[Common.errorStyle]} type={'error'} visible={error('password')}>
+              <HelperText
+                style={[Common.loginErrorStyle]}
+                type={'error'}
+                visible={error('password')}
+              >
                 {error('password')}
               </HelperText>
               <Divider />
