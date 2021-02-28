@@ -55,4 +55,18 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
     textInput: {
       backgroundColor: Colors.transparent,
     },
+    textInputWithShadow: {
+      borderBottomLeftRadius: 10,
+      borderBottomRightRadius: 10,
+      borderTopLeftRadius: 10,
+      borderTopRightRadius: 10,
+      elevation: 2,
+      shadowColor: Colors.black,
+      shadowOffset: {
+        width: 0,
+        height: 3,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+    },
   });
