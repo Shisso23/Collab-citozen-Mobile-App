@@ -19,7 +19,7 @@ const CreateServiceRequestScreen = () => {
   const { accounts } = useSelector(accountsSelector);
   const { municipalities } = useSelector(municipalitiesSelector);
 
-  const { Gutters } = useTheme();
+  const { Gutters, Common } = useTheme();
 
   const _onFormSuccess = () => {
     flashService.success('Successfully created request');
@@ -32,7 +32,7 @@ const CreateServiceRequestScreen = () => {
   };
 
   return (
-    <KeyboardAwareScrollView keyboardShouldPersistTaps="handled">
+    <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" style={[Common.defaultBackGround]}>
       <CreateServiceRequestForm
         submitForm={_handleFormSubmit}
         onSuccess={_onFormSuccess}

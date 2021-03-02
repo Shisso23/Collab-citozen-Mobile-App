@@ -61,7 +61,6 @@ const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
               onChangeText={handleChange('firstName')}
               onBlur={handleBlur('firstName')}
               label="First Name"
-              // mode="outlined"
               disabled={true}
               style={[Common.textInputWithShadow]}
             />

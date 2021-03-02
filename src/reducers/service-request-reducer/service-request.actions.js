@@ -1,6 +1,7 @@
 import { flashService, serviceRequestService } from '../../services';
 import {
   setIsLoadingServiceRequestsAction,
+  setServiceRequestImageAction,
   setServiceRequestsAction,
 } from './service-request.reducer';
 
@@ -23,4 +24,11 @@ export const createServiceRequestAction = (newServiceRequestForm) => async (
 ) => {
   const { user } = getState().userReducer;
   await serviceRequestService.createServiceRequest(newServiceRequestForm, user);
+};
+
+export const getServiceRequestImageAction = () => (dispatch) => {
+  return serviceRequestService
+    .getServiceRequestImage()
+    .then((response) => dispatch(setServiceRequestImageAction(response)))
+    .catch(() => flashService.error('Could not fetch image'));
 };

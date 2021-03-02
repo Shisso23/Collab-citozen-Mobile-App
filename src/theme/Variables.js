@@ -20,6 +20,7 @@ export const Colors = {
   warning: '#D4B483',
   error: '#C1666B',
   danger: '#C1666B',
+  softBlue: '#3A609C',
 };
 
 export const NavigationColors = {

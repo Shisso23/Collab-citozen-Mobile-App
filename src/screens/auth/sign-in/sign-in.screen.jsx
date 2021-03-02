@@ -1,7 +1,7 @@
 import React from 'react';
 import RNBootSplash from 'react-native-bootsplash';
 import { useDispatch } from 'react-redux';
-import { ImageBackground, Text } from 'react-native';
+import { ImageBackground, Text, View } from 'react-native';
 import { RegisterLink, ForgotPasswordLink } from '../../../components/atoms';
 import { SignInForm } from '../../../components/forms';
 
@@ -15,7 +15,7 @@ import LoginLogo from '../../../components/atoms/login-logo';
 const SignInScreen = () => {
   const dispatch = useDispatch();
 
-  const { Gutters, Layout, Images, Common, Fonts } = useTheme();
+  const { Gutters, Layout, Images, Common } = useTheme();
 
   const _onSignInSuccess = async () => {
     RNBootSplash.show({ fade: true });
@@ -24,14 +24,14 @@ const SignInScreen = () => {
   };
 
   return (
-    <ImageBackground source={Images.loginBackground} style={[Layout.fill]} resizeMode="cover">
+    <ImageBackground source={Images.loginBackground} style={[Layout.fullSize]} resizeMode="cover">
       <FormScreenContainer contentContainerStyle={[Layout.scrollCenter]}>
         <LoginLogo containerStyle={[Gutters.largeMargin]} />
-        <Text
-          style={[Fonts.textLarge, Common.loginLogo, Layout.alignSelfCenter, Gutters.largeVMargin]}
-        >
-          Login
-        </Text>
+        <View style={[Gutters.largeBMargin]}>
+          <Text style={[Common.loginLogo, Layout.alignSelfCenter, Gutters.largeBMargin]}>
+            Login
+          </Text>
+        </View>
         <SignInForm
           submitForm={userAuthService.signIn}
           onSuccess={_onSignInSuccess}

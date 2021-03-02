@@ -8,4 +8,5 @@ export default () => ({
   collaboratorLogo: require('../assets/images/Logo.png'),
   skylineBackground: require('../assets/images/skyline.png'),
   loginBackground: require('../assets/images/loginBackGround.png'),
+  collaboratorLogoText: require('../assets/images/collboratorText.png'),
 });

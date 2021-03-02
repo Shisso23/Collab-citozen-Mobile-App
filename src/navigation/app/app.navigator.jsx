@@ -38,12 +38,20 @@ const AppNavigator = () => {
       <AppStack.Screen
         name="SelectLocationScreen"
         component={SelectLocationScreen}
-        options={{ headerShown: true, title: 'Select Location' }}
+        options={{
+          headerShown: true,
+          title: 'Select Location',
+          header: (props) => <HeaderBackGround {...props} backButton />,
+        }}
       />
       <AppStack.Screen
         name="ViewServiceRequest"
         component={ViewServiceRequestScreen}
-        options={{ headerShown: true, title: 'View Service Request' }}
+        options={{
+          headerShown: true,
+          title: 'View Service Request',
+          header: (props) => <HeaderBackGround {...props} backButton />,
+        }}
       />
     </AppStack.Navigator>
   );

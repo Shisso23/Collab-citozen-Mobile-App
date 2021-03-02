@@ -17,6 +17,15 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
     backgroundWhite: {
       backgroundColor: Colors.white,
     },
+    blackText: {
+      color: Colors.black,
+    },
+    defaultBackGround: {
+      backgroundColor: DefaultTheme.colors.background,
+    },
+    drawerUserText: {
+      color: Colors.white,
+    },
     drawerStyle: {
       borderBottomRightRadius: 20,
       borderTopRightRadius: 20,
@@ -59,16 +68,22 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
     },
     loginLogo: {
       color: Colors.white,
+      fontSize: 25,
     },
     loginTextInput: {
       backgroundColor: Colors.white,
       borderRadius: 10,
       height: 50,
+      opacity: 0.8,
     },
     textInput: {
       backgroundColor: Colors.transparent,
     },
+    whiteText: {
+      color: Colors.white,
+    },
     textInputWithShadow: {
+      backgroundColor: DefaultTheme.colors.background,
       borderBottomLeftRadius: 10,
       borderBottomRightRadius: 10,
       borderTopLeftRadius: 10,
