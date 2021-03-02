@@ -7,7 +7,7 @@ const LoginLogo = ({ contentContainerStyle }) => {
   return (
     <View style={contentContainerStyle}>
       <Text
-        style={[Fonts.titleRegular, Common.loginLogo, Layout.alignSelfCenter, Gutters.largeMargin]}
+        style={[Fonts.titleLarge, Common.loginLogo, Layout.alignSelfCenter, Gutters.largeMargin]}
       >
         Collab Citizen
       </Text>
