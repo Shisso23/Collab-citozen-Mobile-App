@@ -1,16 +1,20 @@
 import React from 'react';
-import { Text, View, ViewPropTypes } from 'react-native';
+import { StyleSheet, View, ViewPropTypes } from 'react-native';
+import { Image } from 'react-native-elements';
 import useTheme from '../../../theme/hooks/useTheme';
+import { Colors } from '../../../theme/Variables';
 
 const LoginLogo = ({ contentContainerStyle }) => {
-  const { Gutters, Common, Fonts, Layout } = useTheme();
+  const { Gutters, Images, Layout } = useTheme();
   return (
     <View style={contentContainerStyle}>
-      <Text
-        style={[Fonts.titleLarge, Common.loginLogo, Layout.alignSelfCenter, Gutters.largeMargin]}
-      >
-        Collab Citizen
-      </Text>
+      <Image
+        source={Images.collaboratorLogoText}
+        resizeMode="contain"
+        style={styles.collaboratorLogo}
+        containerStyle={[Gutters.largeHMargin, Layout.alignSelfCenter]}
+        placeholderStyle={styles.placeholder}
+      />
     </View>
   );
 };
@@ -21,4 +25,14 @@ LoginLogo.propTypes = {
 LoginLogo.defaultProps = {
   contentContainerStyle: {},
 };
+
+const styles = StyleSheet.create({
+  collaboratorLogo: {
+    height: 180,
+    width: 270,
+  },
+  placeholder: {
+    backgroundColor: Colors.transparent,
+  },
+});
 export default LoginLogo;
