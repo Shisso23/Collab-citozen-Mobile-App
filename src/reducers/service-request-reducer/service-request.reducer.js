@@ -11,13 +11,9 @@ export const setIsLoadingServiceRequestsAction = setIsLoadingServiceRequests.act
 const prependServiceRequest = CreateAction(reducerName, 'PREPEND_SERVICE_REQUEST');
 export const prependServiceRequestAction = prependServiceRequest.action;
 
-const setServiceRequestImage = CreateAction(reducerName, 'SET_SERVICE_REQUEST_IMAGE');
-export const setServiceRequestImageAction = setServiceRequestImage.action;
-
 const initialState = {
   serviceRequests: [],
   isLoadingServiceRequests: false,
-  serviceRequestImage: '',
 };
 
 export const serviceRequestSelector = (reducers) => reducers.serviceRequestReducer;
@@ -38,11 +34,6 @@ export default function serviceRequestReducer(state = initialState, action) {
       return {
         ...state,
         serviceRequests: [action.payload, ...state.serviceRequests],
-      };
-    case setServiceRequestImage.actionType:
-      return {
-        ...state,
-        serviceRequestImage: action.payload,
       };
     default:
       return state;
