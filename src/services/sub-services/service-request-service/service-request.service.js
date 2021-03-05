@@ -9,9 +9,6 @@ import globalUrl from '../global/global.service.urls';
 import { apiFunctionWithUniqName } from '../../../helpers/api-function-name.helper';
 import authNetworkService from '../auth-network-service/auth-network.service';
 import srUrls from './service-request.urls';
-import RNFetchBlob from 'rn-fetch-blob';
-import storageService from '../storage-service/storage.service';
-import { flashService } from '../../index';
 
 const createServiceRequest = async (createServiceRequestForm, userInfo) => {
   const url = srUrls.createSrUrl();
@@ -37,23 +34,7 @@ const getServiceRequests = async () => {
   return constructServiceRequestModels(serviceRequests);
 };
 
-const getServiceRequestImage = async () => {
-  const token = await storageService.getAccessToken();
-  const url = srUrls.viewSrImageUrl(556809, 74144);
-  return RNFetchBlob.config({
-    fileCache: true,
-    appendExt: 'jpg',
-  })
-    .fetch('get', url, {
-      Authorization: `Bearer ${token}`,
-      Accept: '*/*',
-    })
-    .then((response) => response.path())
-    .catch(() => flashService.error('Could not fetch photo.'));
-};
-
 export default {
   createServiceRequest,
   getServiceRequests,
-  getServiceRequestImage,
 };

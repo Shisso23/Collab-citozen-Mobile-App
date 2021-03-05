@@ -5,6 +5,7 @@ import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import _ from 'lodash';
 import useTheme from '../../../theme/hooks/useTheme';
 import { serviceRequestSelector } from '../../../reducers/service-request-reducer/service-request.reducer';
 import { getServiceRequestsAction } from '../../../reducers/service-request-reducer/service-request.actions';
@@ -35,7 +36,9 @@ const ServiceRequestScreen = () => {
         return Colors.error;
     }
   };
-
+  const _setImageUrl = (item) => {
+    return _.isEmpty(item.serviceRequestImage) ? { uri: item.avatarUrl } : item.serviceRequestImage;
+  };
   useEffect(() => {
     _loadServiceRequests();
   }, []);
@@ -63,13 +66,12 @@ const ServiceRequestScreen = () => {
           onPress={() => {
             navigation.push('ViewServiceRequest', { serviceRequest: item });
           }}
-          left={() => <Avatar.Image rounded size={50} source={{ uri: item.avatarUrl }} />}
+          left={() => <Avatar.Image rounded size={50} source={_setImageUrl(item)} />}
           right={() => <Icon name="ellipsis-v" style={[Layout.alignSelfCenter]} />}
         />
       </View>
     );
   };
-
   return (
     <>
       <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>Service Requests</Text>

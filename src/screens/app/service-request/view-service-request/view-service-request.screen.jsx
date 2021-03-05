@@ -1,21 +1,17 @@
 import React from 'react';
 import { ActivityIndicator, Dimensions, ScrollView, StyleSheet, Text } from 'react-native';
 import { useRoute } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
 import { Image } from 'react-native-elements';
 import { Modal, Button, Portal } from 'react-native-paper';
+import _ from 'lodash';
 import useTheme from '../../../../theme/hooks/useTheme';
 import ServiceRequestDetails from '../../../../components/common/service-request-details';
-import { getServiceRequestImageAction } from '../../../../reducers/service-request-reducer/service-request.actions';
-import { serviceRequestSelector } from '../../../../reducers/service-request-reducer/service-request.reducer';
 import { Colors } from '../../../../theme/Variables';
 
 const { width, height } = Dimensions.get('window');
 const ViewServiceRequestScreen = () => {
   const { params } = useRoute();
-  const { serviceRequestImage } = useSelector(serviceRequestSelector);
   const { serviceRequest } = params;
-  const dispatch = useDispatch();
   const [visible, setVisible] = React.useState(false);
 
   const showModal = () => setVisible(true);
@@ -25,19 +21,20 @@ const ViewServiceRequestScreen = () => {
     <ScrollView style={[Common.defaultBackGround]}>
       <Text style={[Gutters.regularMargin, Fonts.titleTiny]}>Service Request</Text>
       <ServiceRequestDetails serviceRequest={serviceRequest} />
-      <Button
-        mode="outlined"
-        icon="eye"
-        color={Colors.white}
-        style={[Gutters.regularMargin, styles.button]}
-        labelStyle={[Fonts.textRegular, Common.whiteText]}
-        onPress={() => {
-          dispatch(getServiceRequestImageAction());
-          showModal();
-        }}
-      >
-        View Image
-      </Button>
+      {_.isEmpty(serviceRequest.serviceRequestImage) ? null : (
+        <Button
+          mode="outlined"
+          icon="eye"
+          color={Colors.white}
+          style={[Gutters.regularMargin, styles.button]}
+          labelStyle={[Fonts.textRegular, Common.whiteText]}
+          onPress={() => {
+            showModal();
+          }}
+        >
+          View Image
+        </Button>
+      )}
       <Portal>
         <Modal
           visible={visible}
@@ -45,7 +42,7 @@ const ViewServiceRequestScreen = () => {
           contentContainerStyle={styles.containerStyle}
         >
           <Image
-            source={{ uri: serviceRequestImage }}
+            source={serviceRequest.serviceRequestImage}
             style={styles.image}
             PlaceholderContent={<ActivityIndicator />}
           />
