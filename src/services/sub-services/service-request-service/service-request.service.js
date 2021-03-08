@@ -1,10 +1,6 @@
 import _ from 'lodash';
 
-import {
-  constructServiceRequestModels,
-  serviceRequestModel,
-  apiCreateServiceRequestModel,
-} from '../../../models';
+import { constructServiceRequestModels, apiCreateServiceRequestModel } from '../../../models';
 import globalUrl from '../global/global.service.urls';
 import { apiFunctionWithUniqName } from '../../../helpers/api-function-name.helper';
 import authNetworkService from '../auth-network-service/auth-network.service';
@@ -12,10 +8,16 @@ import srUrls from './service-request.urls';
 
 const createServiceRequest = async (createServiceRequestForm, userInfo) => {
   const url = srUrls.createSrUrl();
+  const fileUploadUrl = srUrls.upLoadFile();
   const apiModel = apiCreateServiceRequestModel(createServiceRequestForm, userInfo);
   try {
     const apiResponse = await authNetworkService.post(url, apiModel);
-    return serviceRequestModel(apiResponse.data.Data);
+    const objID = _.get(apiResponse.data.Data, 'ObjID');
+    const fileAttachment = _.get(createServiceRequestForm, 'imageUri');
+    const formData = await _constructServiceRequestFormData(objID, fileAttachment);
+    await authNetworkService.post(fileUploadUrl, formData, {
+      headers: { Accept: `Content-Type': 'multipart/form-data` },
+    });
   } catch (err) {
     // eslint-disable-next-line no-console
     console.warn(JSON.stringify(err, null, 2));
@@ -32,6 +34,17 @@ const getServiceRequests = async () => {
     throw Error('Could not get service requests');
   }
   return constructServiceRequestModels(serviceRequests);
+};
+
+const _constructServiceRequestFormData = async (objId, file) => {
+  const formData = new FormData();
+  const fileType = file.type.substr(file.type.length - 3);
+  formData.append('Obj_Id', objId);
+  formData.append('Attachment', {
+    uri: file.uri,
+    name: `${objId}.${fileType}`,
+  });
+  return formData;
 };
 
 export default {
