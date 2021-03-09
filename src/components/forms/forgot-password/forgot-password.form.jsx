@@ -1,20 +1,22 @@
 import React from 'react';
 import _ from 'lodash';
-import { ViewPropTypes, Text } from 'react-native';
+import { ViewPropTypes, View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
-import { Button, Input } from 'react-native-elements';
+import { Button, Divider, Input } from 'react-native-elements';
+import { HelperText, TextInput } from 'react-native-paper';
 import { emailSchema } from '../form-validaton-schemas';
 import { getFormError } from '../form-utils';
 import { flashService } from '../../../services';
+import useTheme from '../../../theme/hooks/useTheme';
 
-const ForgotPasswordForm = ({ submitForm, onSuccess, initialValues }) => {
+const ForgotPasswordForm = ({ submitForm, onSuccess, initialValues, containerStyle }) => {
+  const { Common, Gutters } = useTheme();
   const validationSchema = Yup.object().shape({
     email: emailSchema,
   });
-
   const _handleSubmission = (formData, actions) => {
     submitForm({ formData })
       .then(() => {
@@ -35,39 +37,48 @@ const ForgotPasswordForm = ({ submitForm, onSuccess, initialValues }) => {
   };
 
   return (
-    <Formik
-      initialValues={initialValues}
-      initialStatus={{ apiErrors: {} }}
-      onSubmit={_handleSubmission}
-      validationSchema={validationSchema}
-      enableReinitialize
-    >
-      {({
-        handleChange,
-        handleSubmit,
-        values,
-        errors,
-        isSubmitting,
-        handleBlur,
-        touched,
-        status,
-      }) => {
-        const error = (name) => getFormError(name, { touched, status, errors });
-        return (
-          <>
-            <Input
-              value={values.email}
-              onChangeText={handleChange('email')}
-              onBlur={handleBlur('email')}
-              label="Email"
-              errorMessage={error('email')}
-            />
-            <Button title="Submit" onPress={handleSubmit} loading={isSubmitting} />
-            {__DEV__ && <Text>{JSON.stringify(values, null, 2)}</Text>}
-          </>
-        );
-      }}
-    </Formik>
+    <View style={containerStyle}>
+      <Formik
+        initialValues={initialValues}
+        initialStatus={{ apiErrors: {} }}
+        onSubmit={_handleSubmission}
+        validationSchema={validationSchema}
+        enableReinitialize
+      >
+        {({
+          handleChange,
+          handleSubmit,
+          values,
+          errors,
+          isSubmitting,
+          handleBlur,
+          touched,
+          status,
+        }) => {
+          const error = (name) => getFormError(name, { touched, status, errors });
+          return (
+            <>
+              <Input
+                leftIcon={<TextInput.Icon name="email" />}
+                leftIconContainerStyle={[Gutters.regularHMargin]}
+                value={values.email}
+                onChangeText={handleChange('email')}
+                onBlur={handleBlur('email')}
+                placeholder="Email"
+                containerStyle={[Common.loginTextInput]}
+                inputContainerStyle={styles.inputContainer}
+              />
+              <HelperText style={[Common.loginErrorStyle]} type={'error'} visible={error('email')}>
+                {error('email')}
+              </HelperText>
+              <Divider />
+              <Button title="Submit" onPress={handleSubmit} loading={isSubmitting} />
+              <Divider />
+            </>
+          );
+        }}
+      </Formik>
+    </View>
   );
 };
 
@@ -82,5 +93,9 @@ ForgotPasswordForm.defaultProps = {
   onSuccess: () => null,
   containerStyle: {},
 };
-
+const styles = StyleSheet.create({
+  inputContainer: {
+    borderBottomWidth: 0,
+  },
+});
 export default ForgotPasswordForm;

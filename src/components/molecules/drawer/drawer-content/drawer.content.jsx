@@ -9,6 +9,7 @@ import { Avatar } from 'react-native-elements';
 import { signOutAction } from '../../../../reducers/user-auth-reducer/user-auth.actions';
 import useTheme from '../../../../theme/hooks/useTheme';
 import { Colors } from '../../../../theme/Variables';
+
 const theme = {
   colors: {
     text: Colors.white,
@@ -34,12 +35,6 @@ const DrawerContent = (props) => {
             </Text>
           </View>
           <Divider style={[Common.backgroundWhite, Gutters.regularLMargin]} />
-          <Drawer.Item
-            icon="home"
-            label="Home"
-            onPress={() => navigation.navigate('Home')}
-            theme={theme}
-          />
           <Drawer.Item
             icon="information"
             label="Service Requests"
