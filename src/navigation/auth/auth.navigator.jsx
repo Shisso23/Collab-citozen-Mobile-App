@@ -5,7 +5,6 @@ import SignInScreen from '../../screens/auth/sign-in/sign-in.screen';
 import ForgotPasswordScene from '../../screens/auth/forgot-password/forgot-password.screen';
 import RegisterScene from '../../screens/auth/register/register.screen';
 import useTheme from '../../theme/hooks/useTheme';
-import HeaderBackGround from '../../components/atoms/header-background';
 
 const AuthStack = createStackNavigator();
 const AuthNavigator = () => {
@@ -24,7 +23,7 @@ const AuthNavigator = () => {
         component={ForgotPasswordScene}
         options={{
           title: 'Forgot Password',
-          header: (props) => <HeaderBackGround {...props} backButton />,
+          header: () => null,
         }}
       />
       <AuthStack.Screen name="Register" component={RegisterScene} options={{ title: 'Register' }} />
