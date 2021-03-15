@@ -5,15 +5,15 @@ import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
-import { Button, Divider, Input } from 'react-native-elements';
-import { HelperText, TextInput } from 'react-native-paper';
+import { Divider, Input } from 'react-native-elements';
+import { HelperText, TextInput, Button } from 'react-native-paper';
 import { emailSchema } from '../form-validaton-schemas';
 import { getFormError } from '../form-utils';
 import { flashService } from '../../../services';
 import useTheme from '../../../theme/hooks/useTheme';
 
 const ForgotPasswordForm = ({ submitForm, onSuccess, initialValues, containerStyle }) => {
-  const { Common, Gutters } = useTheme();
+  const { Common, Gutters, Layout, Colors } = useTheme();
   const validationSchema = Yup.object().shape({
     email: emailSchema,
   });
@@ -72,7 +72,18 @@ const ForgotPasswordForm = ({ submitForm, onSuccess, initialValues, containerSty
                 {error('email')}
               </HelperText>
               <Divider />
-              <Button title="Submit" onPress={handleSubmit} loading={isSubmitting} />
+              <View style={[Layout.center]}>
+                <Button
+                  style={[Gutters.largeHMargin, Layout.halfWidth]}
+                  mode="contained"
+                  title="Submit"
+                  onPress={handleSubmit}
+                  loading={isSubmitting}
+                  color={Colors.white}
+                >
+                  Submit
+                </Button>
+              </View>
               <Divider />
             </>
           );
