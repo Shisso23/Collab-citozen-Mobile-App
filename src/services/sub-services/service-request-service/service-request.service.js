@@ -14,6 +14,7 @@ const createServiceRequest = async (createServiceRequestForm, userInfo) => {
     const apiResponse = await authNetworkService.post(url, apiModel);
     const objID = _.get(apiResponse.data.Data, 'ObjID');
     const fileAttachment = _.get(createServiceRequestForm, 'imageUri');
+    if (!fileAttachment) return;
     const formData = await _constructServiceRequestFormData(objID, fileAttachment);
     await authNetworkService.post(fileUploadUrl, formData, {
       headers: { Accept: `Content-Type': 'multipart/form-data` },
