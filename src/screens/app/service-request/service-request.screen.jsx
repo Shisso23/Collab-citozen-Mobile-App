@@ -9,11 +9,16 @@ import _ from 'lodash';
 import useTheme from '../../../theme/hooks/useTheme';
 import { serviceRequestSelector } from '../../../reducers/service-request-reducer/service-request.reducer';
 import { getServiceRequestsAction } from '../../../reducers/service-request-reducer/service-request.actions';
+import { accountsSelector } from '../../../reducers/accounts-reducer/accounts.reducer';
+import { municipalitiesSelector } from '../../../reducers/municipalities-reducer/municipalities.reducer';
+import { flashService } from '../../../services';
 
 const ServiceRequestScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { serviceRequests, isLoadingServiceRequests } = useSelector(serviceRequestSelector);
+  const { accounts } = useSelector(accountsSelector);
+  const { municipalities } = useSelector(municipalitiesSelector);
   const { Common, Gutters, Fonts, Layout, Colors } = useTheme();
 
   const _loadServiceRequests = () => {
@@ -43,6 +48,16 @@ const ServiceRequestScreen = () => {
     _loadServiceRequests();
   }, []);
 
+  const _handleOnServiceRequestCreatePress = () => {
+    if (accounts.length === 0) {
+      flashService.error('No Properties linked to account.');
+    } else if (municipalities.length === 0) {
+      flashService.error('No municipalities linked to account.');
+    } else {
+      navigation.push('CreateServiceRequest');
+    }
+  };
+
   const serviceRequestItem = ({ item }) => {
     return (
       <View style={[Common.textInputWithShadow, Gutters.tinyMargin]}>
@@ -66,8 +81,24 @@ const ServiceRequestScreen = () => {
           onPress={() => {
             navigation.push('ViewServiceRequest', { serviceRequest: item });
           }}
-          left={() => <Avatar.Image rounded size={50} source={_setImageUrl(item)} />}
-          right={() => <Icon name="ellipsis-v" style={[Layout.alignSelfCenter]} />}
+          left={() => (
+            <View style={[Layout.justifyContentCenter]}>
+              <Avatar.Image rounded size={50} source={_setImageUrl(item)} />
+            </View>
+          )}
+          right={() => (
+            <View style={[Layout.rowVCenter]}>
+              {!_.isEmpty(item.serviceRequestImage) ? null : (
+                <Icon
+                  color={Colors.red}
+                  size={20}
+                  name="camera"
+                  style={[Layout.alignSelfCenter, Gutters.smallHMargin]}
+                />
+              )}
+              <Icon name="ellipsis-v" style={[Layout.alignSelfCenter]} />
+            </View>
+          )}
         />
       </View>
     );
@@ -84,11 +115,7 @@ const ServiceRequestScreen = () => {
         onRefresh={_loadServiceRequests}
       />
 
-      <FAB
-        style={[Common.fabAlignment]}
-        icon="plus"
-        onPress={() => navigation.push('CreateServiceRequest')}
-      />
+      <FAB style={[Common.fabAlignment]} icon="plus" onPress={_handleOnServiceRequestCreatePress} />
     </>
   );
 };

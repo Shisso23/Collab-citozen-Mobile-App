@@ -16,11 +16,11 @@ const ServiceRequestDetails = ({ serviceRequest }) => {
 
         <Text
           style={[Fonts.textRegular, Gutters.tinyVMargin]}
-        >{`Com.Ref.NO: ${serviceRequest.referenceNumber}`}</Text>
+        >{`Reference Number: ${serviceRequest.referenceNumber}`}</Text>
         <Text
           style={[Fonts.textRegular, Gutters.tinyVMargin]}
-        >{`Complaint: ${serviceRequest.serviceDescription}`}</Text>
-        <Text style={[Fonts.textRegular, Gutters.tinyVMargin]}>{`Complaint Date: ${formatTime(
+        >{`Description: ${serviceRequest.serviceDescription}`}</Text>
+        <Text style={[Fonts.textRegular, Gutters.tinyVMargin]}>{`Date Registered: ${formatTime(
           serviceRequest.requestedDate,
         )}`}</Text>
         <Text style={[Fonts.textRegular, Gutters.tinyVMargin]}>{`${serviceRequest.address}`}</Text>

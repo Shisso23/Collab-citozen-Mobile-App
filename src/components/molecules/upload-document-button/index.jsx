@@ -5,15 +5,20 @@ import { Text } from 'react-native-elements';
 import ActionSheet from 'react-native-actions-sheet';
 import { Button } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useSelector } from 'react-redux';
 import { openUserGallery, openUserCamera } from './upload-document-button.utils';
 import UploadDocumentSelectionItem from './upload-document-selection-item';
 import useTheme from '../../../theme/hooks/useTheme';
+import ServiceRequestPhotoPreview from '../../common/service-request-photo-preview';
+import { serviceRequestSelector } from '../../../reducers/service-request-reducer/service-request.reducer';
 
 const actionSheetRef = createRef();
-
 const UploadDocumentButton = ({ onImageSelect, errorMessage, title, style, disabled }) => {
   const { Common } = useTheme();
   const [documentSelected, setDocumentSelected] = useState(false);
+  const [isPhotoVisible, setPhotoVisible] = useState(false);
+  const [imageSource, setImageSource] = useState({});
+  const { isLoadingServiceRequests } = useSelector(serviceRequestSelector);
 
   const openActionSheet = () => actionSheetRef.current.setModalVisible(true);
   const closeActionSheet = () => actionSheetRef.current.setModalVisible(false);
@@ -25,7 +30,11 @@ const UploadDocumentButton = ({ onImageSelect, errorMessage, title, style, disab
   };
 
   const _handlePhotoLibrary = () => {
-    openUserGallery().then(_updateFormData);
+    openUserGallery().then((selectedImage) => {
+      setImageSource(selectedImage);
+      setPhotoVisible(true);
+      closeActionSheet();
+    });
   };
 
   const _handleCamera = () => {
@@ -43,6 +52,7 @@ const UploadDocumentButton = ({ onImageSelect, errorMessage, title, style, disab
         mode="contained"
         onPress={openActionSheet}
         style={style}
+        loading={isLoadingServiceRequests}
         icon={!documentSelected ? 'camera' : 'check'}
         disabled={disabled}
       >
@@ -59,6 +69,14 @@ const UploadDocumentButton = ({ onImageSelect, errorMessage, title, style, disab
           <UploadDocumentSelectionItem title="Cancel" onPress={closeActionSheet} />
         </View>
       </ActionSheet>
+
+      <ServiceRequestPhotoPreview
+        source={imageSource.uri}
+        isVisible={isPhotoVisible}
+        onDismiss={() => setPhotoVisible(false)}
+        openActionSheet={() => openActionSheet}
+        updateFormData={() => _updateFormData(imageSource)}
+      />
     </>
   );
 };

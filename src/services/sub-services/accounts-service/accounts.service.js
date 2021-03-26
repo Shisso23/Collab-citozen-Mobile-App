@@ -6,9 +6,9 @@ import authNetworkService from '../auth-network-service/auth-network.service';
 
 const getAccounts = async () => {
   const url = globalUrl.globalFunctionUrl();
-  const data = await apiFunctionWithUniqName('get_accounts');
+  const data = await apiFunctionWithUniqName('get_properties');
   const apiResponse = await authNetworkService.post(url, data);
-  const accounts = _.get(apiResponse.data, 'accounts', []);
+  const accounts = _.get(apiResponse.data, 'properties', []);
   return constructAccountModels(accounts);
 };
 
