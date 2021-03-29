@@ -48,6 +48,10 @@ export default () =>
       alignItems: 'center',
       flexDirection: 'row',
     },
+    rowBetween: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+    },
     /* Default Layouts */
     center: {
       alignItems: 'center',

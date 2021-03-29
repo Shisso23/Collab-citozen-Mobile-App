@@ -21,9 +21,9 @@ const CreateServiceRequestScreen = () => {
 
   const { Gutters, Common } = useTheme();
 
-  const _onFormSuccess = () => {
+  const _onFormSuccess = async () => {
     flashService.success('Successfully created request');
-    dispatch(getServiceRequestsAction());
+    await dispatch(getServiceRequestsAction());
     navigation.popToTop();
   };
 

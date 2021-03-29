@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { flashService, serviceRequestService } from '../../services';
 import {
   setIsLoadingServiceRequestsAction,
@@ -22,5 +23,21 @@ export const createServiceRequestAction = (newServiceRequestForm) => async (
   getState,
 ) => {
   const { user } = getState().userReducer;
-  await serviceRequestService.createServiceRequest(newServiceRequestForm, user);
+  await serviceRequestService
+    .createServiceRequest(newServiceRequestForm, user)
+    .then(async (response) => {
+      const objID = _.get(response.data.Data, 'ObjID');
+      const fileAttachment = _.get(newServiceRequestForm, 'imageUri');
+      if (fileAttachment) {
+        await _dispatch(uploadServiceRequestImage(objID, fileAttachment));
+      }
+    });
+};
+
+export const uploadServiceRequestImage = (objId, fileAttachment) => async (dispatch) => {
+  dispatch(setIsLoadingServiceRequestsAction(true));
+  await serviceRequestService
+    .uploadServiceRequestPhoto(objId, fileAttachment)
+    .then(() => dispatch(getServiceRequestsAction()))
+    .finally(() => dispatch(setIsLoadingServiceRequestsAction(false)));
 };

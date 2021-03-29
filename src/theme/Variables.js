@@ -21,6 +21,8 @@ export const Colors = {
   error: '#C1666B',
   danger: '#C1666B',
   softBlue: '#3A609C',
+  red: '#d01a1a',
+  gray: '#7e7e7e',
 };
 
 export const NavigationColors = {

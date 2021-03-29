@@ -24,7 +24,7 @@ const AccountScreen = () => {
       <View style={[Gutters.tinyVMargin, Common.textInputWithShadow]}>
         <List.Item
           title={item.name}
-          description={`Acc: ${item.number}`}
+          description={`Reference Number: ${item.number}`}
           onPress={() => {}}
           titleStyle={[Common.blackText]}
           descriptionStyle={[Common.blackText]}
@@ -35,7 +35,7 @@ const AccountScreen = () => {
 
   return (
     <>
-      <Text style={[Gutters.largeHMargin, Fonts.titleTiny]}>Accounts</Text>
+      <Text style={[Gutters.largeHMargin, Fonts.titleTiny]}>Properties</Text>
       <FlatList
         contentContainerStyle={[Gutters.regularTMargin, Gutters.regularHMargin]}
         data={accounts}

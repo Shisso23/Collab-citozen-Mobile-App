@@ -1,11 +1,12 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { Text, Drawer, Divider } from 'react-native-paper';
 import { DrawerContentScrollView } from '@react-navigation/drawer';
 import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';
 import { Avatar } from 'react-native-elements';
+import DeviceInfo from 'react-native-device-info';
 import { signOutAction } from '../../../../reducers/user-auth-reducer/user-auth.actions';
 import useTheme from '../../../../theme/hooks/useTheme';
 import { Colors } from '../../../../theme/Variables';
@@ -43,7 +44,7 @@ const DrawerContent = (props) => {
           />
           <Drawer.Item
             icon="file"
-            label="Accounts"
+            label="Properties"
             onPress={() => navigation.navigate('Accounts')}
             theme={theme}
           />
@@ -60,6 +61,10 @@ const DrawerContent = (props) => {
           <Drawer.Item icon="exit-to-app" label="Sign Out" onPress={_signOut} />
         </View>
       </DrawerContentScrollView>
+      <View style={styles.versionContainer}>
+        <Text style={[Colors.gray]}>Version -</Text>
+        <Text style={[Colors.gray]}>{DeviceInfo.getVersion()}</Text>
+      </View>
     </View>
   );
 };
@@ -67,4 +72,13 @@ const DrawerContent = (props) => {
 DrawerContent.propTypes = {
   navigation: PropTypes.object.isRequired,
 };
+
+const styles = StyleSheet.create({
+  versionContainer: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+});
 export default DrawerContent;
