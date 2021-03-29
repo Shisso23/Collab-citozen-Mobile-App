@@ -36,7 +36,7 @@ const uploadServiceRequestPhoto = async (objId, photo) => {
         'Content-Type': 'multipart/form-data',
       },
       [
-        { name: 'Obj_Id', data: objId },
+        { name: 'Obj_Id', data: `${objId}` },
         {
           name: 'Attachment',
           filename: `${objId}.${fileType}`,
