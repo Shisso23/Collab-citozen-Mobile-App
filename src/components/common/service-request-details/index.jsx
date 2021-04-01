@@ -23,7 +23,9 @@ const ServiceRequestDetails = ({ serviceRequest }) => {
         <Text style={[Fonts.textRegular, Gutters.tinyVMargin]}>{`Date Registered: ${formatTime(
           serviceRequest.requestedDate,
         )}`}</Text>
-        <Text style={[Fonts.textRegular, Gutters.tinyVMargin]}>{`${serviceRequest.address}`}</Text>
+        <Text
+          style={[Fonts.textRegular, Gutters.tinyVMargin]}
+        >{`${serviceRequest.gpsAddress}`}</Text>
         <Text
           style={[Fonts.textRegular, Gutters.tinyVMargin, styles.button]}
         >{`${serviceRequest.status}`}</Text>
