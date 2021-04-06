@@ -41,7 +41,7 @@
 	<string>Take an image of the service being requested.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Select a location of a service request.</string>
-	<key>NSLocationAlwaysUsageDescription </key>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
     <string>Select a location of a service request.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Select an image of the service being requested.</string>
