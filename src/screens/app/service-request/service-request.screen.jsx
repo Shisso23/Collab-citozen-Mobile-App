@@ -65,7 +65,7 @@ const ServiceRequestScreen = () => {
           title={item.serviceType}
           description={
             <View style={[Layout.column]}>
-              <Text>{item.address}</Text>
+              <Text>{item.gpsAddress}</Text>
               <View style={[Layout.rowHCenter, Gutters.tinyTPadding]}>
                 <View
                   style={[
@@ -99,6 +99,7 @@ const ServiceRequestScreen = () => {
               <Icon name="ellipsis-v" style={[Layout.alignSelfCenter]} />
             </View>
           )}
+          descriptionNumberOfLines={4}
         />
       </View>
     );

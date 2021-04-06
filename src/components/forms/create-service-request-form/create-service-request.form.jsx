@@ -115,7 +115,7 @@ const CreateServiceRequestForm = ({
           return (
             <>
               <DropdownSelect
-                label="Account"
+                label="Properties"
                 items={memiozedAccounts}
                 placeholder="Select Account"
                 onBlur={() => {

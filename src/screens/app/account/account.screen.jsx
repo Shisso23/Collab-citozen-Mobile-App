@@ -26,6 +26,7 @@ const AccountScreen = () => {
           title={item.name}
           description={`Reference Number: ${item.number}`}
           onPress={() => {}}
+          titleNumberOfLines={4}
           titleStyle={[Common.blackText]}
           descriptionStyle={[Common.blackText]}
         />
