@@ -46,7 +46,6 @@ export const serviceRequestModel = (_apiServiceRequestModel = {}, accessToken) =
   address: constructAddress(_apiServiceRequestModel).trim(),
   requestedDate: _.get(_apiServiceRequestModel, 'request_date', '').replace('.', ''),
   referenceNumber: _.get(_apiServiceRequestModel, 'on_premises_ref', ''),
-  avatarUrl: `https://loremflickr.com/320/240/landscape?random=${_.random(1000)}`,
   serviceRequestImage: getServiceRequestImageUrl(_apiServiceRequestModel, accessToken),
   status: _.get(_apiServiceRequestModel, 'status', ''),
 });

@@ -42,7 +42,7 @@ const ServiceRequestScreen = () => {
     }
   };
   const _setImageUrl = (item) => {
-    return _.isEmpty(item.serviceRequestImage) ? { uri: item.avatarUrl } : item.serviceRequestImage;
+    return _.isEmpty(item.serviceRequestImage) ? null : item.serviceRequestImage;
   };
   useEffect(() => {
     _loadServiceRequests();
@@ -100,6 +100,7 @@ const ServiceRequestScreen = () => {
             </View>
           )}
           descriptionNumberOfLines={4}
+          descriptionStyle={[Gutters.largeRMargin]}
         />
       </View>
     );

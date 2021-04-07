@@ -25,8 +25,6 @@ const uploadServiceRequestPhoto = async (objId, photo) => {
   const fileUploadUrl = srUrls.upLoadFile();
   try {
     const authToken = await storageService.getAccessToken();
-    const fileTypeIndex = photo.type.indexOf('/');
-    const fileType = photo.type.substr(fileTypeIndex + 1);
     const path = Platform.OS === 'ios' ? photo.uri.replace('file://', '') : photo.uri;
     await RNFetchBlob.fetch(
       'POST',
@@ -39,8 +37,8 @@ const uploadServiceRequestPhoto = async (objId, photo) => {
         { name: 'Obj_Id', data: `${objId}` },
         {
           name: 'Attachment',
-          filename: `${objId}.${fileType}`,
-          type: photo.type,
+          filename: `${objId}.jpg`,
+          type: 'JPEG',
           data: RNFetchBlob.wrap(path),
         },
       ],
