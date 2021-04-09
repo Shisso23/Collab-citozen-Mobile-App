@@ -99,8 +99,8 @@ const ServiceRequestScreen = () => {
               <Icon name="ellipsis-v" style={[Layout.alignSelfCenter]} />
             </View>
           )}
-          descriptionNumberOfLines={4}
-          descriptionStyle={[Gutters.largeRMargin]}
+          descriptionNumberOfLines={10}
+          descriptionStyle={[Gutters.smallRMargin]}
         />
       </View>
     );

@@ -38,7 +38,6 @@ const uploadServiceRequestPhoto = async (objId, photo) => {
         {
           name: 'Attachment',
           filename: `${objId}.jpg`,
-          type: 'JPEG',
           data: RNFetchBlob.wrap(path),
         },
       ],
