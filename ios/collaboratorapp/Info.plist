@@ -17,11 +17,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.7</string>
+	<string>1.0.8</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -39,10 +39,12 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>Take an image of the service being requested.</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Select a location of a service request.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-    <string>Select a location of a service request.</string>
+	<string>Select a location of a service request.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Select a location of a user service request.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+    <string>Select location for service request.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Select an image of the service being requested.</string>
 	<key>UIAppFonts</key>

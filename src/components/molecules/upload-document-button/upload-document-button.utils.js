@@ -11,6 +11,9 @@ const constructFormData = (res) => ({
 
 const imageOptions = {
   mediaType: 'photo',
+  quality: 0.5,
+  maxWidth: 400,
+  maxHeight: 400,
 };
 
 const genericLaunch = (launchFunction) => {

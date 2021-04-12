@@ -6,13 +6,11 @@ import ActionSheet from 'react-native-actions-sheet';
 import { Button } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSelector } from 'react-redux';
-import ImageResizer from 'react-native-image-resizer';
 import { openUserGallery, openUserCamera } from './upload-document-button.utils';
 import UploadDocumentSelectionItem from './upload-document-selection-item';
 import useTheme from '../../../theme/hooks/useTheme';
 import ServiceRequestPhotoPreview from '../../common/service-request-photo-preview';
 import { serviceRequestSelector } from '../../../reducers/service-request-reducer/service-request.reducer';
-import { flashService } from '../../../services';
 
 const actionSheetRef = createRef();
 const UploadDocumentButton = ({ onImageSelect, errorMessage, title, style, disabled }) => {
@@ -26,13 +24,7 @@ const UploadDocumentButton = ({ onImageSelect, errorMessage, title, style, disab
   const closeActionSheet = () => actionSheetRef.current.setModalVisible(false);
 
   const _updateFormData = (selectedImage) => {
-    ImageResizer.createResizedImage(selectedImage.uri, 418, 418, 'JPEG', 60, 0, '0')
-      .then((response) => {
-        onImageSelect(response);
-      })
-      .catch((err) => {
-        flashService.error(`Error Uploading image: ${err}`);
-      });
+    onImageSelect(selectedImage);
     setDocumentSelected(true);
     closeActionSheet();
   };
