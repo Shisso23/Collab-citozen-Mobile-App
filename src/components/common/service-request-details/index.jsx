@@ -5,12 +5,18 @@ import { StyleSheet, Text, View } from 'react-native';
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
 import { formatTime } from '../../../helpers/time.helper';
+import _ from 'lodash';
 
 const ServiceRequestDetails = ({ serviceRequest }) => {
   const { Gutters, Layout, Fonts } = useTheme();
+
+  const _setImageUrl = (item) => {
+    return _.isEmpty(item.serviceRequestImage) ? null : item.serviceRequestImage;
+  };
+
   return (
     <View style={[Layout.row, Gutters.regularHMargin]}>
-      <Avatar.Image rounded size={50} source={{ uri: serviceRequest.avatarUrl }} />
+      <Avatar.Image rounded size={50} source={_setImageUrl(serviceRequest)} />
       <View style={[Gutters.regularHMargin, Layout.column, Gutters.smallTMargin]}>
         <Text style={[Fonts.textLarge]}>{`${serviceRequest.serviceType}`}</Text>
 

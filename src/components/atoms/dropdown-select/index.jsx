@@ -1,7 +1,10 @@
 import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
-import { HelperText, Menu, TextInput } from 'react-native-paper';
+import { HelperText, Menu, TextInput, List } from 'react-native-paper';
+import { Dimensions } from 'react-native';
 import useTheme from '../../../theme/hooks/useTheme';
+
+const { width } = Dimensions.get('window');
 
 const DropdownSelect = ({
   items,
@@ -48,6 +51,7 @@ const DropdownSelect = ({
             showSoftInputOnFocus={false}
             onFocus={show}
             error={!!error}
+            multiline
             right={
               <TextInput.Icon
                 name="chevron-down"
@@ -66,10 +70,12 @@ const DropdownSelect = ({
       }
     >
       {items?.map((item, index) => (
-        <Menu.Item
+        <List.Item
           key={keyExtractor(item, index)}
           onPress={() => _handleChange(item, index)}
           title={valueExtractor(item, index)}
+          style={{ width: width * 0.8 }}
+          titleNumberOfLines={5}
         />
       ))}
     </Menu>
