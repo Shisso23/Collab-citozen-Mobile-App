@@ -63,8 +63,8 @@ const ServiceRequestScreen = () => {
       <View style={[Common.textInputWithShadow, Gutters.tinyMargin]}>
         <List.Item
           title={item.serviceType}
-          description={
-            <View style={[Layout.column]}>
+          description={() => (
+            <View style={[Layout.column, Gutters.largeRMargin]}>
               <Text>{item.gpsAddress}</Text>
               <View style={[Layout.rowHCenter, Gutters.tinyTPadding]}>
                 <View
@@ -77,7 +77,7 @@ const ServiceRequestScreen = () => {
                 <Text style={[Fonts.textRegular]}>{item.status}</Text>
               </View>
             </View>
-          }
+          )}
           onPress={() => {
             navigation.push('ViewServiceRequest', { serviceRequest: item });
           }}
@@ -100,7 +100,7 @@ const ServiceRequestScreen = () => {
             </View>
           )}
           descriptionNumberOfLines={10}
-          descriptionStyle={[Gutters.smallRMargin]}
+          descriptionStyle={[Gutters.largeRMargin]}
         />
       </View>
     );
