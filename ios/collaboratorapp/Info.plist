@@ -17,7 +17,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0.8</string>
+	<string>1.0.9</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
@@ -41,10 +41,10 @@
 	<string>Take an image of the service being requested.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Select a location of a service request.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Select location for service request.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Select a location of a user service request.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-    <string>Select location for service request.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Select an image of the service being requested.</string>
 	<key>UIAppFonts</key>
