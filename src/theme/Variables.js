@@ -23,6 +23,7 @@ export const Colors = {
   softBlue: '#3A609C',
   red: '#d01a1a',
   gray: '#7e7e7e',
+  darkgray: '#5d5d5d',
 };
 
 export const NavigationColors = {

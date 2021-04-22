@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import _ from 'lodash';
 import { ViewPropTypes, View } from 'react-native';
 import PropTypes from 'prop-types';
@@ -8,6 +8,7 @@ import { Button, HelperText, TextInput } from 'react-native-paper';
 
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import {
   selectAccountSchema,
   selectServiceTypeCategorySchema,
@@ -19,9 +20,15 @@ import { getFormError } from '../form-utils';
 import useTheme from '../../../theme/hooks/useTheme';
 import { DropdownSelect } from '../../atoms';
 import { locationSelector } from '../../../reducers/location-reducer/location.reducer';
-import { clearLocationAction } from '../../../reducers/location-reducer/location.actions';
+import {
+  clearLocationAction,
+  getAddressFromRegionAction,
+} from '../../../reducers/location-reducer/location.actions';
 import { flashService, permissionsService } from '../../../services';
 import UploadDocumentButton from '../../molecules/upload-document-button';
+import appConfig from '../../../config';
+
+navigator.geolocation = require('react-native-geolocation-service');
 
 const CreateServiceRequestForm = ({
   submitForm,
@@ -35,12 +42,16 @@ const CreateServiceRequestForm = ({
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { selectedAddress, region } = useSelector(locationSelector);
-
+  const [address, setAddress] = useState('');
   useEffect(() => {
     return () => {
       dispatch(clearLocationAction());
     };
   }, []);
+
+  useEffect(() => {
+    setAddress(selectedAddress);
+  }, [selectedAddress]);
 
   const validationSchema = Yup.object().shape({
     account: selectAccountSchema,
@@ -180,11 +191,39 @@ const CreateServiceRequestForm = ({
               <HelperText style={Common.errorStyle} type="error" visible={error('description')}>
                 {error('description')}
               </HelperText>
-              <TextInput
-                label="Location"
-                value={selectedAddress}
-                style={[Common.textInput]}
-                error={error('location')}
+              <GooglePlacesAutocomplete
+                placeholder="Location"
+                enablePoweredByContainer={false}
+                debounce={3}
+                fetchDetails
+                onPress={(data, details = null) => {
+                  const newRegion = _.get(details, 'geometry.location');
+                  dispatch(
+                    getAddressFromRegionAction({
+                      latitude: newRegion.lat,
+                      longitude: newRegion.lng,
+                    }),
+                  );
+                }}
+                query={{
+                  key: appConfig.googleMapsApiKey,
+                  language: 'en',
+                  components: 'country:za',
+                }}
+                enableHighAccuracyLocation
+                minLength={3}
+                styles={{
+                  textInput: Common.googleAutoCompleteInput,
+                }}
+                textInputProps={{
+                  InputComp: TextInput,
+                  errorMessage: error('location'),
+                  listViewDisplayed: true,
+                  onChangeText: (text) => {
+                    setAddress(text);
+                  },
+                  value: address,
+                }}
               />
               <HelperText style={Common.errorStyle} type="error" visible={error('location')}>
                 {error('location')}
