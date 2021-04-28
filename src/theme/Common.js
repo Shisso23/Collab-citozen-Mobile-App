@@ -23,12 +23,12 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
     defaultBackGround: {
       backgroundColor: DefaultTheme.colors.background,
     },
-    drawerUserText: {
-      color: Colors.white,
-    },
     drawerStyle: {
       borderBottomRightRadius: 20,
       borderTopRightRadius: 20,
+    },
+    drawerUserText: {
+      color: Colors.white,
     },
     errorStyle: {
       color: Colors.danger,
@@ -40,6 +40,13 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
       margin: MetricsSizes.large,
       position: 'absolute',
       right: 0,
+    },
+    googleAutoCompleteInput: {
+      backgroundColor: Colors.transparent,
+      color: Colors.darkgray,
+      fontSize: 16,
+      height: 38,
+      width: '100%',
     },
     headerIcon: {
       height: 100,
@@ -79,9 +86,6 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
     textInput: {
       backgroundColor: Colors.transparent,
     },
-    whiteText: {
-      color: Colors.white,
-    },
     textInputWithShadow: {
       backgroundColor: DefaultTheme.colors.background,
       borderBottomLeftRadius: 10,
@@ -96,5 +100,8 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
       },
       shadowOpacity: 0.25,
       shadowRadius: 3.84,
+    },
+    whiteText: {
+      color: Colors.white,
     },
   });
