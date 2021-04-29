@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Avatar } from 'react-native-paper';
 import { StyleSheet, Text, View } from 'react-native';
+import _ from 'lodash';
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
 import { formatTime } from '../../../helpers/time.helper';
-import _ from 'lodash';
 
 const ServiceRequestDetails = ({ serviceRequest }) => {
   const { Gutters, Layout, Fonts } = useTheme();
@@ -18,22 +18,22 @@ const ServiceRequestDetails = ({ serviceRequest }) => {
     <View style={[Layout.row, Gutters.regularHMargin]}>
       <Avatar.Image rounded size={50} source={_setImageUrl(serviceRequest)} />
       <View style={[Gutters.regularHMargin, Layout.column, Gutters.smallTMargin]}>
-        <Text style={[Fonts.textLarge]}>{`${serviceRequest.serviceType}`}</Text>
+        <Text style={[Fonts.textLarge, Gutters.tinyMargin]}>{`${serviceRequest.serviceType}`}</Text>
 
         <Text
-          style={[Fonts.textRegular, Gutters.tinyVMargin]}
+          style={[Fonts.textRegular, Gutters.tinyMargin]}
         >{`Reference Number: ${serviceRequest.referenceNumber}`}</Text>
         <Text
-          style={[Fonts.textRegular, Gutters.tinyVMargin]}
+          style={[Fonts.textRegular, Gutters.tinyMargin]}
         >{`Description: ${serviceRequest.serviceDescription}`}</Text>
-        <Text style={[Fonts.textRegular, Gutters.tinyVMargin]}>{`Date Registered: ${formatTime(
+        <Text style={[Fonts.textRegular, Gutters.tinyMargin]}>{`Date Registered: ${formatTime(
           serviceRequest.requestedDate,
         )}`}</Text>
         <Text
-          style={[Fonts.textRegular, Gutters.tinyVMargin]}
+          style={[Fonts.textRegular, Gutters.tinyMargin]}
         >{`${serviceRequest.gpsAddress}`}</Text>
         <Text
-          style={[Fonts.textRegular, Gutters.tinyVMargin, styles.button]}
+          style={[Fonts.textRegular, Gutters.tinyMargin, styles.button]}
         >{`${serviceRequest.status}`}</Text>
       </View>
     </View>

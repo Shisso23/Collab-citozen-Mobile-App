@@ -12,7 +12,7 @@ const ForgotPasswordLink = ({ containerStyle }) => {
       <TouchableOpacity
         style={[Layout.center]}
         delayPressIn={0}
-        onPress={() => navigation.push('ForgotPassword')}
+        onPress={() => navigation.navigate('ForgotPassword')}
       >
         <Text style={[Common.link]}>Forgot Password</Text>
       </TouchableOpacity>
