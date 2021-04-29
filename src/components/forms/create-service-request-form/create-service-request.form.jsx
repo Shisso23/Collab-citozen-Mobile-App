@@ -64,7 +64,7 @@ const CreateServiceRequestForm = ({
   const _handleSelectLocationClick = async () => {
     try {
       await permissionsService.checkLocationPermissions();
-      navigation.push('SelectLocationScreen');
+      navigation.navigate('SelectLocationScreen');
     } catch (err) {
       flashService.error(err.message);
     }

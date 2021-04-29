@@ -1,5 +1,5 @@
 import React from 'react';
-import { ImageBackground, View } from 'react-native';
+import { ImageBackground } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import PropTypes from 'prop-types';
 // eslint-disable-next-line import/no-cycle
@@ -13,11 +13,11 @@ const HeaderBackGround = (props) => {
     <ImageBackground source={Images.skylineBackground} style={[Common.headerIcon, Layout.column]}>
       <IconButton
         icon={backButton ? 'arrow-left' : 'menu'}
+        size={30}
         color={Colors.white}
         onPress={() => (backButton ? navigation.goBack() : navigation.toggleDrawer())}
         style={[Gutters.largeTMargin]}
       />
-      <View style={[Common.headerView]} />
     </ImageBackground>
   );
 };

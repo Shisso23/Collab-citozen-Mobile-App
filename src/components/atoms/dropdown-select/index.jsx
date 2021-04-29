@@ -45,7 +45,7 @@ const DropdownSelect = ({
             ref={textRef}
             style={[Common.textInput]}
             onChangeText={() => null}
-            editable={!disabled}
+            editable={disabled}
             value={value}
             placeholder={placeholder}
             showSoftInputOnFocus={false}

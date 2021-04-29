@@ -32,7 +32,11 @@ const CreateServiceRequestScreen = () => {
   };
 
   return (
-    <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" style={[Common.defaultBackGround]}>
+    <KeyboardAwareScrollView
+      keyboardShouldPersistTaps="handled"
+      style={[Common.defaultBackGround]}
+      extraHeight={150}
+    >
       <CreateServiceRequestForm
         submitForm={_handleFormSubmit}
         onSuccess={_onFormSuccess}

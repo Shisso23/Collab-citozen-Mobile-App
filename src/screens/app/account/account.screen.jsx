@@ -36,9 +36,9 @@ const AccountScreen = () => {
 
   return (
     <>
-      <Text style={[Gutters.largeHMargin, Fonts.titleTiny]}>Properties</Text>
+      <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>Properties</Text>
       <FlatList
-        contentContainerStyle={[Gutters.regularTMargin, Gutters.regularHMargin]}
+        contentContainerStyle={[Gutters.smallHMargin]}
         data={accounts}
         renderItem={accountItem}
         keyExtractor={(item) => String(item.id)}

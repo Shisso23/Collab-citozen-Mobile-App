@@ -54,7 +54,7 @@ const ServiceRequestScreen = () => {
     } else if (municipalities.length === 0) {
       flashService.error('No municipalities linked to account.');
     } else {
-      navigation.push('CreateServiceRequest');
+      navigation.navigate('CreateServiceRequest');
     }
   };
 
@@ -79,7 +79,7 @@ const ServiceRequestScreen = () => {
             </View>
           )}
           onPress={() => {
-            navigation.push('ViewServiceRequest', { serviceRequest: item });
+            navigation.navigate('ViewServiceRequest', { serviceRequest: item });
           }}
           left={() => (
             <View style={[Layout.justifyContentCenter]}>

@@ -35,7 +35,7 @@ const SelectLocationScreen = () => {
       </View>
 
       <View style={[Layout.fullWidth, styles.buttonContainer]}>
-        <TextInput label="Address" value={selectedAddress} />
+        <TextInput label="Address" value={selectedAddress} editable={false} />
 
         <Button mode="contained" onPress={() => navigation.pop()}>
           Pick this location
