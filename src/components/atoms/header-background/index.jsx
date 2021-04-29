@@ -13,6 +13,7 @@ const HeaderBackGround = (props) => {
     <ImageBackground source={Images.skylineBackground} style={[Common.headerIcon, Layout.column]}>
       <IconButton
         icon={backButton ? 'arrow-left' : 'menu'}
+        size={30}
         color={Colors.white}
         onPress={() => (backButton ? navigation.goBack() : navigation.toggleDrawer())}
         style={[Gutters.largeTMargin]}
