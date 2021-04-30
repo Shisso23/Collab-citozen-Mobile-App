@@ -36,6 +36,7 @@ const CreateServiceRequestScreen = () => {
       keyboardShouldPersistTaps="handled"
       style={[Common.defaultBackGround]}
       extraHeight={150}
+      enableOnAndroid
     >
       <CreateServiceRequestForm
         submitForm={_handleFormSubmit}
