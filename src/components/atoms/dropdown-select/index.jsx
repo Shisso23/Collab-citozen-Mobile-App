@@ -29,6 +29,8 @@ const DropdownSelect = ({
   const show = () => setVisible(true);
   const { Common, Colors } = useTheme();
 
+  const hitSlop = { top: 10, bottom: 10, left: 320, right: 10 };
+
   const _handleChange = (newItem) => {
     hide();
     onChange(newItem);
@@ -45,7 +47,7 @@ const DropdownSelect = ({
             ref={textRef}
             style={[Common.textInput]}
             onChangeText={() => null}
-            editable={disabled}
+            editable={false}
             value={value}
             placeholder={placeholder}
             showSoftInputOnFocus={false}
@@ -60,9 +62,11 @@ const DropdownSelect = ({
                 size={25}
                 onPress={show}
                 autoFocus={false}
+                hitSlop={hitSlop}
               />
             }
           />
+
           <HelperText style={errorStyle} type="error" visible={!!error}>
             {error}
           </HelperText>
