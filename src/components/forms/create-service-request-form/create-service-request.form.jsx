@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import _ from 'lodash';
-import { ViewPropTypes, View } from 'react-native';
+import { ViewPropTypes, View, TouchableOpacity, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Button, HelperText, TextInput } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -23,6 +24,7 @@ import { locationSelector } from '../../../reducers/location-reducer/location.re
 import {
   clearLocationAction,
   getAddressFromRegionAction,
+  setCurrentPositionAction,
 } from '../../../reducers/location-reducer/location.actions';
 import { flashService, permissionsService } from '../../../services';
 import UploadDocumentButton from '../../molecules/upload-document-button';
@@ -188,9 +190,11 @@ const CreateServiceRequestForm = ({
                 style={[Common.textInput]}
                 error={error('description')}
               />
+
               <HelperText style={Common.errorStyle} type="error" visible={error('description')}>
                 {error('description')}
               </HelperText>
+
               <GooglePlacesAutocomplete
                 placeholder="Location"
                 enablePoweredByContainer={false}
@@ -202,6 +206,8 @@ const CreateServiceRequestForm = ({
                     getAddressFromRegionAction({
                       latitude: newRegion.lat,
                       longitude: newRegion.lng,
+                      longitudeDelta: 0.011,
+                      latitudeDelta: 0.011,
                     }),
                   );
                 }}
@@ -224,10 +230,24 @@ const CreateServiceRequestForm = ({
                   },
                   value: address,
                 }}
+                renderRightButton={() => (
+                  <TouchableOpacity
+                    style={styles.clearContainer}
+                    onPress={async () => {
+                      await dispatch(setCurrentPositionAction());
+                      setAddress('');
+                      setFieldValue('location', null);
+                    }}
+                  >
+                    <Icon name="clear" size={15} />
+                  </TouchableOpacity>
+                )}
               />
+
               <HelperText style={Common.errorStyle} type="error" visible={error('location')}>
                 {error('location')}
               </HelperText>
+
               <Button
                 mode="contained"
                 onPress={_handleSelectLocationClick}
@@ -263,6 +283,13 @@ const CreateServiceRequestForm = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  clearContainer: {
+    bottom: -16,
+    left: -22,
+  },
+});
 
 CreateServiceRequestForm.propTypes = {
   submitForm: PropTypes.func.isRequired,

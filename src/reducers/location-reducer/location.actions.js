@@ -21,6 +21,18 @@ export const getCurrentPositionAction = () => async (dispatch) => {
   }
 };
 
+export const setCurrentPositionAction = () => async (dispatch) => {
+  dispatch(setIsLoadingAction(true));
+  try {
+    const region = await getCurrentPosition();
+    dispatch(setRegionAction(region));
+  } catch (err) {
+    flashService.error(err.message);
+  } finally {
+    setIsLoadingAction(false);
+  }
+};
+
 export const getAddressFromRegionAction = (newRegion) => async (dispatch) => {
   dispatch(setRegionAction(newRegion));
   try {
