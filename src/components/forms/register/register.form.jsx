@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ViewPropTypes, View } from 'react-native';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
@@ -22,6 +22,8 @@ import useTheme from '../../../theme/hooks/useTheme';
 
 const RegisterForm = ({ edit, submitForm, onSuccess, initialValues, containerStyle }) => {
   const { Common, Gutters, Layout, Colors } = useTheme();
+  const [isPasswordHidden, setIsPasswordHidden] = useState(true);
+  const [isConfirmPasswordHidden, setIsConfirmPasswordHidden] = useState(true);
 
   const validationSchema = Yup.object().shape({
     email: emailSchema,
@@ -32,6 +34,20 @@ const RegisterForm = ({ edit, submitForm, onSuccess, initialValues, containerSty
     confirmPassword: confirmPasswordSchema(edit),
     termsAndConditions: termsAndConditionsSchema(edit),
   });
+
+  const _showPasswordShort = () => {
+    setTimeout(() => {
+      setIsPasswordHidden(true);
+    }, 3000);
+    setIsPasswordHidden(false);
+  };
+
+  const _showConfirmPasswordShort = () => {
+    setTimeout(() => {
+      setIsConfirmPasswordHidden(true);
+    }, 3000);
+    setIsConfirmPasswordHidden(false);
+  };
 
   const _handleSubmission = (formData, actions) => {
     submitForm({ formData })
@@ -78,6 +94,7 @@ const RegisterForm = ({ edit, submitForm, onSuccess, initialValues, containerSty
                 onChangeText={handleChange('firstName')}
                 onBlur={handleBlur('firstName')}
                 label="First Name"
+                underlineColor={Colors.transparent}
                 style={[Common.registerTextInputWithShadow]}
               />
 
@@ -94,6 +111,7 @@ const RegisterForm = ({ edit, submitForm, onSuccess, initialValues, containerSty
                 onChangeText={handleChange('lastName')}
                 onBlur={handleBlur('lastName')}
                 label="Surname"
+                underlineColor={Colors.transparent}
                 style={[Common.registerTextInputWithShadow]}
               />
 
@@ -111,6 +129,7 @@ const RegisterForm = ({ edit, submitForm, onSuccess, initialValues, containerSty
                 onBlur={handleBlur('mobileNumber')}
                 label="Number"
                 keyboardType="numeric"
+                underlineColor={Colors.transparent}
                 style={[Common.registerTextInputWithShadow]}
               />
 
@@ -129,6 +148,7 @@ const RegisterForm = ({ edit, submitForm, onSuccess, initialValues, containerSty
                 label="Email"
                 keyboardType="email-address"
                 autoCapitalize="none"
+                underlineColor={Colors.transparent}
                 style={[Common.registerTextInputWithShadow]}
               />
 
@@ -142,10 +162,17 @@ const RegisterForm = ({ edit, submitForm, onSuccess, initialValues, containerSty
                     value={values.password}
                     onChangeText={handleChange('password')}
                     label="Password"
-                    secureTextEntry
                     onBlur={handleBlur('password')}
                     errorMessage={error('password')}
+                    underlineColor={Colors.transparent}
                     style={[Common.registerTextInputWithShadow]}
+                    right={
+                      <TextInput.Icon
+                        name={isPasswordHidden ? 'eye' : 'eye-off'}
+                        onPress={_showPasswordShort}
+                      />
+                    }
+                    secureTextEntry={isPasswordHidden}
                   />
                   <HelperText
                     style={[Common.registerErrorStyle]}
@@ -159,10 +186,17 @@ const RegisterForm = ({ edit, submitForm, onSuccess, initialValues, containerSty
                     value={values.confirmPassword}
                     onChangeText={handleChange('confirmPassword')}
                     label="Confirm Password"
-                    secureTextEntry
                     onBlur={handleBlur('confirmPassword')}
                     errorMessage={error('confirmPassword')}
+                    underlineColor={Colors.transparent}
                     style={[Common.registerTextInputWithShadow]}
+                    right={
+                      <TextInput.Icon
+                        name={isConfirmPasswordHidden ? 'eye' : 'eye-off'}
+                        onPress={_showConfirmPasswordShort}
+                      />
+                    }
+                    secureTextEntry={isConfirmPasswordHidden}
                   />
                   <HelperText
                     style={[Common.registerErrorStyle]}

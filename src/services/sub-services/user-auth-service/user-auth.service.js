@@ -30,7 +30,7 @@ const signOut = () => {
   return Promise.all([storageService.removeAccessToken(), storageService.removeEmail()]);
 };
 
-const register = (formData) => {
+const register = ({ formData }) => {
   const registerUrl = authUrls.registerUrl();
   const apiModel = apiRegistrationUserModel(formData);
   return networkService.post(registerUrl, apiModel).catch((err) => {

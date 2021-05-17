@@ -24,6 +24,13 @@ const SignInForm = ({ submitForm, onSuccess, containerStyle, initialValues }) =>
     actions.setFieldError('email', error.message);
   };
 
+  const _showPasswordShort = () => {
+    setTimeout(() => {
+      setIsPasswordHidden(true);
+    }, 3000);
+    setIsPasswordHidden(false);
+  };
+
   const _handleSubmission = (formData, actions) => {
     submitForm(formData)
       .then(() => {
@@ -62,6 +69,7 @@ const SignInForm = ({ submitForm, onSuccess, containerStyle, initialValues }) =>
                 leftIconContainerStyle={[Gutters.regularHMargin]}
                 containerStyle={[Common.loginTextInput]}
                 inputContainerStyle={styles.inputContainer}
+                autoCapitalize="none"
               />
               <HelperText style={[Common.loginErrorStyle]} type="error" visible={error('email')}>
                 {error('email')}
@@ -72,7 +80,7 @@ const SignInForm = ({ submitForm, onSuccess, containerStyle, initialValues }) =>
                 rightIcon={
                   <TextInput.Icon
                     name={isPasswordHidden ? 'eye' : 'eye-off'}
-                    onPress={() => setIsPasswordHidden(!isPasswordHidden)}
+                    onPress={_showPasswordShort}
                   />
                 }
                 secureTextEntry={isPasswordHidden}

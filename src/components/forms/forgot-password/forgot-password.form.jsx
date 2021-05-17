@@ -67,8 +67,9 @@ const ForgotPasswordForm = ({ submitForm, onSuccess, initialValues, containerSty
                 placeholder="Email"
                 containerStyle={[Common.loginTextInput]}
                 inputContainerStyle={styles.inputContainer}
+                autoCapitalize="none"
               />
-              <HelperText style={[Common.loginErrorStyle]} type={'error'} visible={error('email')}>
+              <HelperText style={[Common.loginErrorStyle]} type="error" visible={error('email')}>
                 {error('email')}
               </HelperText>
               <Divider />

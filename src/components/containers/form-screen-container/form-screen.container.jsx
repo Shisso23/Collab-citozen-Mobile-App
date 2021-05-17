@@ -8,6 +8,7 @@ const FormScreenContainer = ({ children, contentContainerStyle }) => {
     <KeyboardAwareScrollView
       keyboardShouldPersistTaps="handled"
       contentContainerStyle={contentContainerStyle}
+      viewIsInsideTabBar
     >
       {children}
     </KeyboardAwareScrollView>
