@@ -13,6 +13,7 @@ import { Colors } from '../../../theme/Variables';
 const SignInForm = ({ submitForm, onSuccess, containerStyle, initialValues }) => {
   const { Gutters, Common, Layout } = useTheme();
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
+
   const validationSchema = Yup.object().shape({
     email: emailSchema,
     password: passwordSchema,
@@ -24,7 +25,7 @@ const SignInForm = ({ submitForm, onSuccess, containerStyle, initialValues }) =>
   };
 
   const _handleSubmission = (formData, actions) => {
-    submitForm({ formData })
+    submitForm(formData)
       .then(() => {
         actions.setSubmitting(false);
         onSuccess();
@@ -62,7 +63,7 @@ const SignInForm = ({ submitForm, onSuccess, containerStyle, initialValues }) =>
                 containerStyle={[Common.loginTextInput]}
                 inputContainerStyle={styles.inputContainer}
               />
-              <HelperText style={[Common.loginErrorStyle]} type={'error'} visible={error('email')}>
+              <HelperText style={[Common.loginErrorStyle]} type="error" visible={error('email')}>
                 {error('email')}
               </HelperText>
               <Divider />
@@ -84,14 +85,9 @@ const SignInForm = ({ submitForm, onSuccess, containerStyle, initialValues }) =>
                 containerStyle={[Common.loginTextInput]}
                 inputContainerStyle={styles.inputContainer}
               />
-              <HelperText
-                style={[Common.loginErrorStyle]}
-                type={'error'}
-                visible={error('password')}
-              >
+              <HelperText style={[Common.loginErrorStyle]} type="error" visible={error('password')}>
                 {error('password')}
               </HelperText>
-              <Divider />
               <View style={[Layout.center]}>
                 <Button
                   style={[Gutters.largeMargin, Layout.halfWidth]}

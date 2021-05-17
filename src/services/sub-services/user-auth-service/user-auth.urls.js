@@ -1,8 +1,8 @@
 import appConfig from '../../../config';
 
-const { hostUrl, apiUrl } = appConfig;
+const { apiUrl } = appConfig;
 export default {
   tokenUrl: () => `${apiUrl}/MobileToken/GetTokenForUser`,
-  registerUrl: () => `${hostUrl}/users`,
+  registerUrl: () => `${apiUrl}/Account/NewRegistration`,
   forgotPasswordUrl: () => `${apiUrl}/Account/ResetPassword`,
 };

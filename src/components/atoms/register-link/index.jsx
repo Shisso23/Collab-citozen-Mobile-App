@@ -1,18 +1,19 @@
 import React from 'react';
-import { Linking, TouchableOpacity, View, ViewPropTypes } from 'react-native';
+import { TouchableOpacity, View, ViewPropTypes } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { Text } from 'react-native-elements';
+
 import useTheme from '../../../theme/hooks/useTheme';
 
 const RegisterLink = ({ containerStyle }) => {
+  const navigation = useNavigation();
   const { Layout, Common } = useTheme();
   return (
     <View style={containerStyle}>
       <TouchableOpacity
         style={[Layout.center]}
         delayPressIn={0}
-        onPress={() =>
-          Linking.openURL('https://consumercollab.collaboratoronline.com/collab/CreateAccount.aspx')
-        }
+        onPress={() => navigation.navigate('Register')}
       >
         <Text style={[Common.link]}>Register</Text>
       </TouchableOpacity>

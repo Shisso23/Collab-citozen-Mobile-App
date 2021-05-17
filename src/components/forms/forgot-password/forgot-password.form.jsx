@@ -18,7 +18,7 @@ const ForgotPasswordForm = ({ submitForm, onSuccess, initialValues, containerSty
     email: emailSchema,
   });
   const _handleSubmission = (formData, actions) => {
-    submitForm({ formData })
+    submitForm(formData)
       .then(() => {
         actions.setSubmitting(false);
         flashService.success(

@@ -7,4 +7,5 @@ export default {
   hostUrl: HOST_URL,
   apiUrl: `${HOST_URL}/${API_LOCATION}`,
   googleMapsApiKey: GOOGLE_MAPS_API_KEY,
+  webSiteUrl: 'https://www.be.co.za',
 };

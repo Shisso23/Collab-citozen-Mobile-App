@@ -2,19 +2,19 @@
 import _ from 'lodash';
 
 export const registrationUserModel = (_apiRegistrationsModel = {}) => ({
+  firstName: _.get(_apiRegistrationsModel, 'firstName', ''),
+  lastName: _.get(_apiRegistrationsModel, 'lastName', ''),
+  mobileNumber: _.get(_apiRegistrationsModel, 'mobileNumber', ''),
   email: _.get(_apiRegistrationsModel, 'email', ''),
-  name: _.get(_apiRegistrationsModel, 'name', ''),
   password: _.get(_apiRegistrationsModel, 'password', ''),
   confirmPassword: _.get(_apiRegistrationsModel, 'password_confirmation', ''),
   termsAndConditions: _.get(_apiRegistrationsModel, 'terms_and_conditions', false),
 });
 
 export const apiRegistrationUserModel = (_appRegistrationsModel = {}) => ({
-  user: {
-    email: _.get(_appRegistrationsModel, 'email', ''),
-    name: _.get(_appRegistrationsModel, 'name', ''),
-    password: _.get(_appRegistrationsModel, 'password', ''),
-    password_confirmation: _.get(_appRegistrationsModel, 'confirmPassword', ''),
-    terms_and_conditions: _.get(_appRegistrationsModel, 'termsAndConditions', false),
-  },
+  Name: _.get(_appRegistrationsModel, 'firstName', ''),
+  Surname: _.get(_appRegistrationsModel, 'lastName', ''),
+  Cell: _.get(_appRegistrationsModel, 'mobileNumber', ''),
+  Email: _.get(_appRegistrationsModel, 'email', ''),
+  Password: _.get(_appRegistrationsModel, 'password', ''),
 });
