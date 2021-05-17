@@ -18,7 +18,7 @@ const ForgotPasswordForm = ({ submitForm, onSuccess, initialValues, containerSty
     email: emailSchema,
   });
   const _handleSubmission = (formData, actions) => {
-    submitForm({ formData })
+    submitForm(formData)
       .then(() => {
         actions.setSubmitting(false);
         flashService.success(
@@ -67,8 +67,9 @@ const ForgotPasswordForm = ({ submitForm, onSuccess, initialValues, containerSty
                 placeholder="Email"
                 containerStyle={[Common.loginTextInput]}
                 inputContainerStyle={styles.inputContainer}
+                autoCapitalize="none"
               />
-              <HelperText style={[Common.loginErrorStyle]} type={'error'} visible={error('email')}>
+              <HelperText style={[Common.loginErrorStyle]} type="error" visible={error('email')}>
                 {error('email')}
               </HelperText>
               <Divider />

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+
 import authUrls from './user-auth.urls';
 import authUtils from './user-auth.utils';
 import networkService from '../network-service/network.service';
@@ -11,7 +12,7 @@ import {
 } from '../../../models';
 import storageService from '../storage-service/storage.service';
 
-const signIn = async ({ formData }) => {
+const signIn = async (formData) => {
   const { authenticationFailed, storeAccessToken, constructSignInData } = authUtils;
   const signInUrl = authUrls.tokenUrl();
   const apiModel = apiSignInModel(formData);
@@ -38,7 +39,7 @@ const register = ({ formData }) => {
   });
 };
 
-const forgotPassword = ({ formData }) => {
+const forgotPassword = (formData) => {
   const forgotPasswordUrl = authUrls.forgotPasswordUrl();
   const apiModel = apiForgotPasswordModel(formData);
 

@@ -13,6 +13,7 @@ import { Colors } from '../../../theme/Variables';
 const SignInForm = ({ submitForm, onSuccess, containerStyle, initialValues }) => {
   const { Gutters, Common, Layout } = useTheme();
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
+
   const validationSchema = Yup.object().shape({
     email: emailSchema,
     password: passwordSchema,
@@ -23,8 +24,15 @@ const SignInForm = ({ submitForm, onSuccess, containerStyle, initialValues }) =>
     actions.setFieldError('email', error.message);
   };
 
+  const _showPasswordShort = () => {
+    setTimeout(() => {
+      setIsPasswordHidden(true);
+    }, 3000);
+    setIsPasswordHidden(false);
+  };
+
   const _handleSubmission = (formData, actions) => {
-    submitForm({ formData })
+    submitForm(formData)
       .then(() => {
         actions.setSubmitting(false);
         onSuccess();
@@ -61,8 +69,9 @@ const SignInForm = ({ submitForm, onSuccess, containerStyle, initialValues }) =>
                 leftIconContainerStyle={[Gutters.regularHMargin]}
                 containerStyle={[Common.loginTextInput]}
                 inputContainerStyle={styles.inputContainer}
+                autoCapitalize="none"
               />
-              <HelperText style={[Common.loginErrorStyle]} type={'error'} visible={error('email')}>
+              <HelperText style={[Common.loginErrorStyle]} type="error" visible={error('email')}>
                 {error('email')}
               </HelperText>
               <Divider />
@@ -71,7 +80,7 @@ const SignInForm = ({ submitForm, onSuccess, containerStyle, initialValues }) =>
                 rightIcon={
                   <TextInput.Icon
                     name={isPasswordHidden ? 'eye' : 'eye-off'}
-                    onPress={() => setIsPasswordHidden(!isPasswordHidden)}
+                    onPress={_showPasswordShort}
                   />
                 }
                 secureTextEntry={isPasswordHidden}
@@ -84,14 +93,9 @@ const SignInForm = ({ submitForm, onSuccess, containerStyle, initialValues }) =>
                 containerStyle={[Common.loginTextInput]}
                 inputContainerStyle={styles.inputContainer}
               />
-              <HelperText
-                style={[Common.loginErrorStyle]}
-                type={'error'}
-                visible={error('password')}
-              >
+              <HelperText style={[Common.loginErrorStyle]} type="error" visible={error('password')}>
                 {error('password')}
               </HelperText>
-              <Divider />
               <View style={[Layout.center]}>
                 <Button
                   style={[Gutters.largeMargin, Layout.halfWidth]}

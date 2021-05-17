@@ -1,5 +1,8 @@
 import * as Yup from 'yup';
 
+export const firstNameSchema = Yup.string().required('First Name is required');
+export const lastNameSchema = Yup.string().required('Surname is required');
+
 export const emailSchema = Yup.string().email('Invalid Email').trim().required('Email is required');
 export const passwordSchema = Yup.string().required('Password is required');
 export const phoneSchema = Yup.string()
@@ -30,5 +33,7 @@ export const confirmPasswordSchema = (edit) => {
 };
 
 export const termsAndConditionsSchema = (edit) => {
-  return !edit ? Yup.bool().oneOf([true]) : Yup.string().notRequired();
+  return !edit
+    ? Yup.bool().oneOf([true], 'You must Accept the terms and conditions')
+    : Yup.string().notRequired();
 };

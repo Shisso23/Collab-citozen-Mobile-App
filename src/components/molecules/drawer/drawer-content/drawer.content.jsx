@@ -62,7 +62,7 @@ const DrawerContent = (props) => {
         </View>
       </DrawerContentScrollView>
       <View style={styles.versionContainer}>
-        <Text style={[Colors.gray]}>Version -</Text>
+        <Text style={[Colors.gray]}>Version </Text>
         <Text style={[Colors.gray]}>{DeviceInfo.getVersion()}</Text>
       </View>
     </View>

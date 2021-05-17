@@ -64,8 +64,15 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
       position: 'absolute',
       width: '100%',
     },
+    inputContainer: {
+      borderBottomWidth: 0,
+    },
     link: {
       color: Colors.white,
+      fontWeight: 'bold',
+    },
+    linkBlack: {
+      color: Colors.black,
       fontWeight: 'bold',
     },
     loginErrorStyle: {
@@ -82,6 +89,14 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
       borderRadius: 10,
       height: 50,
       opacity: 0.8,
+    },
+    registerErrorStyle: {
+      color: Colors.white,
+      fontFamily: FontFamily.primary,
+      fontSize: FontSize.small,
+    },
+    registerTextInputWithShadow: {
+      backgroundColor: DefaultTheme.colors.background,
     },
     textInput: {
       backgroundColor: Colors.transparent,
