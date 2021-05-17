@@ -78,7 +78,7 @@ const RegisterForm = ({ edit, submitForm, onSuccess, initialValues, containerSty
                 onChangeText={handleChange('firstName')}
                 onBlur={handleBlur('firstName')}
                 label="First Name"
-                style={[Common.textInputWithShadow]}
+                style={[Common.registerTextInputWithShadow]}
               />
 
               <HelperText
@@ -94,7 +94,7 @@ const RegisterForm = ({ edit, submitForm, onSuccess, initialValues, containerSty
                 onChangeText={handleChange('lastName')}
                 onBlur={handleBlur('lastName')}
                 label="Surname"
-                style={[Common.textInputWithShadow]}
+                style={[Common.registerTextInputWithShadow]}
               />
 
               <HelperText
@@ -111,7 +111,7 @@ const RegisterForm = ({ edit, submitForm, onSuccess, initialValues, containerSty
                 onBlur={handleBlur('mobileNumber')}
                 label="Number"
                 keyboardType="numeric"
-                style={[Common.textInputWithShadow]}
+                style={[Common.registerTextInputWithShadow]}
               />
 
               <HelperText
@@ -129,7 +129,7 @@ const RegisterForm = ({ edit, submitForm, onSuccess, initialValues, containerSty
                 label="Email"
                 keyboardType="email-address"
                 autoCapitalize="none"
-                style={[Common.textInputWithShadow]}
+                style={[Common.registerTextInputWithShadow]}
               />
 
               <HelperText style={[Common.registerErrorStyle]} type="error" visible={error('email')}>
@@ -145,7 +145,7 @@ const RegisterForm = ({ edit, submitForm, onSuccess, initialValues, containerSty
                     secureTextEntry
                     onBlur={handleBlur('password')}
                     errorMessage={error('password')}
-                    style={[Common.textInputWithShadow]}
+                    style={[Common.registerTextInputWithShadow]}
                   />
                   <HelperText
                     style={[Common.registerErrorStyle]}
@@ -162,7 +162,7 @@ const RegisterForm = ({ edit, submitForm, onSuccess, initialValues, containerSty
                     secureTextEntry
                     onBlur={handleBlur('confirmPassword')}
                     errorMessage={error('confirmPassword')}
-                    style={[Common.textInputWithShadow]}
+                    style={[Common.registerTextInputWithShadow]}
                   />
                   <HelperText
                     style={[Common.registerErrorStyle]}

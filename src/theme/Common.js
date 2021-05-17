@@ -95,6 +95,10 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
       fontFamily: FontFamily.primary,
       fontSize: FontSize.small,
     },
+    registerTextInputWithShadow: {
+      backgroundColor: DefaultTheme.colors.background,
+      borderRadius: 5,
+    },
     textInput: {
       backgroundColor: Colors.transparent,
     },
