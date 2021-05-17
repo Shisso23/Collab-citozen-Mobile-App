@@ -1,4 +1,4 @@
-import { userAuthService, flashService } from '../../services';
+import { userAuthService } from '../../services';
 import { setIsAuthenticatedAction, setIsLoadingAction } from './user-auth.reducer';
 
 export const signOutAction = () => {
@@ -14,7 +14,6 @@ export const forogtPasswordAction = (formData) => {
     dispatch(setIsLoadingAction(true));
     return userAuthService
       .forgotPassword(formData)
-      .catch((error) => flashService.error(error.message))
       .finally(() => dispatch(setIsLoadingAction(false)));
   };
 };
@@ -22,9 +21,6 @@ export const forogtPasswordAction = (formData) => {
 export const RegisterAction = (formData) => {
   return (dispatch) => {
     dispatch(setIsLoadingAction(true));
-    return userAuthService
-      .register(formData)
-      .catch((error) => flashService.error(error.message))
-      .finally(() => dispatch(setIsLoadingAction(false)));
+    return userAuthService.register(formData).finally(() => dispatch(setIsLoadingAction(false)));
   };
 };
