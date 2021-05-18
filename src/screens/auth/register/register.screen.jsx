@@ -34,7 +34,7 @@ const RegisterScreen = () => {
           submitForm={_handleSubmit}
           onSuccess={_onFormSuccess}
           initialValues={registrationUserModel()}
-          containerStyle={[Gutters.largeHMargin]}
+          containerStyle={Gutters.largeHMargin}
         />
       </FormScreenContainer>
     </ImageBackground>
