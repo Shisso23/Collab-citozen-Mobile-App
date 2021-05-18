@@ -70,6 +70,7 @@ const SignInForm = ({ submitForm, onSuccess, containerStyle, initialValues }) =>
                 containerStyle={[Common.loginTextInput]}
                 inputContainerStyle={styles.inputContainer}
                 autoCapitalize="none"
+                keyboardType="email-address"
               />
               <HelperText style={[Common.loginErrorStyle]} type="error" visible={error('email')}>
                 {error('email')}

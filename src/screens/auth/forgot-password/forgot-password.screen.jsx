@@ -34,7 +34,7 @@ const ForgotPasswordScreen = () => {
           submitForm={_handleSubmit}
           onSuccess={_onFormSuccess}
           initialValues={forgotPasswordModel()}
-          containerStyle={[Gutters.largeMargin]}
+          containerStyle={Gutters.largeMargin}
         />
       </FormScreenContainer>
     </ImageBackground>

@@ -50,7 +50,7 @@ const RegisterForm = ({ edit, submitForm, onSuccess, initialValues, containerSty
   };
 
   const _handleSubmission = (formData, actions) => {
-    submitForm({ formData })
+    submitForm(formData)
       .then(() => {
         actions.setSubmitting(false);
         flashService.success('You Have Successfully Registered');

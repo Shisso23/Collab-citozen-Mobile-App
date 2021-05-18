@@ -1,12 +1,12 @@
 import React from 'react';
-import { StyleSheet, View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator } from 'react-native';
 
 import useTheme from '../../../theme/hooks/useTheme';
 
 const LoadingComponent = () => {
-  const { Colors } = useTheme();
+  const { Colors, Layout } = useTheme();
   return (
-    <View style={[styles.container]}>
+    <View style={[Layout.fullSize, Layout.center]}>
       <ActivityIndicator size="large" color={Colors.primary} />
     </View>
   );
@@ -15,14 +15,5 @@ const LoadingComponent = () => {
 LoadingComponent.propTypes = {};
 
 LoadingComponent.defaultProps = {};
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    flex: 3,
-    justifyContent: 'center',
-    marginBottom: 160,
-  },
-});
 
 export default LoadingComponent;

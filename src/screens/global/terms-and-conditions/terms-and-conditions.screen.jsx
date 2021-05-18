@@ -1,14 +1,16 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import WebView from 'react-native-webview';
 
 import { LoadingComponent } from '../../../components/molecules';
 import OnBackPressHeader from '../../../components/atoms/on-back-press-header';
 import config from '../../../config';
+import useTheme from '../../../theme/hooks/useTheme';
 
 const TermsAndConditionsScreen = () => {
+  const { Layout } = useTheme();
   return (
-    <View style={styles.container}>
+    <View style={Layout.fill}>
       <OnBackPressHeader arrowColor="#000000" />
       <WebView
         startInLoadingState
@@ -18,12 +20,6 @@ const TermsAndConditionsScreen = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
 
 TermsAndConditionsScreen.propTypes = {};
 
