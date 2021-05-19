@@ -12,20 +12,15 @@ export function saveItem(key, value) {
   );
 }
 
-export function getItem(key) {
-  return AsyncStorage.getItem(key)
-    .then((value) => {
-      try {
-        return JSON.parse(value);
-      } catch (error) {
-        return value;
-      }
-    })
-    .catch((error) => {
-      // eslint-disable-next-line no-console
-      console.warn(`WARNING: Failed to get item with key: ${key}. Error: ${error.message}`);
-      return null;
+// eslint-disable-next-line consistent-return
+export async function getItem(key) {
+  if (key !== null) {
+    return AsyncStorage.getItem(key).then((value) => {
+      return value;
     });
+  }
+
+  return null;
 }
 
 export function removeItem(key) {
