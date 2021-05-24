@@ -1,6 +1,9 @@
 import _ from 'lodash';
 import { constructMunicipalityModels } from '../../../models';
-import { apiFunctionWithUniqName } from '../../../helpers/api-function-name.helper';
+import {
+  apiFunctionWithUniqName,
+  apiFunctionWithUniqNameChannels,
+} from '../../../helpers/api-function-name.helper';
 import authNetworkService from '../auth-network-service/auth-network.service';
 import globalUrl from '../global/global.service.urls';
 
@@ -12,6 +15,16 @@ const getMunicipalities = async () => {
   return constructMunicipalityModels(municipalities);
 };
 
+const getChannlesByLocation = async () => {
+  const url = globalUrl.globalFunctionUrl();
+  const data = await apiFunctionWithUniqNameChannels('get_channels_by_location');
+  const apiResponse = await authNetworkService.post(url, data);
+  const channels = _.get(apiResponse.data, 'Channels', []);
+  const channlesConstruct = constructMunicipalityModels(channels);
+  return channlesConstruct;
+};
+
 export default {
   getMunicipalities,
+  getChannlesByLocation,
 };

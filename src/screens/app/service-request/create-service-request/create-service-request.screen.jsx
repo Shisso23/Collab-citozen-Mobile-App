@@ -12,6 +12,7 @@ import {
 import { flashService } from '../../../../services';
 import { createServiceRequestModel } from '../../../../models';
 import { municipalitiesSelector } from '../../../../reducers/municipalities-reducer/municipalities.reducer';
+import HeaderBackGround from '../../../../components/atoms/header-background/index';
 
 const CreateServiceRequestScreen = () => {
   const dispatch = useDispatch();
@@ -38,11 +39,11 @@ const CreateServiceRequestScreen = () => {
       extraHeight={150}
       enableOnAndroid
     >
+      <HeaderBackGround backButton />
       <CreateServiceRequestForm
         submitForm={_handleFormSubmit}
         onSuccess={_onFormSuccess}
         municipalities={municipalities}
-        accounts={accounts}
         initialValues={createServiceRequestModel({
           account: accounts[0],
         })}

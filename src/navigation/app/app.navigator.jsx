@@ -12,6 +12,7 @@ import SelectLocationScreen from '../../screens/app/service-request/select-locat
 import { DrawerContent } from '../../components/molecules';
 import AccountScreen from '../../screens/app/account/account.screen';
 import HeaderBackGround from '../../components/atoms/header-background';
+
 import ViewServiceRequestScreen from '../../screens/app/service-request/view-service-request/view-service-request.screen';
 
 const Drawer = createDrawerNavigator();
@@ -27,23 +28,23 @@ const AppNavigator = () => {
         options={{ headerShown: false }}
       />
       <AppStack.Screen
+        name="SelectLocationScreen"
+        component={SelectLocationScreen}
+        options={{
+          headerShown: false,
+          title: 'Select Location',
+        }}
+      />
+      <AppStack.Screen
         name="CreateServiceRequest"
         component={CreateServiceRequestScreen}
         options={{
-          headerShown: true,
+          headerShown: false,
           title: 'New Service Request',
           header: (props) => <HeaderBackGround {...props} backButton />,
         }}
       />
-      <AppStack.Screen
-        name="SelectLocationScreen"
-        component={SelectLocationScreen}
-        options={{
-          headerShown: true,
-          title: 'Select Location',
-          header: (props) => <HeaderBackGround {...props} backButton />,
-        }}
-      />
+
       <AppStack.Screen
         name="ViewServiceRequest"
         component={ViewServiceRequestScreen}

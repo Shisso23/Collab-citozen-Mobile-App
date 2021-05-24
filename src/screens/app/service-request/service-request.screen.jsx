@@ -9,16 +9,12 @@ import _ from 'lodash';
 import useTheme from '../../../theme/hooks/useTheme';
 import { serviceRequestSelector } from '../../../reducers/service-request-reducer/service-request.reducer';
 import { getServiceRequestsAction } from '../../../reducers/service-request-reducer/service-request.actions';
-import { accountsSelector } from '../../../reducers/accounts-reducer/accounts.reducer';
-import { municipalitiesSelector } from '../../../reducers/municipalities-reducer/municipalities.reducer';
-import { flashService } from '../../../services';
+import { permissionsService } from '../../../services';
 
 const ServiceRequestScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { serviceRequests, isLoadingServiceRequests } = useSelector(serviceRequestSelector);
-  const { accounts } = useSelector(accountsSelector);
-  const { municipalities } = useSelector(municipalitiesSelector);
   const { Common, Gutters, Fonts, Layout, Colors } = useTheme();
 
   const _loadServiceRequests = () => {
@@ -48,14 +44,9 @@ const ServiceRequestScreen = () => {
     _loadServiceRequests();
   }, []);
 
-  const _handleOnServiceRequestCreatePress = () => {
-    if (accounts.length === 0) {
-      flashService.error('No Properties linked to account.');
-    } else if (municipalities.length === 0) {
-      flashService.error('No municipalities linked to account.');
-    } else {
-      navigation.navigate('CreateServiceRequest');
-    }
+  const _handleOnServiceRequestCreatePress = async () => {
+    await permissionsService.checkLocationPermissions();
+    navigation.navigate('SelectLocationScreen');
   };
 
   const serviceRequestItem = ({ item }) => {
