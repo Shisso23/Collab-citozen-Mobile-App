@@ -5,6 +5,7 @@ const formatCoordinate = ({ location }) => `Point(${location.latitude},${locatio
 
 export const createServiceRequestModel = (_initialValues = {}) => ({
   account: _.get(_initialValues, 'account', null),
+  channel: _.get(_initialValues, 'channels', ''),
   serviceTypeCategory: _.get(_initialValues, 'serviceTypeCategory', ''),
   serviceType: _.get(_initialValues, 'serviceType', null),
   description: _.get(_initialValues, 'description', ''),

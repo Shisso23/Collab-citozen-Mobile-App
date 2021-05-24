@@ -42,11 +42,12 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
       right: 0,
     },
     googleAutoCompleteInput: {
-      backgroundColor: Colors.transparent,
+      backgroundColor: DefaultTheme.colors.background,
       color: Colors.darkgray,
       fontSize: 16,
       height: 38,
       width: '100%',
+      position: 'absolute',
     },
     headerIcon: {
       height: 100,
@@ -54,6 +55,13 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
     },
     headerLogo: {
       width: 200,
+    },
+    headerSearch: {
+      height: 120,
+      width: '100%',
+    },
+    mapLayout: {
+      flex: 1,
     },
     headerView: {
       borderColor: DefaultTheme.colors.background,

@@ -8,13 +8,15 @@ export const passwordSchema = Yup.string().required('Password is required');
 export const phoneSchema = Yup.string()
   .matches(/^(\+27|0|27)[6-8][0-9]{8}$/, 'Error: Invalid mobile number')
   .required('Mobile number is required');
-export const selectAccountSchema = Yup.object().typeError('Error: Account is required');
-export const selectServiceTypeSchema = Yup.object().typeError('Error: ServiceType is required');
-export const selectServiceTypeCategorySchema = Yup.string().required(
-  'Error: ServiceType category is required',
-);
-export const locationSchema = Yup.object().typeError('Error: Location is required');
-export const descriptionSchema = Yup.string().required('Error: Description is required');
+
+export const selectMunicipalitySchema = Yup.string().required('Municipality is required');
+
+export const selectServiceTypeSchema = Yup.object().typeError('Selection is Required');
+
+export const selectServiceTypeCategorySchema = Yup.string().required('Selection is Required');
+
+export const locationSchema = Yup.object().typeError('Location is required');
+export const descriptionSchema = Yup.string().required('Description is required');
 
 export const registerPasswordSchema = (edit) => {
   return !edit

@@ -18,21 +18,19 @@ export const getServiceRequestsAction = () => (dispatch) => {
     });
 };
 
-export const createServiceRequestAction = (newServiceRequestForm) => async (
-  _dispatch,
-  getState,
-) => {
-  const { user } = getState().userReducer;
-  await serviceRequestService
-    .createServiceRequest(newServiceRequestForm, user)
-    .then(async (response) => {
-      const objID = _.get(response.data.Data, 'ObjID');
-      const fileAttachment = _.get(newServiceRequestForm, 'imageUri');
-      if (fileAttachment) {
-        await _dispatch(uploadServiceRequestImage(objID, fileAttachment));
-      }
-    });
-};
+export const createServiceRequestAction =
+  (newServiceRequestForm) => async (_dispatch, getState) => {
+    const { user } = getState().userReducer;
+    await serviceRequestService
+      .createServiceRequest(newServiceRequestForm, user)
+      .then(async (response) => {
+        const objID = _.get(response.data.Data, 'ObjID');
+        const fileAttachment = _.get(newServiceRequestForm, 'imageUri');
+        if (fileAttachment) {
+          await _dispatch(uploadServiceRequestImage(objID, fileAttachment));
+        }
+      });
+  };
 
 export const uploadServiceRequestImage = (objId, fileAttachment) => async (dispatch) => {
   dispatch(setIsLoadingServiceRequestsAction(true));

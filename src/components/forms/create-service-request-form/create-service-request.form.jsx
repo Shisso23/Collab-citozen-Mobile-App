@@ -1,17 +1,14 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
-import { ViewPropTypes, View, TouchableOpacity, StyleSheet } from 'react-native';
+import { ViewPropTypes, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Button, HelperText, TextInput } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import { useNavigation } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { useSelector } from 'react-redux';
 import {
-  selectAccountSchema,
+  selectMunicipalitySchema,
   selectServiceTypeCategorySchema,
   selectServiceTypeSchema,
   descriptionSchema,
@@ -21,14 +18,7 @@ import { getFormError } from '../form-utils';
 import useTheme from '../../../theme/hooks/useTheme';
 import { DropdownSelect } from '../../atoms';
 import { locationSelector } from '../../../reducers/location-reducer/location.reducer';
-import {
-  clearLocationAction,
-  getAddressFromRegionAction,
-  setCurrentPositionAction,
-} from '../../../reducers/location-reducer/location.actions';
-import { flashService, permissionsService } from '../../../services';
 import UploadDocumentButton from '../../molecules/upload-document-button';
-import appConfig from '../../../config';
 
 navigator.geolocation = require('react-native-geolocation-service');
 
@@ -37,40 +27,23 @@ const CreateServiceRequestForm = ({
   onSuccess,
   containerStyle,
   initialValues,
-  accounts,
   municipalities,
 }) => {
   const { Common, Layout, Gutters } = useTheme();
-  const navigation = useNavigation();
-  const dispatch = useDispatch();
   const { selectedAddress, region } = useSelector(locationSelector);
   const [address, setAddress] = useState('');
-  useEffect(() => {
-    return () => {
-      dispatch(clearLocationAction());
-    };
-  }, []);
 
   useEffect(() => {
     setAddress(selectedAddress);
   }, [selectedAddress]);
 
   const validationSchema = Yup.object().shape({
-    account: selectAccountSchema,
+    channel: selectMunicipalitySchema,
     serviceTypeCategory: selectServiceTypeCategorySchema,
     serviceType: selectServiceTypeSchema,
     description: descriptionSchema,
     location: locationSchema,
   });
-
-  const _handleSelectLocationClick = async () => {
-    try {
-      await permissionsService.checkLocationPermissions();
-      navigation.navigate('SelectLocationScreen');
-    } catch (err) {
-      flashService.error(err.message);
-    }
-  };
 
   const _handleFormSubmitError = (error, actions) => {
     actions.setSubmitting(false);
@@ -107,18 +80,37 @@ const CreateServiceRequestForm = ({
           setFieldValue,
           setFieldTouched,
         }) => {
-          const currentAccount = values.account;
-          const currentCategory = values.serviceTypeCategory;
+          const memiozedChannels = Object.keys(municipalities);
 
-          const memiozedAccounts = useMemo(() => accounts, [accounts]);
-          const memiozedServiceTypeCategories = useMemo(
-            () => Object.keys(municipalities[currentAccount.municipalityCode].serviceTypes),
-            [currentAccount],
-          );
-          const memiozedServiceTypes = useMemo(
-            () => municipalities[currentAccount.municipalityCode].serviceTypes[currentCategory],
-            [currentCategory],
-          );
+          const channelNames = [];
+          // eslint-disable-next-line no-plusplus
+          for (let i = 0; i < Object.keys(municipalities).length; i++) {
+            const dataa = municipalities[memiozedChannels[i]].name;
+
+            channelNames.push(dataa);
+          }
+
+          let refCode = null;
+          let memiozedServiceTypeCategories = null;
+          let memiozedServiceTypes = null;
+
+          if (values.channel !== '') {
+            // eslint-disable-next-line no-plusplus
+            for (let i = 0; i < Object.keys(municipalities).length; i++) {
+              if (values.channel === channelNames[i]) {
+                refCode = memiozedChannels[i];
+              }
+            }
+          }
+
+          if (values.channel !== '') {
+            memiozedServiceTypeCategories = Object.keys(municipalities[refCode].serviceTypes);
+
+            if (values.serviceTypeCategory !== '') {
+              memiozedServiceTypes =
+                municipalities[refCode].serviceTypes[values.serviceTypeCategory];
+            }
+          }
 
           useEffect(() => {
             setFieldValue('location', region);
@@ -127,27 +119,30 @@ const CreateServiceRequestForm = ({
           const error = (name) => getFormError(name, { touched, status, errors });
           return (
             <>
+              <TextInput value={address} label="Location Selected" editable={false} />
+              <HelperText />
+
               <DropdownSelect
-                label="Properties"
-                items={memiozedAccounts}
-                placeholder="Select Account"
+                items={channelNames}
+                label="Municipality"
+                keyExtractor={(item) => item}
+                valueExtractor={(item) => item}
                 onBlur={() => {
-                  setFieldTouched('account', true);
+                  setFieldTouched('channel', true);
                 }}
-                keyExtractor={(item) => item.id}
-                valueExtractor={(item) => item.name}
-                onChange={(newAccount) => {
-                  setFieldValue('serviceTypeCategory', ''); // force reset on categories
-                  setFieldValue('serviceType', null); // force reset on serviceType
-                  setFieldValue('account', newAccount);
+                placeholder="Municipality"
+                onChange={(municipality) => {
+                  setFieldValue('channel', municipality);
+                  setFieldValue('serviceTypeCategory', '');
+                  setFieldValue('serviceType', null);
                 }}
-                value={values.account?.name}
-                error={error('account')}
+                value={values.channel}
+                error={error('channel')}
                 errorStyle={Common.errorStyle}
               />
 
               <DropdownSelect
-                disabled={_.isNull(values.account)}
+                disabled={_.isEmpty(values.channel)}
                 items={memiozedServiceTypeCategories}
                 label="Service Type Category"
                 keyExtractor={(item) => item}
@@ -157,8 +152,8 @@ const CreateServiceRequestForm = ({
                 }}
                 placeholder="Select Service Category"
                 onChange={(newServiceTypeCategory) => {
-                  setFieldValue('serviceType', null);
                   setFieldValue('serviceTypeCategory', newServiceTypeCategory);
+                  setFieldValue('serviceType', null);
                 }}
                 value={values.serviceTypeCategory}
                 error={error('serviceTypeCategory')}
@@ -166,7 +161,7 @@ const CreateServiceRequestForm = ({
               />
 
               <DropdownSelect
-                disabled={_.isNull(values.serviceTypeCategory)}
+                disabled={_.isEmpty(values.serviceTypeCategory)}
                 items={memiozedServiceTypes}
                 label="Service Type"
                 keyExtractor={(item) => item.id}
@@ -195,70 +190,7 @@ const CreateServiceRequestForm = ({
                 {error('description')}
               </HelperText>
 
-              <GooglePlacesAutocomplete
-                placeholder="Location"
-                enablePoweredByContainer={false}
-                debounce={3}
-                fetchDetails
-                onPress={(data, details = null) => {
-                  const newRegion = _.get(details, 'geometry.location');
-                  dispatch(
-                    getAddressFromRegionAction({
-                      latitude: newRegion.lat,
-                      longitude: newRegion.lng,
-                      longitudeDelta: 0.011,
-                      latitudeDelta: 0.011,
-                    }),
-                  );
-                }}
-                query={{
-                  key: appConfig.googleMapsApiKey,
-                  language: 'en',
-                  components: 'country:za',
-                }}
-                enableHighAccuracyLocation
-                minLength={3}
-                styles={{
-                  textInput: Common.googleAutoCompleteInput,
-                }}
-                textInputProps={{
-                  InputComp: TextInput,
-                  errorMessage: error('location'),
-                  listViewDisplayed: true,
-                  onChangeText: (text) => {
-                    setAddress(text);
-                  },
-                  value: address,
-                }}
-                renderRightButton={() => (
-                  <TouchableOpacity
-                    style={styles.clearContainer}
-                    onPress={async () => {
-                      await dispatch(setCurrentPositionAction());
-                      setAddress('');
-                      setFieldValue('location', null);
-                    }}
-                  >
-                    <Icon name="clear" size={15} />
-                  </TouchableOpacity>
-                )}
-              />
-
-              <HelperText style={Common.errorStyle} type="error" visible={error('location')}>
-                {error('location')}
-              </HelperText>
-
-              <Button
-                mode="contained"
-                onPress={_handleSelectLocationClick}
-                style={[Gutters.regularTMargin]}
-                disabled={isSubmitting}
-                icon="map-marker"
-              >
-                Select location
-              </Button>
-
-              <View style={[Layout.row, Gutters.regularTMargin]}>
+              <View style={[Layout.row]}>
                 <UploadDocumentButton
                   title="Take Photo"
                   style={[Layout.fill, Gutters.tinyRMargin]}
@@ -284,19 +216,11 @@ const CreateServiceRequestForm = ({
   );
 };
 
-const styles = StyleSheet.create({
-  clearContainer: {
-    bottom: -16,
-    left: -22,
-  },
-});
-
 CreateServiceRequestForm.propTypes = {
   submitForm: PropTypes.func.isRequired,
   initialValues: PropTypes.object.isRequired,
   onSuccess: PropTypes.func,
   containerStyle: ViewPropTypes.style,
-  accounts: PropTypes.array.isRequired,
   municipalities: PropTypes.object.isRequired,
 };
 
