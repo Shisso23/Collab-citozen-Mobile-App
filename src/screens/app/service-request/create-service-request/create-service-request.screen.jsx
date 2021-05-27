@@ -2,8 +2,8 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useNavigation } from '@react-navigation/native';
+
 import useTheme from '../../../../theme/hooks/useTheme';
-import { accountsSelector } from '../../../../reducers/accounts-reducer/accounts.reducer';
 import { CreateServiceRequestForm } from '../../../../components/forms';
 import {
   createServiceRequestAction,
@@ -17,7 +17,6 @@ import HeaderBackGround from '../../../../components/atoms/header-background/ind
 const CreateServiceRequestScreen = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { accounts } = useSelector(accountsSelector);
   const { municipalities } = useSelector(municipalitiesSelector);
 
   const { Gutters, Common } = useTheme();
@@ -44,9 +43,7 @@ const CreateServiceRequestScreen = () => {
         submitForm={_handleFormSubmit}
         onSuccess={_onFormSuccess}
         municipalities={municipalities}
-        initialValues={createServiceRequestModel({
-          account: accounts[0],
-        })}
+        initialValues={createServiceRequestModel()}
         containerStyle={[Gutters.regularHMargin, Gutters.regularTMargin]}
       />
     </KeyboardAwareScrollView>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
-import { ViewPropTypes, View } from 'react-native';
+import { ViewPropTypes, View, Keyboard } from 'react-native';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -8,7 +8,7 @@ import { Button, HelperText, TextInput } from 'react-native-paper';
 
 import { useSelector } from 'react-redux';
 import {
-  selectMunicipalitySchema,
+  selectChannelSchema,
   selectServiceTypeCategorySchema,
   selectServiceTypeSchema,
   descriptionSchema,
@@ -38,7 +38,7 @@ const CreateServiceRequestForm = ({
   }, [selectedAddress]);
 
   const validationSchema = Yup.object().shape({
-    channel: selectMunicipalitySchema,
+    channel: selectChannelSchema,
     serviceTypeCategory: selectServiceTypeCategorySchema,
     serviceType: selectServiceTypeSchema,
     description: descriptionSchema,
@@ -83,38 +83,46 @@ const CreateServiceRequestForm = ({
           const memiozedChannels = Object.keys(municipalities);
 
           const channelNames = [];
-          // eslint-disable-next-line no-plusplus
-          for (let i = 0; i < Object.keys(municipalities).length; i++) {
-            const dataa = municipalities[memiozedChannels[i]].name;
+          for (let i = 0; i < Object.keys(municipalities).length; i += 1) {
+            const municipalitiesData = municipalities[memiozedChannels[i]].name;
 
-            channelNames.push(dataa);
+            channelNames.push(municipalitiesData);
           }
 
-          let refCode = null;
+          let municipalityCodeRef = null;
           let memiozedServiceTypeCategories = null;
           let memiozedServiceTypes = null;
 
-          if (values.channel !== '') {
-            // eslint-disable-next-line no-plusplus
-            for (let i = 0; i < Object.keys(municipalities).length; i++) {
+          if (!_.isEmpty(values.channel)) {
+            for (let i = 0; i < Object.keys(municipalities).length; i += 1) {
               if (values.channel === channelNames[i]) {
-                refCode = memiozedChannels[i];
+                municipalityCodeRef = memiozedChannels[i];
               }
             }
           }
 
-          if (values.channel !== '') {
-            memiozedServiceTypeCategories = Object.keys(municipalities[refCode].serviceTypes);
+          if (!_.isEmpty(values.channel) && !_.isNull(municipalityCodeRef)) {
+            memiozedServiceTypeCategories = Object.keys(
+              municipalities[municipalityCodeRef].serviceTypes,
+            );
 
-            if (values.serviceTypeCategory !== '') {
+            if (!_.isEmpty(values.serviceTypeCategory)) {
               memiozedServiceTypes =
-                municipalities[refCode].serviceTypes[values.serviceTypeCategory];
+                municipalities[municipalityCodeRef].serviceTypes[values.serviceTypeCategory];
             }
           }
 
           useEffect(() => {
             setFieldValue('location', region);
           }, [region]);
+
+          useEffect(() => {
+            setFieldValue('municipalityCode', municipalityCodeRef);
+          }, [municipalityCodeRef]);
+
+          useEffect(() => {
+            setFieldValue('address', selectedAddress);
+          }, [selectedAddress]);
 
           const error = (name) => getFormError(name, { touched, status, errors });
           return (
@@ -124,17 +132,17 @@ const CreateServiceRequestForm = ({
 
               <DropdownSelect
                 items={channelNames}
-                label="Municipality"
+                label="Channel"
                 keyExtractor={(item) => item}
                 valueExtractor={(item) => item}
                 onBlur={() => {
                   setFieldTouched('channel', true);
                 }}
-                placeholder="Municipality"
+                placeholder="Channel"
                 onChange={(municipality) => {
                   setFieldValue('channel', municipality);
-                  setFieldValue('serviceTypeCategory', '');
                   setFieldValue('serviceType', null);
+                  setFieldValue('serviceTypeCategory', '');
                 }}
                 value={values.channel}
                 error={error('channel')}
@@ -180,6 +188,11 @@ const CreateServiceRequestForm = ({
                 label="Description"
                 value={values.description}
                 multiline
+                keyboardType="default"
+                onSubmitEditing={() => {
+                  Keyboard.dismiss();
+                }}
+                blurOnSubmit
                 onBlur={handleBlur('description')}
                 onChangeText={handleChange('description')}
                 style={[Common.textInput]}

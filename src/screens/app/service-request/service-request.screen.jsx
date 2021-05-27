@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Avatar, FAB, List } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StyleSheet, Text, View, RefreshControl } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -104,8 +104,14 @@ const ServiceRequestScreen = () => {
         data={_sortServiceRequestDescending(serviceRequests)}
         renderItem={serviceRequestItem}
         keyExtractor={(item) => String(item.id)}
-        refreshing={isLoadingServiceRequests}
-        onRefresh={_loadServiceRequests}
+        refreshControl={
+          <RefreshControl
+            refreshing={isLoadingServiceRequests}
+            onRefresh={_loadServiceRequests}
+            tintColor={Colors.primary}
+            colors={[Colors.primary]}
+          />
+        }
       />
 
       <FAB style={[Common.fabAlignment]} icon="plus" onPress={_handleOnServiceRequestCreatePress} />

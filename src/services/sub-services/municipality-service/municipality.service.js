@@ -15,9 +15,13 @@ const getMunicipalities = async () => {
   return constructMunicipalityModels(municipalities);
 };
 
-const getChannlesByLocation = async () => {
+const getChannlesByLocation = async (longitude, latitude) => {
   const url = globalUrl.globalFunctionUrl();
-  const data = await apiFunctionWithUniqNameChannels('get_channels_by_location');
+  const data = await apiFunctionWithUniqNameChannels(
+    'get_channels_by_location',
+    longitude,
+    latitude,
+  );
   const apiResponse = await authNetworkService.post(url, data);
   const channels = _.get(apiResponse.data, 'Channels', []);
   const channlesConstruct = constructMunicipalityModels(channels);

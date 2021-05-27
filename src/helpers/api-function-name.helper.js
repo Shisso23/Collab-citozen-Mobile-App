@@ -6,10 +6,10 @@ export const apiFunctionWithUniqName = async (functionName) => {
   };
 };
 
-export const apiFunctionWithUniqNameChannels = async (functionName) => {
+export const apiFunctionWithUniqNameChannels = async (functionName, longitude, latitude) => {
   return {
     taskID: 0,
     uniqName: `${functionName}`,
-    InputValues: `<valRoot><val> long,lat  </val></valRoot>`,
+    InputValues: `<valRoot><val> POINT(${longitude} ${latitude}) </val></valRoot>`,
   };
 };

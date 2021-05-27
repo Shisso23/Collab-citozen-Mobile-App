@@ -20,6 +20,14 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
     blackText: {
       color: Colors.black,
     },
+    buttonContainer: {
+      bottom: 0,
+      position: 'absolute',
+    },
+    buttonPickLocation: {
+      height: 70,
+      justifyContent: 'center',
+    },
     defaultBackGround: {
       backgroundColor: DefaultTheme.colors.background,
     },
@@ -46,8 +54,8 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
       color: Colors.darkgray,
       fontSize: 16,
       height: 38,
-      width: '100%',
       position: 'absolute',
+      width: '100%',
     },
     headerIcon: {
       height: 100,
@@ -56,12 +64,9 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
     headerLogo: {
       width: 200,
     },
-    headerSearch: {
+    headerSelectLocation: {
       height: 120,
       width: '100%',
-    },
-    mapLayout: {
-      flex: 1,
     },
     headerView: {
       borderColor: DefaultTheme.colors.background,
@@ -97,6 +102,15 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
       borderRadius: 10,
       height: 50,
       opacity: 0.8,
+    },
+    pickLocation: {
+      fontFamily: FontFamily.primary,
+      fontSize: FontSize.large,
+    },
+    pinContainer: {
+      left: '47%',
+      position: 'absolute',
+      top: '48%',
     },
     registerErrorStyle: {
       color: Colors.white,
