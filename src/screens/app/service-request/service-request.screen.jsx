@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { Avatar, FAB, List } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import { FlatList, StyleSheet, Text, View, RefreshControl } from 'react-native';
+import { FlatList, StyleSheet, Text, View, RefreshControl, ImageBackground } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -15,7 +15,7 @@ const ServiceRequestScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { serviceRequests, isLoadingServiceRequests } = useSelector(serviceRequestSelector);
-  const { Common, Gutters, Fonts, Layout, Colors } = useTheme();
+  const { Common, Gutters, Fonts, Layout, Colors, Images } = useTheme();
 
   const _loadServiceRequests = () => {
     dispatch(getServiceRequestsAction());
@@ -98,21 +98,23 @@ const ServiceRequestScreen = () => {
   };
   return (
     <>
-      <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>Service Requests</Text>
-      <FlatList
-        contentContainerStyle={[Gutters.smallHMargin]}
-        data={_sortServiceRequestDescending(serviceRequests)}
-        renderItem={serviceRequestItem}
-        keyExtractor={(item) => String(item.id)}
-        refreshControl={
-          <RefreshControl
-            refreshing={isLoadingServiceRequests}
-            onRefresh={_loadServiceRequests}
-            tintColor={Colors.primary}
-            colors={[Colors.primary]}
-          />
-        }
-      />
+      <ImageBackground source={Images.serviceRequest} style={[Layout.fullSize]} resizeMode="cover">
+        <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>Service Requests</Text>
+        <FlatList
+          contentContainerStyle={[Gutters.smallHMargin]}
+          data={_sortServiceRequestDescending(serviceRequests)}
+          renderItem={serviceRequestItem}
+          keyExtractor={(item) => String(item.id)}
+          refreshControl={
+            <RefreshControl
+              refreshing={isLoadingServiceRequests}
+              onRefresh={_loadServiceRequests}
+              tintColor={Colors.primary}
+              colors={[Colors.primary]}
+            />
+          }
+        />
+      </ImageBackground>
 
       <FAB style={[Common.fabAlignment]} icon="plus" onPress={_handleOnServiceRequestCreatePress} />
     </>
