@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { ViewPropTypes, View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
@@ -11,6 +11,7 @@ import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
 
 const SignInForm = ({ submitForm, onSuccess, containerStyle, initialValues }) => {
+  const passwordRef = useRef(null);
   const { Gutters, Common, Layout } = useTheme();
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
 
@@ -71,6 +72,7 @@ const SignInForm = ({ submitForm, onSuccess, containerStyle, initialValues }) =>
                 inputContainerStyle={styles.inputContainer}
                 autoCapitalize="none"
                 keyboardType="email-address"
+                onSubmitEditing={() => passwordRef.current.focus()}
               />
               <HelperText style={[Common.loginErrorStyle]} type="error" visible={error('email')}>
                 {error('email')}
@@ -93,6 +95,7 @@ const SignInForm = ({ submitForm, onSuccess, containerStyle, initialValues }) =>
                 leftIconContainerStyle={[Gutters.regularHMargin]}
                 containerStyle={[Common.loginTextInput]}
                 inputContainerStyle={styles.inputContainer}
+                ref={passwordRef}
               />
               <HelperText style={[Common.loginErrorStyle]} type="error" visible={error('password')}>
                 {error('password')}

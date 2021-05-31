@@ -9,11 +9,11 @@ export const phoneSchema = Yup.string()
   .matches(/^(\+27|0|27)[6-8][0-9]{8}$/, 'Error: Invalid mobile number')
   .required('Mobile number is required');
 
-export const selectMunicipalitySchema = Yup.string().required('Municipality is required');
-
-export const selectServiceTypeSchema = Yup.object().typeError('Selection is Required');
-
-export const selectServiceTypeCategorySchema = Yup.string().required('Selection is Required');
+export const selectChannelSchema = Yup.string().required('Channel is required');
+export const selectServiceTypeCategorySchema = Yup.string().required(
+  'Service Category type is required',
+);
+export const selectServiceTypeSchema = Yup.object().typeError('Service Category is required');
 
 export const locationSchema = Yup.object().typeError('Location is required');
 export const descriptionSchema = Yup.string().required('Description is required');

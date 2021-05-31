@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useState } from 'react';
 import MapView from 'react-native-maps';
 import { Icon } from 'react-native-elements';
@@ -11,6 +10,8 @@ import {
   Keyboard,
   TouchableHighlight,
   Dimensions,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { Button, TextInput, IconButton } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
@@ -25,14 +26,15 @@ import {
   getCurrentPositionAction,
 } from '../../../../reducers/location-reducer/location.actions';
 import appConfig from '../../../../config';
+import { getMunicipalitiesAction } from '../../../../reducers/municipalities-reducer/municipalities.actions';
 
 const { width } = Dimensions.get('window');
+
 const SelectLocationScreen = () => {
   const { Colors, Layout, Common, Gutters } = useTheme();
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { region, selectedAddress } = useSelector(locationSelector);
-
   const [address, setAddress] = useState('');
   const [regionChange, setRegionChange] = useState({
     latitude: 30.5595,
@@ -61,6 +63,7 @@ const SelectLocationScreen = () => {
   };
 
   const _handlePickLocation = () => {
+    dispatch(getMunicipalitiesAction(regionChange.longitude, regionChange.latitude));
     navigation.navigate('CreateServiceRequest');
   };
 
@@ -89,7 +92,7 @@ const SelectLocationScreen = () => {
 
   return region ? (
     <View style={[Layout.fullSize]}>
-      <View style={[Common.headerSearch]}>
+      <View style={[Common.headerSelectLocation]}>
         <View style={[Layout.rowBetween]}>
           <IconButton
             icon="arrow-left"
@@ -100,7 +103,7 @@ const SelectLocationScreen = () => {
           />
 
           <View style={[Layout.center]}>
-            <Text style={Gutters.largeTMargin}>Pick Location</Text>
+            <Text style={[Gutters.largeTMargin, Common.pickLocation]}>Pick Location</Text>
           </View>
 
           <View style={[Layout.center]}>
@@ -119,6 +122,8 @@ const SelectLocationScreen = () => {
         enablePoweredByContainer={false}
         debounce={3}
         fetchDetails
+        enableHighAccuracyLocation
+        minLength={3}
         onPress={(data, details = null) => {
           _handleNewRegion(details);
         }}
@@ -127,8 +132,6 @@ const SelectLocationScreen = () => {
           language: 'en',
           components: 'country:za',
         }}
-        enableHighAccuracyLocation
-        minLength={3}
         styles={{
           container: {
             position: 'absolute',
@@ -136,7 +139,6 @@ const SelectLocationScreen = () => {
             marginTop: 80,
             zIndex: 1,
           },
-          listView: { backgroundColor: 'white' },
           textInput: {
             height: 53,
           },
@@ -145,10 +147,10 @@ const SelectLocationScreen = () => {
           InputComp: TextInput,
           autoFocus: true,
           backgroundColor: DefaultTheme.colors.background,
-          color: Colors.darkgray,
           clearButtonMode: 'never',
           listViewDisplayed: true,
           underlineColor: Colors.transparent,
+          autoCorrect: false,
           onChangeText: (text) => {
             setAddress(text);
           },
@@ -177,17 +179,19 @@ const SelectLocationScreen = () => {
         showsMyLocationButton={false}
       />
 
-      <View style={styles.pinContainer}>
+      <View style={[Common.pinContainer]}>
         <Icon type="ionicon" name="pin-outline" size={30} color={Colors.primary} />
       </View>
 
-      <View style={[Layout.fullWidth, styles.buttonContainer]}>
-        <TouchableHighlight onPress={_handlePickLocation}>
-          <Button style={{ height: 70, justifyContent: 'center' }} mode="contained">
-            Pick this location
-          </Button>
-        </TouchableHighlight>
-      </View>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'position' : ''}>
+        <View style={[Layout.fullWidth, Layout.buttonContainer]}>
+          <TouchableHighlight onPress={_handlePickLocation}>
+            <Button style={Common.buttonPickLocation} mode="contained">
+              Pick this location
+            </Button>
+          </TouchableHighlight>
+        </View>
+      </KeyboardAvoidingView>
     </View>
   ) : (
     <View style={[Layout.center, Layout.fill]}>
@@ -197,12 +201,7 @@ const SelectLocationScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  buttonContainer: {
-    bottom: 0,
-    position: 'absolute',
-  },
   clearContainer: {
-    alignItems: 'center',
     alignSelf: 'center',
     backgroundColor: DefaultTheme.colors.background,
     height: 38,
@@ -210,11 +209,6 @@ const styles = StyleSheet.create({
     left: width - 35,
     position: 'absolute',
     width: 40,
-  },
-  pinContainer: {
-    left: '47%',
-    position: 'absolute',
-    top: '53%',
   },
 });
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
-import { ViewPropTypes, View } from 'react-native';
+import { ViewPropTypes, View, Keyboard } from 'react-native';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -8,7 +8,7 @@ import { Button, HelperText, TextInput } from 'react-native-paper';
 
 import { useSelector } from 'react-redux';
 import {
-  selectMunicipalitySchema,
+  selectChannelSchema,
   selectServiceTypeCategorySchema,
   selectServiceTypeSchema,
   descriptionSchema,
@@ -32,13 +32,14 @@ const CreateServiceRequestForm = ({
   const { Common, Layout, Gutters } = useTheme();
   const { selectedAddress, region } = useSelector(locationSelector);
   const [address, setAddress] = useState('');
+  let serviceTypesAvailable = false;
 
   useEffect(() => {
     setAddress(selectedAddress);
   }, [selectedAddress]);
 
   const validationSchema = Yup.object().shape({
-    channel: selectMunicipalitySchema,
+    channel: selectChannelSchema,
     serviceTypeCategory: selectServiceTypeCategorySchema,
     serviceType: selectServiceTypeSchema,
     description: descriptionSchema,
@@ -80,41 +81,64 @@ const CreateServiceRequestForm = ({
           setFieldValue,
           setFieldTouched,
         }) => {
-          const memiozedChannels = Object.keys(municipalities);
-
+          const memoizedChannels = Object.keys(municipalities);
           const channelNames = [];
-          // eslint-disable-next-line no-plusplus
-          for (let i = 0; i < Object.keys(municipalities).length; i++) {
-            const dataa = municipalities[memiozedChannels[i]].name;
 
-            channelNames.push(dataa);
+          for (let i = 0; i < Object.keys(municipalities).length; i += 1) {
+            const municipalitiesData = municipalities[memoizedChannels[i]].name;
+            channelNames.push(municipalitiesData);
           }
 
-          let refCode = null;
-          let memiozedServiceTypeCategories = null;
-          let memiozedServiceTypes = null;
+          let municipalityCodeRef = null;
+          let memoizedServiceTypeCategories = null;
+          let memoizedServiceTypes = null;
 
-          if (values.channel !== '') {
-            // eslint-disable-next-line no-plusplus
-            for (let i = 0; i < Object.keys(municipalities).length; i++) {
+          if (!_.isEmpty(values.channel)) {
+            for (let i = 0; i < Object.keys(municipalities).length; i += 1) {
               if (values.channel === channelNames[i]) {
-                refCode = memiozedChannels[i];
+                municipalityCodeRef = memoizedChannels[i];
               }
             }
           }
 
-          if (values.channel !== '') {
-            memiozedServiceTypeCategories = Object.keys(municipalities[refCode].serviceTypes);
+          if (!_.isEmpty(values.channel) && !_.isNull(municipalityCodeRef)) {
+            memoizedServiceTypeCategories = Object.keys(
+              municipalities[municipalityCodeRef].serviceTypes,
+            );
 
-            if (values.serviceTypeCategory !== '') {
-              memiozedServiceTypes =
-                municipalities[refCode].serviceTypes[values.serviceTypeCategory];
+            if (_.isEmpty(memoizedServiceTypeCategories)) {
+              serviceTypesAvailable = false;
+            } else {
+              serviceTypesAvailable = true;
+            }
+
+            if (!_.isEmpty(values.serviceTypeCategory)) {
+              memoizedServiceTypes =
+                municipalities[municipalityCodeRef].serviceTypes[values.serviceTypeCategory];
             }
           }
 
           useEffect(() => {
             setFieldValue('location', region);
           }, [region]);
+
+          useEffect(() => {
+            setFieldValue('municipalityCode', municipalityCodeRef);
+          }, [municipalityCodeRef]);
+
+          useEffect(() => {
+            setFieldValue('address', selectedAddress);
+          }, [selectedAddress]);
+
+          const handleSubmissionFormik = () => {
+            if (serviceTypesAvailable === false) {
+              setFieldValue('serviceTypeCategory', 'No Service Category Avaliable');
+              values.serviceTypeCategory = 'No Service Category Avaliable';
+              setFieldValue('serviceType', { NoServiceType: 'No Service Type Avaliable' });
+              values.serviceType = { NoServiceType: 'No Service Type Avaliable' };
+            }
+            handleSubmit();
+          };
 
           const error = (name) => getFormError(name, { touched, status, errors });
           return (
@@ -124,62 +148,71 @@ const CreateServiceRequestForm = ({
 
               <DropdownSelect
                 items={channelNames}
-                label="Municipality"
+                label="Channel"
                 keyExtractor={(item) => item}
                 valueExtractor={(item) => item}
                 onBlur={() => {
                   setFieldTouched('channel', true);
                 }}
-                placeholder="Municipality"
+                placeholder="Channel"
                 onChange={(municipality) => {
                   setFieldValue('channel', municipality);
-                  setFieldValue('serviceTypeCategory', '');
                   setFieldValue('serviceType', null);
+                  setFieldValue('serviceTypeCategory', '');
                 }}
                 value={values.channel}
                 error={error('channel')}
                 errorStyle={Common.errorStyle}
               />
 
-              <DropdownSelect
-                disabled={_.isEmpty(values.channel)}
-                items={memiozedServiceTypeCategories}
-                label="Service Type Category"
-                keyExtractor={(item) => item}
-                valueExtractor={(item) => item}
-                onBlur={() => {
-                  setFieldTouched('serviceTypeCategory', true);
-                }}
-                placeholder="Select Service Category"
-                onChange={(newServiceTypeCategory) => {
-                  setFieldValue('serviceTypeCategory', newServiceTypeCategory);
-                  setFieldValue('serviceType', null);
-                }}
-                value={values.serviceTypeCategory}
-                error={error('serviceTypeCategory')}
-                errorStyle={Common.errorStyle}
-              />
+              {serviceTypesAvailable ? (
+                <DropdownSelect
+                  disabled={_.isEmpty(values.channel)}
+                  items={memoizedServiceTypeCategories}
+                  label="Service Type Category"
+                  keyExtractor={(item) => item}
+                  valueExtractor={(item) => item}
+                  onBlur={() => {
+                    setFieldTouched('serviceTypeCategory', true);
+                  }}
+                  placeholder="Select Service Category"
+                  onChange={(newServiceTypeCategory) => {
+                    setFieldValue('serviceTypeCategory', newServiceTypeCategory);
+                    setFieldValue('serviceType', null);
+                  }}
+                  value={values.serviceTypeCategory}
+                  error={error('serviceTypeCategory')}
+                  errorStyle={Common.errorStyle}
+                />
+              ) : null}
 
-              <DropdownSelect
-                disabled={_.isEmpty(values.serviceTypeCategory)}
-                items={memiozedServiceTypes}
-                label="Service Type"
-                keyExtractor={(item) => item.id}
-                valueExtractor={(item) => item.name}
-                onBlur={() => {
-                  setFieldTouched('serviceType', true);
-                }}
-                placeholder="Select Service Type"
-                onChange={(newServiceType) => setFieldValue('serviceType', newServiceType)}
-                value={values.serviceType?.name}
-                error={error('serviceType')}
-                errorStyle={Common.errorStyle}
-              />
+              {serviceTypesAvailable ? (
+                <DropdownSelect
+                  disabled={_.isEmpty(values.serviceTypeCategory)}
+                  items={memoizedServiceTypes}
+                  label="Service Type"
+                  keyExtractor={(item) => item.id}
+                  valueExtractor={(item) => item.name}
+                  onBlur={() => {
+                    setFieldTouched('serviceType', true);
+                  }}
+                  placeholder="Select Service Type"
+                  onChange={(newServiceType) => setFieldValue('serviceType', newServiceType)}
+                  value={values.serviceType?.name}
+                  error={error('serviceType')}
+                  errorStyle={Common.errorStyle}
+                />
+              ) : null}
 
               <TextInput
                 label="Description"
                 value={values.description}
                 multiline
+                keyboardType="default"
+                onSubmitEditing={() => {
+                  Keyboard.dismiss();
+                }}
+                blurOnSubmit
                 onBlur={handleBlur('description')}
                 onChangeText={handleChange('description')}
                 style={[Common.textInput]}
@@ -201,7 +234,7 @@ const CreateServiceRequestForm = ({
                 <Button
                   mode="contained"
                   style={[Layout.fill, Gutters.tinyLMargin]}
-                  onPress={handleSubmit}
+                  onPress={handleSubmissionFormik}
                   loading={isSubmitting}
                   disabled={isSubmitting}
                 >

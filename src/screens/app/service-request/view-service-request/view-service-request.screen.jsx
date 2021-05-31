@@ -1,5 +1,12 @@
 import React from 'react';
-import { ActivityIndicator, Dimensions, ScrollView, StyleSheet, Text } from 'react-native';
+import {
+  ActivityIndicator,
+  Dimensions,
+  ScrollView,
+  StyleSheet,
+  Text,
+  ImageBackground,
+} from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Image } from 'react-native-elements';
 import { Modal, Button, Portal } from 'react-native-paper';
@@ -20,7 +27,7 @@ const ViewServiceRequestScreen = () => {
   const [visible, setVisible] = React.useState(false);
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
-  const { Gutters, Fonts, Common } = useTheme();
+  const { Gutters, Fonts, Common, Images, Layout } = useTheme();
 
   const _uploadPhoto = (image) => {
     dispatch(uploadServiceRequestImage(serviceRequest.id, image));
@@ -29,44 +36,46 @@ const ViewServiceRequestScreen = () => {
 
   return (
     <ScrollView style={[Common.defaultBackGround]}>
-      <Text style={[Gutters.regularMargin, Fonts.titleTiny]}>Service Request</Text>
-      <ServiceRequestDetails serviceRequest={serviceRequest} />
-      {_.isEmpty(serviceRequest.serviceRequestImage) ? null : (
-        <Button
-          mode="outlined"
-          icon="eye"
-          color={Colors.white}
-          style={[Gutters.regularMargin, styles.button]}
-          labelStyle={[Fonts.textRegular, Common.whiteText]}
-          onPress={() => {
-            showModal();
-          }}
-        >
-          View Image
-        </Button>
-      )}
-      {!_.isEmpty(serviceRequest.serviceRequestImage) ? null : (
-        <UploadDocumentButton
-          title="Take Photo"
-          style={[Gutters.regularMargin, styles.button]}
-          disabled={false}
-          onImageSelect={(image) => _uploadPhoto(image)}
-        />
-      )}
-
-      <Portal>
-        <Modal
-          visible={visible}
-          onDismiss={hideModal}
-          contentContainerStyle={styles.containerStyle}
-        >
-          <Image
-            source={serviceRequest.serviceRequestImage}
-            style={styles.image}
-            PlaceholderContent={<ActivityIndicator />}
+      <ImageBackground source={Images.serviceRequest} style={[Layout.fullSize]} resizeMode="cover">
+        <Text style={[Gutters.regularMargin, Fonts.titleTiny]}>Service Request</Text>
+        <ServiceRequestDetails serviceRequest={serviceRequest} />
+        {_.isEmpty(serviceRequest.serviceRequestImage) ? null : (
+          <Button
+            mode="outlined"
+            icon="eye"
+            color={Colors.white}
+            style={[Gutters.regularMargin, styles.button]}
+            labelStyle={[Fonts.textRegular, Common.whiteText]}
+            onPress={() => {
+              showModal();
+            }}
+          >
+            View Image
+          </Button>
+        )}
+        {!_.isEmpty(serviceRequest.serviceRequestImage) ? null : (
+          <UploadDocumentButton
+            title="Take Photo"
+            style={[Gutters.regularMargin, styles.button]}
+            disabled={false}
+            onImageSelect={(image) => _uploadPhoto(image)}
           />
-        </Modal>
-      </Portal>
+        )}
+
+        <Portal>
+          <Modal
+            visible={visible}
+            onDismiss={hideModal}
+            contentContainerStyle={styles.containerStyle}
+          >
+            <Image
+              source={serviceRequest.serviceRequestImage}
+              style={styles.image}
+              PlaceholderContent={<ActivityIndicator />}
+            />
+          </Modal>
+        </Portal>
+      </ImageBackground>
     </ScrollView>
   );
 };
