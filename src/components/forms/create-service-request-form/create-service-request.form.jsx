@@ -5,8 +5,9 @@ import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Button, HelperText, TextInput } from 'react-native-paper';
-
+import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
+
 import {
   selectChannelSchema,
   selectServiceTypeCategorySchema,
@@ -32,6 +33,7 @@ const CreateServiceRequestForm = ({
   const { Common, Layout, Gutters } = useTheme();
   const { selectedAddress, region } = useSelector(locationSelector);
   const [address, setAddress] = useState('');
+  const navigation = useNavigation();
   let serviceTypesAvailable = false;
 
   useEffect(() => {
@@ -143,7 +145,11 @@ const CreateServiceRequestForm = ({
           const error = (name) => getFormError(name, { touched, status, errors });
           return (
             <>
-              <TextInput value={address} label="Location Selected" editable={false} />
+              <TextInput
+                value={address}
+                label="Location Selected"
+                onFocus={() => navigation.navigate('SelectLocationScreen')}
+              />
               <HelperText />
 
               <DropdownSelect
