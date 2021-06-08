@@ -5,14 +5,27 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import AuthNavigator from './auth/auth.navigator';
 import AppNavigator from './app/app.navigator';
+import TimeoutScreen from '../screens/app/timeout/timout.screen';
 
 const RootStack = createStackNavigator();
 const AppContainer = () => {
-  const { isAuthenticated } = useSelector((reducer) => reducer.userAuthReducer);
+  const { isAuthenticated, isServerOffline } = useSelector((reducer) => reducer.userAuthReducer);
+
   return (
     <NavigationContainer>
       <RootStack.Navigator screenOptions={{ headerShown: false }}>
-        {isAuthenticated ? (
+        {isServerOffline ? (
+          <RootStack.Screen
+            name="TimeoutScreen"
+            component={TimeoutScreen}
+            options={{
+              headerShown: true,
+              title: 'Error',
+              header: () => null,
+            }}
+            initialParams={{ timeoutMessage: 'SERVER OFFLINE' }}
+          />
+        ) : isAuthenticated ? (
           <RootStack.Screen name="APP" component={AppNavigator} />
         ) : (
           <RootStack.Screen name="AUTH" component={AuthNavigator} />

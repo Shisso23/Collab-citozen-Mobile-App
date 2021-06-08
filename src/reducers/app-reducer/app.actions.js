@@ -1,7 +1,11 @@
 import RNBootSplash from 'react-native-bootsplash';
+
 import { userAuthService } from '../../services';
 import { getAccountsAction } from '../accounts-reducer/accounts.actions';
-import { setIsAuthenticatedAction } from '../user-auth-reducer/user-auth.reducer';
+import {
+  setIsAuthenticatedAction,
+  setIsServerOfflineAction,
+} from '../user-auth-reducer/user-auth.reducer';
 import { getUserAction } from '../user-reducer/user.actions';
 
 export const initAppAction = () => {
@@ -10,7 +14,10 @@ export const initAppAction = () => {
     await dispatch(loadAppDataAction());
     const tokensExist = await doTokenExistInLocalStorage();
     if (tokensExist) {
-      await dispatch(isAuthenticatedFlowAction());
+      dispatch(isAuthenticatedFlowAction()).catch(() => {
+        dispatch(setIsServerOfflineAction(true));
+        dispatch(setIsAuthenticatedAction(false));
+      });
     }
     RNBootSplash.hide({ fade: true });
   };
@@ -20,6 +27,7 @@ export const isAuthenticatedFlowAction = () => {
   return (dispatch) => {
     return Promise.all([dispatch(loadAppDataForSignedInUserAction())]).finally(() => {
       dispatch(setIsAuthenticatedAction(true));
+      dispatch(setIsServerOfflineAction(false));
     });
   };
 };
