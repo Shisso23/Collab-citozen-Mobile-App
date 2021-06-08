@@ -5,7 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import AuthNavigator from './auth/auth.navigator';
 import AppNavigator from './app/app.navigator';
-import TimeoutScreen from '../screens/app/timeout/timout.screen';
+import TimeoutScreen from '../screens/app/timeout/timeout.screen';
 
 const RootStack = createStackNavigator();
 const AppContainer = () => {
