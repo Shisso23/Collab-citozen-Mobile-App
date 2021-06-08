@@ -8,9 +8,13 @@ export const setIsLoadingAction = setIsLoading.action;
 const setIsAuthenticated = CreateAction(reducerName, 'SET_IS_AUTHENTICATED');
 export const setIsAuthenticatedAction = setIsAuthenticated.action;
 
+const setIsServerOffline = CreateAction(reducerName, 'SET_SERVER-OFFLINE');
+export const setIsServerOfflineAction = setIsServerOffline.action;
+
 const initialState = {
   isAuthenticated: false,
   isLoading: false,
+  isServerOffline: false,
 };
 
 export default function userAuthReducer(state = initialState, action) {
@@ -24,6 +28,11 @@ export default function userAuthReducer(state = initialState, action) {
       return {
         ...state,
         isLoading: action.payload,
+      };
+    case setIsServerOffline.actionType:
+      return {
+        ...state,
+        isServerOffline: action.payload,
       };
     default:
       return state;

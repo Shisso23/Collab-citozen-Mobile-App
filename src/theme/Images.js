@@ -10,4 +10,5 @@ export default () => ({
   loginBackground: require('../assets/images/loginBackGround.png'),
   collaboratorLogoText: require('../assets/images/collboratorText.png'),
   serviceRequest: require('../assets/images/serviceRequest.png'),
+  serverDown: require('../assets/images/serverDown.png'),
 });
