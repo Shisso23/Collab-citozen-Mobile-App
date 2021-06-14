@@ -21,3 +21,10 @@ export const apiUserModel = (_appUserModel = {}) => ({
     lastName: _.get(_appUserModel, 'lastName', ''),
   },
 });
+
+export const userUpdateSettingModel = (_model = {}) => ({
+  user: {
+    opt_in_sms: _.get(_model, 'opt_in_sms', undefined),
+    opt_in_push_notifications: _.get(_model, 'opt_in_push_notifications', undefined),
+  },
+});
