@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import { Avatar, FAB, List } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import { FlatList, StyleSheet, Text, View, RefreshControl, ImageBackground } from 'react-native';
+import { FlatList, Text, View, RefreshControl, ImageBackground } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import _ from 'lodash';
+
 import useTheme from '../../../theme/hooks/useTheme';
 import { serviceRequestSelector } from '../../../reducers/service-request-reducer/service-request.reducer';
 import { getServiceRequestsAction } from '../../../reducers/service-request-reducer/service-request.actions';
@@ -37,9 +38,11 @@ const ServiceRequestScreen = () => {
         return Colors.error;
     }
   };
+
   const _setImageUrl = (item) => {
     return _.isEmpty(item.serviceRequestImage) ? null : item.serviceRequestImage;
   };
+
   useEffect(() => {
     _loadServiceRequests();
   }, []);
@@ -61,7 +64,7 @@ const ServiceRequestScreen = () => {
                 <View
                   style={[
                     Gutters.tinyHMargin,
-                    styles.statusIndicator,
+                    Common.statusIndicator,
                     { backgroundColor: _getStatusIndicator(item.status) },
                   ]}
                 />
@@ -96,6 +99,7 @@ const ServiceRequestScreen = () => {
       </View>
     );
   };
+
   return (
     <>
       <ImageBackground source={Images.serviceRequest} style={[Layout.fullSize]} resizeMode="cover">
@@ -124,11 +128,5 @@ const ServiceRequestScreen = () => {
 ServiceRequestScreen.propTypes = {};
 
 ServiceRequestScreen.defaultProps = {};
-const styles = StyleSheet.create({
-  statusIndicator: {
-    borderRadius: 5,
-    height: 7,
-    width: 7,
-  },
-});
+
 export default ServiceRequestScreen;

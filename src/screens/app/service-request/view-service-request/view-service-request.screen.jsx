@@ -35,8 +35,8 @@ const ViewServiceRequestScreen = () => {
   };
 
   return (
-    <ScrollView style={[Common.defaultBackGround]}>
-      <ImageBackground source={Images.serviceRequest} style={[Layout.fullSize]} resizeMode="cover">
+    <ImageBackground source={Images.serviceRequest} style={[Layout.fullSize]} resizeMode="cover">
+      <ScrollView>
         <Text style={[Gutters.regularMargin, Fonts.titleTiny]}>Service Request</Text>
         <ServiceRequestDetails serviceRequest={serviceRequest} />
         {_.isEmpty(serviceRequest.serviceRequestImage) ? null : (
@@ -75,8 +75,8 @@ const ViewServiceRequestScreen = () => {
             />
           </Modal>
         </Portal>
-      </ImageBackground>
-    </ScrollView>
+      </ScrollView>
+    </ImageBackground>
   );
 };
 ViewServiceRequestScreen.propTypes = {};

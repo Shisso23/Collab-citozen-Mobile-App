@@ -37,6 +37,12 @@ const DrawerContent = (props) => {
           </View>
           <Divider style={[Common.backgroundWhite, Gutters.regularLMargin]} />
           <Drawer.Item
+            icon="home"
+            label="Home"
+            onPress={() => navigation.navigate('Home')}
+            theme={theme}
+          />
+          <Drawer.Item
             icon="information"
             label="Service Requests"
             onPress={() => navigation.navigate('ServiceRequests')}

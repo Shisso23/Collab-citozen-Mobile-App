@@ -14,6 +14,7 @@ import AccountScreen from '../../screens/app/account/account.screen';
 import HeaderBackGround from '../../components/atoms/header-background';
 
 import ViewServiceRequestScreen from '../../screens/app/service-request/view-service-request/view-service-request.screen';
+import ViewNewsFeedArticleScreen from '../../screens/app/newsfeed/view-newsfeed-article.screen';
 
 const Drawer = createDrawerNavigator();
 const AppStack = createStackNavigator();
@@ -33,6 +34,7 @@ const AppNavigator = () => {
         options={{
           headerShown: false,
           title: 'Select Location',
+          gestureEnabled: false,
         }}
       />
       <AppStack.Screen
@@ -54,6 +56,15 @@ const AppNavigator = () => {
           header: (props) => <HeaderBackGround {...props} backButton />,
         }}
       />
+
+      <AppStack.Screen
+        name="ViewNewsFeedArticle"
+        component={ViewNewsFeedArticleScreen}
+        options={{
+          headerShown: false,
+          title: 'Select Location',
+        }}
+      />
     </AppStack.Navigator>
   );
 };
@@ -65,7 +76,7 @@ const DrawerNavigator = () => {
       screenOptions={Custom.globalNavigatorScreenOptions}
       drawerContent={(props) => <DrawerContent {...props} />}
       drawerStyle={Common.drawerStyle}
-      initialRouteName="ServiceRequests"
+      initialRouteName="Home"
     >
       <Drawer.Screen
         name="Home"
