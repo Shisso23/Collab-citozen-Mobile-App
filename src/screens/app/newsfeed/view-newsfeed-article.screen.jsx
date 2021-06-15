@@ -11,7 +11,7 @@ const ViewNewsFeedArticleScreen = () => {
   const { Images, Layout } = useTheme();
 
   return (
-    <ImageBackground source={Images.serviceRequest} style={[Layout.fullSize]} resizeMode="cover">
+    <ImageBackground source={Images.serviceRequest} style={Layout.fullSize} resizeMode="cover">
       <OnBackPressHeader arrowColor="#000000" />
       <ScrollView>
         <NewsFeedArticle NewsFeedArticle={params} />

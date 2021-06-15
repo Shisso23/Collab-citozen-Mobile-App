@@ -65,7 +65,7 @@ const HomeScreen = () => {
         <List.Item
           title={item.title}
           description={() => (
-            <View style={[Layout.alignItemsEnd]}>
+            <View style={Layout.alignItemsEnd}>
               <View
                 style={[
                   Common.statusIndicator,
@@ -88,7 +88,7 @@ const HomeScreen = () => {
       <ImageBackground source={Images.serviceRequest} style={[Layout.fullSize]} resizeMode="cover">
         <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>Home</Text>
         <FlatList
-          contentContainerStyle={[Gutters.smallHMargin]}
+          contentContainerStyle={Gutters.smallHMargin}
           data={newsFeeds}
           renderItem={newsFeedItem}
           keyExtractor={(item) => String(item.newsFeedId)}
@@ -103,7 +103,7 @@ const HomeScreen = () => {
         />
       </ImageBackground>
 
-      <FAB style={[Common.fabAlignment]} icon="plus" onPress={_handleOnServiceRequestCreatePress} />
+      <FAB style={Common.fabAlignment} icon="plus" onPress={_handleOnServiceRequestCreatePress} />
     </>
   );
 };

@@ -10,19 +10,18 @@ const { width: screenWidth } = Dimensions.get('window');
 
 const NewsFeedArticle = (newsFeedArticle) => {
   const { Gutters, Fonts } = useTheme();
-  const newsFeedArticleItem = _.get(newsFeedArticle, 'NewsFeedArticle');
-  const newsFeedItem = _.get(newsFeedArticleItem, 'newsFeedItem');
+  const newsFeedItem = _.get(newsFeedArticle, 'NewsFeedArticle.newsFeedItem');
 
   const bodyText = newsFeedItem.body;
   const bodyTextFormatted = bodyText.replace(/\./g, '.\n \n');
 
   return (
-    <View style={[Gutters.regularHMargin]}>
+    <View style={Gutters.regularHMargin}>
       <Image source={newsFeedItem.newsFeedImage} style={styles.imageStyle} />
       <Divider />
-      <Text style={[Fonts.titleRegular]}>{`${newsFeedItem.title}`}</Text>
+      <Text style={Fonts.titleRegular}>{`${newsFeedItem.title}`}</Text>
       <Divider />
-      <Text style={[Fonts.textLarge]}>{`${bodyTextFormatted}`}</Text>
+      <Text style={Fonts.textLarge}>{`${bodyTextFormatted}`}</Text>
     </View>
   );
 };
