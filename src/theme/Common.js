@@ -120,6 +120,11 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
     registerTextInputWithShadow: {
       backgroundColor: DefaultTheme.colors.background,
     },
+    statusIndicator: {
+      borderRadius: 5,
+      height: 7,
+      width: 7,
+    },
     textInput: {
       backgroundColor: Colors.transparent,
     },
