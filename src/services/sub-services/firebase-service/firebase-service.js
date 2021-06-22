@@ -12,13 +12,9 @@ const messagingAllowed = async () => {
 
 const getAndSetToken = async () => {
   let fcmToken = await AsyncStorage.getItem(config.fcmTokenKey);
-  const fcmEnabled = await AsyncStorage.getItem(config.fcmEnabled);
-  if (!fcmEnabled) {
-    await AsyncStorage.setItem(config.fcmEnabled, 'true');
-  }
   const enabled = await messagingAllowed();
 
-  if (enabled && fcmEnabled === 'true') {
+  if (enabled) {
     if (!fcmToken) {
       try {
         fcmToken = await messaging().getToken();

@@ -1,5 +1,5 @@
 import { setUserAction } from './user.reducer';
-import { flashService, firebaseService, userService } from '../../services';
+import { flashService, userService } from '../../services';
 
 export const getUserAction = () => async (dispatch) => {
   try {
@@ -8,12 +8,4 @@ export const getUserAction = () => async (dispatch) => {
   } catch (error) {
     flashService.error(error.message);
   }
-};
-
-export const updateFirebaseToken = () => {
-  return () => {
-    return firebaseService.getAndSetToken().then((firebaseToken) => {
-      return userService.updateUserProfile({ firebaseToken });
-    });
-  };
 };

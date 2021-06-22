@@ -6,7 +6,6 @@ import { useDispatch } from 'react-redux';
 import NavigationContainer from './navigation/root.navigator';
 import { initAppAction } from './reducers/app-reducer/app.actions';
 import { firebaseService } from './services';
-import { hasIncomingNotification } from './reducers/notification-reducer/notification.actions';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -28,7 +27,6 @@ const App = () => {
   const createNotificationListeners = async () => {
     messaging().onMessage((remoteMessage) => {
       firebaseService.processMessage(remoteMessage);
-      dispatch(hasIncomingNotification());
     });
   };
 
