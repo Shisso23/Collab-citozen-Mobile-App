@@ -65,3 +65,6 @@ buck-out/
 
 # Ctags file
 tags
+
+#config
+config.js
