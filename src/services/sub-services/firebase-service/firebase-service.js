@@ -29,13 +29,6 @@ const getAndSetToken = async () => {
   return fcmToken;
 };
 
-const saveMessage = async (remoteMessage) => {
-  const currentMessages = await AsyncStorage.getItem('data_notifications');
-  const messageArray = JSON.parse(currentMessages);
-  messageArray.push(remoteMessage.data);
-  await AsyncStorage.setItem('data_notifications', JSON.stringify(messageArray));
-};
-
 const processMessage = async (remoteMessage) => {
   const fcmEnabled = await AsyncStorage.getItem(config.fcmEnabled);
   const title = _.get(remoteMessage, 'notification.title', 'collaborator');
@@ -49,5 +42,4 @@ export default {
   getAndSetToken,
   messagingAllowed,
   processMessage,
-  saveMessage,
 };
