@@ -8,4 +8,5 @@ export default {
   apiUrl: `${HOST_URL}/${API_LOCATION}`,
   googleMapsApiKey: GOOGLE_MAPS_API_KEY,
   webSiteUrl: WEB_SITE_URL,
+  fcmTokenKey: 'fcmToken',
 };

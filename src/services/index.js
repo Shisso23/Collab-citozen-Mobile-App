@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 export { default as networkService } from './sub-services/network-service/network.service';
 export { default as userService } from './sub-services/user-service/user.service';
 export { default as authNetworkService } from './sub-services/auth-network-service/auth-network.service';
@@ -9,3 +10,4 @@ export { default as locationService } from './sub-services/location-service/loca
 export { default as permissionsService } from './sub-services/permissions-service/permissions.service';
 export { default as alertService } from './sub-services/alert-service/alert.service';
 export { default as municipalityService } from './sub-services/municipality-service/municipality.service';
+export { default as firebaseService } from './sub-services/firebase-service/firebase-service';

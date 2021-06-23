@@ -27,3 +27,4 @@ const Root = () => (
 );
 
 AppRegistry.registerComponent(appName, () => Root);
+AppRegistry.registerHeadlessTask('RNFirebaseBackgroundMessage');
