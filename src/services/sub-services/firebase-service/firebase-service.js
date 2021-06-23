@@ -22,7 +22,7 @@ const getAndSetToken = async () => {
         fcmToken = null;
       }
       if (fcmToken) {
-        await AsyncStorage.setItem(config.fcmTokenKey, fcmToken);
+        await AsyncStorage.setItem(`${config.fcmTokenKey}`, `${fcmToken}`);
       }
     }
   }
@@ -30,12 +30,9 @@ const getAndSetToken = async () => {
 };
 
 const processMessage = async (remoteMessage) => {
-  const fcmEnabled = await AsyncStorage.getItem(config.fcmEnabled);
   const title = _.get(remoteMessage, 'notification.title', 'collaborator');
   const body = _.get(remoteMessage, 'notification.body', '');
-  if (fcmEnabled === 'true') {
-    FlashService.inbox(title, body);
-  }
+  FlashService.inbox(title, body);
 };
 
 export default {
