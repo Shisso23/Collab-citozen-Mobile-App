@@ -52,7 +52,7 @@ const DrawerContent = (props) => {
 
           <Drawer.Item
             icon="file"
-            label="Subscribe To Channels"
+            label="Channels"
             onPress={() => navigation.navigate('ViewSubscribeToChannels')}
             theme={theme}
           />

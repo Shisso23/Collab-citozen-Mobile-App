@@ -1,7 +1,5 @@
-/* eslint-disable */
 import React, { useEffect, useState } from 'react';
-import _ from 'lodash';
-import { ViewPropTypes, View, Keyboard, FlatList, StyleSheet } from 'react-native';
+import { ViewPropTypes, View, FlatList } from 'react-native';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -16,26 +14,18 @@ import {
   descriptionSchema,
   locationSchema,
 } from '../form-validaton-schemas';
-import { getFormError } from '../form-utils';
 import useTheme from '../../../theme/hooks/useTheme';
-import { DropdownSelect, CheckBoxTick } from '../../atoms';
+import { CheckBoxTick } from '../../atoms';
 import { locationSelector } from '../../../reducers/location-reducer/location.reducer';
-import UploadDocumentButton from '../../molecules/upload-document-button';
 
 navigator.geolocation = require('react-native-geolocation-service');
 
-const SubscribeToChannelsForm = ({
-  submitForm,
-  onSuccess,
-  containerStyle,
-  initialValues,
-  municipalities,
-}) => {
+const SubscribeToChannelsForm = ({ submitForm, onSuccess, containerStyle, initialValues }) => {
   const { Common, Layout, Gutters, Colors } = useTheme();
-  const { selectedAddress, region } = useSelector(locationSelector);
+  const { selectedAddress } = useSelector(locationSelector);
   const [address, setAddress] = useState('');
   const navigation = useNavigation();
-  let serviceTypesAvailable = false;
+  const serviceTypesAvailable = false;
 
   useEffect(() => {
     setAddress(selectedAddress);
@@ -97,67 +87,7 @@ const SubscribeToChannelsForm = ({
           enableReinitialize
           validationSchema={validationSchema}
         >
-          {({
-            handleChange,
-            handleSubmit,
-            values,
-            errors,
-            isSubmitting,
-            handleBlur,
-            touched,
-            status,
-            setFieldValue,
-            setFieldTouched,
-          }) => {
-            const memoizedChannels = Object.keys(municipalities);
-            const channelNames = [];
-
-            for (let i = 0; i < Object.keys(municipalities).length; i += 1) {
-              const municipalitiesData = municipalities[memoizedChannels[i]].name;
-              channelNames.push(municipalitiesData);
-            }
-
-            let municipalityCodeRef = null;
-            let memoizedServiceTypeCategories = null;
-            let memoizedServiceTypes = null;
-
-            if (!_.isEmpty(values.channel)) {
-              for (let i = 0; i < Object.keys(municipalities).length; i += 1) {
-                if (values.channel === channelNames[i]) {
-                  municipalityCodeRef = memoizedChannels[i];
-                }
-              }
-            }
-
-            if (!_.isEmpty(values.channel) && !_.isNull(municipalityCodeRef)) {
-              memoizedServiceTypeCategories = Object.keys(
-                municipalities[municipalityCodeRef].serviceTypes,
-              );
-
-              if (_.isEmpty(memoizedServiceTypeCategories)) {
-                serviceTypesAvailable = false;
-              } else {
-                serviceTypesAvailable = true;
-              }
-
-              if (!_.isEmpty(values.serviceTypeCategory)) {
-                memoizedServiceTypes =
-                  municipalities[municipalityCodeRef].serviceTypes[values.serviceTypeCategory];
-              }
-            }
-
-            useEffect(() => {
-              setFieldValue('location', region);
-            }, [region]);
-
-            useEffect(() => {
-              setFieldValue('municipalityCode', municipalityCodeRef);
-            }, [municipalityCodeRef]);
-
-            useEffect(() => {
-              setFieldValue('address', selectedAddress);
-            }, [selectedAddress]);
-
+          {({ handleSubmit, values, isSubmitting, setFieldValue }) => {
             const handleSubmissionFormik = () => {
               if (serviceTypesAvailable === false) {
                 setFieldValue('serviceTypeCategory', 'No Service Category Avaliable');
@@ -168,7 +98,6 @@ const SubscribeToChannelsForm = ({
               handleSubmit();
             };
 
-            const error = (name) => getFormError(name, { touched, status, errors });
             return (
               <>
                 <TextInput
@@ -210,7 +139,6 @@ SubscribeToChannelsForm.propTypes = {
   initialValues: PropTypes.object.isRequired,
   onSuccess: PropTypes.func,
   containerStyle: ViewPropTypes.style,
-  municipalities: PropTypes.object.isRequired,
 };
 
 SubscribeToChannelsForm.defaultProps = {

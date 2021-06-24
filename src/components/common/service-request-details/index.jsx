@@ -1,8 +1,9 @@
+import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Avatar } from 'react-native-paper';
 import { StyleSheet, Text, View } from 'react-native';
-import _ from 'lodash';
+
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
 import { formatTime } from '../../../helpers/time.helper';
