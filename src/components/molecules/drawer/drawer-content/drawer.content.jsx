@@ -1,12 +1,13 @@
+import _ from 'lodash';
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { Text, Drawer, Divider } from 'react-native-paper';
 import { DrawerContentScrollView } from '@react-navigation/drawer';
 import { useSelector, useDispatch } from 'react-redux';
-import _ from 'lodash';
 import { Avatar } from 'react-native-elements';
 import DeviceInfo from 'react-native-device-info';
+
 import { signOutAction } from '../../../../reducers/user-auth-reducer/user-auth.actions';
 import useTheme from '../../../../theme/hooks/useTheme';
 import { Colors } from '../../../../theme/Variables';
@@ -48,10 +49,11 @@ const DrawerContent = (props) => {
             onPress={() => navigation.navigate('ServiceRequests')}
             theme={theme}
           />
+
           <Drawer.Item
             icon="file"
-            label="Properties"
-            onPress={() => navigation.navigate('Accounts')}
+            label="Subscribe To Channels"
+            onPress={() => navigation.navigate('ViewSubscribeToChannels')}
             theme={theme}
           />
         </Drawer.Section>

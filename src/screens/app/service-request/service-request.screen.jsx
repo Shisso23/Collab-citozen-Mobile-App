@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { useEffect } from 'react';
 import { Avatar, FAB, List } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -5,7 +6,6 @@ import { FlatList, Text, View, RefreshControl, ImageBackground } from 'react-nat
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import _ from 'lodash';
 
 import useTheme from '../../../theme/hooks/useTheme';
 import { serviceRequestSelector } from '../../../reducers/service-request-reducer/service-request.reducer';
@@ -49,7 +49,7 @@ const ServiceRequestScreen = () => {
 
   const _handleOnServiceRequestCreatePress = async () => {
     await permissionsService.checkLocationPermissions();
-    navigation.navigate('SelectLocationScreen');
+    navigation.navigate('SelectLocationScreen', false);
   };
 
   const serviceRequestItem = ({ item }) => {

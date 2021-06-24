@@ -9,8 +9,10 @@ import ServiceRequestScreen from '../../screens/app/service-request/service-requ
 import CreateServiceRequestScreen from '../../screens/app/service-request/create-service-request/create-service-request.screen';
 import SelectLocationScreen from '../../screens/app/service-request/select-location/select-location.screen';
 
+import SubscribeToChannelsScreen from '../../screens/app/channels/subscribe-to-channels/subscribe-to-channels.screen';
+import ViewSubscribedToChannelsScreen from '../../screens/app/channels/view-subscribed-to-channels.screen';
+
 import { DrawerContent } from '../../components/molecules';
-import AccountScreen from '../../screens/app/account/account.screen';
 import HeaderBackGround from '../../components/atoms/header-background';
 
 import ViewServiceRequestScreen from '../../screens/app/service-request/view-service-request/view-service-request.screen';
@@ -65,6 +67,15 @@ const AppNavigator = () => {
           title: 'Select Location',
         }}
       />
+
+      <AppStack.Screen
+        name="SubscribeToChannels"
+        component={SubscribeToChannelsScreen}
+        options={{
+          headerShown: false,
+          title: 'Subscribe To Channels',
+        }}
+      />
     </AppStack.Navigator>
   );
 };
@@ -100,11 +111,11 @@ const DrawerNavigator = () => {
         }}
       />
       <Drawer.Screen
-        name="Accounts"
-        component={AccountScreen}
+        name="ViewSubscribeToChannels"
+        component={ViewSubscribedToChannelsScreen}
         options={{
           headerShown: true,
-          title: 'Accounts',
+          title: 'Subscribe To Channels Screen',
         }}
       />
     </Drawer.Navigator>

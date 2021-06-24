@@ -30,7 +30,7 @@ const CreateServiceRequestForm = ({
   initialValues,
   municipalities,
 }) => {
-  const { Common, Layout, Gutters } = useTheme();
+  const { Common, Layout, Gutters, Colors } = useTheme();
   const { selectedAddress, region } = useSelector(locationSelector);
   const [address, setAddress] = useState('');
   const navigation = useNavigation();
@@ -148,6 +148,7 @@ const CreateServiceRequestForm = ({
               <TextInput
                 value={address}
                 label="Location Selected"
+                underlineColor={Colors.transparent}
                 onFocus={() => navigation.navigate('SelectLocationScreen')}
               />
               <HelperText />

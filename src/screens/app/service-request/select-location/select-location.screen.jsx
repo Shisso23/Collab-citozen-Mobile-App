@@ -15,7 +15,7 @@ import {
 } from 'react-native';
 import { Button, TextInput, IconButton } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigation, useFocusEffect, DefaultTheme } from '@react-navigation/native';
+import { useNavigation, useFocusEffect, DefaultTheme, useRoute } from '@react-navigation/native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import _ from 'lodash';
 
@@ -31,6 +31,8 @@ import { getMunicipalitiesAction } from '../../../../reducers/municipalities-red
 const { width } = Dimensions.get('window');
 
 const SelectLocationScreen = () => {
+  const { params } = useRoute();
+  const fromSubscribedChannels = params;
   const { Colors, Layout, Common, Gutters } = useTheme();
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -58,13 +60,23 @@ const SelectLocationScreen = () => {
   }, [selectedAddress]);
 
   const _handleBackPress = () => {
-    navigation.navigate('ServiceRequests');
-    dispatch(getCurrentPositionAction());
+    if (fromSubscribedChannels) {
+      navigation.navigate('ViewSubscribeToChannels');
+      dispatch(getCurrentPositionAction());
+    } else {
+      navigation.navigate('ServiceRequests');
+      dispatch(getCurrentPositionAction());
+    }
   };
 
   const _handlePickLocation = () => {
-    dispatch(getMunicipalitiesAction(regionChange.longitude, regionChange.latitude));
-    navigation.navigate('CreateServiceRequest');
+    if (fromSubscribedChannels) {
+      dispatch(getMunicipalitiesAction(regionChange.longitude, regionChange.latitude));
+      navigation.navigate('SubscribeToChannels');
+    } else {
+      dispatch(getMunicipalitiesAction(regionChange.longitude, regionChange.latitude));
+      navigation.navigate('CreateServiceRequest');
+    }
   };
 
   const _setRegion = (newRegion) => {
