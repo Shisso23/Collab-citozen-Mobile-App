@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { LogBox } from 'react-native';
 import messaging from '@react-native-firebase/messaging';
+import PushNotification from 'react-native-push-notification';
 
 import { useDispatch } from 'react-redux';
 import NavigationContainer from './navigation/root.navigator';
@@ -31,6 +32,7 @@ const App = () => {
   };
 
   useEffect(() => {
+    PushNotification.setApplicationIconBadgeNumber(0);
     LogBox.ignoreLogs(['Require cycle']);
     messaging()
       .registerDeviceForRemoteMessages()
