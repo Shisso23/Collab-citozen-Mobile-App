@@ -11,8 +11,11 @@ const getNewsFeed = async () => {
   const data = await apiFunctionWithUniqName('get_user_feed');
   const apiResponse = await authNetworkService.post(url, data);
   const newsfeeds = _.get(apiResponse.data, 'Feed', []);
-  if (newsfeeds.length === 0 || !newsfeeds) {
-    flashService.info('There is no news currently avaliable for you');
+  if (!newsfeeds) {
+    throw Error('Could not load news feeds.');
+  }
+  if (newsfeeds.length === 0) {
+    flashService.info('There is no news currently avaliable for you.');
   }
   return constructNewsFeedModels(newsfeeds);
 };

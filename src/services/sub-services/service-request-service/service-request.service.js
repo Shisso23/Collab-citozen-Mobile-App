@@ -58,7 +58,7 @@ const getServiceRequests = async () => {
   if (!serviceRequests) {
     throw Error('Could not load service requests.');
   }
-  if (serviceRequests.length === 0 || !serviceRequests) {
+  if (serviceRequests.length === 0) {
     flashService.info('You have no service requests.');
   }
 

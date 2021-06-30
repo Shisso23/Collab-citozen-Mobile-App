@@ -11,8 +11,11 @@ const getMyChannels = async () => {
   const data = await apiFunctionWithUniqName('get_subscribed_channels');
   const apiResponse = await authNetworkService.post(url, data);
   const myChannels = _.get(apiResponse.data, 'Channels', []);
-  if (myChannels.length === 0 || !myChannels) {
-    flashService.info('You Have No Channel Subscriptions');
+  if (!myChannels) {
+    throw Error('Could not load your channels.');
+  }
+  if (myChannels.length === 0) {
+    flashService.info('You Have No Channel Subscriptions.');
   }
   return constructMyChannelsModels(myChannels);
 };
