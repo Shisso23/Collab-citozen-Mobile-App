@@ -14,8 +14,8 @@ const getNewsFeed = async () => {
   if (!newsfeeds) {
     throw Error('Could not load news feeds.');
   }
-  if (newsfeeds.length === 0 || !newsfeeds) {
-    flashService.info('There is no news currently avaliable for you');
+  if (newsfeeds.length === 0) {
+    flashService.info('There is no news currently avaliable for you.');
   }
   return constructNewsFeedModels(newsfeeds);
 };

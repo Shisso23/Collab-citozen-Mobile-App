@@ -7,3 +7,5 @@ export * from './app/service-type/service-type.model';
 export * from './app/service-request/service.request.model';
 export * from './app/municipality/municipality.model';
 export * from './app/form/create-service-request/create-service-request-form.model';
+export * from './app/subscribe-to-channels/subscribe-to-channels.model';
+export * from './app/my-channels/my-channels.model';

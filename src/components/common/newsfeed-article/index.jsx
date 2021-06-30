@@ -9,7 +9,7 @@ import useTheme from '../../../theme/hooks/useTheme';
 const { width: screenWidth } = Dimensions.get('window');
 
 const NewsFeedArticle = (newsFeedArticle) => {
-  const { Gutters, Fonts } = useTheme();
+  const { Gutters, Fonts, Colors } = useTheme();
   const newsFeedItem = _.get(newsFeedArticle, 'NewsFeedArticle.newsFeedItem');
 
   const bodyText = newsFeedItem.body;
@@ -18,9 +18,9 @@ const NewsFeedArticle = (newsFeedArticle) => {
   return (
     <View style={Gutters.regularHMargin}>
       <Image source={newsFeedItem.newsFeedImage} style={styles.imageStyle} />
-      <Divider />
+      <Divider color={Colors.transparent} />
       <Text style={Fonts.titleRegular}>{`${newsFeedItem.title}`}</Text>
-      <Divider />
+      <Divider color={Colors.transparent} />
       <Text style={Fonts.textLarge}>{`${bodyTextFormatted}`}</Text>
     </View>
   );

@@ -5,6 +5,7 @@ export const municipalityModel = (_apiMunicipalityModel = {}) => ({
   id: _.get(_apiMunicipalityModel, 'obj_id', ''),
   municipalityCode: _.get(_apiMunicipalityModel, 'code', ''),
   name: _.get(_apiMunicipalityModel, 'name', ''),
+  accountNoApplicable: _.get(_apiMunicipalityModel, 'account_no_applicable', ''),
   serviceTypes: constructServiceTypeModels(_.get(_apiMunicipalityModel, 'service_types', [])),
 });
 
