@@ -20,10 +20,11 @@ const SubscribeToChannelsScreen = () => {
   const { Gutters, Fonts, Images, Layout } = useTheme();
   const { user } = useSelector((reducers) => reducers.userReducer);
 
-  const _onFormSuccess = async () => {
-    await dispatch(getMyChannelsAction());
-    navigation.popToTop();
-    flashService.success('Successfully Subscribed To Channels');
+  const _onFormSuccess = () => {
+    dispatch(getMyChannelsAction()).then(
+      navigation.popToTop(),
+      flashService.success('Successfully Subscribed To Channels'),
+    );
   };
 
   const _handleFormSubmit = (form) => {

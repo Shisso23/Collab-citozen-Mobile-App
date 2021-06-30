@@ -54,7 +54,7 @@ const ViewSubscribeToChannelsScreen = () => {
                     { backgroundColor: _getStatusIndicator(item.status) },
                   ]}
                 />
-                <Text style={[Fonts.textRegular]}>Subscribed</Text>
+                <Text style={Fonts.textRegular}>Subscribed</Text>
               </View>
             </View>
           )}
@@ -65,10 +65,10 @@ const ViewSubscribeToChannelsScreen = () => {
 
   return (
     <>
-      <ImageBackground source={Images.serviceRequest} style={[Layout.fullSize]} resizeMode="cover">
+      <ImageBackground source={Images.serviceRequest} style={Layout.fullSize} resizeMode="cover">
         <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>My Channels</Text>
         <FlatList
-          contentContainerStyle={[Gutters.smallHMargin]}
+          contentContainerStyle={Gutters.smallHMargin}
           data={myChannels}
           renderItem={viewSubscribedToChannelsItem}
           keyExtractor={(item) => String(item.objId)}
@@ -77,13 +77,13 @@ const ViewSubscribeToChannelsScreen = () => {
               refreshing={isLoadingMyChannels}
               onRefresh={_loadMyChannels}
               tintColor={Colors.primary}
-              colors={[Colors.primary]}
+              colors={Colors.primary}
             />
           }
         />
       </ImageBackground>
 
-      <FAB style={[Common.fabAlignment]} icon="plus" onPress={_handleOnSubscribeToChannelsPress} />
+      <FAB style={Common.fabAlignment} icon="plus" onPress={_handleOnSubscribeToChannelsPress} />
     </>
   );
 };

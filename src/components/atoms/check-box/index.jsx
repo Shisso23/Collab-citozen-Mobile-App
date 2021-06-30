@@ -9,11 +9,7 @@ const CheckBoxTick = (props) => {
 
   const _updateBox = () => {
     setChecked(!checked);
-    if (!checked) {
-      setItem({ selectedItem, present: true });
-    } else if (checked) {
-      setItem({ selectedItem, present: false });
-    }
+    setItem({ selectedItem, present: !checked });
   };
 
   return <CheckBox onPress={_updateBox} checked={checked} containerStyle={styles.containerStyle} />;
