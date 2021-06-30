@@ -77,7 +77,7 @@ const ViewSubscribeToChannelsScreen = () => {
               refreshing={isLoadingMyChannels}
               onRefresh={_loadMyChannels}
               tintColor={Colors.primary}
-              colors={Colors.primary}
+              colors={[Colors.primary]}
             />
           }
         />
