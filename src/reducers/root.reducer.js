@@ -7,6 +7,7 @@ import serviceRequestReducer from './service-request-reducer/service-request.red
 import locationReducer from './location-reducer/location.reducer';
 import municipalitiesReducer from './municipalities-reducer/municipalities.reducer';
 import newsFeedsReducer from './news-feed-reducer/news-feed.reducer';
+import myChannelsReducer from './my-channels/my-channels.reducer';
 
 export default combineReducers({
   userAuthReducer,
@@ -16,4 +17,5 @@ export default combineReducers({
   locationReducer,
   municipalitiesReducer,
   newsFeedsReducer,
+  myChannelsReducer,
 });

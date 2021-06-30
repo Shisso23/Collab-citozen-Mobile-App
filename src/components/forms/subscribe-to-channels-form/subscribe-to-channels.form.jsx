@@ -1,78 +1,72 @@
 import React, { useEffect, useState } from 'react';
+import _ from 'lodash';
 import { ViewPropTypes, View, FlatList } from 'react-native';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
-import * as Yup from 'yup';
 import { Button, HelperText, TextInput, List } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 
-import {
-  selectChannelSchema,
-  selectServiceTypeCategorySchema,
-  selectServiceTypeSchema,
-  descriptionSchema,
-  locationSchema,
-} from '../form-validaton-schemas';
+import { flashService } from '../../../services';
 import useTheme from '../../../theme/hooks/useTheme';
 import { CheckBoxTick } from '../../atoms';
 import { locationSelector } from '../../../reducers/location-reducer/location.reducer';
 
 navigator.geolocation = require('react-native-geolocation-service');
 
-const SubscribeToChannelsForm = ({ submitForm, onSuccess, containerStyle, initialValues }) => {
+const SubscribeToChannelsForm = ({
+  submitForm,
+  onSuccess,
+  containerStyle,
+  initialValues,
+  municipalities,
+}) => {
   const { Common, Layout, Gutters, Colors } = useTheme();
   const { selectedAddress } = useSelector(locationSelector);
   const [address, setAddress] = useState('');
   const navigation = useNavigation();
-  const serviceTypesAvailable = false;
 
   useEffect(() => {
     setAddress(selectedAddress);
   }, [selectedAddress]);
 
-  const validationSchema = Yup.object().shape({
-    channel: selectChannelSchema,
-    serviceTypeCategory: selectServiceTypeCategorySchema,
-    serviceType: selectServiceTypeSchema,
-    description: descriptionSchema,
-    location: locationSchema,
-  });
-
   const _handleFormSubmitError = (error, actions) => {
     actions.setSubmitting(false);
-    actions.setFieldError('account', error.message);
+    flashService.error(error);
   };
 
   const _handleSubmission = (formData, actions) => {
-    submitForm(formData)
-      .then(() => {
-        actions.setSubmitting(false);
-        onSuccess();
-      })
-      .catch((error) => _handleFormSubmitError(error, actions, formData));
+    if (_.isEmpty(formData.channels)) {
+      flashService.error('No Channels selected');
+      actions.setSubmitting(false);
+    } else if (!_.isEmpty(formData.channels)) {
+      submitForm(formData)
+        .then(() => {
+          actions.setSubmitting(false);
+          onSuccess();
+        })
+        .catch((error) => _handleFormSubmitError(error, actions, formData));
+    }
   };
 
-  const newsFeedDummyObject = {
-    dummyId: 1,
-    title: 'Buffalo City (East London)',
-    subscribed: false,
-  };
+  const subscriptionList = [];
 
-  const newsFeedDummyObject2 = {
-    dummyId: 2,
-    title: 'City of Cape Town',
-    subscribed: false,
+  const updateSubscriptionList = (itemPass) => {
+    if (itemPass.present) {
+      subscriptionList.push(itemPass.selectedItem);
+    } else if (!itemPass.present) {
+      subscriptionList.splice(subscriptionList.indexOf(itemPass.selectedItem), 1);
+    }
   };
-
-  const dummyarray = [];
-  dummyarray.push(newsFeedDummyObject);
-  dummyarray.push(newsFeedDummyObject2);
 
   const subscribeToItem = ({ item }) => {
     return (
       <View style={[Common.textInputWithShadow, Gutters.tinyMargin]}>
-        <List.Item title={item.title} right={() => <CheckBoxTick />} titleNumberOfLines={1} />
+        <List.Item
+          title={item.name}
+          right={() => <CheckBoxTick selectedItem={item} setItem={updateSubscriptionList} />}
+          titleNumberOfLines={2}
+        />
       </View>
     );
   };
@@ -85,16 +79,25 @@ const SubscribeToChannelsForm = ({ submitForm, onSuccess, containerStyle, initia
           initialStatus={{ apiErrors: {} }}
           onSubmit={_handleSubmission}
           enableReinitialize
-          validationSchema={validationSchema}
         >
-          {({ handleSubmit, values, isSubmitting, setFieldValue }) => {
-            const handleSubmissionFormik = () => {
-              if (serviceTypesAvailable === false) {
-                setFieldValue('serviceTypeCategory', 'No Service Category Avaliable');
-                values.serviceTypeCategory = 'No Service Category Avaliable';
-                setFieldValue('serviceType', { NoServiceType: 'No Service Type Avaliable' });
-                values.serviceType = { NoServiceType: 'No Service Type Avaliable' };
-              }
+          {({ isSubmitting, handleSubmit, setFieldValue }) => {
+            const memoizedChannels = Object.keys(municipalities);
+            const channels = [];
+
+            for (let i = 0; i < Object.keys(municipalities).length; i += 1) {
+              const municipalitiyId = municipalities[memoizedChannels[i]].id;
+              const municipalityName = municipalities[memoizedChannels[i]].name;
+              const municipalityAccNoApplicable =
+                municipalities[memoizedChannels[i]].accountNoApplicable;
+              channels.push({
+                ObjId: municipalitiyId,
+                name: municipalityName,
+                accountNoApplicable: municipalityAccNoApplicable,
+              });
+            }
+
+            const handleSub = () => {
+              setFieldValue('channels', subscriptionList);
               handleSubmit();
             };
 
@@ -107,19 +110,16 @@ const SubscribeToChannelsForm = ({ submitForm, onSuccess, containerStyle, initia
                   onFocus={() => navigation.navigate('SelectLocationScreen')}
                 />
                 <HelperText />
-
                 <FlatList
-                  data={dummyarray}
+                  data={channels}
                   renderItem={subscribeToItem}
-                  keyExtractor={(item) => String(item.dummyId)}
+                  keyExtractor={(item) => String(item.ObjId)}
                 />
-
                 <HelperText />
-
                 <Button
                   mode="contained"
                   style={[Layout.fill, Gutters.tinyLMargin]}
-                  onPress={handleSubmissionFormik}
+                  onPress={handleSub}
                   loading={isSubmitting}
                   disabled={isSubmitting}
                 >
@@ -139,6 +139,7 @@ SubscribeToChannelsForm.propTypes = {
   initialValues: PropTypes.object.isRequired,
   onSuccess: PropTypes.func,
   containerStyle: ViewPropTypes.style,
+  municipalities: PropTypes.object.isRequired,
 };
 
 SubscribeToChannelsForm.defaultProps = {

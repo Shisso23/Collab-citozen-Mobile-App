@@ -1,6 +1,7 @@
 import CreateAction from '../action-utilities/action-creator';
 
 const reducerName = 'municipalities';
+
 const setMunicipalities = CreateAction(reducerName, 'SET_MUNICIPALITIES');
 export const setMunicipalitiesAction = setMunicipalities.action;
 

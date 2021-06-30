@@ -77,7 +77,7 @@ const SignInForm = ({ submitForm, onSuccess, containerStyle, initialValues }) =>
               <HelperText style={[Common.loginErrorStyle]} type="error" visible={error('email')}>
                 {error('email')}
               </HelperText>
-              <Divider />
+              <Divider color={Colors.transparent} />
               <Input
                 leftIcon={<TextInput.Icon name="lock" />}
                 rightIcon={

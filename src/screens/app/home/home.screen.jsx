@@ -11,6 +11,7 @@ import { FAB, List } from 'react-native-paper';
 import { Text, Image } from 'react-native-elements';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
+import PushNotification from 'react-native-push-notification';
 
 import useTheme from '../../../theme/hooks/useTheme';
 import { permissionsService } from '../../../services';
@@ -27,6 +28,12 @@ const HomeScreen = () => {
   const { newsFeeds, isLoadingNewsFeeds } = useSelector(newsFeedSelector);
 
   useFocusEffect(exitAppOnHardwarePressListener);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      PushNotification.setApplicationIconBadgeNumber(0);
+    }, []),
+  );
 
   useEffect(() => {
     _loadNewsFeeds();
