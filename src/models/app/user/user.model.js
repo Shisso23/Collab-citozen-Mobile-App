@@ -3,6 +3,7 @@ import _ from 'lodash';
 
 export function userModel(_apiUserModel) {
   return {
+    user_id: _.get(_apiUserModel, 'user_id'),
     email: _.get(_apiUserModel, 'email_address', ''),
     firstName: _.get(_apiUserModel, 'first_name', ''),
     lastName: _.get(_apiUserModel, 'surname', ''),

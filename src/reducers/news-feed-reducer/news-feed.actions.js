@@ -14,3 +14,7 @@ export const getNewsFeedAction = () => (dispatch) => {
       dispatch(setIsLoadingNewsFeedsAction(false));
     });
 };
+
+export const userHasOpenedNewsFeedAction = (newsFeedId, userID) => async () => {
+  await newsFeedService.createUserActivityRecord(newsFeedId, userID);
+};
