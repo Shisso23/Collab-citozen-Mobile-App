@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Avatar, FAB, List } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { FlatList, Text, View, RefreshControl, ImageBackground } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
@@ -21,6 +21,12 @@ const ServiceRequestScreen = () => {
   const _loadServiceRequests = () => {
     dispatch(getServiceRequestsAction());
   };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      _loadServiceRequests();
+    }, []),
+  );
 
   const _sortServiceRequestDescending = (serviceRequest) => {
     return serviceRequest.sort((a, b) => moment(b.requestedDate) - moment(a.requestedDate));
@@ -42,10 +48,6 @@ const ServiceRequestScreen = () => {
   const _setImageUrl = (item) => {
     return _.isEmpty(item.serviceRequestImage) ? null : item.serviceRequestImage;
   };
-
-  useEffect(() => {
-    _loadServiceRequests();
-  }, []);
 
   const _handleOnServiceRequestCreatePress = async () => {
     await permissionsService.checkLocationPermissions();
@@ -102,7 +104,11 @@ const ServiceRequestScreen = () => {
 
   return (
     <>
-      <ImageBackground source={Images.serviceRequest} style={[Layout.fullSize]} resizeMode="cover">
+      <ImageBackground
+        source={Images.serviceRequest}
+        style={[Layout.fullSize, Layout.fill]}
+        resizeMode="cover"
+      >
         <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>Service Requests</Text>
         <FlatList
           contentContainerStyle={[Gutters.smallHMargin]}

@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { FAB, List } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { FlatList, Text, View, ImageBackground, RefreshControl } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -19,9 +19,11 @@ const ViewSubscribeToChannelsScreen = () => {
     dispatch(getMyChannelsAction());
   };
 
-  useEffect(() => {
-    _loadMyChannels();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      _loadMyChannels();
+    }, []),
+  );
 
   const _handleOnSubscribeToChannelsPress = async () => {
     await permissionsService.checkLocationPermissions();
@@ -68,7 +70,11 @@ const ViewSubscribeToChannelsScreen = () => {
 
   return (
     <>
-      <ImageBackground source={Images.serviceRequest} style={Layout.fullSize} resizeMode="cover">
+      <ImageBackground
+        source={Images.serviceRequest}
+        style={[Layout.fullSize, Layout.fill]}
+        resizeMode="cover"
+      >
         <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>My Channels</Text>
         <FlatList
           contentContainerStyle={Gutters.smallHMargin}
