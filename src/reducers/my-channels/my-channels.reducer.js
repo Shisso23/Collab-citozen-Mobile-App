@@ -22,7 +22,7 @@ export default function newsFeedsReducer(state = initialState, action) {
         ...state,
         myChannels: action.payload,
       };
-    case setIsLoadingMyChannelsAction.actionType:
+    case setIsLoadingMyChannels.actionType:
       return {
         ...state,
         isLoadingMyChannels: action.payload,

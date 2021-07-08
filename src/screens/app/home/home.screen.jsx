@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   View,
   ImageBackground,
@@ -31,12 +31,9 @@ const HomeScreen = () => {
   useFocusEffect(
     React.useCallback(() => {
       PushNotification.setApplicationIconBadgeNumber(0);
+      _loadNewsFeeds();
     }, []),
   );
-
-  useEffect(() => {
-    _loadNewsFeeds();
-  }, []);
 
   const _loadNewsFeeds = () => {
     dispatch(getNewsFeedAction());
@@ -89,8 +86,12 @@ const HomeScreen = () => {
 
   return (
     <>
-      <ImageBackground source={Images.serviceRequest} style={[Layout.fullSize]} resizeMode="cover">
-        <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>Home</Text>
+      <ImageBackground
+        source={Images.serviceRequest}
+        style={[Layout.fullSize, Layout.fill]}
+        resizeMode="cover"
+      >
+        <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>News</Text>
         <FlatList
           contentContainerStyle={Gutters.smallHMargin}
           data={newsFeeds}
