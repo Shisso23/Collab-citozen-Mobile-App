@@ -44,6 +44,9 @@ const ViewSubscribeToChannelsScreen = () => {
       <View style={[Common.textInputWithShadow, Gutters.tinyMargin]}>
         <List.Item
           title={item.name}
+          onPress={() => {
+            navigation.navigate('ViewSubscribedToChannelDetails', { channelItem: item });
+          }}
           description={() => (
             <View style={[Layout.column, Gutters.largeRMargin]}>
               <View style={[Layout.rowHCenter, Gutters.tinyTPadding]}>

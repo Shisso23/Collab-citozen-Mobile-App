@@ -27,6 +27,7 @@ import {
 } from '../../../../reducers/location-reducer/location.actions';
 import appConfig from '../../../../config';
 import { getMunicipalitiesAction } from '../../../../reducers/municipalities-reducer/municipalities.actions';
+import { getUnsubscribedChannelsByLocationAction } from '../../../../reducers/unsubscribed-channels/unsubscribed-channels.actions';
 
 const { width } = Dimensions.get('window');
 
@@ -71,7 +72,9 @@ const SelectLocationScreen = () => {
 
   const _handlePickLocation = () => {
     if (fromSubscribedChannels) {
-      dispatch(getMunicipalitiesAction(regionChange.longitude, regionChange.latitude));
+      dispatch(
+        getUnsubscribedChannelsByLocationAction(regionChange.longitude, regionChange.latitude),
+      );
       navigation.navigate('SubscribeToChannels');
     } else {
       dispatch(getMunicipalitiesAction(regionChange.longitude, regionChange.latitude));
@@ -196,7 +199,7 @@ const SelectLocationScreen = () => {
       </View>
 
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'position' : ''}>
-        <View style={[Layout.fullWidth, Layout.buttonContainer]}>
+        <View style={Layout.fullWidth}>
           <TouchableHighlight onPress={_handlePickLocation}>
             <Button style={Common.buttonPickLocation} mode="contained">
               Pick this location

@@ -4,6 +4,7 @@ export const serviceTypeModel = (_apiServiceTypeModel = {}) => ({
   id: _.get(_apiServiceTypeModel, 'obj_id', ''),
   name: _.get(_apiServiceTypeModel, 'name', ''),
   category: _.get(_apiServiceTypeModel, 'category', ''),
+  requirements: _.get(_apiServiceTypeModel, 'requirements', ''),
 });
 
 const constructServiceTypeModelsArr = (apiServiceTypes) =>

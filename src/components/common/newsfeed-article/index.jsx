@@ -1,23 +1,37 @@
 import _ from 'lodash';
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, Text, View, Dimensions } from 'react-native';
 import { Image, Divider } from 'react-native-elements';
+import { useDispatch, useSelector } from 'react-redux';
 
+import { userHasOpenedNewsFeedAction } from '../../../reducers/news-feed-reducer/news-feed.actions';
 import useTheme from '../../../theme/hooks/useTheme';
 
 const { width: screenWidth } = Dimensions.get('window');
 
 const NewsFeedArticle = (newsFeedArticle) => {
   const { Gutters, Fonts, Colors } = useTheme();
+  const dispatch = useDispatch();
   const newsFeedItem = _.get(newsFeedArticle, 'NewsFeedArticle.newsFeedItem');
+  const { user } = useSelector((reducers) => reducers.userReducer);
+
+  useEffect(() => {
+    _openNewsFeed();
+  }, []);
+
+  const _openNewsFeed = async () => {
+    await dispatch(userHasOpenedNewsFeedAction(newsFeedItem.newsFeedId, user.user_id));
+  };
 
   const bodyText = newsFeedItem.body;
   const bodyTextFormatted = bodyText.replace(/\./g, '.\n \n');
 
   return (
     <View style={Gutters.regularHMargin}>
-      <Image source={newsFeedItem.newsFeedImage} style={styles.imageStyle} />
+      {newsFeedItem.newsFeedImage != null ? (
+        <Image source={newsFeedItem.newsFeedImage} style={styles.imageStyle} />
+      ) : null}
       <Divider color={Colors.transparent} />
       <Text style={Fonts.titleRegular}>{`${newsFeedItem.title}`}</Text>
       <Divider color={Colors.transparent} />

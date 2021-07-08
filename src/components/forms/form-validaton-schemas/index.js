@@ -11,7 +11,7 @@ export const phoneSchema = Yup.string()
 
 export const selectChannelSchema = Yup.string().required('Channel is required');
 export const selectServiceTypeCategorySchema = Yup.string().required(
-  'Service Category type is required',
+  'Service Type Category is required',
 );
 export const selectServiceTypeSchema = Yup.object().typeError('Service Category is required');
 

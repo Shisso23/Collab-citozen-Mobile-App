@@ -1,9 +1,11 @@
+import _ from 'lodash';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useNavigation } from '@react-navigation/native';
 
 import useTheme from '../../../../theme/hooks/useTheme';
+import { LoadingComponent } from '../../../../components/molecules';
 import { CreateServiceRequestForm } from '../../../../components/forms';
 import {
   createServiceRequestAction,
@@ -24,7 +26,7 @@ const CreateServiceRequestScreen = () => {
   const _onFormSuccess = async () => {
     flashService.success('Successfully created request');
     await dispatch(getServiceRequestsAction());
-    navigation.popToTop();
+    navigation.navigate('ServiceRequests');
   };
 
   const _handleFormSubmit = (form) => {
@@ -39,13 +41,17 @@ const CreateServiceRequestScreen = () => {
       enableOnAndroid
     >
       <HeaderBackGround backButton />
-      <CreateServiceRequestForm
-        submitForm={_handleFormSubmit}
-        onSuccess={_onFormSuccess}
-        municipalities={municipalities}
-        initialValues={createServiceRequestModel()}
-        containerStyle={[Gutters.regularHMargin, Gutters.regularTMargin]}
-      />
+      {!_.isEmpty(municipalities) ? (
+        <CreateServiceRequestForm
+          submitForm={_handleFormSubmit}
+          onSuccess={_onFormSuccess}
+          municipalities={municipalities}
+          initialValues={createServiceRequestModel()}
+          containerStyle={[Gutters.regularHMargin, Gutters.regularTMargin]}
+        />
+      ) : (
+        <LoadingComponent />
+      )}
     </KeyboardAwareScrollView>
   );
 };

@@ -20,6 +20,9 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
     blackText: {
       color: Colors.black,
     },
+    bottomButtonChannelDetails: {
+      height: 50,
+    },
     buttonContainer: {
       bottom: 0,
       position: 'absolute',

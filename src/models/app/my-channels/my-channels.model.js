@@ -5,6 +5,7 @@ export const myChannelModel = (apiMyChannels) => ({
   objId: _.get(apiMyChannels, 'obj_id', ''),
   code: _.get(apiMyChannels, 'code', ''),
   name: _.get(apiMyChannels, 'name', ''),
+  interest_types: _.get(apiMyChannels, 'interest_types', ''),
 });
 
 export const constructMyChannelsModels = async (apiMyChannels) => {

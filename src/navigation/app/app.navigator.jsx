@@ -11,6 +11,8 @@ import SelectLocationScreen from '../../screens/app/service-request/select-locat
 
 import SubscribeToChannelsScreen from '../../screens/app/channels/subscribe-to-channels/subscribe-to-channels.screen';
 import ViewSubscribedToChannelsScreen from '../../screens/app/channels/view-subscribed-to-channels.screen';
+import ViewSubscribedToChannelDetailsScreen from '../../screens/app/channels/view-subscribed-to-channels-details.screen';
+import ViewSubscribingChannelsDetailsScreen from '../../screens/app/channels/subscribe-to-channels/view-subscribing-channel-details.screen';
 
 import { DrawerContent } from '../../components/molecules';
 import HeaderBackGround from '../../components/atoms/header-background';
@@ -74,6 +76,24 @@ const AppNavigator = () => {
         options={{
           headerShown: false,
           title: 'Subscribe To Channels',
+        }}
+      />
+
+      <AppStack.Screen
+        name="ViewSubscribingChannelsDetailsScreen"
+        component={ViewSubscribingChannelsDetailsScreen}
+        options={{
+          headerShown: false,
+          title: 'View Subscribing Channels Details',
+        }}
+      />
+
+      <AppStack.Screen
+        name="ViewSubscribedToChannelDetails"
+        component={ViewSubscribedToChannelDetailsScreen}
+        options={{
+          headerShown: false,
+          title: 'Subscribed To Channel',
         }}
       />
     </AppStack.Navigator>

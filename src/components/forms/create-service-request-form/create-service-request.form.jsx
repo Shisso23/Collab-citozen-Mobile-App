@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
+import React, { useEffect, useState } from 'react';
 import { ViewPropTypes, View, Keyboard } from 'react-native';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Button, HelperText, TextInput } from 'react-native-paper';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 
 import {
@@ -34,7 +34,24 @@ const CreateServiceRequestForm = ({
   const { selectedAddress, region } = useSelector(locationSelector);
   const [address, setAddress] = useState('');
   const navigation = useNavigation();
-  let serviceTypesAvailable = false;
+  const [serviceTypesAvailable, setServiceTypesAvailable] = useState(false);
+  const [requirementsExist, setRequirementsExist] = useState(false);
+  const [requirementsServiceType, setRequirementsServiceType] = useState('');
+
+  const checkIfServiceTypesAvaliable = () => {
+    if (Object.keys(municipalities).length >= 1) {
+      const checkMunicipalityCodeRef = Object.keys(municipalities)[0];
+      if (!_.isEmpty(municipalities[checkMunicipalityCodeRef].serviceTypes)) {
+        setServiceTypesAvailable(true);
+      }
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      checkIfServiceTypesAvaliable();
+    }, []),
+  );
 
   useEffect(() => {
     setAddress(selectedAddress);
@@ -91,6 +108,17 @@ const CreateServiceRequestForm = ({
             channelNames.push(municipalitiesData);
           }
 
+          useEffect(() => {
+            if (channelNames.length === 1) {
+              const [first] = channelNames;
+              initialValues.channel = first;
+            }
+          }, [channelNames]);
+
+          useEffect(() => {
+            setFieldValue('municipalityCode', municipalityCodeRef);
+          }, [municipalityCodeRef]);
+
           let municipalityCodeRef = null;
           let memoizedServiceTypeCategories = null;
           let memoizedServiceTypes = null;
@@ -109,9 +137,9 @@ const CreateServiceRequestForm = ({
             );
 
             if (_.isEmpty(memoizedServiceTypeCategories)) {
-              serviceTypesAvailable = false;
+              setServiceTypesAvailable(false);
             } else {
-              serviceTypesAvailable = true;
+              setServiceTypesAvailable(true);
             }
 
             if (!_.isEmpty(values.serviceTypeCategory)) {
@@ -120,18 +148,6 @@ const CreateServiceRequestForm = ({
             }
           }
 
-          useEffect(() => {
-            setFieldValue('location', region);
-          }, [region]);
-
-          useEffect(() => {
-            setFieldValue('municipalityCode', municipalityCodeRef);
-          }, [municipalityCodeRef]);
-
-          useEffect(() => {
-            setFieldValue('address', selectedAddress);
-          }, [selectedAddress]);
-
           const handleSubmissionFormik = () => {
             if (serviceTypesAvailable === false) {
               setFieldValue('serviceTypeCategory', 'No Service Category Avaliable');
@@ -139,7 +155,21 @@ const CreateServiceRequestForm = ({
               setFieldValue('serviceType', { NoServiceType: 'No Service Type Avaliable' });
               values.serviceType = { NoServiceType: 'No Service Type Avaliable' };
             }
+            setFieldValue('location', region);
+            values.location = region;
+            setFieldValue('address', selectedAddress);
+            values.address = selectedAddress;
             handleSubmit();
+          };
+
+          const setServiceType = (newServiceType) => {
+            setFieldValue('serviceType', newServiceType);
+            if (!_.isEmpty(newServiceType.requirements)) {
+              setRequirementsExist(true);
+              setRequirementsServiceType(newServiceType.requirements);
+            } else {
+              setRequirementsExist(false);
+            }
           };
 
           const error = (name) => getFormError(name, { touched, status, errors });
@@ -186,6 +216,7 @@ const CreateServiceRequestForm = ({
                   onChange={(newServiceTypeCategory) => {
                     setFieldValue('serviceTypeCategory', newServiceTypeCategory);
                     setFieldValue('serviceType', null);
+                    setRequirementsExist(false);
                   }}
                   value={values.serviceTypeCategory}
                   error={error('serviceTypeCategory')}
@@ -204,12 +235,14 @@ const CreateServiceRequestForm = ({
                     setFieldTouched('serviceType', true);
                   }}
                   placeholder="Select Service Type"
-                  onChange={(newServiceType) => setFieldValue('serviceType', newServiceType)}
+                  onChange={(newServiceType) => setServiceType(newServiceType)}
                   value={values.serviceType?.name}
                   error={error('serviceType')}
                   errorStyle={Common.errorStyle}
                 />
               ) : null}
+
+              {requirementsExist ? <HelperText>{requirementsServiceType}</HelperText> : null}
 
               <TextInput
                 label="Description"
@@ -229,6 +262,8 @@ const CreateServiceRequestForm = ({
               <HelperText style={Common.errorStyle} type="error" visible={error('description')}>
                 {error('description')}
               </HelperText>
+
+              {requirementsExist ? <HelperText /> : null}
 
               <View style={[Layout.row]}>
                 <UploadDocumentButton

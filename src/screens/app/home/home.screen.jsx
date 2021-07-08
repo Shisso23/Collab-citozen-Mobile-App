@@ -7,14 +7,13 @@ import {
   StyleSheet,
   Dimensions,
 } from 'react-native';
-import { FAB, List } from 'react-native-paper';
+import { List } from 'react-native-paper';
 import { Text, Image } from 'react-native-elements';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import PushNotification from 'react-native-push-notification';
 
 import useTheme from '../../../theme/hooks/useTheme';
-import { permissionsService } from '../../../services';
 import { getNewsFeedAction } from '../../../reducers/news-feed-reducer/news-feed.actions';
 import { newsFeedSelector } from '../../../reducers/news-feed-reducer/news-feed.reducer';
 import { exitAppOnHardwarePressListener } from '../../../helpers';
@@ -54,21 +53,19 @@ const HomeScreen = () => {
     }
   };
 
-  const _handleOnServiceRequestCreatePress = async () => {
-    await permissionsService.checkLocationPermissions();
-    navigation.navigate('SelectLocationScreen');
-  };
-
   const newsFeedItem = ({ item }) => {
     return (
       <View style={[Common.textInputWithShadow, Gutters.tinyMargin]}>
-        <Image
-          source={item.newsFeedImage}
-          style={styles.imageStyle}
-          onPress={() => {
-            navigation.navigate('ViewNewsFeedArticle', { newsFeedItem: item });
-          }}
-        />
+        {item.newsFeedImage != null ? (
+          <Image
+            source={item.newsFeedImage}
+            style={styles.imageStyle}
+            onPress={() => {
+              navigation.navigate('ViewNewsFeedArticle', { newsFeedItem: item });
+            }}
+          />
+        ) : null}
+
         <List.Item
           title={item.title}
           description={() => (
@@ -109,8 +106,6 @@ const HomeScreen = () => {
           }
         />
       </ImageBackground>
-
-      <FAB style={Common.fabAlignment} icon="plus" onPress={_handleOnServiceRequestCreatePress} />
     </>
   );
 };
