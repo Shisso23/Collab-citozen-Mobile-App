@@ -3,7 +3,6 @@ import { StyleSheet, Switch, View } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import LoadingComponent from '../loading/loading.component';
 import { updateUserSubscriptionAction } from '../../../reducers/subscribe-to-channels-reducer/subscribe-to-channel.actions';
 import { getMyChannelsAction } from '../../../reducers/my-channels/my-channels.actions';
 
@@ -12,7 +11,6 @@ const SubscriptionSetting = (props) => {
   const [hasEnabledSetting, setHasEnabledSettings] = useState(switchToggle);
   const { user } = useSelector((reducers) => reducers.userReducer);
   const dispatch = useDispatch();
-  const [isLoading, setIsLoading] = useState(false);
 
   function toggleSwitch(value) {
     if (value) {
@@ -33,28 +31,18 @@ const SubscriptionSetting = (props) => {
   }
 
   const onSubscribeFromChannel = async () => {
-    setIsLoading(true);
     await dispatch(updateUserSubscriptionAction(user, itemSelected, channelId, 'T'));
-    setIsLoading(false);
     dispatch(getMyChannelsAction());
   };
 
   const onUnsubscribeFromChannel = async () => {
-    setIsLoading(true);
     await dispatch(updateUserSubscriptionAction(user, itemSelected, channelId, 'F'));
-    setIsLoading(false);
     dispatch(getMyChannelsAction());
   };
 
   return (
     <View style={styles.settingsContainer}>
-      <>
-        {isLoading ? (
-          <LoadingComponent />
-        ) : (
-          <Switch onValueChange={toggleSwitch} value={hasEnabledSetting} />
-        )}
-      </>
+      <Switch onValueChange={toggleSwitch} value={hasEnabledSetting} />
     </View>
   );
 };
