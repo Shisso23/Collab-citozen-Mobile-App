@@ -31,6 +31,18 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
       height: 70,
       justifyContent: 'center',
     },
+    centerSubtitle: {
+      fontSize: 15,
+      textAlign: 'center',
+    },
+    centerTitle: {
+      color: Colors.gray,
+      fontFamily: FontFamily.secondary,
+      fontSize: 28,
+      marginBottom: 10,
+      marginTop: 20,
+      textAlign: 'center',
+    },
     defaultBackGround: {
       backgroundColor: DefaultTheme.colors.background,
     },

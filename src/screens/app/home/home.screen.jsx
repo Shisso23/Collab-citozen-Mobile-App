@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   ImageBackground,
@@ -17,6 +17,7 @@ import useTheme from '../../../theme/hooks/useTheme';
 import { getNewsFeedAction } from '../../../reducers/news-feed-reducer/news-feed.actions';
 import { newsFeedSelector } from '../../../reducers/news-feed-reducer/news-feed.reducer';
 import { exitAppOnHardwarePressListener } from '../../../helpers';
+import { NotificationHeader } from '../../../components/headers';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -34,6 +35,10 @@ const HomeScreen = () => {
       _loadNewsFeeds();
     }, []),
   );
+
+  useEffect(() => {
+    _loadNewsFeeds();
+  }, []);
 
   const _loadNewsFeeds = () => {
     dispatch(getNewsFeedAction());
@@ -92,6 +97,7 @@ const HomeScreen = () => {
         resizeMode="cover"
       >
         <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>News</Text>
+        <NotificationHeader style={styles.notificationHeader} />
         <FlatList
           contentContainerStyle={Gutters.smallHMargin}
           data={newsFeeds}
@@ -120,6 +126,7 @@ const styles = StyleSheet.create({
     height: 200,
     maxWidth: screenWidth,
   },
+  notificationHeader: { position: 'absolute', right: 0, top: 10 },
 });
 
 HomeScreen.propTypes = {};

@@ -19,6 +19,7 @@ import HeaderBackGround from '../../components/atoms/header-background';
 
 import ViewServiceRequestScreen from '../../screens/app/service-request/view-service-request/view-service-request.screen';
 import ViewNewsFeedArticleScreen from '../../screens/app/newsfeed/view-newsfeed-article.screen';
+import InboxScreen from '../../screens/app/inbox/inbox.screen';
 
 const Drawer = createDrawerNavigator();
 const AppStack = createStackNavigator();
@@ -94,6 +95,14 @@ const AppNavigator = () => {
         options={{
           headerShown: false,
           title: 'Subscribed To Channel',
+        }}
+      />
+      <AppStack.Screen
+        name="Inbox"
+        component={InboxScreen}
+        options={{
+          headerShown: true,
+          header: (props) => <HeaderBackGround {...props} backButton />,
         }}
       />
     </AppStack.Navigator>
