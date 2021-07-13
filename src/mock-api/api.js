@@ -40,8 +40,7 @@ export const mockApi = axios.create({
 const mockAdapter = new MockAdapter(mockApi, { delayResponse: 400 });
 
 // mocking getNotification api
-mockAdapter.onGet(`${apiUrl}/notifications/`).reply((config) => {
-  console.log({ config });
+mockAdapter.onGet(`${apiUrl}/notifications/`).reply(() => {
   const response = 200;
   const data = NOTIFICATIONS;
 
@@ -49,9 +48,8 @@ mockAdapter.onGet(`${apiUrl}/notifications/`).reply((config) => {
 });
 
 // mocking seeNotification api
-mockAdapter.onGet(`${apiUrl}/notifications/see`).reply((config) => {
+mockAdapter.onGet(`${apiUrl}/notifications/see`).reply(() => {
   //   const { notificationLinkId } = JSON.parse(config.data);
-  console.log({ config });
   const data = {};
   const responseStatus = 200;
   return [responseStatus, data];
@@ -61,6 +59,10 @@ mockAdapter.onGet(`${apiUrl}/notifications/see`).reply((config) => {
 mockAdapter.onGet(`${apiUrl}/notifications/has_unseen`).reply(() => {
   const data = {
     hasUnseen: true,
+    unseenCount: NOTIFICATIONS.reduce((unseenCount, notification) => {
+      unseenCount = !notification.seen ? unseenCount + 1 : unseenCount;
+      return unseenCount;
+    }, 0),
   };
   const responseStatus = 200;
 

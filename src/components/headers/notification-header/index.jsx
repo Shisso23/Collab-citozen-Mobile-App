@@ -9,7 +9,8 @@ import { Colors } from '../../../theme/Variables';
 
 const NotificationHeader = ({ style }) => {
   const navigation = useNavigation();
-  const { hasUnseen } = useSelector((reducers) => reducers.notificationReducer);
+  const { unseenNotifications } = useSelector((reducers) => reducers.notificationReducer);
+  const { hasUnseen, unseenCount } = unseenNotifications;
 
   return (
     <>
@@ -18,11 +19,13 @@ const NotificationHeader = ({ style }) => {
           type="font-awesome-5"
           name="bell"
           size={23}
-          color={Colors.black}
+          color={Colors.white}
           containerStyle={styles.iconContainerStyle}
         />
 
-        {hasUnseen && <Badge containerStyle={styles.badgeContainerStyle} />}
+        {hasUnseen && (
+          <Badge containerStyle={styles.badgeContainerStyle} value={`${unseenCount}`} />
+        )}
       </TouchableOpacity>
     </>
   );

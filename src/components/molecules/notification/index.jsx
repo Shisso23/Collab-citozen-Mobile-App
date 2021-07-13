@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Image } from 'react-native';
 import { Badge, Icon, ListItem, Text } from 'react-native-elements';
 import Collapsible from 'react-native-collapsible';
 import { useDispatch } from 'react-redux';
@@ -13,6 +13,8 @@ import {
 } from '../../../reducers/notification-reducer/notification.actions';
 import { TrashButton } from '../../atoms';
 import { promptConfirmDelete } from '../../../helpers/prompt.helper';
+
+const LOGO = require('../../../assets/images/Logo.png');
 
 const Notification = ({ notification }) => {
   const dispatch = useDispatch();
@@ -60,6 +62,7 @@ const Notification = ({ notification }) => {
 
   return (
     <ListItem onPress={_handleCollapse} bottomDivider>
+      <Image source={LOGO} style={styles.collabLogo} />
       <ListItem.Content>
         {needsCollapse ? _renderCollapseText() : _renderText()}
         <ListItem.Subtitle>{sentAt}</ListItem.Subtitle>
@@ -83,6 +86,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginTop: 10,
   },
+  collabLogo: { height: 15, width: 70 },
 });
 
 Notification.propTypes = {
