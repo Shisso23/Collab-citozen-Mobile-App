@@ -1,8 +1,7 @@
-import _ from 'lodash';
 import {
   setIsLoadingAction,
   setNotificationAction,
-  setHasUnseenAction,
+  setUnseenNotificationsAction,
 } from './notification.reducer';
 import { notificationService } from '../../services';
 
@@ -16,11 +15,11 @@ export const getNotification = () => {
   };
 };
 
-export const hasIncomingNotification = () => {
+export const getUnseenNotificationAction = () => {
   return (dispatch) => {
     return notificationService
-      .getHasUnseenNotification()
-      .then((hasUnseen) => dispatch(setHasUnseenAction(_.get(hasUnseen, 'has_unseen'))));
+      .getUnseenNotification()
+      .then((unseenNotifications) => dispatch(setUnseenNotificationsAction(unseenNotifications)));
   };
 };
 
@@ -28,7 +27,7 @@ export const seeNotification = (notificationLinkId) => {
   return (dispatch) =>
     notificationService
       .seeNotification(notificationLinkId)
-      .then(() => dispatch(hasIncomingNotification()));
+      .then(() => dispatch(getUnseenNotificationAction()));
 };
 
 export const deleteNotification = (notificationId) => {

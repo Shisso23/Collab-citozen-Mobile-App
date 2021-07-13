@@ -8,7 +8,6 @@ export const getNotification = () => {
   const notificationUrl = notificationUrls.notificationUrl();
   const returnNotification = (apiResponse) => _.get(apiResponse, 'data');
   return mockApi.get(notificationUrl).then((response) => {
-    console.log({ response });
     return returnNotification(response);
   });
 };
@@ -18,7 +17,7 @@ export const seeNotification = (notificationLinkId) => {
   return mockApi.get(seeNotificationUrl);
 };
 
-export const getHasUnseenNotification = () => {
+export const getUnseenNotification = () => {
   const hasUnseenNotificationUrl = notificationUrls.hasUnseenUrl();
   const returnHasUnseen = (apiResponse) => _.get(apiResponse, 'data');
   return mockApi.get(hasUnseenNotificationUrl).then(returnHasUnseen);
@@ -32,6 +31,6 @@ const deleteNotification = (notificationId) => {
 export default {
   getNotification,
   seeNotification,
-  getHasUnseenNotification,
+  getUnseenNotification,
   deleteNotification,
 };
