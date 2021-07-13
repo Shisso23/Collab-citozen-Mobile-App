@@ -6,7 +6,7 @@ import useTheme from '../../../theme/hooks/useTheme';
 import { getAccountsAction } from '../../../reducers/accounts-reducer/accounts.actions';
 import { accountsSelector } from '../../../reducers/accounts-reducer/accounts.reducer';
 
-const AccountScreen = () => {
+const AccountsScreen = () => {
   const dispatch = useDispatch();
   const { accounts, isLoadingAccountsRequest } = useSelector(accountsSelector);
   const { Gutters, Fonts, Common } = useTheme();
@@ -49,8 +49,8 @@ const AccountScreen = () => {
   );
 };
 
-AccountScreen.propTypes = {};
+AccountsScreen.propTypes = {};
 
-AccountScreen.defaultProps = {};
+AccountsScreen.defaultProps = {};
 
-export default AccountScreen;
+export default AccountsScreen;

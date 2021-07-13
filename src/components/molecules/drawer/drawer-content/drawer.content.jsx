@@ -49,6 +49,12 @@ const DrawerContent = (props) => {
             onPress={() => navigation.navigate('ServiceRequests')}
             theme={theme}
           />
+          <Drawer.Item
+            icon="ticket-account"
+            label="Accounts"
+            onPress={() => navigation.navigate('Accounts')}
+            theme={theme}
+          />
 
           <Drawer.Item
             icon="file"

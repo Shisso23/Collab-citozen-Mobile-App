@@ -20,6 +20,7 @@ import HeaderBackGround from '../../components/atoms/header-background';
 import ViewServiceRequestScreen from '../../screens/app/service-request/view-service-request/view-service-request.screen';
 import ViewNewsFeedArticleScreen from '../../screens/app/newsfeed/view-newsfeed-article.screen';
 import InboxScreen from '../../screens/app/inbox/inbox.screen';
+import AccountScreen from '../../screens/app/account/account.screen';
 
 const Drawer = createDrawerNavigator();
 const AppStack = createStackNavigator();
@@ -124,6 +125,14 @@ const DrawerNavigator = () => {
         options={{ headerShown: true, title: 'Home' }}
       />
       <Drawer.Screen
+        name="Accounts"
+        component={AccountScreen}
+        options={{
+          headerShown: true,
+          title: 'Accounts',
+        }}
+      />
+      <Drawer.Screen
         name="ServiceRequests"
         component={ServiceRequestScreen}
         options={{
@@ -131,6 +140,7 @@ const DrawerNavigator = () => {
           title: 'Service Requests',
         }}
       />
+
       <Drawer.Screen
         name="Profile"
         component={ProfileScreen}
