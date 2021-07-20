@@ -1,36 +1,40 @@
 import {
   setIsLoadingAction,
   setNotificationAction,
-  setUnseenNotificationsAction,
+  setUnOpenedNotificationsAction,
 } from './notification.reducer';
 import { notificationService } from '../../services';
 
-export const getNotification = () => {
+export const getNotificationsAction = () => {
   return (dispatch) => {
     dispatch(setIsLoadingAction(true));
     return notificationService
-      .getNotification()
+      .getNotifications()
       .then((notification) => dispatch(setNotificationAction(notification)))
       .finally(() => dispatch(setIsLoadingAction(false)));
   };
 };
 
-export const getUnseenNotificationAction = () => {
+export const getUnOpenedNotificationsAction = () => {
   return (dispatch) => {
     return notificationService
-      .getUnseenNotification()
-      .then((unseenNotifications) => dispatch(setUnseenNotificationsAction(unseenNotifications)));
+      .getUnOpenedNotifications()
+      .then((unOpenedNotifications) =>
+        dispatch(setUnOpenedNotificationsAction(unOpenedNotifications)),
+      );
   };
 };
 
-export const seeNotification = (notificationLinkId) => {
+export const openNotificationAction = (notificationId, dateTime, userId) => {
   return (dispatch) =>
     notificationService
-      .seeNotification(notificationLinkId)
-      .then(() => dispatch(getUnseenNotificationAction()));
+      .openNotification(notificationId, dateTime, userId)
+      .then(() => dispatch(getUnOpenedNotificationsAction()));
 };
 
-export const deleteNotification = (notificationId) => {
+export const deleteNotificationAction = (notificationId, dateTime, userId) => {
   return (dispatch) =>
-    notificationService.deleteNotification(notificationId).then(() => dispatch(getNotification()));
+    notificationService
+      .deleteNotification(notificationId, dateTime, userId)
+      .then(() => dispatch(getNotificationsAction()));
 };

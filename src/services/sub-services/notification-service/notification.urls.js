@@ -3,8 +3,8 @@ import appConfig from '../../../config';
 const { apiUrl } = appConfig;
 
 export default {
-  notificationUrl: () => `${apiUrl}/notifications/`,
-  seeNotificationUrl: () => `${apiUrl}/notifications/see`,
-  hasUnseenUrl: () => `${apiUrl}/notifications/has_unseen`,
-  deleteNotificationUrl: () => `${apiUrl}/notifications/delete`,
+  notificationUrl: () => `${apiUrl}/function/execfunction`,
+  openNotificationUrl: () => `${apiUrl}/Records/CreateUpdateRecord`,
+  deleteNotificationUrl: () => `${apiUrl}/Records/CreateUpdateRecord`,
+  unOpenedNotificationsUrl: () => `${apiUrl}/function/execfunction`,
 };

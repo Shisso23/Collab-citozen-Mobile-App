@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import NavigationContainer from './navigation/root.navigator';
 import { initAppAction } from './reducers/app-reducer/app.actions';
 import { firebaseService } from './services';
-import { getUnseenNotificationAction } from './reducers/notification-reducer/notification.actions';
+import { getUnOpenedNotificationsAction } from './reducers/notification-reducer/notification.actions';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -33,7 +33,6 @@ const App = () => {
   };
 
   useEffect(() => {
-    dispatch(getUnseenNotificationAction());
     PushNotification.setApplicationIconBadgeNumber(0);
     LogBox.ignoreLogs(['Require cycle']);
     messaging()
@@ -49,6 +48,7 @@ const App = () => {
       })
       .finally(() => {
         dispatch(initAppAction());
+        dispatch(getUnOpenedNotificationsAction());
       });
   }, []);
 
