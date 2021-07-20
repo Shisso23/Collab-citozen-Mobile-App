@@ -13,3 +13,4 @@ export { default as municipalityService } from './sub-services/municipality-serv
 export { default as firebaseService } from './sub-services/firebase-service/firebase-service';
 export { default as subscribeToChannelService } from './sub-services/subscribe-to-channels/subscribe-to-channels.service';
 export { default as myChannelsService } from './sub-services/my-channels/my-channels.service';
+export { default as notificationService } from './sub-services/notification-service/notification.service';

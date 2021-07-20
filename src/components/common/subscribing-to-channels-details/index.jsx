@@ -8,6 +8,7 @@ import { Divider } from 'react-native-elements';
 import { Button, List } from 'react-native-paper';
 
 import { getMyChannelsAction } from '../../../reducers/my-channels/my-channels.actions';
+import { getUnOpenedNotificationsAction } from '../../../reducers/notification-reducer/notification.actions';
 import { flashService } from '../../../services';
 import { subscribeToChannelsAction } from '../../../reducers/subscribe-to-channels-reducer/subscribe-to-channel.actions';
 import SubscriptionSetting from '../../molecules/subscription-setting/subscription-setting.component';
@@ -54,6 +55,7 @@ const SubscribingToChannelsDetails = (props) => {
       await dispatch(subscribeToChannelsAction(municipalitiyId, interestTypeList, user));
       setIsLoading(false);
       dispatch(getMyChannelsAction());
+      dispatch(getUnOpenedNotificationsAction());
       navigation.navigate('ViewSubscribeToChannels');
       flashService.success('Successfully Subscribed To Channel');
     }
