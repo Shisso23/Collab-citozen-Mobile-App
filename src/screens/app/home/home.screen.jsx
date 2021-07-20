@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   View,
   ImageBackground,
@@ -34,10 +34,6 @@ const HomeScreen = () => {
       _loadNewsFeeds();
     }, []),
   );
-
-  useEffect(() => {
-    _loadNewsFeeds();
-  }, []);
 
   const _loadNewsFeeds = () => {
     dispatch(getNewsFeedAction());

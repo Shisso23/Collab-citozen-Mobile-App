@@ -45,6 +45,7 @@ const Notification = ({ notification }) => {
       setNeedsCollapse(true);
     }
   };
+
   const _handleDelete = () => {
     const deletedAt = Moment(new Date()).format('yyyy-mm-DD hh:mm:ss');
     promptConfirmDelete('Are you sure you want to delete this item?', () => {
