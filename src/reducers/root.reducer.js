@@ -9,6 +9,7 @@ import municipalitiesReducer from './municipalities-reducer/municipalities.reduc
 import newsFeedsReducer from './news-feed-reducer/news-feed.reducer';
 import myChannelsReducer from './my-channels/my-channels.reducer';
 import unsubscribedChannelsReducer from './unsubscribed-channels/unsubscribed-channels.reducer';
+import notificationReducer from './notification-reducer/notification.reducer';
 
 export default combineReducers({
   userAuthReducer,
@@ -20,4 +21,5 @@ export default combineReducers({
   newsFeedsReducer,
   myChannelsReducer,
   unsubscribedChannelsReducer,
+  notificationReducer,
 });
