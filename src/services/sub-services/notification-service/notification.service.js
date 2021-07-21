@@ -16,7 +16,7 @@ export const getNotifications = async () => {
   });
 };
 
-export const openNotification = (notificationId, dateTime, userId) => {
+export const openNotification = async (notificationId, dateTime, userId) => {
   const data = notificationActivityData({
     notificationId,
     userId,
@@ -37,6 +37,7 @@ export const getUnOpenedNotifications = async () => {
   const response = await authNetworkService
     .post(unOpenedNotificationUrl, data)
     .then(unOpenedNotifications);
+  console.log({ unopned: response });
   return response;
 };
 
