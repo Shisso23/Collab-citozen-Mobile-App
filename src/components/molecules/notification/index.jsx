@@ -62,8 +62,11 @@ const Notification = ({ notification }) => {
   const _renderCollapseText = () => (
     <>
       <Collapsible collapsed={isCollapsed} collapsedHeight={20}>
-        <Text style={[Fonts.textRegular]}>{title}</Text>
-        <Text style={[Fonts.textTiny]}>{message}</Text>
+        <Text style={[Fonts.textTiny]}>
+          {title}
+          {'\n'}
+        </Text>
+        <Text style={[Fonts.textSmall]}>{message}</Text>
       </Collapsible>
     </>
   );
