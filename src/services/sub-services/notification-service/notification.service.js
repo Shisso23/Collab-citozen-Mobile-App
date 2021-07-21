@@ -37,7 +37,6 @@ export const getUnOpenedNotifications = async () => {
   const response = await authNetworkService
     .post(unOpenedNotificationUrl, data)
     .then(unOpenedNotifications);
-  console.log({ unopned: response });
   return response;
 };
 
