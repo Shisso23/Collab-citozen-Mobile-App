@@ -5,6 +5,7 @@ export { default as authNetworkService } from './sub-services/auth-network-servi
 export { default as userAuthService } from './sub-services/user-auth-service/user-auth.service';
 export { default as flashService } from './sub-services/flash-service/flash.service';
 export { default as accountsService } from './sub-services/accounts-service/accounts.service';
+export { default as accountsNewService } from './sub-services/accounts-service/accounts.new.service';
 export { default as serviceRequestService } from './sub-services/service-request-service/service-request.service';
 export { default as locationService } from './sub-services/location-service/location.service';
 export { default as permissionsService } from './sub-services/permissions-service/permissions.service';
