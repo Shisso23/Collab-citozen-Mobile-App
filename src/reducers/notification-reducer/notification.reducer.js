@@ -8,13 +8,13 @@ export const setNotificationAction = setNotification.action;
 const setIsLoading = CreateAction(reducerName, 'SET_IS_LOADING');
 export const setIsLoadingAction = setIsLoading.action;
 
-const seUnseenNotifications = CreateAction(reducerName, 'SET_HAS_UNSEEN');
-export const setUnseenNotificationsAction = seUnseenNotifications.action;
+const setUnOpenedNotifications = CreateAction(reducerName, 'SET_UNOPENED_NOTIFICATIONS');
+export const setUnOpenedNotificationsAction = setUnOpenedNotifications.action;
 
 const initialState = {
-  notification: [],
+  notifications: [],
   isLoading: false,
-  unseenNotifications: {},
+  unOpenedNotifications: {},
 };
 
 export default function notificationReducer(state = initialState, action) {
@@ -22,17 +22,17 @@ export default function notificationReducer(state = initialState, action) {
     case setNotification.actionType:
       return {
         ...state,
-        notification: action.payload,
+        notifications: action.payload,
       };
     case setIsLoading.actionType:
       return {
         ...state,
         isLoading: action.payload,
       };
-    case seUnseenNotifications.actionType:
+    case setUnOpenedNotifications.actionType:
       return {
         ...state,
-        unseenNotifications: action.payload,
+        unOpenedNotifications: action.payload,
       };
     default:
       return state;
