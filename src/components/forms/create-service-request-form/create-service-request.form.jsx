@@ -115,10 +115,6 @@ const CreateServiceRequestForm = ({
             }
           }, [channelNames]);
 
-          useEffect(() => {
-            setFieldValue('municipalityCode', municipalityCodeRef);
-          }, [municipalityCodeRef]);
-
           let municipalityCodeRef = null;
           let memoizedServiceTypeCategories = null;
           let memoizedServiceTypes = null;
@@ -159,6 +155,9 @@ const CreateServiceRequestForm = ({
             values.location = region;
             setFieldValue('address', selectedAddress);
             values.address = selectedAddress;
+
+            setFieldValue('municipalityCode', municipalityCodeRef);
+            values.municipalityCode = municipalityCodeRef;
             handleSubmit();
           };
 
