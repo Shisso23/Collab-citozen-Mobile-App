@@ -34,7 +34,7 @@ HeaderBackGround.defaultProps = {
 };
 
 const styles = StyleSheet.create({
-  notificationHeader: { position: 'absolute', right: 0, top: '35%' },
+  notificationHeader: { position: 'absolute', right: 0, top: '37%' },
 });
 
 export default HeaderBackGround;

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { StyleSheet, Image } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Badge, Icon, ListItem, Text } from 'react-native-elements';
+import { Avatar } from 'react-native-paper';
 import Collapsible from 'react-native-collapsible';
 import { useDispatch, useSelector } from 'react-redux';
 import Moment from 'moment';
@@ -14,8 +15,7 @@ import {
 } from '../../../reducers/notification-reducer/notification.actions';
 import { TrashButton } from '../../atoms';
 import { promptConfirmDelete } from '../../../helpers/prompt.helper';
-
-const LOGO = require('../../../assets/images/Logo.png');
+import useTheme from '../../../theme/hooks/useTheme';
 
 const Notification = ({ notification }) => {
   const dispatch = useDispatch();
@@ -25,6 +25,7 @@ const Notification = ({ notification }) => {
   const title = _.get(notification, 'title');
   const seen = _.get(notification, 'seen') === 'Yes';
 
+  const { Fonts, Layout, Images } = useTheme();
   const [needsCollapse, setNeedsCollapse] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isSeen, setIsSeen] = useState(seen);
@@ -54,29 +55,30 @@ const Notification = ({ notification }) => {
     });
   };
 
+  const _setImageUrl = (image) => {
+    return !image ? null : image;
+  };
+
   const _renderCollapseText = () => (
     <>
       <Collapsible collapsed={isCollapsed} collapsedHeight={20}>
-        <ListItem.Title>
+        <Text style={[Fonts.textTiny]}>
           {title}
           {'\n'}
-          {message}
-        </ListItem.Title>
+        </Text>
+        <Text style={[Fonts.textSmall]}>{message}</Text>
       </Collapsible>
     </>
   );
 
-  const _renderText = () => (
-    <Text onTextLayout={_handleNeedForCollapse}>
-      {title}
-      {'\n'}
-      {message}
-    </Text>
-  );
+  const _renderText = () => <Text onTextLayout={_handleNeedForCollapse}>{message}</Text>;
 
   return (
     <ListItem onPress={_handleCollapse} bottomDivider>
-      <Image source={LOGO} style={styles.collabLogo} />
+      <View style={[Layout.justifyContentCenter]}>
+        <Avatar.Image rounded size={35} source={_setImageUrl(Images.avatarImage)} />
+      </View>
+
       <ListItem.Content>{needsCollapse ? _renderCollapseText() : _renderText()}</ListItem.Content>
       {needsCollapse && isSeen && (
         <Icon
@@ -97,7 +99,6 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginTop: 10,
   },
-  collabLogo: { height: 15, width: 70 },
 });
 
 Notification.propTypes = {

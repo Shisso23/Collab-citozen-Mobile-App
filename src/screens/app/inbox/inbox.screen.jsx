@@ -12,7 +12,7 @@ import { getNotificationsAction } from '../../../reducers/notification-reducer/n
 
 const InboxScreen = () => {
   const { notifications, isLoading } = useSelector((reducers) => reducers.notificationReducer);
-  const { Common } = useTheme();
+  const { Common, Fonts, Layout } = useTheme();
 
   const dispatch = useDispatch();
 
@@ -23,7 +23,7 @@ const InboxScreen = () => {
   return !isLoading ? (
     <ScreenContainer>
       <PaddedContainer>
-        <Text style={Common.centerTitle}>Notifications</Text>
+        <Text style={[Layout.alignSelfCenter, Fonts.titleTiny]}>Notifications</Text>
         <Text style={Common.centerSubtitle}>Click to mark as read</Text>
       </PaddedContainer>
       {_.get(notifications, 'Feed', []).map((notification) => {
