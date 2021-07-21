@@ -19,7 +19,8 @@ export const mockApi = axios.create({
 const mockAdapter = new MockAdapter(mockApi, { delayResponse: 400 });
 
 // mocking channelsWIth validated Accounts api
-mockAdapter.onGet(`${apiUrl}/channels`).reply(() => {
+mockAdapter.onGet(`${apiUrl}/channels`).reply((config) => {
+  console.log({ config });
   const response = 200;
   const data = {
     municipalities: [
@@ -87,7 +88,8 @@ mockAdapter.onGet(`${apiUrl}/statements`).reply((config) => {
 });
 
 // mocking validate account api
-mockAdapter.onGet(`${apiUrl}/validate`).reply(() => {
+mockAdapter.onGet(`${apiUrl}/validate`).reply((config) => {
+  console.log({ config });
   const data = true;
   const responseStatus = 200;
 

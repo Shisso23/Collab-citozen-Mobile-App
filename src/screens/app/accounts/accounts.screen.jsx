@@ -5,6 +5,7 @@ import { List } from 'react-native-paper';
 import useTheme from '../../../theme/hooks/useTheme';
 import { getAccountsAction } from '../../../reducers/accounts-reducer/accounts.actions';
 import { accountsSelector } from '../../../reducers/accounts-reducer/accounts.reducer';
+import { accountActions } from '../../../reducers/accounts-reducer';
 
 const AccountsScreen = () => {
   const dispatch = useDispatch();
@@ -16,6 +17,9 @@ const AccountsScreen = () => {
   };
 
   useEffect(() => {
+    dispatch(accountActions.validateAccountAction('hyacinthe.ebula21@gmail.com', '123456789'));
+    dispatch(accountActions.getAccountStatementsAction('123'));
+    dispatch(accountActions.getChannelsWithValidAccountsAction());
     _loadAccountsRequest();
   }, []);
 

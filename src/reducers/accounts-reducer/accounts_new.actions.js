@@ -37,3 +37,9 @@ export const validateAccountAction = (email, accountNumber) => (dispatch) => {
     })
     .finally(() => dispatch(setIsLoadingAccountValidAction(false)));
 };
+
+export default {
+  validateAccountAction,
+  getAccountStatementsAction,
+  getChannelsWithValidAccountsAction,
+};
