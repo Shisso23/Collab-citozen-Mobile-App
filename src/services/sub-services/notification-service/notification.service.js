@@ -16,7 +16,7 @@ export const getNotifications = async () => {
   });
 };
 
-export const openNotification = async (notificationId, dateTime, userId) => {
+export const openNotification = (notificationId, dateTime, userId) => {
   const data = notificationActivityData({
     notificationId,
     userId,
