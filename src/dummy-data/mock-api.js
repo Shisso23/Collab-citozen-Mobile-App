@@ -19,33 +19,25 @@ export const mockApi = axios.create({
 const mockAdapter = new MockAdapter(mockApi, { delayResponse: 400 });
 
 // mocking channelsWIth validated Accounts api
-mockAdapter.onGet(`${apiUrl}/channels`).reply((config) => {
-  console.log({ config });
+mockAdapter.onGet(`${apiUrl}/channels`).reply(() => {
   const response = 200;
   const data = {
     municipalities: [
       {
-        obj_id: 556519,
-        name: 'Mossel Bay Local Municipality',
+        obj_id: 601083,
+        name: 'Prepaid Vendor Off',
+        category: 'Financial Services',
         code: 'WC043',
-        service_types: [
-          {
-            obj_id: 601083,
-            name: 'Prepaid Vendor Off',
-            category: 'Financial Services',
-            accounts: [
-              { objectId: '212', accountNumber: '0123456789', accountHolder: 'Hyacinthe' },
-            ],
-          },
-          {
-            obj_id: 601084,
-            name: 'Account Enquiries',
-            category: 'Financial Services',
-            accounts: [
-              { objectId: '214', accountNumber: '0123456789', accountHolder: 'Hyacinthe' },
-              { objectId: '213', accountNumber: '0987654321', accountHolder: 'Wesley' },
-            ],
-          },
+        accounts: [{ objectId: '212', accountNumber: '0123456789', accountHolder: 'Hyacinthe' }],
+      },
+      {
+        obj_id: 601084,
+        name: 'Account Enquiries',
+        category: 'Financial Services',
+        code: 'WC044',
+        accounts: [
+          { objectId: '214', accountNumber: '0123456789', accountHolder: 'Hyacinthe' },
+          { objectId: '213', accountNumber: '0987654321', accountHolder: 'Wesley' },
         ],
       },
     ],
@@ -55,9 +47,8 @@ mockAdapter.onGet(`${apiUrl}/channels`).reply((config) => {
 });
 
 // mocking getAccountStatements api
-mockAdapter.onGet(`${apiUrl}/statements`).reply((config) => {
-  console.log({ config });
-  //   const { notificationLinkId } = JSON.parse(config.data);
+mockAdapter.onGet(`${apiUrl}/statements`).reply(() => {
+  // const { accountId } = JSON.parse(config.data);
   const data = {
     statements: [
       {
@@ -65,22 +56,22 @@ mockAdapter.onGet(`${apiUrl}/statements`).reply((config) => {
         address: '129 Rosile street, Brooklyn',
         paid_amount: 3000,
         date: Moment(new Date()).format('yyyy-mm-DD hh:mm:ss'),
-        statement: 'http://www.africau.edu/images/default/sample.pdf',
+        statementUrl: 'http://www.africau.edu/images/default/sample.pdf',
       },
-      {
-        objectId: '124',
-        address: '34 joubert street, Moreleta',
-        paid_amount: 800,
-        date: Moment(new Date()).format('yyyy-mm-DD hh:mm:ss'),
-        statement: 'https://efb.gr/wp-content/uploads/2019/10/dummy.pdf',
-      },
-      {
-        objectId: '125',
-        address: '445 main street, monument park',
-        paid_amount: 2100.35,
-        date: Moment(new Date()).format('yyyy-mm-DD hh:mm:ss'),
-        statement: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
-      },
+      // {
+      //   objectId: '124',
+      //   address: '34 joubert street, Moreleta',
+      //   paid_amount: 800,
+      //   date: Moment(new Date()).format('yyyy-mm-DD hh:mm:ss'),
+      //   statementUrl: 'https://efb.gr/wp-content/uploads/2019/10/dummy.pdf',
+      // },
+      // {
+      //   objectId: '125',
+      //   address: '445 main street, monument park',
+      //   paid_amount: 2100.35,
+      //   date: Moment(new Date()).format('yyyy-mm-DD hh:mm:ss'),
+      //   statementUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+      // },
     ],
   };
   const responseStatus = 200;
@@ -89,7 +80,7 @@ mockAdapter.onGet(`${apiUrl}/statements`).reply((config) => {
 
 // mocking validate account api
 mockAdapter.onGet(`${apiUrl}/validate`).reply((config) => {
-  console.log({ config });
+  const { email, accountNumber } = JSON.parse(config.data);
   const data = true;
   const responseStatus = 200;
 
