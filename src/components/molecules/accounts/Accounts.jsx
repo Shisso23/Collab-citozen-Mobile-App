@@ -1,0 +1,96 @@
+import React, { useState } from 'react';
+import { TextInput, Button } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
+import { FlatList, Text, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
+
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import _ from 'lodash';
+import useTheme from '../../../theme/hooks/useTheme';
+import { accountsNewSelector } from '../../../reducers/accounts-reducer/accounts_new.reducer';
+import { accountActions } from '../../../reducers/accounts-reducer';
+
+const Accounts = ({ selectedChannel }) => {
+  const dispatch = useDispatch();
+  const { isLoadingAccountValid } = useSelector(accountsNewSelector);
+  const {
+    user: { email },
+  } = useSelector((reducer) => reducer.userReducer);
+  const { Common, Gutters, Layout, Colors } = useTheme();
+  const [addingAccount, setAddingAccount] = useState(false);
+  const [newAccountNumber, setnewAccountNumber] = useState(null);
+  const navigation = useNavigation();
+
+  const handleSubmit = () => {
+    dispatch(accountActions.validateAccountAction(email, newAccountNumber)).then(() => {
+      navigation.navigate('AccountStatements');
+    });
+  };
+  return (
+    <>
+      <View style={[Layout.rowBetween, Gutters.smallHMargin]}>
+        <Text>Add Account</Text>
+        <TouchableOpacity
+          onPress={() => {
+            setAddingAccount(!addingAccount);
+          }}
+        >
+          <Icon name={!addingAccount ? 'plus-circle' : 'close-circle'} size={25} />
+        </TouchableOpacity>
+      </View>
+
+      {addingAccount && (
+        <TextInput
+          label="Account Number"
+          style={[Common.textInput, styles.accountInput]}
+          onChangeText={(accNumber) => setnewAccountNumber(accNumber)}
+          value={newAccountNumber}
+          showSoftInputOnFocus={false}
+          multiline={false}
+        />
+      )}
+      <FlatList
+        contentContainerStyle={Gutters.smallHMargin}
+        data={_.get(selectedChannel, 'accounts', [])}
+        renderItem={({ item }) => {
+          return (
+            <TouchableOpacity
+              style={[Common.textInputWithShadow, Gutters.smallTMargin, Gutters.smallPadding]}
+            >
+              <Text>{_.get(item, 'accountHolder', 'noe')}</Text>
+              <Text>{_.get(item, 'accountNumber', 'none')}</Text>
+            </TouchableOpacity>
+          );
+        }}
+        keyExtractor={(item) => String(item.objectId)}
+      />
+
+      {`${newAccountNumber}`.length >= 5 && (
+        <Button
+          mode="contained"
+          style={[Gutters.largeMargin, Gutters.tinyVPadding, { backgroundColor: Colors.secondary }]}
+          onPress={handleSubmit}
+          loading={isLoadingAccountValid}
+          disabled={isLoadingAccountValid}
+        >
+          Verify
+        </Button>
+      )}
+    </>
+  );
+};
+
+Accounts.propTypes = {
+  selectedChannel: PropTypes.object.isRequired,
+};
+
+Accounts.defaultProps = {};
+
+const styles = StyleSheet.create({
+  accountInput: {
+    marginHorizontal: '3.5%',
+  },
+});
+
+export default Accounts;

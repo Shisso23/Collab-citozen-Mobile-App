@@ -8,7 +8,8 @@ import useTheme from '../../../theme/hooks/useTheme';
 import { NotificationHeader } from '../../headers';
 
 const HeaderBackGround = (props) => {
-  const { backButton } = props;
+  const { backButton, onBack } = props;
+
   const navigation = useNavigation();
   const { Images, Common, Gutters, Layout, Colors } = useTheme();
   return (
@@ -17,7 +18,9 @@ const HeaderBackGround = (props) => {
         icon={backButton ? 'arrow-left' : 'menu'}
         size={30}
         color={Colors.white}
-        onPress={() => (backButton ? navigation.goBack() : navigation.toggleDrawer())}
+        onPress={() =>
+          onBack ? onBack() : backButton ? navigation.goBack() : navigation.toggleDrawer()
+        }
         style={Gutters.largeTMargin}
       />
       <NotificationHeader style={styles.notificationHeader} />
@@ -27,10 +30,12 @@ const HeaderBackGround = (props) => {
 
 HeaderBackGround.propTypes = {
   backButton: PropTypes.bool,
+  onBack: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
 };
 
 HeaderBackGround.defaultProps = {
   backButton: false,
+  onBack: false,
 };
 
 const styles = StyleSheet.create({

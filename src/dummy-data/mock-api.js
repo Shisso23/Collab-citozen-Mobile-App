@@ -28,6 +28,7 @@ mockAdapter.onGet(`${apiUrl}/channels`).reply(() => {
         name: 'Prepaid Vendor Off',
         category: 'Financial Services',
         code: 'WC043',
+        status: 'pending',
         accounts: [{ objectId: '212', accountNumber: '0123456789', accountHolder: 'Hyacinthe' }],
       },
       {
@@ -35,6 +36,7 @@ mockAdapter.onGet(`${apiUrl}/channels`).reply(() => {
         name: 'Account Enquiries',
         category: 'Financial Services',
         code: 'WC044',
+        status: 'Subscribed',
         accounts: [
           { objectId: '214', accountNumber: '0123456789', accountHolder: 'Hyacinthe' },
           { objectId: '213', accountNumber: '0987654321', accountHolder: 'Wesley' },
