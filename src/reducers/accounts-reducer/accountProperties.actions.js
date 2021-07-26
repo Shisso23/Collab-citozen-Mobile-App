@@ -1,7 +1,7 @@
 import accountPropertyService from '../../services/sub-services/accounts-service/accounts.property.service';
 import { setAccountsAction, setIsLoadingAccountsRequestAction } from './accountProperties.reducer';
 
-export const getAccountsAction = () => (dispatch) => {
+export const getAccountsPropertyAction = () => (dispatch) => {
   dispatch(setIsLoadingAccountsRequestAction(true));
   return accountPropertyService
     .getAccounts()
