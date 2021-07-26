@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FlatList, Text, View } from 'react-native';
 import { List } from 'react-native-paper';
 import useTheme from '../../../theme/hooks/useTheme';
-import { getAccountsAction } from '../../../reducers/accounts-reducer/accountProperties.actions';
+import { getAccountsPropertyAction } from '../../../reducers/accounts-reducer/accountProperties.actions';
 import { accountsPropertySelector } from '../../../reducers/accounts-reducer/accountProperties.reducer';
 
 const AccountScreen = () => {
@@ -12,7 +12,7 @@ const AccountScreen = () => {
   const { Gutters, Fonts, Common } = useTheme();
 
   const _loadAccountsRequest = () => {
-    dispatch(getAccountsAction());
+    dispatch(getAccountsPropertyAction());
   };
 
   useEffect(() => {
