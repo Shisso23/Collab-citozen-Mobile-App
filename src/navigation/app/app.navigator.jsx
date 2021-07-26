@@ -112,7 +112,7 @@ const AppNavigator = () => {
         name="Statements"
         component={StatementsScreen}
         options={{
-          headerShown: false,
+          headerShown: true,
           header: (props) => <HeaderBackGround {...props} backButton />,
         }}
       />

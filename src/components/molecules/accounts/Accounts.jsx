@@ -23,9 +23,7 @@ const Accounts = ({ selectedChannel }) => {
   const navigation = useNavigation();
 
   const handleSubmit = () => {
-    dispatch(accountActions.validateAccountAction(email, newAccountNumber)).then(() => {
-      navigation.navigate('AccountStatements');
-    });
+    dispatch(accountActions.validateAccountAction(email, newAccountNumber)).then(() => {});
   };
   return (
     <>
@@ -56,6 +54,9 @@ const Accounts = ({ selectedChannel }) => {
         renderItem={({ item }) => {
           return (
             <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('Statements', { accountId: _.get(item, 'objectId', '') })
+              }
               style={[Common.textInputWithShadow, Gutters.smallTMargin, Gutters.smallPadding]}
             >
               <Text>{_.get(item, 'accountHolder', 'noe')}</Text>
