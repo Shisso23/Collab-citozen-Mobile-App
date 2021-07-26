@@ -8,23 +8,26 @@ import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import _ from 'lodash';
 import useTheme from '../../../theme/hooks/useTheme';
-import { accountsNewSelector } from '../../../reducers/accounts-reducer/accounts_new.reducer';
+import { accountsSelector } from '../../../reducers/accounts-reducer/accounts.reducer';
 import { accountActions } from '../../../reducers/accounts-reducer';
 
 const Accounts = ({ selectedChannel }) => {
   const dispatch = useDispatch();
-  const { isLoadingAccountValid } = useSelector(accountsNewSelector);
-  const {
-    user: { email },
-  } = useSelector((reducer) => reducer.userReducer);
+  const { isLoadingAccountValid } = useSelector(accountsSelector);
+  const { user } = useSelector((reducer) => reducer.userReducer);
+  const userId = _.get(user, 'user_id', '');
   const { Common, Gutters, Layout, Colors } = useTheme();
   const [addingAccount, setAddingAccount] = useState(false);
   const [newAccountNumber, setnewAccountNumber] = useState(null);
+  const channelId = _.get(selectedChannel, 'obj_id', '');
   const navigation = useNavigation();
 
   const handleSubmit = () => {
-    dispatch(accountActions.validateAccountAction(email, newAccountNumber)).then(() => {});
+    dispatch(accountActions.validateAccountAction(channelId, userId, newAccountNumber)).then(() => {
+      navigation.navigate('AccountStatements');
+    });
   };
+
   return (
     <>
       <View style={[Layout.rowBetween, Gutters.smallHMargin]}>

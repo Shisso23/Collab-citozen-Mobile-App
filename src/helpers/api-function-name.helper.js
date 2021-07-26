@@ -16,3 +16,7 @@ export const apiFunctionWithUniqNameChannels = async (functionName, longitude, l
     InputValues: `<valRoot><val> POINT(${longitude} ${latitude}) </val></valRoot>`,
   };
 };
+
+export const dataValidateAccount = ({ userId, channelId, accountNumber }) => {
+  return `<Objects><User_Account><F1>${userId}</F1><F2>${channelId}</F2><F3>${accountNumber}</F3><F4>Requested</F4></User_Account></Objects>`;
+};
