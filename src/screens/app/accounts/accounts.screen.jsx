@@ -5,14 +5,14 @@ import { FlatList, Text, View, ImageBackground, RefreshControl } from 'react-nat
 import { useDispatch, useSelector } from 'react-redux';
 
 import useTheme from '../../../theme/hooks/useTheme';
-import { accountsNewSelector } from '../../../reducers/accounts-reducer/accounts_new.reducer';
+import { accountsSelector } from '../../../reducers/accounts-reducer/accounts.reducer';
 import { accountActions } from '../../../reducers/accounts-reducer';
 import HeaderBackGround from '../../../components/atoms/header-background';
 import Accounts from '../../../components/molecules/accounts/Accounts';
 
 const AccountsScreen = () => {
   const dispatch = useDispatch();
-  const { accountChannels, isLoadingAccountChannels } = useSelector(accountsNewSelector);
+  const { accountChannels, isLoadingAccountChannels } = useSelector(accountsSelector);
   const { Common, Gutters, Fonts, Layout, Images, Colors } = useTheme();
   const [showAccounts, setshowAccounts] = useState(false);
   const [selectedChannel, setSelectedChannel] = useState({});

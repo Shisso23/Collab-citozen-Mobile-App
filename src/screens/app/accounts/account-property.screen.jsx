@@ -3,12 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FlatList, Text, View } from 'react-native';
 import { List } from 'react-native-paper';
 import useTheme from '../../../theme/hooks/useTheme';
-import { getAccountsAction } from '../../../reducers/accounts-reducer/accounts.actions';
-import { accountsSelector } from '../../../reducers/accounts-reducer/accounts.reducer';
+import { getAccountsAction } from '../../../reducers/accounts-reducer/accountProperties.actions';
+import { accountsPropertySelector } from '../../../reducers/accounts-reducer/accountProperties.reducer';
 
 const AccountScreen = () => {
   const dispatch = useDispatch();
-  const { accounts, isLoadingAccountsRequest } = useSelector(accountsSelector);
+  const { accounts, isLoadingAccountsRequest } = useSelector(accountsPropertySelector);
   const { Gutters, Fonts, Common } = useTheme();
 
   const _loadAccountsRequest = () => {
