@@ -11,7 +11,7 @@ const getChannelsWithValidAccounts = async () => {
   return _.get(apiResponse, 'data.municipalities', null);
 };
 
-const getAccountStatements = async (accountId = 123) => {
+const getAccountStatements = async (accountId) => {
   const url = accountsUrls.statementsUrl();
   const apiResponse = await mockApi.get(url, { data: { accountId } });
   return _.get(apiResponse, 'data.statements', null);

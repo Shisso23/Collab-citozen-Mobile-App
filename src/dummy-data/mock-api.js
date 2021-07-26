@@ -24,7 +24,7 @@ mockAdapter.onGet(`${apiUrl}/channels`).reply(() => {
   const data = {
     municipalities: [
       {
-        obj_id: 601083,
+        objectId: 601083,
         name: 'Prepaid Vendor Off',
         category: 'Financial Services',
         code: 'WC043',
@@ -32,7 +32,7 @@ mockAdapter.onGet(`${apiUrl}/channels`).reply(() => {
         accounts: [{ objectId: '212', accountNumber: '0123456789', accountHolder: 'Hyacinthe' }],
       },
       {
-        obj_id: 601084,
+        objectId: 601084,
         name: 'Account Enquiries',
         category: 'Financial Services',
         code: 'WC044',
@@ -57,23 +57,23 @@ mockAdapter.onGet(`${apiUrl}/statements`).reply(() => {
         objectId: '123',
         address: '129 Rosile street, Brooklyn',
         paid_amount: 3000,
-        date: Moment(new Date()).format('yyyy-mm-DD hh:mm:ss'),
+        date: Moment(new Date()).format('DD MM YYYY'),
         statementUrl: 'http://www.africau.edu/images/default/sample.pdf',
       },
-      // {
-      //   objectId: '124',
-      //   address: '34 joubert street, Moreleta',
-      //   paid_amount: 800,
-      //   date: Moment(new Date()).format('yyyy-mm-DD hh:mm:ss'),
-      //   statementUrl: 'https://efb.gr/wp-content/uploads/2019/10/dummy.pdf',
-      // },
-      // {
-      //   objectId: '125',
-      //   address: '445 main street, monument park',
-      //   paid_amount: 2100.35,
-      //   date: Moment(new Date()).format('yyyy-mm-DD hh:mm:ss'),
-      //   statementUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
-      // },
+      {
+        objectId: '124',
+        address: '34 joubert street, Moreleta',
+        paid_amount: 800,
+        date: Moment(new Date()).format('DD MM YYYY'),
+        statementUrl: 'https://efb.gr/wp-content/uploads/2019/10/dummy.pdf',
+      },
+      {
+        objectId: '125',
+        address: '445 main street, monument park',
+        paid_amount: 2100.35,
+        date: Moment(new Date()).format('DD MM YYYY'),
+        statementUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+      },
     ],
   };
   const responseStatus = 200;

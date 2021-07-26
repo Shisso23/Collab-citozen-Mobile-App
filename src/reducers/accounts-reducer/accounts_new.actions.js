@@ -18,10 +18,10 @@ export const getChannelsWithValidAccountsAction = () => (dispatch) => {
     .finally(() => dispatch(setIsLoadingAccountChannelsAction(false)));
 };
 
-export const getAccountStatementsAction = (email, accountNumber) => (dispatch) => {
+export const getAccountStatementsAction = (accountId) => (dispatch) => {
   dispatch(setIsLoadingAccountStatementsAction(true));
   return accountsNewService
-    .getAccountStatements(email, accountNumber)
+    .getAccountStatements(accountId)
     .then((statements) => {
       dispatch(setAccountStatementsAction(statements));
     })
@@ -33,6 +33,7 @@ export const validateAccountAction = (email, accountNumber) => (dispatch) => {
   return accountsNewService
     .validateAccount(email, accountNumber)
     .then((isValid) => {
+      dispatch(getChannelsWithValidAccountsAction());
       dispatch(setAccountValidAction(isValid));
     })
     .finally(() => dispatch(setIsLoadingAccountValidAction(false)));
