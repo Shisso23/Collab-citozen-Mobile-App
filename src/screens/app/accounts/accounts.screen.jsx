@@ -74,7 +74,7 @@ const AccountsScreen = () => {
                     { backgroundColor: _getStatusIndicator(item.status) },
                   ]}
                 />
-                <Text style={Fonts.textRegular}>{item.status}</Text>
+                <Text style={Fonts.textRegular}>Subscribed</Text>
               </View>
             </View>
           )}
