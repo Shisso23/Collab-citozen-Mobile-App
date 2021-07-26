@@ -23,6 +23,7 @@ import InboxScreen from '../../screens/app/inbox/inbox.screen';
 // import AccountScreen from '../../screens/app/account/account.screen';
 import AccountsScreen from '../../screens/app/accounts/accounts.screen';
 import StatementsScreen from '../../screens/app/accounts/statements.screen';
+import StatementViewScreen from '../../screens/app/accounts/statementView.screen';
 
 const Drawer = createDrawerNavigator();
 const AppStack = createStackNavigator();
@@ -111,6 +112,14 @@ const AppNavigator = () => {
       <AppStack.Screen
         name="Statements"
         component={StatementsScreen}
+        options={{
+          headerShown: true,
+          header: (props) => <HeaderBackGround {...props} backButton />,
+        }}
+      />
+      <AppStack.Screen
+        name="StatementView"
+        component={StatementViewScreen}
         options={{
           headerShown: true,
           header: (props) => <HeaderBackGround {...props} backButton />,

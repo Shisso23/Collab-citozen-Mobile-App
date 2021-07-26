@@ -65,7 +65,8 @@ mockAdapter.onGet(`${apiUrl}/statements`).reply(() => {
         address: '34 joubert street, Moreleta',
         paid_amount: 800,
         date: Moment(new Date()).format('DD MM YYYY'),
-        statementUrl: 'https://efb.gr/wp-content/uploads/2019/10/dummy.pdf',
+        statementUrl:
+          'https://www.cs.cmu.edu/afs/cs.cmu.edu/user/gchen/www/download/java/LearnJava.pdf',
       },
       {
         objectId: '125',
