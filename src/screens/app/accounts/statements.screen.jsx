@@ -15,7 +15,7 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 import useTheme from '../../../theme/hooks/useTheme';
-import { accountsNewSelector } from '../../../reducers/accounts-reducer/accounts_new.reducer';
+import { accountsSelector } from '../../../reducers/accounts-reducer/accounts.reducer';
 import { accountActions } from '../../../reducers/accounts-reducer';
 
 const StatementsScreen = ({ route }) => {
@@ -23,7 +23,7 @@ const StatementsScreen = ({ route }) => {
   const navigation = useNavigation();
   const { params } = route;
   const accountId = _.get(params, 'accountId', '');
-  const { statements, isLoadingAccountStatements } = useSelector(accountsNewSelector);
+  const { statements, isLoadingAccountStatements } = useSelector(accountsSelector);
   const { Gutters, Fonts, Common, Layout, Colors, Images } = useTheme();
 
   useEffect(() => {

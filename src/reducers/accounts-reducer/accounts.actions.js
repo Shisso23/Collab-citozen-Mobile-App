@@ -1,12 +1,46 @@
 import accountsService from '../../services/sub-services/accounts-service/accounts.service';
-import { setAccountsAction, setIsLoadingAccountsRequestAction } from './accounts.reducer';
+import {
+  setAccountChannelsAction,
+  setAccountStatementsAction,
+  setIsLoadingAccountChannelsAction,
+  setIsLoadingAccountStatementsAction,
+  setIsLoadingAccountValidAction,
+  setAccountValidAction,
+} from './accounts.reducer';
 
-export const getAccountsAction = () => (dispatch) => {
-  dispatch(setIsLoadingAccountsRequestAction(true));
+export const getChannelsWithValidAccountsAction = () => (dispatch) => {
+  dispatch(setIsLoadingAccountChannelsAction(true));
   return accountsService
-    .getAccounts()
-    .then((accounts) => {
-      dispatch(setAccountsAction(accounts));
+    .getChannelsWithValidAccounts()
+    .then((channels) => {
+      dispatch(setAccountChannelsAction(channels));
     })
-    .finally(() => dispatch(setIsLoadingAccountsRequestAction(false)));
+    .finally(() => dispatch(setIsLoadingAccountChannelsAction(false)));
+};
+
+export const getAccountStatementsAction = (accountId) => (dispatch) => {
+  dispatch(setIsLoadingAccountStatementsAction(true));
+  return accountsService
+    .getAccountStatements(accountId)
+    .then((statements) => {
+      dispatch(setAccountStatementsAction(statements));
+    })
+    .finally(() => dispatch(setIsLoadingAccountStatementsAction(false)));
+};
+
+export const validateAccountAction = (channelId, userId, accountNumber) => (dispatch) => {
+  dispatch(setIsLoadingAccountValidAction, true);
+  return accountsService
+    .validateAccount(channelId, userId, accountNumber)
+    .then((isValid) => {
+      dispatch(getChannelsWithValidAccountsAction());
+      dispatch(setAccountValidAction(isValid));
+    })
+    .finally(() => dispatch(setIsLoadingAccountValidAction(false)));
+};
+
+export default {
+  validateAccountAction,
+  getAccountStatementsAction,
+  getChannelsWithValidAccountsAction,
 };
