@@ -10,6 +10,7 @@ import _ from 'lodash';
 import useTheme from '../../../theme/hooks/useTheme';
 import { accountsSelector } from '../../../reducers/accounts-reducer/accounts.reducer';
 import { accountActions } from '../../../reducers/accounts-reducer';
+import flashService from '../../../services/sub-services/flash-service/flash.service';
 
 const Accounts = ({ selectedChannel }) => {
   const dispatch = useDispatch();
@@ -23,9 +24,14 @@ const Accounts = ({ selectedChannel }) => {
   const navigation = useNavigation();
 
   const handleSubmit = () => {
-    dispatch(accountActions.validateAccountAction(channelId, userId, newAccountNumber)).then(() => {
-      navigation.navigate('AccountStatements');
-    });
+    dispatch(accountActions.validateAccountAction(channelId, userId, newAccountNumber))
+      .then(() => {
+        flashService.success('Account validated!');
+        navigation.navigate('AccountStatements');
+      })
+      .catch((error) => {
+        flashService.error(_.get(error, 'message', 'Could not validate account!'));
+      });
   };
 
   return (

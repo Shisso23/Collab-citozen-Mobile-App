@@ -29,12 +29,13 @@ export const getAccountStatementsAction = (accountId) => (dispatch) => {
 };
 
 export const validateAccountAction = (channelId, userId, accountNumber) => (dispatch) => {
-  dispatch(setIsLoadingAccountValidAction, true);
+  dispatch(setIsLoadingAccountValidAction(true));
   return accountsService
     .validateAccount(channelId, userId, accountNumber)
-    .then((isValid) => {
+    .then((response) => {
       dispatch(getChannelsWithValidAccountsAction());
-      dispatch(setAccountValidAction(isValid));
+      dispatch(setAccountValidAction(response));
+      return response;
     })
     .finally(() => dispatch(setIsLoadingAccountValidAction(false)));
 };
