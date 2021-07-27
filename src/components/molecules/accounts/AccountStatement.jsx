@@ -8,7 +8,15 @@ import FlashService from '../../../services/sub-services/flash-service/flash.ser
 import LoadingComponent from '../loading/loading.component';
 
 const AccountStatement = ({ statement }) => {
-  const source = { uri: `${_.get(statement, 'statementUrl', null)}`, cache: true };
+  // const source = { uri: `${_.get(statement, 'statementUrl', null)}`, cache: true };
+  const source = {
+    uri: `${_.get(
+      statement,
+      'statementUrl',
+      'https://www.cs.cmu.edu/afs/cs.cmu.edu/user/gchen/www/download/java/LearnJava.pdf',
+    )}`,
+    cache: true,
+  };
 
   return (
     <View style={styles.container}>
