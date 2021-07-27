@@ -1,21 +1,18 @@
-import React, { useState, useEffect } from 'react';
-import { List } from 'react-native-paper';
+import React from 'react';
+import { FAB } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { FlatList, Text, View, ImageBackground, RefreshControl } from 'react-native';
+import { FlatList, Text, ImageBackground, RefreshControl, TouchableOpacity } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
+import _ from 'lodash';
 import useTheme from '../../../theme/hooks/useTheme';
 import { accountsSelector } from '../../../reducers/accounts-reducer/accounts.reducer';
 import { accountActions } from '../../../reducers/accounts-reducer';
-import HeaderBackGround from '../../../components/atoms/header-background';
-import Accounts from '../../../components/molecules/accounts/Accounts';
 
 const AccountsScreen = () => {
   const dispatch = useDispatch();
   const { accountChannels, isLoadingAccountChannels } = useSelector(accountsSelector);
   const { Common, Gutters, Fonts, Layout, Images, Colors } = useTheme();
-  const [showAccounts, setshowAccounts] = useState(false);
-  const [selectedChannel, setSelectedChannel] = useState({});
   const navigation = useNavigation();
 
   const _loadMyChannels = () => {
@@ -28,59 +25,29 @@ const AccountsScreen = () => {
     }, []),
   );
 
-  useEffect(() => {
-    navigation.setOptions({
-      header: (props) => <HeaderBackGround {...props} backButton onBack={onBack} />,
+  const _handleAddAccountPress = () => {
+    navigation.navigate('Accountchannels');
+  };
+
+  const viewAccountChannelsItem = ({ item, channelIndex }) => {
+    return _.map(_.get(item, 'accounts', []), (account, index) => {
+      console.log({ account });
+      return (
+        <TouchableOpacity
+          key={`${_.get(account, 'obj_id', index)}/${_.get(item, 'obj_id', channelIndex)}`}
+          onPress={() =>
+            navigation.navigate('Statements', {
+              accountId: _.get(item, 'objectId', ''),
+              statements: _.get(item, 'statements', []),
+            })
+          }
+          style={[Common.textInputWithShadow, Gutters.smallTMargin, Gutters.smallPadding]}
+        >
+          <Text>{_.get(account, 'account_name', '')}</Text>
+          <Text>{_.get(account, 'account_number', '')}</Text>
+        </TouchableOpacity>
+      );
     });
-  }, [showAccounts]);
-
-  const onBack = () => {
-    if (showAccounts) {
-      setshowAccounts(false);
-    } else {
-      navigation.goBack();
-    }
-  };
-
-  const onSelectChannel = (channel) => {
-    setshowAccounts(true);
-    setSelectedChannel(channel);
-  };
-
-  const _getStatusIndicator = (status) => {
-    switch (status) {
-      case 'Subscribed':
-        return Colors.primary;
-      case 'pending':
-        return Colors.error;
-      default:
-        return Colors.primary;
-    }
-  };
-
-  const viewAccountChannelsItem = ({ item }) => {
-    return (
-      <View style={[Common.textInputWithShadow, Gutters.tinyMargin]}>
-        <List.Item
-          title={item.name}
-          onPress={() => onSelectChannel(item)}
-          description={() => (
-            <View style={[Layout.column, Gutters.largeRMargin]}>
-              <View style={[Layout.rowHCenter, Gutters.tinyTPadding]}>
-                <View
-                  style={[
-                    Gutters.tinyHMargin,
-                    Common.statusIndicator,
-                    { backgroundColor: _getStatusIndicator(item.status) },
-                  ]}
-                />
-                <Text style={Fonts.textRegular}>Subscribed</Text>
-              </View>
-            </View>
-          )}
-        />
-      </View>
-    );
   };
 
   return (
@@ -91,23 +58,23 @@ const AccountsScreen = () => {
         resizeMode="cover"
       >
         <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>My Accounts</Text>
-        {(!showAccounts && (
-          <FlatList
-            contentContainerStyle={Gutters.smallHMargin}
-            data={accountChannels}
-            renderItem={viewAccountChannelsItem}
-            keyExtractor={(item) => String(item.objId)}
-            refreshControl={
-              <RefreshControl
-                refreshing={isLoadingAccountChannels}
-                onRefresh={_loadMyChannels}
-                tintColor={Colors.primary}
-                colors={[Colors.primary]}
-              />
-            }
-          />
-        )) || <Accounts selectedChannel={selectedChannel} />}
+
+        <FlatList
+          contentContainerStyle={Gutters.smallHMargin}
+          data={accountChannels}
+          renderItem={viewAccountChannelsItem}
+          keyExtractor={(item) => String(item.objId)}
+          refreshControl={
+            <RefreshControl
+              refreshing={isLoadingAccountChannels}
+              onRefresh={_loadMyChannels}
+              tintColor={Colors.primary}
+              colors={[Colors.primary]}
+            />
+          }
+        />
       </ImageBackground>
+      <FAB style={[Common.fabAlignment]} icon="plus" onPress={_handleAddAccountPress} />
     </>
   );
 };

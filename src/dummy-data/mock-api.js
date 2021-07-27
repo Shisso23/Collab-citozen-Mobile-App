@@ -19,17 +19,30 @@ export const mockApi = axios.create({
 const mockAdapter = new MockAdapter(mockApi, { delayResponse: 400 });
 
 // mocking channelsWIth validated Accounts api
-mockAdapter.onGet(`${apiUrl}/channels`).reply(() => {
+mockAdapter.onPost(`${apiUrl}/function/execfunction`).reply(() => {
   const response = 200;
   const data = {
-    municipalities: [
+    Channels: [
       {
         objectId: 601083,
         name: 'Prepaid Vendor Off',
         category: 'Financial Services',
         code: 'WC043',
         status: 'pending',
-        accounts: [{ objectId: '212', accountNumber: '0123456789', accountHolder: 'Hyacinthe' }],
+        accounts: [
+          {
+            obj_id: '212',
+            account_number: '0123456789',
+            account_name: 'Hyacinthe',
+            status: 'Requested',
+            statements: [
+              {
+                file_id: '12345',
+                obj_id: '1234',
+              },
+            ],
+          },
+        ],
       },
       {
         objectId: 601084,
@@ -38,8 +51,30 @@ mockAdapter.onGet(`${apiUrl}/channels`).reply(() => {
         code: 'WC044',
         status: 'Subscribed',
         accounts: [
-          { objectId: '214', accountNumber: '0123456789', accountHolder: 'Hyacinthe' },
-          { objectId: '213', accountNumber: '0987654321', accountHolder: 'Wesley' },
+          {
+            obj_id: '213',
+            account_number: '0123456789',
+            account_name: 'Shisso',
+            status: 'Requested',
+            statements: [
+              {
+                file_id: '12345',
+                obj_id: '1234',
+              },
+            ],
+          },
+          {
+            obj_id: '214',
+            account_number: '0123456789',
+            account_name: 'Frans',
+            status: 'Granted',
+            statements: [
+              {
+                file_id: '12345',
+                obj_id: '1234',
+              },
+            ],
+          },
         ],
       },
     ],

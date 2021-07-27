@@ -20,9 +20,11 @@ import HeaderBackGround from '../../components/atoms/header-background';
 import ViewServiceRequestScreen from '../../screens/app/service-request/view-service-request/view-service-request.screen';
 import ViewNewsFeedArticleScreen from '../../screens/app/newsfeed/view-newsfeed-article.screen';
 import InboxScreen from '../../screens/app/inbox/inbox.screen';
-// import AccountScreen from '../../screens/app/account/account.screen';
 import AccountsScreen from '../../screens/app/accounts/accounts.screen';
 import StatementsScreen from '../../screens/app/accounts/statements.screen';
+import AccountChannelsScreen from '../../screens/app/accounts/account.channels.screen';
+// import StatementViewScreen from '../../screens/app/accounts/statementView.screen';
+import AddAccountScreen from '../../screens/app/accounts/add-account.screen';
 
 const Drawer = createDrawerNavigator();
 const AppStack = createStackNavigator();
@@ -112,7 +114,31 @@ const AppNavigator = () => {
         name="Statements"
         component={StatementsScreen}
         options={{
-          headerShown: false,
+          headerShown: true,
+          header: (props) => <HeaderBackGround {...props} backButton />,
+        }}
+      />
+      {/* <AppStack.Screen
+        name="StatementView"
+        component={StatementViewScreen}
+        options={{
+          headerShown: true,
+          header: (props) => <HeaderBackGround {...props} backButton />,
+        }}
+      /> */}
+      <AppStack.Screen
+        name="Accountchannels"
+        component={AccountChannelsScreen}
+        options={{
+          headerShown: true,
+          header: (props) => <HeaderBackGround {...props} backButton />,
+        }}
+      />
+      <AppStack.Screen
+        name="AddAccount"
+        component={AddAccountScreen}
+        options={{
+          headerShown: true,
           header: (props) => <HeaderBackGround {...props} backButton />,
         }}
       />
