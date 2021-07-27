@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import accountsService from '../../services/sub-services/accounts-service/accounts.service';
 import {
   setAccountChannelsAction,
@@ -14,6 +15,7 @@ export const getChannelsWithValidAccountsAction = () => (dispatch) => {
     .getChannelsWithValidAccounts()
     .then((channels) => {
       dispatch(setAccountChannelsAction(channels));
+      return channels;
     })
     .finally(() => dispatch(setIsLoadingAccountChannelsAction(false)));
 };
@@ -32,10 +34,12 @@ export const validateAccountAction = (channelId, userId, accountNumber) => (disp
   dispatch(setIsLoadingAccountValidAction(true));
   return accountsService
     .validateAccount(channelId, userId, accountNumber)
-    .then((response) => {
-      dispatch(getChannelsWithValidAccountsAction());
+    .then(async (response) => {
       dispatch(setAccountValidAction(response));
-      return response;
+      const channels = await dispatch(getChannelsWithValidAccountsAction());
+      const currentChannel = channels.find((channel) => _.get(channel, 'obj_id', '') === channelId);
+      const accounts = _.get(currentChannel, 'accounts', []);
+      return accounts;
     })
     .finally(() => dispatch(setIsLoadingAccountValidAction(false)));
 };

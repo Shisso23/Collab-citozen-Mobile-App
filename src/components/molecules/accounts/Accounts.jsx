@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TextInput, Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { FlatList, Text, View, StyleSheet, TouchableOpacity } from 'react-native';
@@ -21,13 +21,16 @@ const Accounts = ({ selectedChannel }) => {
   const [addingAccount, setAddingAccount] = useState(false);
   const [newAccountNumber, setnewAccountNumber] = useState(null);
   const channelId = _.get(selectedChannel, 'obj_id', '');
+  const [accounts, setAccounts] = useState(_.get(selectedChannel, 'accounts', []));
   const navigation = useNavigation();
+
+  useEffect(() => {}, [accounts.length]);
 
   const handleSubmit = () => {
     dispatch(accountActions.validateAccountAction(channelId, userId, newAccountNumber))
-      .then(() => {
+      .then((newAccounts) => {
+        setAccounts(newAccounts);
         flashService.success('Account validated!');
-        navigation.navigate('AccountStatements');
       })
       .catch((error) => {
         flashService.error(_.get(error, 'message', 'Could not validate account!'));
@@ -59,24 +62,27 @@ const Accounts = ({ selectedChannel }) => {
       )}
       <FlatList
         contentContainerStyle={Gutters.smallHMargin}
-        data={_.get(selectedChannel, 'accounts', [])}
+        data={accounts}
         renderItem={({ item }) => {
           return (
             <TouchableOpacity
               onPress={() =>
-                navigation.navigate('Statements', { accountId: _.get(item, 'objectId', '') })
+                navigation.navigate('Statements', {
+                  accountId: _.get(item, 'objectId', ''),
+                  statements: _.get(item, 'statements', []),
+                })
               }
               style={[Common.textInputWithShadow, Gutters.smallTMargin, Gutters.smallPadding]}
             >
-              <Text>{_.get(item, 'accountHolder', 'noe')}</Text>
-              <Text>{_.get(item, 'accountNumber', 'none')}</Text>
+              <Text>{_.get(item, 'account_name', '')}</Text>
+              <Text>{_.get(item, 'account_number', '')}</Text>
             </TouchableOpacity>
           );
         }}
         keyExtractor={(item) => String(item.objectId)}
       />
 
-      {`${newAccountNumber}`.length >= 5 && (
+      {`${newAccountNumber}`.length >= 10 && (
         <Button
           mode="contained"
           style={[Gutters.largeMargin, Gutters.tinyVPadding, { backgroundColor: Colors.secondary }]}
