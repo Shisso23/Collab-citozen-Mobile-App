@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { useDispatch } from 'react-redux';
 import {
   FlatList,
   Text,
@@ -13,9 +13,9 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import Moment from 'moment';
 
 import useTheme from '../../../theme/hooks/useTheme';
-import { accountsSelector } from '../../../reducers/accounts-reducer/accounts.reducer';
 import { accountActions } from '../../../reducers/accounts-reducer';
 
 const StatementsScreen = ({ route }) => {
@@ -23,12 +23,12 @@ const StatementsScreen = ({ route }) => {
   const navigation = useNavigation();
   const { params } = route;
   const accountId = _.get(params, 'accountId', '');
-  const { statements, isLoadingAccountStatements } = useSelector(accountsSelector);
+  const statements = _.get(params, 'statements', []);
   const { Gutters, Fonts, Common, Layout, Colors, Images } = useTheme();
 
-  useEffect(() => {
-    _loadMyStatements();
-  }, [statements.length]);
+  // useEffect(() => {
+  //   _loadMyStatements();
+  // }, [statements.length]);
 
   const _loadMyStatements = () => {
     dispatch(accountActions.getAccountStatementsAction(accountId));
@@ -48,10 +48,12 @@ const StatementsScreen = ({ route }) => {
           style={[Layout.rowBetween, Gutters.largeRMargin]}
         >
           <View style={styles.infoBox}>
-            <Text style={[styles.texts, Gutters.tinyBPadding, { fontSize: 13 }]}>
-              {_.get(item, 'paid_amount', 0).toFixed(2)}
+            <Text style={[styles.texts, { fontSize: 13 }]}>
+              {Moment(`${_.get(item, 'year', '')}/${_.get(item, 'month', '')}`).format('MMMM YYYY')}
             </Text>
-            <Text style={[styles.texts, { fontSize: 13 }]}>{_.get(item, 'address', '')}</Text>
+            <Text style={[styles.texts, Gutters.tinyBPadding, { fontSize: 13 }]}>
+              {_.get(item, 'status', '')}
+            </Text>
           </View>
           <Text style={[styles.texts, { color: Colors.primary }]}>{_.get(item, 'date', '')}</Text>
         </TouchableOpacity>
@@ -60,29 +62,6 @@ const StatementsScreen = ({ route }) => {
   };
 
   return (
-    // <View style={styles.container}>
-    //   <View style={styles.header}>
-    //     <IconButton
-    //       icon="arrow-left"
-    //       size={30}
-    //       color={Colors.white}
-    //       onPress={() => navigation.goBack()}
-    //       style={[Gutters.largeTMargin, Gutters.alignSelfLeft]}
-    //     />
-    //     <Text
-    //       style={[
-    //         Gutters.smallMargin,
-    //         Fonts.titleTiny,
-    //         Layout.alignSelfCenter,
-    //         Gutters.largeTMargin,
-    //       ]}
-    //     >
-    //       Statements
-    //     </Text>
-    //   </View>
-
-    //   <AccountStatement statement={statements} />
-    // </View>
     <>
       <ImageBackground
         source={Images.serviceRequest}
@@ -98,7 +77,7 @@ const StatementsScreen = ({ route }) => {
           keyExtractor={(item) => String(item.objectId)}
           refreshControl={
             <RefreshControl
-              refreshing={isLoadingAccountStatements}
+              // refreshing={isLoadingAccountStatements}
               onRefresh={_loadMyStatements}
               tintColor={Colors.primary}
               colors={[Colors.primary]}
