@@ -1,16 +1,9 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import {
-  FlatList,
-  Text,
-  View,
-  StyleSheet,
-  ImageBackground,
-  RefreshControl,
-  TouchableOpacity,
-} from 'react-native';
+import { FlatList, Text, View, ImageBackground, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { List } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import Moment from 'moment';
@@ -44,23 +37,13 @@ const StatementsScreen = ({ route }) => {
 
   const viewStatementItem = ({ item }) => {
     return (
-      <View
-        style={[Common.textInputWithShadow, Gutters.tinyMargin, Gutters.smallPadding, Layout.row]}
-      >
-        <TouchableOpacity
+      <View style={[Common.textInputWithShadow, Gutters.tinyMargin]}>
+        <List.Item
+          title={Moment(`${_.get(item, 'year', '')}/${_.get(item, 'month', '')}`).format(
+            'MMMM YYYY',
+          )}
           onPress={() => onSelectStatement(item)}
-          style={[Layout.rowBetween, Gutters.largeRMargin]}
-        >
-          <View style={styles.infoBox}>
-            <Text style={[styles.texts, { fontSize: 13 }]}>
-              {Moment(`${_.get(item, 'year', '')}/${_.get(item, 'month', '')}`).format('MMMM YYYY')}
-            </Text>
-            <Text style={[styles.texts, Gutters.tinyBPadding, { fontSize: 13 }]}>
-              {_.get(item, 'status', '')}
-            </Text>
-          </View>
-          <Text style={[styles.texts, { color: Colors.primary }]}>{_.get(item, 'date', '')}</Text>
-        </TouchableOpacity>
+        />
       </View>
     );
   };
@@ -97,15 +80,5 @@ StatementsScreen.propTypes = {
 };
 
 StatementsScreen.defaultProps = {};
-
-const styles = StyleSheet.create({
-  infoBox: {
-    width: '78%',
-  },
-  texts: {
-    fontSize: 11,
-    fontWeight: '500',
-  },
-});
 
 export default StatementsScreen;
