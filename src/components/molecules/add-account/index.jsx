@@ -11,7 +11,7 @@ import { accountsSelector } from '../../../reducers/accounts-reducer/accounts.re
 import { accountActions } from '../../../reducers/accounts-reducer';
 import flashService from '../../../services/sub-services/flash-service/flash.service';
 
-const Accounts = ({ selectedChannel }) => {
+const AddAccounts = ({ selectedChannel }) => {
   const dispatch = useDispatch();
   const { isLoadingAccountValid } = useSelector(accountsSelector);
   const { user } = useSelector((reducer) => reducer.userReducer);
@@ -80,11 +80,11 @@ const Accounts = ({ selectedChannel }) => {
   );
 };
 
-Accounts.propTypes = {
+AddAccounts.propTypes = {
   selectedChannel: PropTypes.object.isRequired,
 };
 
-Accounts.defaultProps = {};
+AddAccounts.defaultProps = {};
 
 const styles = StyleSheet.create({
   accountInput: {
@@ -96,4 +96,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Accounts;
+export default AddAccounts;

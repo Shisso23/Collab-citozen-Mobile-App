@@ -4,7 +4,7 @@ import { PropTypes } from 'prop-types';
 import _ from 'lodash';
 
 import useTheme from '../../../theme/hooks/useTheme';
-import Accounts from '../../../components/molecules/accounts/Accounts';
+import AddAccounts from '../../../components/molecules/add-account';
 
 const AddAccountScreen = ({ route }) => {
   const { Gutters, Fonts, Layout, Images } = useTheme();
@@ -19,7 +19,7 @@ const AddAccountScreen = ({ route }) => {
         resizeMode="cover"
       >
         <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>Add an Account</Text>
-        <Accounts selectedChannel={selectedChannel} />
+        <AddAccounts selectedChannel={selectedChannel} />
       </ImageBackground>
     </>
   );
