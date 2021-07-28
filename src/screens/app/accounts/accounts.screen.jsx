@@ -1,8 +1,9 @@
 import React from 'react';
-import { FAB } from 'react-native-paper';
+import { FAB, List } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { FlatList, Text, ImageBackground, RefreshControl, TouchableOpacity } from 'react-native';
+import { FlatList, Text, ImageBackground, RefreshControl, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import _ from 'lodash';
 import useTheme from '../../../theme/hooks/useTheme';
@@ -25,27 +26,63 @@ const AccountsScreen = () => {
     }, []),
   );
 
+  const _getStatusIndicator = (status) => {
+    switch (status) {
+      case 'Denied':
+        return Colors.red;
+      case 'Granted':
+        return Colors.primary;
+      case 'Requested':
+        return Colors.warning;
+      default:
+        return Colors.error;
+    }
+  };
+
   const _handleAddAccountPress = () => {
     navigation.navigate('Accountchannels');
   };
 
-  const viewAccountChannelsItem = ({ item, channelIndex }) => {
-    return _.map(_.get(item, 'accounts', []), (account, index) => {
-      console.log({ account });
+  const viewAccountChannelsItem = ({ item, index }) => {
+    return _.map(_.get(item, 'accounts', []), (account, accountIndex) => {
       return (
-        <TouchableOpacity
-          key={`${_.get(account, 'obj_id', index)}/${_.get(item, 'obj_id', channelIndex)}`}
-          onPress={() =>
-            navigation.navigate('Statements', {
-              accountId: _.get(item, 'objectId', ''),
-              statements: _.get(item, 'statements', []),
-            })
-          }
-          style={[Common.textInputWithShadow, Gutters.smallTMargin, Gutters.smallPadding]}
+        <View
+          style={[Common.textInputWithShadow, Gutters.tinyMargin]}
+          key={`${index}-${accountIndex}`}
         >
-          <Text>{_.get(account, 'account_name', '')}</Text>
-          <Text>{_.get(account, 'account_number', '')}</Text>
-        </TouchableOpacity>
+          <List.Item
+            title={_.get(account, 'account_name', '')}
+            description={() => (
+              <View style={([Layout.column, Gutters.largeRMargin], Gutters.tinyTMargin)}>
+                <Text>{_.get(account, 'account_number', '')}</Text>
+                <View style={[Layout.rowHCenter, Gutters.tinyTPadding]}>
+                  <View
+                    style={[
+                      Gutters.tinyHMargin,
+                      Common.statusIndicator,
+                      { backgroundColor: _getStatusIndicator(account.status) },
+                    ]}
+                  />
+                  <Text style={[Fonts.textRegular]}>{account.status}</Text>
+                </View>
+              </View>
+            )}
+            onPress={() =>
+              navigation.navigate('Statements', {
+                accountId: _.get(account, 'objectId', ''),
+                statements: _.get(account, 'statements', []),
+              })
+            }
+            right={() => (
+              <View style={[Layout.rowVCenter]}>
+                <Text>{_.get(item, 'name', '')}</Text>
+                <Icon name="ellipsis-v" style={[Layout.alignSelfCenter]} />
+              </View>
+            )}
+            descriptionNumberOfLines={10}
+            descriptionStyle={[Gutters.largeRMargin]}
+          />
+        </View>
       );
     });
   };
@@ -63,7 +100,6 @@ const AccountsScreen = () => {
           contentContainerStyle={Gutters.smallHMargin}
           data={accountChannels}
           renderItem={viewAccountChannelsItem}
-          keyExtractor={(item) => String(item.objId)}
           refreshControl={
             <RefreshControl
               refreshing={isLoadingAccountChannels}

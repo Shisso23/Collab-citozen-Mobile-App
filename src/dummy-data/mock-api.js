@@ -25,7 +25,7 @@ mockAdapter.onPost(`${apiUrl}/function/execfunction`).reply(() => {
     Channels: [
       {
         objectId: 601083,
-        name: 'Prepaid Vendor Off',
+        name: 'WatersKloof Municipality',
         category: 'Financial Services',
         code: 'WC043',
         status: 'pending',
@@ -39,6 +39,8 @@ mockAdapter.onPost(`${apiUrl}/function/execfunction`).reply(() => {
               {
                 file_id: '12345',
                 obj_id: '1234',
+                month: 7,
+                year: 2020,
               },
             ],
           },
@@ -46,7 +48,7 @@ mockAdapter.onPost(`${apiUrl}/function/execfunction`).reply(() => {
       },
       {
         objectId: 601084,
-        name: 'Account Enquiries',
+        name: 'Msunduzi Municipality',
         category: 'Financial Services',
         code: 'WC044',
         status: 'Subscribed',
@@ -60,6 +62,8 @@ mockAdapter.onPost(`${apiUrl}/function/execfunction`).reply(() => {
               {
                 file_id: '12345',
                 obj_id: '1234',
+                month: 7,
+                year: 2021,
               },
             ],
           },
@@ -72,6 +76,8 @@ mockAdapter.onPost(`${apiUrl}/function/execfunction`).reply(() => {
               {
                 file_id: '12345',
                 obj_id: '1234',
+                month: 12,
+                year: 2020,
               },
             ],
           },

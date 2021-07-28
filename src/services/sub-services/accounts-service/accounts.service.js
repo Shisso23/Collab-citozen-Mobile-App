@@ -12,7 +12,6 @@ const getChannelsWithValidAccounts = async () => {
   const url = accountsUrls.getChannelsWithAccountsUrl();
   const data = await apiFunctionWithUniqName('get_accounts');
   const apiResponse = await mockApi.post(url, data);
-  console.log({ apiResponse });
   return _.get(apiResponse, 'data.Channels', null);
 };
 
