@@ -3,6 +3,7 @@ import { List } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { FlatList, Text, View, ImageBackground, RefreshControl } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+import _ from 'lodash';
 
 import useTheme from '../../../theme/hooks/useTheme';
 import { accountsSelector } from '../../../reducers/accounts-reducer/accounts.reducer';
@@ -76,7 +77,7 @@ const AccountChannelsScreen = () => {
           contentContainerStyle={Gutters.smallHMargin}
           data={accountChannels}
           renderItem={viewChannelItem}
-          keyExtractor={(item) => String(item.objId)}
+          keyExtractor={(item, index) => String(_.get(item, 'obj_id', index))}
           refreshControl={
             <RefreshControl
               refreshing={isLoadingAccountChannels}
