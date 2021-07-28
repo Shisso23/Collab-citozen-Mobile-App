@@ -5,7 +5,7 @@ import _ from 'lodash';
 import Moment from 'moment';
 
 import useTheme from '../../../theme/hooks/useTheme';
-import AccountStatement from '../../../components/molecules/accounts/AccountStatement';
+import AccountStatement from '../../../components/molecules/add-account/AccountStatement';
 
 const StatementViewScreen = ({ route }) => {
   const { params } = route;
