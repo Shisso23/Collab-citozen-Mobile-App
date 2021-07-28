@@ -37,8 +37,8 @@ mockAdapter.onPost(`${apiUrl}/function/execfunction`).reply(() => {
             status: 'Requested',
             statements: [
               {
-                file_id: '12345',
-                obj_id: '1234',
+                file_id: '5880',
+                obj_id: '142457',
                 month: 7,
                 year: 2020,
               },
@@ -60,14 +60,14 @@ mockAdapter.onPost(`${apiUrl}/function/execfunction`).reply(() => {
             status: 'Requested',
             statements: [
               {
-                file_id: '12345',
-                obj_id: '1234',
+                file_id: '5880',
+                obj_id: '142457',
                 month: 7,
                 year: 2021,
               },
               {
-                file_id: '12347',
-                obj_id: '12345',
+                file_id: '5880',
+                obj_id: '142457',
                 month: 8,
                 year: 2021,
               },
@@ -80,8 +80,8 @@ mockAdapter.onPost(`${apiUrl}/function/execfunction`).reply(() => {
             status: 'Granted',
             statements: [
               {
-                file_id: '12345',
-                obj_id: '1234',
+                file_id: '5880',
+                obj_id: '142457',
                 month: 12,
                 year: 2020,
               },

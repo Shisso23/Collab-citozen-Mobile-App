@@ -1,5 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   FlatList,
@@ -17,6 +17,7 @@ import Moment from 'moment';
 
 import useTheme from '../../../theme/hooks/useTheme';
 import { accountActions } from '../../../reducers/accounts-reducer';
+import { constructStatementModels } from '../../../models/app/accounts/statement.model';
 
 const StatementsScreen = ({ route }) => {
   const dispatch = useDispatch();
@@ -24,11 +25,18 @@ const StatementsScreen = ({ route }) => {
   const { params } = route;
   const accountId = _.get(params, 'accountId', '');
   const statements = _.get(params, 'statements', []);
+  const [statementsWithPdfFiles, setStatementsWithPdfFiles] = useState([]);
   const { Gutters, Fonts, Common, Layout, Colors, Images } = useTheme();
 
   const _loadMyStatements = () => {
     dispatch(accountActions.getAccountStatementsAction(accountId));
   };
+
+  useEffect(() => {
+    constructStatementModels(statements).then((newStatements) => {
+      setStatementsWithPdfFiles(newStatements);
+    });
+  }, []);
 
   const onSelectStatement = (statement) => {
     navigation.navigate('StatementView', { statement });
@@ -68,9 +76,9 @@ const StatementsScreen = ({ route }) => {
 
         <FlatList
           contentContainerStyle={Gutters.smallHMargin}
-          data={statements}
+          data={statementsWithPdfFiles}
           renderItem={viewStatementItem}
-          keyExtractor={(item, index) => _.get(item, 'obj_id', index)}
+          keyExtractor={(item, index) => _.get(item, 'objectId', index)}
           refreshControl={
             <RefreshControl
               onRefresh={_loadMyStatements}
