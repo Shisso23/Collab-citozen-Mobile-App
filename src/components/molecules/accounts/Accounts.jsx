@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { TextInput, Button, FAB } from 'react-native-paper';
+import { TextInput, Button, Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
@@ -16,27 +16,28 @@ const Accounts = ({ selectedChannel }) => {
   const { isLoadingAccountValid } = useSelector(accountsSelector);
   const { user } = useSelector((reducer) => reducer.userReducer);
   const userId = _.get(user, 'user_id', '');
-  const { Common, Gutters, Colors } = useTheme();
+  const { Common, Gutters, Colors, Layout } = useTheme();
   const [accountNumber, setAccountNumber] = useState(null);
   const channelId = _.get(selectedChannel, 'obj_id', '');
+  const [accountNumberError, setAccountNumberError] = useState(false);
   const [accounts, setAccounts] = useState(_.get(selectedChannel, 'accounts', []));
   const navigation = useNavigation();
 
   useEffect(() => {}, [accounts.length]);
 
   const handleSubmit = () => {
-    dispatch(accountActions.validateAccountAction(channelId, userId, accountNumber))
+    if (`${accountNumber}`.length < 10) {
+      return setAccountNumberError(true);
+    }
+    return dispatch(accountActions.validateAccountAction(channelId, userId, accountNumber))
       .then((newAccounts) => {
         setAccounts(newAccounts);
         flashService.success('Account validated!');
+        navigation.navigate('Accounts');
       })
       .catch((error) => {
-        flashService.error(_.get(error, 'message', 'Could not validate account!'));
+        flashService.error(_.get(error, 'message', 'Could not verify account!'));
       });
-  };
-
-  const _handleOnAddAccountPress = () => {
-    navigation.navigate('Accounts');
   };
 
   return (
@@ -44,25 +45,37 @@ const Accounts = ({ selectedChannel }) => {
       <TextInput
         label="Account Number"
         style={[Common.textInput, styles.accountInput]}
-        onChangeText={(accNumber) => setAccountNumber(accNumber)}
+        onChangeText={(accNumber) => {
+          setAccountNumberError(false);
+          setAccountNumber(accNumber);
+        }}
         value={accountNumber}
-        error={`${accountNumber}`.length < 10}
+        error={accountNumberError}
         showSoftInputOnFocus={false}
         multiline={false}
       />
-
-      {`${accountNumber}`.length >= 10 && (
-        <Button
-          mode="contained"
-          style={[Gutters.largeMargin, Gutters.tinyVPadding, { backgroundColor: Colors.secondary }]}
-          onPress={handleSubmit}
-          loading={isLoadingAccountValid}
-          disabled={isLoadingAccountValid}
-        >
-          Verify
-        </Button>
+      {accountNumberError && (
+        <Text style={[Gutters.smallMargin, Common.errorStyle]}>
+          Account. No. Should be of length 10
+        </Text>
       )}
-      <FAB style={[Common.fabAlignment]} icon="plus" onPress={_handleOnAddAccountPress} />
+
+      <Button
+        mode="contained"
+        style={[
+          Gutters.largeMargin,
+          Gutters.tinyVPadding,
+          Layout.alignSelfCenter,
+          Gutters.largeHPadding,
+          { backgroundColor: Colors.secondary },
+          styles.submitBUtton,
+        ]}
+        onPress={handleSubmit}
+        loading={isLoadingAccountValid}
+        disabled={isLoadingAccountValid}
+      >
+        Verify
+      </Button>
     </>
   );
 };
@@ -76,6 +89,10 @@ Accounts.defaultProps = {};
 const styles = StyleSheet.create({
   accountInput: {
     marginHorizontal: '3.5%',
+  },
+  submitBUtton: {
+    bottom: 0,
+    position: 'absolute',
   },
 });
 
