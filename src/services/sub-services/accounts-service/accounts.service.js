@@ -7,18 +7,14 @@ import {
 } from '../../../helpers/api-function-name.helper';
 import authNetworkService from '../auth-network-service/auth-network.service';
 import { mockApi } from '../../../dummy-data/mock-api';
+import { constructChannelModels } from '../../../models/app/accounts/account-channels.model';
 
 const getChannelsWithValidAccounts = async () => {
   const url = accountsUrls.getChannelsWithAccountsUrl();
   const data = await apiFunctionWithUniqName('get_accounts');
   const apiResponse = await mockApi.post(url, data);
-  return _.get(apiResponse, 'data.Channels', null);
-};
-
-const getAccountStatements = async (accountId) => {
-  const url = accountsUrls.statementsUrl();
-  const apiResponse = await authNetworkService.post(url, { data: { accountId } });
-  return _.get(apiResponse, 'data.statements', null);
+  const channelsModel = constructChannelModels(_.get(apiResponse, 'data.Channels', []));
+  return channelsModel;
 };
 
 const validateAccount = async (channelId, userId, accountNumber) => {
@@ -30,6 +26,5 @@ const validateAccount = async (channelId, userId, accountNumber) => {
 
 export default {
   getChannelsWithValidAccounts,
-  getAccountStatements,
   validateAccount,
 };

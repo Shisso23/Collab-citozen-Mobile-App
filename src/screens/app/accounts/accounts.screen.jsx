@@ -51,10 +51,10 @@ const AccountsScreen = () => {
           key={`${index}-${accountIndex}`}
         >
           <List.Item
-            title={_.get(account, 'account_name', '')}
+            title={_.get(account, 'accountName', '')}
             description={() => (
               <View style={([Layout.column, Gutters.largeRMargin], Gutters.tinyTMargin)}>
-                <Text>{_.get(account, 'account_number', '')}</Text>
+                <Text>{_.get(account, 'accountNumber', '')}</Text>
                 <View style={[Layout.rowHCenter, Gutters.tinyTPadding]}>
                   <View
                     style={[
