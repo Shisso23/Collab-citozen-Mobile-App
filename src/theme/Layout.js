@@ -72,6 +72,9 @@ export default () =>
     alignSelfCenter: {
       alignSelf: 'center',
     },
+    justifyContentFlexStart: {
+      justifyContent: 'flex-start',
+    },
     alignSelfStart: {
       alignSelf: 'flex-start',
     },

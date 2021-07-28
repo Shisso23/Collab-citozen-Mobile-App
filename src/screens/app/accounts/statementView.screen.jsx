@@ -6,15 +6,11 @@ import Moment from 'moment';
 
 import useTheme from '../../../theme/hooks/useTheme';
 import AccountStatement from '../../../components/molecules/accounts/AccountStatement';
-import { constructStatementModels } from '../../../models/app/accounts/statement.model';
 
 const StatementViewScreen = ({ route }) => {
   const { params } = route;
   const statement = _.get(params, 'statement', {});
   const { Gutters, Layout, Images } = useTheme();
-
-  const statem = async () => constructStatementModels([statement]).then((res) => res);
-  console.log('statem', statem);
 
   return (
     <>
