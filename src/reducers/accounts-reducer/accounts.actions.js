@@ -2,9 +2,7 @@ import _ from 'lodash';
 import accountsService from '../../services/sub-services/accounts-service/accounts.service';
 import {
   setAccountChannelsAction,
-  setAccountStatementsAction,
   setIsLoadingAccountChannelsAction,
-  setIsLoadingAccountStatementsAction,
   setIsLoadingAccountValidAction,
   setAccountValidAction,
 } from './accounts.reducer';
@@ -18,16 +16,6 @@ export const getChannelsWithValidAccountsAction = () => (dispatch) => {
       return channels;
     })
     .finally(() => dispatch(setIsLoadingAccountChannelsAction(false)));
-};
-
-export const getAccountStatementsAction = (accountId) => (dispatch) => {
-  dispatch(setIsLoadingAccountStatementsAction(true));
-  return accountsService
-    .getAccountStatements(accountId)
-    .then((statements) => {
-      dispatch(setAccountStatementsAction(statements));
-    })
-    .finally(() => dispatch(setIsLoadingAccountStatementsAction(false)));
 };
 
 export const validateAccountAction = (channelId, userId, accountNumber) => (dispatch) => {
@@ -46,6 +34,5 @@ export const validateAccountAction = (channelId, userId, accountNumber) => (disp
 
 export default {
   validateAccountAction,
-  getAccountStatementsAction,
   getChannelsWithValidAccountsAction,
 };

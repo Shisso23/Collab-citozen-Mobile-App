@@ -8,15 +8,6 @@ export const setAccountChannelsAction = setAccountChannels.action;
 const setIsLoadingAccountChannels = CreateAction(reducerName, 'SET_IS_LOADING_ACCOUNT_CHANNELS');
 export const setIsLoadingAccountChannelsAction = setIsLoadingAccountChannels.action;
 
-const setAccountStatements = CreateAction(reducerName, 'SET_ACCOUNT_STATEMENTS');
-export const setAccountStatementsAction = setAccountStatements.action;
-
-const setIsLoadingAccountStatements = CreateAction(
-  reducerName,
-  'SET_IS_LOADING_ACCOUNT_STATEMENTS',
-);
-export const setIsLoadingAccountStatementsAction = setIsLoadingAccountStatements.action;
-
 const setAccountValid = CreateAction(reducerName, 'SET_ACCOUNT_VALID');
 export const setAccountValidAction = setAccountValid.action;
 
@@ -36,17 +27,6 @@ export const accountsSelector = (rootReducer) => rootReducer.accountsReducer;
 
 export default function accountsReducer(state = initialState, action) {
   switch (action.type) {
-    case setAccountStatements.actionType:
-      return {
-        ...state,
-        statements: action.payload,
-      };
-    case setIsLoadingAccountStatements.actionType:
-      return {
-        ...state,
-        isLoadingAccountStatements: action.payload,
-      };
-
     case setAccountChannels.actionType:
       return {
         ...state,
