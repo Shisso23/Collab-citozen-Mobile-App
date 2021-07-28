@@ -26,10 +26,6 @@ const StatementsScreen = ({ route }) => {
   const statements = _.get(params, 'statements', []);
   const { Gutters, Fonts, Common, Layout, Colors, Images } = useTheme();
 
-  // useEffect(() => {
-  //   _loadMyStatements();
-  // }, [statements.length]);
-
   const _loadMyStatements = () => {
     dispatch(accountActions.getAccountStatementsAction(accountId));
   };
@@ -74,10 +70,9 @@ const StatementsScreen = ({ route }) => {
           contentContainerStyle={Gutters.smallHMargin}
           data={statements}
           renderItem={viewStatementItem}
-          keyExtractor={(item) => String(item.objectId)}
+          keyExtractor={(item, index) => _.get(item, 'obj_id', index)}
           refreshControl={
             <RefreshControl
-              // refreshing={isLoadingAccountStatements}
               onRefresh={_loadMyStatements}
               tintColor={Colors.primary}
               colors={[Colors.primary]}

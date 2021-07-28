@@ -65,6 +65,12 @@ mockAdapter.onPost(`${apiUrl}/function/execfunction`).reply(() => {
                 month: 7,
                 year: 2021,
               },
+              {
+                file_id: '12347',
+                obj_id: '12345',
+                month: 8,
+                year: 2021,
+              },
             ],
           },
           {
