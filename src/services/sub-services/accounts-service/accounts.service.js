@@ -6,13 +6,12 @@ import {
   dataValidateAccount,
 } from '../../../helpers/api-function-name.helper';
 import authNetworkService from '../auth-network-service/auth-network.service';
-import { mockApi } from '../../../dummy-data/mock-api';
 import { constructChannelModels } from '../../../models/app/accounts/account-channels.model';
 
 const getChannelsWithValidAccounts = async () => {
   const url = accountsUrls.getChannelsWithAccountsUrl();
   const data = await apiFunctionWithUniqName('get_accounts');
-  const apiResponse = await mockApi.post(url, data);
+  const apiResponse = await authNetworkService.post(url, data);
   const channelsModel = constructChannelModels(_.get(apiResponse, 'data.Channels', []));
   return channelsModel;
 };
