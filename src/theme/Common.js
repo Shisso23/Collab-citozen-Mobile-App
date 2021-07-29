@@ -120,7 +120,8 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
     },
     pickLocation: {
       fontFamily: FontFamily.primary,
-      fontSize: FontSize.large,
+      fontSize: 17,
+      fontWeight: '500',
     },
     pinContainer: {
       left: '47%',
