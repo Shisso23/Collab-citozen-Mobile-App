@@ -7,7 +7,6 @@ import { useDispatch } from 'react-redux';
 import NavigationContainer from './navigation/root.navigator';
 import { initAppAction } from './reducers/app-reducer/app.actions';
 import { firebaseService } from './services';
-import { getUnOpenedNotificationsAction } from './reducers/notification-reducer/notification.actions';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -34,7 +33,11 @@ const App = () => {
 
   useEffect(() => {
     PushNotification.setApplicationIconBadgeNumber(0);
-    LogBox.ignoreLogs(['Require cycle']);
+    LogBox.ignoreLogs([
+      'Require cycle',
+      'VirtualizedLists should never be nested',
+      'Usage of "messaging().registerDeviceForRemoteMessages()" is not required.',
+    ]);
     messaging()
       .registerDeviceForRemoteMessages()
       .then(() => {
@@ -48,7 +51,6 @@ const App = () => {
       })
       .finally(() => {
         dispatch(initAppAction());
-        dispatch(getUnOpenedNotificationsAction());
       });
   }, []);
 

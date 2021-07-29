@@ -1,8 +1,10 @@
+import _ from 'lodash';
 import {
   setIsLoadingAction,
   setNotificationAction,
   setUnOpenedNotificationsAction,
 } from './notification.reducer';
+
 import { notificationService } from '../../services';
 
 export const getNotificationsAction = () => {
@@ -17,11 +19,16 @@ export const getNotificationsAction = () => {
 
 export const getUnOpenedNotificationsAction = () => {
   return (dispatch) => {
-    return notificationService
-      .getUnOpenedNotifications()
-      .then((unOpenedNotifications) =>
-        dispatch(setUnOpenedNotificationsAction(unOpenedNotifications)),
+    return notificationService.getUnOpenedNotifications().then((unOpenedNotifications) => {
+      const count = _.get(unOpenedNotifications, 'Count', []).reduce(
+        (totalNotifications, notification) => {
+          totalNotifications += _.get(notification, 'unopened_notifications_count', 0);
+          return totalNotifications;
+        },
+        0,
       );
+      return dispatch(setUnOpenedNotificationsAction(count));
+    });
   };
 };
 

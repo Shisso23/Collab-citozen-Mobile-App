@@ -16,14 +16,14 @@ import {
 import { TrashButton } from '../../atoms';
 import { promptConfirmDelete } from '../../../helpers/prompt.helper';
 import useTheme from '../../../theme/hooks/useTheme';
+import SwipeRowContainer from '../../atoms/swipe-row/swipe-row';
 
 const Notification = ({ notification }) => {
   const dispatch = useDispatch();
   const { user } = useSelector((reducers) => reducers.userReducer);
   const notificationId = _.get(notification, 'obj_id');
-  const message = _.get(notification, 'body');
-  const title = _.get(notification, 'title');
-  const seen = _.get(notification, 'seen') === 'Yes';
+  const message = `${_.get(notification, 'title', '')}\n\n${_.get(notification, 'body', '')}`;
+  const seen = _.get(notification, 'seen', false) === 'Yes';
 
   const { Fonts, Layout, Images } = useTheme();
   const [needsCollapse, setNeedsCollapse] = useState(false);
@@ -62,18 +62,21 @@ const Notification = ({ notification }) => {
   const _renderCollapseText = () => (
     <>
       <Collapsible collapsed={isCollapsed} collapsedHeight={20}>
-        <Text style={[Fonts.textTiny]}>
-          {title}
-          {'\n'}
-        </Text>
-        <Text style={[Fonts.textSmall]}>{message}</Text>
+        <Text style={[Fonts.textTiny]}>{message}</Text>
       </Collapsible>
     </>
   );
 
-  const _renderText = () => <Text onTextLayout={_handleNeedForCollapse}>{message}</Text>;
+  const _renderText = () => (
+    <>
+      <Text onTextLayout={_handleNeedForCollapse}>{message}</Text>
+    </>
+  );
+  const renderHiddenComponent = () => (
+    <TrashButton onPress={_handleDelete} iconSize={27} loading={isDeleting} />
+  );
 
-  return (
+  const renderVisibleComponent = () => (
     <ListItem onPress={_handleCollapse} bottomDivider>
       <View style={[Layout.justifyContentCenter]}>
         <Avatar.Image rounded size={35} source={_setImageUrl(Images.avatarImage)} />
@@ -89,8 +92,15 @@ const Notification = ({ notification }) => {
         />
       )}
       {!isSeen && <Badge status="error" />}
-      <TrashButton onPress={_handleDelete} loading={isDeleting} />
     </ListItem>
+  );
+
+  return (
+    <SwipeRowContainer
+      key={_.get(notification, 'obj_id')}
+      renderHiddenComponent={renderHiddenComponent}
+      renderVisibleComponent={renderVisibleComponent}
+    />
   );
 };
 

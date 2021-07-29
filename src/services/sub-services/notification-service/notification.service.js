@@ -6,12 +6,16 @@ import {
   apiFunctionWithUniqName,
   notificationActivityData,
 } from '../../../helpers/api-function-name.helper';
+import { flashService } from '../../index';
 
 export const getNotifications = async () => {
   const data = await apiFunctionWithUniqName('get_user_notifications');
   const notificationUrl = notificationUrls.notificationUrl();
   const returnNotification = (apiResponse) => _.get(apiResponse, 'data');
   return authNetworkService.post(notificationUrl, data).then((response) => {
+    if (!_.get(response, 'data', false)) {
+      flashService.info('There is currently no notifications.');
+    }
     return returnNotification(response);
   });
 };
