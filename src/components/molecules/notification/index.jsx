@@ -25,7 +25,7 @@ const Notification = ({ notification }) => {
   const message = `${_.get(notification, 'title', '')}\n\n${_.get(notification, 'body', '')}`;
   const seen = _.get(notification, 'seen', false) === 'Yes';
 
-  const { Fonts, Layout, Images } = useTheme();
+  const { Fonts, Layout, Images, Colors } = useTheme();
   const [needsCollapse, setNeedsCollapse] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isSeen, setIsSeen] = useState(seen);
@@ -91,7 +91,9 @@ const Notification = ({ notification }) => {
           containerStyle={styles.chevronContainer}
         />
       )}
-      {!isSeen && <Badge status="error" />}
+      {!isSeen && (
+        <Badge status="error" badgeStyle={[{ backgroundColor: Colors.primary }, styles.badge]} />
+      )}
     </ListItem>
   );
 
@@ -105,6 +107,11 @@ const Notification = ({ notification }) => {
 };
 
 const styles = StyleSheet.create({
+  badge: {
+    borderRadius: 50,
+    height: 14,
+    width: 14,
+  },
   chevronContainer: {
     alignSelf: 'flex-start',
     marginTop: 10,
