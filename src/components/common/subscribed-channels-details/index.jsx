@@ -1,10 +1,11 @@
 import _ from 'lodash';
-import React from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Text, View, FlatList } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { List } from 'react-native-paper';
 
+import { flashService } from '../../../services';
 import SubscriptionSetting from '../../molecules/subscription-setting/subscription-setting.component';
 import useTheme from '../../../theme/hooks/useTheme';
 
@@ -14,6 +15,12 @@ const SubscribedToChannelsDetails = (props) => {
   const channelItem = _.get(channel, 'channelItem');
   const channelId = channelItem.objId;
   const interestTypes = channelItem.interest_types;
+
+  useEffect(() => {
+    if (_.get(channelItem, 'interest_types', []).length === 0) {
+      flashService.error('There are currently no Interest Types');
+    }
+  }, []);
 
   const subscribeToItem = ({ item }) => {
     return (

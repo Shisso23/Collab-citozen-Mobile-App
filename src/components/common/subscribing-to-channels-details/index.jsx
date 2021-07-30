@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
@@ -30,6 +30,12 @@ const SubscribingToChannelsDetails = (props) => {
 
   const municipalitiyId = channelItem.ObjId;
   const interestTypes = channelItem.interest_type;
+
+  useEffect(() => {
+    if (_.get(channelItem, 'interest_type', []).length === 0) {
+      flashService.error('There are currently no Interest Types');
+    }
+  }, []);
 
   const updateInterestTypeList = (itemPass) => {
     if (itemPass.present && !itemPass.itemSelected.Subscribed) {
