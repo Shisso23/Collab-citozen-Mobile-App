@@ -6,6 +6,7 @@ export const myChannelModel = (apiMyChannels) => ({
   code: _.get(apiMyChannels, 'code', ''),
   name: _.get(apiMyChannels, 'name', ''),
   interest_types: _.get(apiMyChannels, 'interest_types', ''),
+  accountApplicable: _.get(apiMyChannels, 'account_applicable', ''),
 });
 
 export const constructMyChannelsModels = async (apiMyChannels) => {

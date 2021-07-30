@@ -6,17 +6,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 
 import useTheme from '../../../theme/hooks/useTheme';
-import { accountsSelector } from '../../../reducers/accounts-reducer/accounts.reducer';
-import { accountActions } from '../../../reducers/accounts-reducer';
+import { myChannelsSelector } from '../../../reducers/my-channels/my-channels.reducer';
+import { getMyChannelsAction } from '../../../reducers/my-channels/my-channels.actions';
 
 const AccountChannelsScreen = () => {
   const dispatch = useDispatch();
-  const { accountChannels, isLoadingAccountChannels } = useSelector(accountsSelector);
+  const { myChannels, isLoadingMyChannels } = useSelector(myChannelsSelector);
   const { Common, Gutters, Fonts, Layout, Images, Colors } = useTheme();
   const navigation = useNavigation();
 
   const _loadMyChannels = () => {
-    dispatch(accountActions.getChannelsWithValidAccountsAction());
+    dispatch(getMyChannelsAction());
   };
 
   useFocusEffect(
@@ -75,12 +75,12 @@ const AccountChannelsScreen = () => {
         <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>My Channels</Text>
         <FlatList
           contentContainerStyle={Gutters.smallHMargin}
-          data={accountChannels}
+          data={myChannels.filter((channel) => _.get(channel, 'accountApplicable', '') === 'Yes')}
           renderItem={viewChannelItem}
           keyExtractor={(item, index) => String(_.get(item, 'obj_id', index))}
           refreshControl={
             <RefreshControl
-              refreshing={isLoadingAccountChannels}
+              refreshing={isLoadingMyChannels}
               onRefresh={_loadMyChannels}
               tintColor={Colors.primary}
               colors={[Colors.primary]}

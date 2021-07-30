@@ -26,7 +26,7 @@ const AddAccounts = ({ selectedChannel }) => {
   useEffect(() => {}, [accounts.length]);
 
   const handleSubmit = () => {
-    if (`${accountNumber}`.length < 10) {
+    if (`${accountNumber}`.length < 1) {
       return setAccountNumberError(true);
     }
     return dispatch(accountActions.validateAccountAction(channelId, userId, accountNumber))

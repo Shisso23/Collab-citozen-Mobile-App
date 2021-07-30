@@ -1,9 +1,8 @@
 import React from 'react';
 import { FAB, List } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { FlatList, Text, ImageBackground, RefreshControl, View } from 'react-native';
+import { FlatList, Text, ImageBackground, RefreshControl, View, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import Icon from 'react-native-vector-icons/FontAwesome5';
 
 import _ from 'lodash';
 import useTheme from '../../../theme/hooks/useTheme';
@@ -74,9 +73,8 @@ const AccountsScreen = () => {
               })
             }
             right={() => (
-              <View style={[Layout.rowVCenter]}>
+              <View style={[Layout.rowVCenter, styles.accountCard]}>
                 <Text>{_.get(item, 'name', '')}</Text>
-                <Icon name="ellipsis-v" style={[Layout.alignSelfCenter]} />
               </View>
             )}
             descriptionNumberOfLines={10}
@@ -114,6 +112,9 @@ const AccountsScreen = () => {
     </>
   );
 };
+const styles = StyleSheet.create({
+  accountCard: { width: '42%' },
+});
 
 AccountsScreen.propTypes = {};
 

@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { FlatList, Text, View, ImageBackground, RefreshControl } from 'react-native';
@@ -61,7 +60,7 @@ const StatementsScreen = ({ route }) => {
           contentContainerStyle={Gutters.smallHMargin}
           data={statementsWithPdfFiles}
           renderItem={viewStatementItem}
-          keyExtractor={(item, index) => _.get(item, 'objectId', index)}
+          keyExtractor={(item, index) => `${_.get(item, 'objectId', index)}`}
           refreshControl={
             <RefreshControl
               onRefresh={_loadMyStatements}
