@@ -5,6 +5,7 @@ import { FlatList, Text, View, ImageBackground, RefreshControl } from 'react-nat
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 
+import flashService from '../../../services/sub-services/flash-service/flash.service';
 import useTheme from '../../../theme/hooks/useTheme';
 import { myChannelsSelector } from '../../../reducers/my-channels/my-channels.reducer';
 import { getMyChannelsAction } from '../../../reducers/my-channels/my-channels.actions';
@@ -22,6 +23,12 @@ const AccountChannelsScreen = () => {
   useFocusEffect(
     React.useCallback(() => {
       _loadMyChannels();
+      const accountApplicableChannels = myChannels.filter(
+        (channel) => _.get(channel, 'accountApplicable', '') === 'Yes',
+      );
+      if (myChannels.length > 0 && accountApplicableChannels.length === 0) {
+        flashService.info('You have no account applicable  channels.');
+      }
     }, []),
   );
 
