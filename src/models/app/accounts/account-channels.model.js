@@ -7,7 +7,7 @@ const accountChannelsModel = (_apiAccountChannelModel = {}) => {
     objectId: _.get(_apiAccountChannelModel, 'obj_id', ''),
     name: _.get(_apiAccountChannelModel, 'name', ''),
     accounts,
-    accountApplicable: _.get(_apiAccountChannelModel, 'account_applicable', ''),
+    accountApplicable: _.get(_apiAccountChannelModel, 'accounts_applicable', false),
     status: _.get(_apiAccountChannelModel, 'status', ''),
   };
 };

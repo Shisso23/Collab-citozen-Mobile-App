@@ -24,7 +24,7 @@ const AccountChannelsScreen = () => {
     React.useCallback(() => {
       _loadMyChannels();
       const accountApplicableChannels = myChannels.filter(
-        (channel) => _.get(channel, 'accountApplicable', '') === 'Yes',
+        (channel) => _.get(channel, 'accountApplicable', null) === true,
       );
       if (myChannels.length > 0 && accountApplicableChannels.length === 0) {
         flashService.info('You have no account applicable  channels.');
@@ -82,7 +82,7 @@ const AccountChannelsScreen = () => {
         <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>My Channels</Text>
         <FlatList
           contentContainerStyle={Gutters.smallHMargin}
-          data={myChannels.filter((channel) => _.get(channel, 'accountApplicable', '') === 'Yes')}
+          data={myChannels.filter((channel) => _.get(channel, 'accountApplicable', null) === true)}
           renderItem={viewChannelItem}
           keyExtractor={(item, index) => String(_.get(item, 'obj_id', index))}
           refreshControl={
