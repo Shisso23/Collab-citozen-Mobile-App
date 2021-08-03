@@ -59,6 +59,7 @@ const ServiceRequestScreen = () => {
       <View style={[Common.textInputWithShadow, Gutters.tinyMargin]}>
         <List.Item
           title={item.serviceType}
+          titleStyle={Common.cardTitle}
           description={() => (
             <View style={[Layout.column, Gutters.largeRMargin]}>
               <Text>{item.gpsAddress}</Text>

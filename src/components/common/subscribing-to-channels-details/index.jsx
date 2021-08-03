@@ -80,6 +80,7 @@ const SubscribingToChannelsDetails = (props) => {
               switchToggle={item.Subscribed}
             />
           )}
+          titleStyle={Common.cardTitle}
         />
       </View>
     );

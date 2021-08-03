@@ -46,6 +46,7 @@ const ViewSubscribeToChannelsScreen = () => {
       <View style={[Common.textInputWithShadow, Gutters.tinyMargin]}>
         <List.Item
           title={item.name}
+          titleStyle={Common.cardTitle}
           onPress={() => {
             navigation.navigate('ViewSubscribedToChannelDetails', { channelItem: item });
           }}

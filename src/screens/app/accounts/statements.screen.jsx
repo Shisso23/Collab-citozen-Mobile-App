@@ -42,6 +42,7 @@ const StatementsScreen = ({ route }) => {
             'MMMM YYYY',
           )}
           onPress={() => onSelectStatement(item)}
+          titleStyle={Common.cardTitle}
         />
       </View>
     );

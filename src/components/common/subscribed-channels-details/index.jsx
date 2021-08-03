@@ -35,6 +35,7 @@ const SubscribedToChannelsDetails = (props) => {
               channelId={channelId}
             />
           )}
+          titleStyle={Common.cardTitle}
         />
       </View>
     );

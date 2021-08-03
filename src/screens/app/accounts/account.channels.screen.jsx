@@ -67,6 +67,7 @@ const AccountChannelsScreen = () => {
               </View>
             </View>
           )}
+          titleStyle={Common.cardTitle}
         />
       </View>
     );

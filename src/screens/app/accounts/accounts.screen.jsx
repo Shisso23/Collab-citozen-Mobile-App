@@ -51,9 +51,10 @@ const AccountsScreen = () => {
         >
           <List.Item
             title={_.get(account, 'accountName', '')}
+            titleStyle={Common.cardTitle}
             description={() => (
               <View style={([Layout.column, Gutters.largeRMargin], Gutters.tinyTMargin)}>
-                <Text>{_.get(account, 'accountNumber', '')}</Text>
+                <Text style={styles.accountNUmber}>{_.get(account, 'accountNumber', '')}</Text>
                 <View style={[Layout.rowHCenter, Gutters.tinyTPadding]}>
                   <View
                     style={[
@@ -114,6 +115,7 @@ const AccountsScreen = () => {
 };
 const styles = StyleSheet.create({
   accountCard: { width: '42%' },
+  accountNUmber: { fontSize: 13 },
 });
 
 AccountsScreen.propTypes = {};

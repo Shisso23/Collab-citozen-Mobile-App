@@ -31,6 +31,15 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
       height: 70,
       justifyContent: 'center',
     },
+    cardDescription: {
+      color: Colors.black,
+      fontSize: 13,
+    },
+    cardTitle: {
+      color: Colors.black,
+      fontSize: 14,
+      fontWeight: '400',
+    },
     centerSubtitle: {
       fontSize: 15,
       textAlign: 'center',

@@ -50,6 +50,7 @@ const SubscribeToChannelsForm = ({ containerStyle, unsubscribedChannels }) => {
             navigation.navigate('ViewSubscribingChannelsDetailsScreen', { channelItem: item });
           }}
           titleNumberOfLines={2}
+          titleStyle={Common.cardTitle}
         />
       </View>
     );

@@ -65,6 +65,7 @@ const HomeScreen = () => {
 
         <List.Item
           title={item.title}
+          titleStyle={Common.cardTitle}
           description={() => (
             <View style={Layout.alignItemsEnd}>
               <View
