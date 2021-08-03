@@ -33,11 +33,11 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
     },
     cardDescription: {
       color: Colors.black,
-      fontSize: 13,
+      fontSize: FontSize.regular,
     },
     cardTitle: {
       color: Colors.black,
-      fontSize: 14,
+      fontSize: FontSize.regular,
       fontWeight: '400',
     },
     centerSubtitle: {

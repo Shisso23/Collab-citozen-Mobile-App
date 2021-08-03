@@ -62,7 +62,7 @@ const ServiceRequestScreen = () => {
           titleStyle={Common.cardTitle}
           description={() => (
             <View style={[Layout.column, Gutters.largeRMargin]}>
-              <Text>{item.gpsAddress}</Text>
+              <Text style={Common.cardDescription}>{item.gpsAddress}</Text>
               <View style={[Layout.rowHCenter, Gutters.tinyTPadding]}>
                 <View
                   style={[
@@ -71,7 +71,7 @@ const ServiceRequestScreen = () => {
                     { backgroundColor: _getStatusIndicator(item.status) },
                   ]}
                 />
-                <Text style={[Fonts.textRegular]}>{item.status}</Text>
+                <Text style={[Fonts.textRegular, Common.cardDescription]}>{item.status}</Text>
               </View>
             </View>
           )}

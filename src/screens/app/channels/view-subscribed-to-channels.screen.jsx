@@ -60,7 +60,7 @@ const ViewSubscribeToChannelsScreen = () => {
                     { backgroundColor: _getStatusIndicator(item.status) },
                   ]}
                 />
-                <Text style={Fonts.textRegular}>Subscribed</Text>
+                <Text style={[Fonts.textRegular, Common.cardDescription]}>Subscribed</Text>
               </View>
             </View>
           )}

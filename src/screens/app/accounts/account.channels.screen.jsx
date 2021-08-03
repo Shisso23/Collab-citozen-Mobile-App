@@ -63,7 +63,7 @@ const AccountChannelsScreen = () => {
                     { backgroundColor: _getStatusIndicator(item.status) },
                   ]}
                 />
-                <Text style={Fonts.textRegular}>Subscribed</Text>
+                <Text style={Common.cardDescription}>Subscribed</Text>
               </View>
             </View>
           )}

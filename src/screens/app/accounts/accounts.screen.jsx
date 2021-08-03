@@ -54,7 +54,7 @@ const AccountsScreen = () => {
             titleStyle={Common.cardTitle}
             description={() => (
               <View style={([Layout.column, Gutters.largeRMargin], Gutters.tinyTMargin)}>
-                <Text style={styles.accountNUmber}>{_.get(account, 'accountNumber', '')}</Text>
+                <Text style={Common.cardDescription}>{_.get(account, 'accountNumber', '')}</Text>
                 <View style={[Layout.rowHCenter, Gutters.tinyTPadding]}>
                   <View
                     style={[
@@ -63,7 +63,7 @@ const AccountsScreen = () => {
                       { backgroundColor: _getStatusIndicator(account.status) },
                     ]}
                   />
-                  <Text style={[Fonts.textRegular]}>{account.status}</Text>
+                  <Text style={Common.cardDescription}>{account.status}</Text>
                 </View>
               </View>
             )}
@@ -115,7 +115,6 @@ const AccountsScreen = () => {
 };
 const styles = StyleSheet.create({
   accountCard: { width: '42%' },
-  accountNUmber: { fontSize: 13 },
 });
 
 AccountsScreen.propTypes = {};
