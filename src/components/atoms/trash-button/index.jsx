@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import useTheme from '../../../theme/hooks/useTheme';
 
-const TrashButton = ({ onPress, loading, containerStyle }) => {
+const TrashButton = ({ onPress, loading, iconSize, containerStyle }) => {
   const { Colors } = useTheme();
   return !loading ? (
     <Pressable onPress={onPress} style={containerStyle}>
@@ -12,7 +12,7 @@ const TrashButton = ({ onPress, loading, containerStyle }) => {
         name="trash"
         backgroundColor="transparent"
         color={Colors.gray}
-        size={20}
+        size={iconSize || 20}
         loading={loading}
       />
     </Pressable>
@@ -32,10 +32,12 @@ TrashButton.propTypes = {
   onPress: PropTypes.func.isRequired,
   containerStyle: ViewPropTypes.style,
   loading: PropTypes.bool.isRequired,
+  iconSize: PropTypes.number,
 };
 
 TrashButton.defaultProps = {
   containerStyle: {},
+  iconSize: 20,
 };
 
 export default TrashButton;

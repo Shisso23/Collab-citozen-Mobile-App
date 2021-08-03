@@ -76,7 +76,7 @@ const SubscribeToChannelsForm = ({ containerStyle, unsubscribedChannels }) => {
 
 SubscribeToChannelsForm.propTypes = {
   containerStyle: ViewPropTypes.style,
-  unsubscribedChannels: PropTypes.object.isRequired,
+  unsubscribedChannels: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
 };
 
 SubscribeToChannelsForm.defaultProps = {
