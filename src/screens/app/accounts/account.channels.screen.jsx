@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { List } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { FlatList, Text, View, ImageBackground, RefreshControl } from 'react-native';
@@ -21,7 +21,7 @@ const AccountChannelsScreen = () => {
   };
 
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       _loadMyChannels();
       const accountApplicableChannels = myChannels.filter(
         (channel) => _.get(channel, 'accountApplicable', null) === true,

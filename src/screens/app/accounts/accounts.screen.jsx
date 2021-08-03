@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { FAB, List } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { FlatList, Text, ImageBackground, RefreshControl, View, StyleSheet } from 'react-native';
@@ -20,7 +20,7 @@ const AccountsScreen = () => {
   };
 
   useFocusEffect(
-    React.useCallback(() => {
+    useCallback(() => {
       _loadMyChannels();
     }, []),
   );
@@ -42,6 +42,28 @@ const AccountsScreen = () => {
     navigation.navigate('Accountchannels');
   };
 
+  const renderAccountDescription = (account) => (
+    <View style={([Layout.column, Gutters.largeRMargin], Gutters.tinyTMargin)}>
+      <Text>{_.get(account, 'accountNumber', '')}</Text>
+      <View style={[Layout.rowHCenter, Gutters.tinyTPadding]}>
+        <View
+          style={[
+            Gutters.tinyHMargin,
+            Common.statusIndicator,
+            { backgroundColor: _getStatusIndicator(account.status) },
+          ]}
+        />
+        <Text style={[Fonts.textRegular]}>{account.status}</Text>
+      </View>
+    </View>
+  );
+
+  const onSelectAccount = (account) =>
+    navigation.navigate('Statements', {
+      accountId: _.get(account, 'objectId', ''),
+      statements: _.get(account, 'statements', []),
+    });
+
   const viewAccountChannelsItem = ({ item, index }) => {
     return _.map(_.get(item, 'accounts', []), (account, accountIndex) => {
       return (
@@ -51,27 +73,8 @@ const AccountsScreen = () => {
         >
           <List.Item
             title={_.get(account, 'accountName', '')}
-            description={() => (
-              <View style={([Layout.column, Gutters.largeRMargin], Gutters.tinyTMargin)}>
-                <Text>{_.get(account, 'accountNumber', '')}</Text>
-                <View style={[Layout.rowHCenter, Gutters.tinyTPadding]}>
-                  <View
-                    style={[
-                      Gutters.tinyHMargin,
-                      Common.statusIndicator,
-                      { backgroundColor: _getStatusIndicator(account.status) },
-                    ]}
-                  />
-                  <Text style={[Fonts.textRegular]}>{account.status}</Text>
-                </View>
-              </View>
-            )}
-            onPress={() =>
-              navigation.navigate('Statements', {
-                accountId: _.get(account, 'objectId', ''),
-                statements: _.get(account, 'statements', []),
-              })
-            }
+            description={() => renderAccountDescription(account)}
+            onPress={() => onSelectAccount(account)}
             right={() => (
               <View style={[Layout.rowVCenter, styles.accountCard]}>
                 <Text>{_.get(item, 'name', '')}</Text>
@@ -115,9 +118,5 @@ const AccountsScreen = () => {
 const styles = StyleSheet.create({
   accountCard: { width: '42%' },
 });
-
-AccountsScreen.propTypes = {};
-
-AccountsScreen.defaultProps = {};
 
 export default AccountsScreen;

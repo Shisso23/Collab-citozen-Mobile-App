@@ -12,15 +12,23 @@ const HeaderBackGround = (props) => {
 
   const navigation = useNavigation();
   const { Images, Common, Gutters, Layout, Colors } = useTheme();
+  const handleOnPress = () => {
+    if (onBack && backButton) {
+      return onBack();
+    }
+    if (backButton) {
+      return navigation.goBack();
+    }
+
+    return navigation.toggleDrawer();
+  };
   return (
     <ImageBackground source={Images.skylineBackground} style={[Common.headerIcon, Layout.column]}>
       <IconButton
         icon={backButton ? 'arrow-left' : 'menu'}
         size={30}
         color={Colors.white}
-        onPress={() =>
-          onBack ? onBack() : backButton ? navigation.goBack() : navigation.toggleDrawer()
-        }
+        onPress={handleOnPress}
         style={Gutters.largeTMargin}
       />
       <NotificationHeader style={styles.notificationHeader} />
