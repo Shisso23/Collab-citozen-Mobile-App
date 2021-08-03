@@ -36,7 +36,7 @@ const StatementsScreen = ({ route }) => {
 
   const viewStatementItem = ({ item }) => {
     return (
-      <View style={[Common.textInputWithShadow, Gutters.tinyMargin]}>
+      <View style={[Common.textInputWithShadow, Gutters.smallVMargin]}>
         <List.Item
           title={Moment(`${_.get(item, 'year', '')}/${_.get(item, 'month', '')}`).format(
             'MMMM YYYY',
