@@ -101,6 +101,7 @@ const AccountsScreen = () => {
           contentContainerStyle={Gutters.smallHMargin}
           data={accountChannels}
           renderItem={viewAccountChannelsItem}
+          keyExtractor={(item, i) => `${_.get(item, 'obj_id', i)}`}
           refreshControl={
             <RefreshControl
               refreshing={isLoadingAccountChannels}

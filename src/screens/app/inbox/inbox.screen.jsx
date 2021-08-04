@@ -24,8 +24,10 @@ const InboxScreen = () => {
       <PaddedContainer>
         <Text style={[Layout.alignSelfCenter, Fonts.titleTiny]}>Notifications</Text>
       </PaddedContainer>
-      {_.get(notifications, 'Feed', []).map((notification) => {
-        return <Notification notification={notification} key={_.get(notification, 'obj_id')} />;
+      {_.get(notifications, 'Feed', []).map((notification, index) => {
+        return (
+          <Notification notification={notification} key={_.get(notification, 'obj_id', index)} />
+        );
       })}
     </ScreenContainer>
   ) : (

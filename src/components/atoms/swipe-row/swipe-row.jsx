@@ -5,13 +5,12 @@ import { StyleSheet, View } from 'react-native';
 import { Colors } from 'react-native/Libraries/NewAppScreen';
 
 const SIZE = 65;
-const SwipeRowContainer = ({ renderVisibleComponent, renderHiddenComponent, key }) => {
+const SwipeRowContainer = ({ renderVisibleComponent, renderHiddenComponent }) => {
   return (
     <SwipeRow
       preview
       previewOpenValue={-SIZE}
       previewDuration={1500}
-      key={key}
       rightOpenValue={-SIZE}
       closeOnRowPress
       disableRightSwipe
@@ -34,11 +33,8 @@ const styles = StyleSheet.create({
 });
 
 SwipeRowContainer.propTypes = {
-  renderHiddenComponent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node])
-    .isRequired,
-  renderVisibleComponent: PropTypes.oneOfType([PropTypes.arrayOf(PropTypes.node), PropTypes.node])
-    .isRequired,
-  key: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  renderHiddenComponent: PropTypes.func.isRequired,
+  renderVisibleComponent: PropTypes.func.isRequired,
 };
 
 SwipeRowContainer.defaultProps = {};

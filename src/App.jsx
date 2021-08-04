@@ -37,6 +37,7 @@ const App = () => {
       'Require cycle',
       'VirtualizedLists should never be nested',
       'Usage of "messaging().registerDeviceForRemoteMessages()" is not required.',
+      'Deprecation warning',
     ]);
     messaging()
       .registerDeviceForRemoteMessages()

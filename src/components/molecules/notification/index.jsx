@@ -99,7 +99,7 @@ const Notification = ({ notification }) => {
 
   return (
     <SwipeRowContainer
-      key={_.get(notification, 'obj_id')}
+      key={_.get(notification, 'obj_id', '')}
       renderHiddenComponent={renderHiddenComponent}
       renderVisibleComponent={renderVisibleComponent}
     />
