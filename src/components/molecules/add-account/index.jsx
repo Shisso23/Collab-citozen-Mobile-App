@@ -18,7 +18,7 @@ const AddAccounts = ({ selectedChannel }) => {
   const userId = _.get(user, 'user_id', '');
   const { Common, Gutters, Colors, Layout } = useTheme();
   const [accountNumber, setAccountNumber] = useState(null);
-  const channelId = _.get(selectedChannel, 'obj_id', '');
+  const channelId = _.get(selectedChannel, 'objId', '');
   const [accountNumberError, setAccountNumberError] = useState(false);
   const [accounts, setAccounts] = useState(_.get(selectedChannel, 'accounts', []));
   const navigation = useNavigation();
