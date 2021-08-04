@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, Dimensions, View } from 'react-native';
 import Pdf from 'react-native-pdf';
 import PropTypes from 'prop-types';
@@ -10,7 +10,8 @@ import useTheme from '../../../theme/hooks/useTheme';
 
 const AccountStatement = ({ statement }) => {
   const { Layout } = useTheme();
-  const source = _.get(statement, 'statementPdf', {});
+
+  const source = useMemo(() => _.get(statement, 'statementPdf', {}), []);
 
   return (
     <View style={[Layout.fill, Layout.alignItemsCenter, Layout.justifyContentFlexStart]}>

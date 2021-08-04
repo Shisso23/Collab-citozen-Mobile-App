@@ -26,6 +26,7 @@ const DrawerContent = (props) => {
   const _signOut = () => {
     dispatch(signOutAction());
   };
+
   return (
     <View style={[Layout.fill]}>
       <DrawerContentScrollView {...props}>

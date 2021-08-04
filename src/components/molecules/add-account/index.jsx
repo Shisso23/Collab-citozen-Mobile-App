@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { TextInput, Button, Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
@@ -15,23 +15,19 @@ const AddAccounts = ({ selectedChannel }) => {
   const dispatch = useDispatch();
   const { isLoadingAccountValid } = useSelector(accountsSelector);
   const { user } = useSelector((reducer) => reducer.userReducer);
-  const userId = _.get(user, 'user_id', '');
+  const userId = useMemo(() => _.get(user, 'user_id', ''), []);
   const { Common, Gutters, Colors, Layout } = useTheme();
   const [accountNumber, setAccountNumber] = useState(null);
-  const channelId = _.get(selectedChannel, 'objId', '');
+  const channelId = useMemo(() => _.get(selectedChannel, 'objId', ''), []);
   const [accountNumberError, setAccountNumberError] = useState(false);
-  const [accounts, setAccounts] = useState(_.get(selectedChannel, 'accounts', []));
   const navigation = useNavigation();
 
-  useEffect(() => {}, [accounts.length]);
-
   const handleSubmit = () => {
-    if (`${accountNumber}`.length < 1) {
+    if (accountNumber === null || `${accountNumber}`.length < 1) {
       return setAccountNumberError(true);
     }
     return dispatch(accountActions.validateAccountAction(channelId, userId, accountNumber))
-      .then((newAccounts) => {
-        setAccounts(newAccounts);
+      .then(() => {
         flashService.success('Account validated!');
         navigation.navigate('Accounts');
       })
@@ -40,15 +36,17 @@ const AddAccounts = ({ selectedChannel }) => {
       });
   };
 
+  const handleAccountNumberChange = (accNumber) => {
+    setAccountNumberError(false);
+    setAccountNumber(accNumber);
+  };
+
   return (
     <>
       <TextInput
         label="Account Number"
         style={[Common.textInput, styles.accountInput]}
-        onChangeText={(accNumber) => {
-          setAccountNumberError(false);
-          setAccountNumber(accNumber);
-        }}
+        onChangeText={handleAccountNumberChange}
         value={accountNumber}
         error={accountNumberError}
         showSoftInputOnFocus={false}
