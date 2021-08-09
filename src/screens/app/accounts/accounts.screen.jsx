@@ -1,19 +1,25 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { FAB, List } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { FlatList, Text, ImageBackground, RefreshControl, View, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+// import Moment from 'moment';
 
 import _ from 'lodash';
 import useTheme from '../../../theme/hooks/useTheme';
 import { accountsSelector } from '../../../reducers/accounts-reducer/accounts.reducer';
 import { accountActions } from '../../../reducers/accounts-reducer';
 
+import { TrashButton } from '../../../components/atoms';
+import SwipeRowContainer from '../../../components/atoms/swipe-row/swipe-row';
+import { promptConfirmDelete } from '../../../helpers/prompt.helper';
+
 const AccountsScreen = () => {
   const dispatch = useDispatch();
   const { accountChannels, isLoadingAccountChannels } = useSelector(accountsSelector);
   const { Common, Gutters, Fonts, Layout, Images, Colors } = useTheme();
   const navigation = useNavigation();
+  const [isDeleting, setDeleting] = useState(false);
 
   const _loadMyChannels = () => {
     dispatch(accountActions.getChannelsWithValidAccountsAction());
@@ -64,26 +70,48 @@ const AccountsScreen = () => {
       statements: _.get(account, 'statements', []),
     });
 
+  const renderVisibleComponent = (account, accountIndex, channel, channelIndex) => {
+    return (
+      <View
+        style={[Common.textInputWithShadow, Gutters.tinyMargin]}
+        key={`${channelIndex}-${accountIndex}`}
+      >
+        <List.Item
+          title={_.get(account, 'accountName', '')}
+          description={() => renderAccountDescription(account)}
+          onPress={() => onSelectAccount(account)}
+          right={() => (
+            <View style={[Layout.rowVCenter, styles.accountCard]}>
+              <Text>{_.get(channel, 'name', '')}</Text>
+            </View>
+          )}
+          descriptionNumberOfLines={10}
+          descriptionStyle={[Gutters.largeRMargin]}
+        />
+      </View>
+    );
+  };
+
+  const _handleDelete = () => {
+    // const deletedAt = Moment(new Date()).format('yyyy-mm-DD hh:mm:ss');
+    promptConfirmDelete('Are you sure you want to delete this item?', () => {
+      setDeleting(true);
+      // dispatch(deleteNotificationAction(notificationId, deletedAt, _.get(user, 'user_id', '')));
+    });
+  };
+
+  const renderHiddenComponent = () => (
+    <TrashButton onPress={_handleDelete} iconSize={35} loading={isDeleting} />
+  );
+
   const viewAccountChannelsItem = ({ item, index }) => {
     return _.map(_.get(item, 'accounts', []), (account, accountIndex) => {
       return (
-        <View
-          style={[Common.textInputWithShadow, Gutters.tinyMargin]}
-          key={`${index}-${accountIndex}`}
-        >
-          <List.Item
-            title={_.get(account, 'accountName', '')}
-            description={() => renderAccountDescription(account)}
-            onPress={() => onSelectAccount(account)}
-            right={() => (
-              <View style={[Layout.rowVCenter, styles.accountCard]}>
-                <Text>{_.get(item, 'name', '')}</Text>
-              </View>
-            )}
-            descriptionNumberOfLines={10}
-            descriptionStyle={[Gutters.largeRMargin]}
-          />
-        </View>
+        <SwipeRowContainer
+          key={`${_.get(item, 'obj_id', accountIndex)}`}
+          renderHiddenComponent={renderHiddenComponent}
+          renderVisibleComponent={() => renderVisibleComponent(account, accountIndex, item, index)}
+        />
       );
     });
   };
