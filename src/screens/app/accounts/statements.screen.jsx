@@ -66,7 +66,7 @@ const StatementsScreen = ({ route }) => {
           title={Moment(`${_.get(item, 'year', '')}/${_.get(item, 'month', '')}`).format(
             'MMMM YYYY',
           )}
-          description={renderDescription}
+          description={() => renderDescription(item)}
           onPress={() => onSelectStatement(item)}
           titleStyle={Common.cardTitle}
         />
