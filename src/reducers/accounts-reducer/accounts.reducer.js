@@ -8,19 +8,26 @@ export const setAccountChannelsAction = setAccountChannels.action;
 const setIsLoadingAccountChannels = CreateAction(reducerName, 'SET_IS_LOADING_ACCOUNT_CHANNELS');
 export const setIsLoadingAccountChannelsAction = setIsLoadingAccountChannels.action;
 
-const setAccountValid = CreateAction(reducerName, 'SET_ACCOUNT_VALID');
-export const setAccountValidAction = setAccountValid.action;
+const setAddAccount = CreateAction(reducerName, 'SET_ADD_ACCOUNT');
+export const setAddAccountAction = setAddAccount.action;
 
-const setIsLoadingAccountValid = CreateAction(reducerName, 'SET_IS_LOADING_ACCOUNT_VALID');
-export const setIsLoadingAccountValidAction = setIsLoadingAccountValid.action;
+const setIsLoadingAddAccount = CreateAction(reducerName, 'SET_IS_LOADING_ADD_ACCOUNT');
+export const setIsLoadingAddAccountAction = setIsLoadingAddAccount.action;
+
+const setDeleteAccount = CreateAction(reducerName, 'SET_DELETE_ACCOUNT');
+export const setDeleteccountAction = setDeleteAccount.action;
+
+const setIsLoadingDeleteAccount = CreateAction(reducerName, 'SET_IS_LOADING_DELETE_ACCOUNT');
+export const setIsLoadingDeleteAccountAction = setIsLoadingDeleteAccount.action;
 
 const initialState = {
   accountChannels: [],
   isLoadingAccountChannels: false,
   isLoadingAccountStatements: false,
-  isLoadingAccountValid: false,
+  isLoadingAddAccount: false,
+  isLoadingDeleteAccount: false,
   statements: [],
-  accountValid: false,
+  account: false,
 };
 
 export const accountsSelector = (rootReducer) => rootReducer.accountsReducer;
@@ -37,15 +44,25 @@ export default function accountsReducer(state = initialState, action) {
         ...state,
         isLoadingAccountChannels: action.payload,
       };
-    case setIsLoadingAccountValid.actionType:
+    case setIsLoadingAddAccount.actionType:
       return {
         ...state,
-        isLoadingAccountValid: action.payload,
+        isLoadingAddAccount: action.payload,
       };
-    case setAccountValid.actionType:
+    case setAddAccount.actionType:
       return {
         ...state,
-        accountValid: action.payload,
+        account: action.payload,
+      };
+    case setDeleteAccount.actionType:
+      return {
+        ...state,
+        account: action.payload,
+      };
+    case setIsLoadingDeleteAccount.actionType:
+      return {
+        ...state,
+        isLoadingDeleteAccount: action.payload,
       };
     default:
       return state;
