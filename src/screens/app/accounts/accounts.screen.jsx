@@ -67,7 +67,7 @@ const AccountsScreen = () => {
 
   const onSelectAccount = (account) =>
     navigation.navigate('Statements', {
-      accountId: _.get(account, 'objectId', ''),
+      account,
       statements: _.get(account, 'statements', []),
     });
 

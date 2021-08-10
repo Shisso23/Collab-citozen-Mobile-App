@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { FlatList, Text, View, ImageBackground, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -15,7 +15,9 @@ const StatementsScreen = ({ route }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const { params } = route;
-  const accountId = _.get(params, 'accountId', '');
+  const { account } = params;
+  const accountId = useMemo(() => _.get(account, 'accountId', ''), []);
+  const accountName = useMemo(() => _.get(account, 'accountName', ''), []);
   const statements = _.get(params, 'statements', []);
   const [statementsWithPdfFiles, setStatementsWithPdfFiles] = useState([]);
   const { Gutters, Fonts, Common, Layout, Colors, Images } = useTheme();
@@ -24,9 +26,21 @@ const StatementsScreen = ({ route }) => {
     dispatch(accountActions.getAccountStatementsAction(accountId));
   };
 
+  const sortStatements = (unsortedStatements) => {
+    return unsortedStatements.sort((st1, st2) => {
+      if (_.get(st1, 'month', '') > _.get(st2, 'month', '')) {
+        return -1;
+      }
+      if (_.get(st1, 'month', '') < _.get(st2, 'month', '')) {
+        return 1;
+      }
+      return 0;
+    });
+  };
+
   useEffect(() => {
     constructStatementModels(statements).then((newStatements) => {
-      setStatementsWithPdfFiles(newStatements);
+      setStatementsWithPdfFiles(sortStatements(newStatements));
     });
   }, []);
 
@@ -56,6 +70,7 @@ const StatementsScreen = ({ route }) => {
         resizeMode="cover"
       >
         <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>My Statements</Text>
+        <Text style={[Gutters.smallMargin, Fonts.textLeft]}>{accountName}</Text>
 
         <FlatList
           contentContainerStyle={Gutters.smallHMargin}
