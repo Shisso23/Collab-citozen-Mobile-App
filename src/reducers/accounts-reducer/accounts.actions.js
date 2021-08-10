@@ -3,8 +3,10 @@ import accountsService from '../../services/sub-services/accounts-service/accoun
 import {
   setAccountChannelsAction,
   setIsLoadingAccountChannelsAction,
-  setIsLoadingAccountValidAction,
-  setAccountValidAction,
+  setIsLoadingAddAccountAction,
+  setAddAccountAction,
+  setDeleteccountAction,
+  setIsLoadingDeleteAccountAction,
 } from './accounts.reducer';
 
 export const getChannelsWithValidAccountsAction = () => (dispatch) => {
@@ -18,21 +20,36 @@ export const getChannelsWithValidAccountsAction = () => (dispatch) => {
     .finally(() => dispatch(setIsLoadingAccountChannelsAction(false)));
 };
 
-export const validateAccountAction = (channelId, userId, accountNumber) => (dispatch) => {
-  dispatch(setIsLoadingAccountValidAction(true));
+export const addAccountAction = (channelId, userId, accountNumber) => (dispatch) => {
+  dispatch(setIsLoadingAddAccountAction(true));
   return accountsService
-    .validateAccount(channelId, userId, accountNumber)
+    .addAccount(channelId, userId, accountNumber)
     .then(async (response) => {
-      dispatch(setAccountValidAction(response));
+      dispatch(setAddAccountAction(response));
       const channels = await dispatch(getChannelsWithValidAccountsAction());
       const currentChannel = channels.find((channel) => _.get(channel, 'obj_id', '') === channelId);
       const accounts = _.get(currentChannel, 'accounts', []);
       return accounts;
     })
-    .finally(() => dispatch(setIsLoadingAccountValidAction(false)));
+    .finally(() => dispatch(setIsLoadingAddAccountAction(false)));
+};
+
+export const deleteAccountAction = (channelId, userId, accountNumber) => (dispatch) => {
+  dispatch(setIsLoadingDeleteAccountAction(true));
+  return accountsService
+    .deleteAccount(channelId, userId, accountNumber)
+    .then(async (response) => {
+      dispatch(setDeleteccountAction(response));
+      const channels = await dispatch(getChannelsWithValidAccountsAction());
+      const currentChannel = channels.find((channel) => _.get(channel, 'obj_id', '') === channelId);
+      const accounts = _.get(currentChannel, 'accounts', []);
+      return accounts;
+    })
+    .finally(() => dispatch(setIsLoadingDeleteAccountAction(false)));
 };
 
 export default {
-  validateAccountAction,
+  addAccountAction,
+  deleteAccountAction,
   getChannelsWithValidAccountsAction,
 };

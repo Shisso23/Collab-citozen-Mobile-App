@@ -3,7 +3,7 @@ import accountsUrls from './accounts.urls';
 
 import {
   apiFunctionWithUniqName,
-  dataValidateAccount,
+  dataCreateRecord,
 } from '../../../helpers/api-function-name.helper';
 import authNetworkService from '../auth-network-service/auth-network.service';
 import { constructChannelModels } from '../../../models/app/accounts/account-channels.model';
@@ -16,14 +16,22 @@ const getChannelsWithValidAccounts = async () => {
   return channelsModel;
 };
 
-const validateAccount = async (channelId, userId, accountNumber) => {
-  const url = accountsUrls.validateUrl();
-  const data = dataValidateAccount({ accountNumber, channelId, userId });
+const addAccount = async (channelId, userId, accountNumber) => {
+  const url = accountsUrls.createRecordUrl();
+  const data = dataCreateRecord({ accountNumber, channelId, userId, status: 'Requested' });
+  const apiResponse = await authNetworkService.post(url, data);
+  return _.get(apiResponse, 'data', null);
+};
+
+const deleteAccount = async (channelId, userId, accountNumber) => {
+  const url = accountsUrls.createRecordUrl();
+  const data = dataCreateRecord({ accountNumber, channelId, userId, status: 'Deleted' });
   const apiResponse = await authNetworkService.post(url, data);
   return _.get(apiResponse, 'data', null);
 };
 
 export default {
   getChannelsWithValidAccounts,
-  validateAccount,
+  addAccount,
+  deleteAccount,
 };
