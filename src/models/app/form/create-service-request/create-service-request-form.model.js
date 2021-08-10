@@ -12,6 +12,7 @@ export const createServiceRequestModel = (_initialValues = {}) => ({
   imageUri: _.get(_initialValues, 'imageUri', ''),
   municipalityCode: _.get(_initialValues, 'municipalityCode', ''),
   address: _.get(_initialValues, 'address', ''),
+  channelRef: _.get(_initialValues, 'channelRef', ''),
 });
 
 export const apiCreateServiceRequestModel = (_serviceRequestForm = {}, _userInformation = {}) => ({
@@ -31,5 +32,6 @@ export const apiCreateServiceRequestModel = (_serviceRequestForm = {}, _userInfo
     { FieldID: 'F13', FieldValue: '12345' }, // mobile referece
     { FieldID: 'F20', FieldValue: _.get(_serviceRequestForm, 'municipalityCode', '') }, // municipalityCode
     { FieldID: 'F24', FieldValue: _.get(_serviceRequestForm, 'address', '') }, // Address: Street Number + Street Name + suburb
+    { FieldID: 'F27', FieldValue: _.get(_serviceRequestForm, 'channelRef', '') }, // Channel id
   ],
 });

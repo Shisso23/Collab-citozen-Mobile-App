@@ -157,6 +157,7 @@ const CreateServiceRequestForm = ({
             values.address = selectedAddress;
 
             setFieldValue('municipalityCode', municipalityCodeRef);
+            setFieldValue('channelRef', _.get(municipalities[municipalityCodeRef], 'id', ''));
             values.municipalityCode = municipalityCodeRef;
             handleSubmit();
           };
