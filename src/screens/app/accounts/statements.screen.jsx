@@ -48,6 +48,17 @@ const StatementsScreen = ({ route }) => {
     navigation.navigate('StatementView', { statement });
   };
 
+  const renderDescription = (item) => {
+    return (
+      <View style={[Layout.rowBetween, Gutters.smallTMargin]}>
+        <Text style={Common.cardDescription}>Outstanding balance</Text>
+        <Text style={Common.cardDescription}>
+          {_.get(item, 'outstandingBalance', 0).toFixed(2)}
+        </Text>
+      </View>
+    );
+  };
+
   const viewStatementItem = ({ item }) => {
     return (
       <View style={[Common.textInputWithShadow, Gutters.smallVMargin]}>
@@ -55,6 +66,7 @@ const StatementsScreen = ({ route }) => {
           title={Moment(`${_.get(item, 'year', '')}/${_.get(item, 'month', '')}`).format(
             'MMMM YYYY',
           )}
+          description={() => renderDescription(item)}
           onPress={() => onSelectStatement(item)}
           titleStyle={Common.cardTitle}
         />
