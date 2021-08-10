@@ -13,7 +13,7 @@ import flashService from '../../../services/sub-services/flash-service/flash.ser
 
 const AddAccounts = ({ selectedChannel }) => {
   const dispatch = useDispatch();
-  const { isLoadingAccountValid } = useSelector(accountsSelector);
+  const { isLoadingAddAccount } = useSelector(accountsSelector);
   const { user } = useSelector((reducer) => reducer.userReducer);
   const userId = useMemo(() => _.get(user, 'user_id', ''), []);
   const { Common, Gutters, Colors, Layout } = useTheme();
@@ -26,7 +26,7 @@ const AddAccounts = ({ selectedChannel }) => {
     if (accountNumber === null || `${accountNumber}`.length < 1) {
       return setAccountNumberError(true);
     }
-    return dispatch(accountActions.validateAccountAction(channelId, userId, accountNumber))
+    return dispatch(accountActions.addAccountAction(channelId, userId, accountNumber))
       .then(() => {
         flashService.success('Account validated!');
         navigation.navigate('Accounts');
@@ -69,8 +69,8 @@ const AddAccounts = ({ selectedChannel }) => {
           styles.submitBUtton,
         ]}
         onPress={handleSubmit}
-        loading={isLoadingAccountValid}
-        disabled={isLoadingAccountValid}
+        loading={isLoadingAddAccount}
+        disabled={isLoadingAddAccount}
       >
         Verify
       </Button>

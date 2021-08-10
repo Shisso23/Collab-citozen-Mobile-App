@@ -1,9 +1,8 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { FAB, List } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { FlatList, Text, ImageBackground, RefreshControl, View, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-// import Moment from 'moment';
 
 import _ from 'lodash';
 import useTheme from '../../../theme/hooks/useTheme';
@@ -17,9 +16,11 @@ import { promptConfirmDelete } from '../../../helpers/prompt.helper';
 const AccountsScreen = () => {
   const dispatch = useDispatch();
   const { accountChannels, isLoadingAccountChannels } = useSelector(accountsSelector);
+  const { user } = useSelector((reducer) => reducer.userReducer);
+  const { isLoadingDeleteAccount } = useSelector((reducer) => reducer.accountsReducer);
+  const userId = useMemo(() => _.get(user, 'user_id', ''), []);
   const { Common, Gutters, Fonts, Layout, Images, Colors } = useTheme();
   const navigation = useNavigation();
-  const [isDeleting, setDeleting] = useState(false);
 
   const _loadMyChannels = () => {
     dispatch(accountActions.getChannelsWithValidAccountsAction());
@@ -92,24 +93,28 @@ const AccountsScreen = () => {
     );
   };
 
-  const _handleDelete = () => {
-    // const deletedAt = Moment(new Date()).format('yyyy-mm-DD hh:mm:ss');
+  const _handleDelete = (account, channel) => {
+    const channelId = _.get(channel, 'objectId', '');
+    const accountNumber = _.get(account, 'accountNumber', '');
     promptConfirmDelete('Are you sure you want to delete this item?', () => {
-      setDeleting(true);
-      // dispatch(deleteNotificationAction(notificationId, deletedAt, _.get(user, 'user_id', '')));
+      dispatch(accountActions.deleteAccountAction(channelId, userId, accountNumber));
     });
   };
 
-  const renderHiddenComponent = () => (
-    <TrashButton onPress={_handleDelete} iconSize={35} loading={isDeleting} />
+  const renderHiddenComponent = (account, channel) => (
+    <TrashButton
+      onPress={() => _handleDelete(account, channel)}
+      iconSize={35}
+      loading={isLoadingDeleteAccount}
+    />
   );
 
   const viewAccountChannelsItem = ({ item, index }) => {
     return _.map(_.get(item, 'accounts', []), (account, accountIndex) => {
       return (
         <SwipeRowContainer
-          key={`${_.get(item, 'obj_id', accountIndex)}`}
-          renderHiddenComponent={renderHiddenComponent}
+          key={`${_.get(item, 'objectId', accountIndex)}`}
+          renderHiddenComponent={() => renderHiddenComponent(account, item)}
           renderVisibleComponent={() => renderVisibleComponent(account, accountIndex, item, index)}
         />
       );
