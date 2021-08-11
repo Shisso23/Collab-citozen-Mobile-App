@@ -11,6 +11,9 @@ const StatementViewScreen = ({ route }) => {
   const { params } = route;
   const statement = _.get(params, 'statement', {});
   const { Gutters, Layout, Images } = useTheme();
+  const year = _.get(statement, 'year', '');
+  const month = _.get(statement, 'month', '');
+  const dateString = `${year}/${month}`;
 
   return (
     <>
@@ -20,9 +23,7 @@ const StatementViewScreen = ({ route }) => {
         resizeMode="cover"
       >
         <Text style={[Layout.alignSelfCenter, Gutters.smallBPadding]}>
-          {Moment(`${_.get(statement, 'year', '')}/${_.get(statement, 'month', '')}`).format(
-            'MMMM YYYY',
-          )}
+          {Moment(dateString, 'YYYY/MM').format('MMMM YYYY')}
         </Text>
 
         <AccountStatement statement={statement} />

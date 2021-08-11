@@ -20,6 +20,12 @@ export const setDeleteccountAction = setDeleteAccount.action;
 const setIsLoadingDeleteAccount = CreateAction(reducerName, 'SET_IS_LOADING_DELETE_ACCOUNT');
 export const setIsLoadingDeleteAccountAction = setIsLoadingDeleteAccount.action;
 
+const setAccountValid = CreateAction(reducerName, 'SET_ACCOUNT_VALID');
+export const setAccountValidAction = setAccountValid.action;
+
+const setIsLoadingValidateAccount = CreateAction(reducerName, 'SET_IS_LOADING_VALIDATE_ACCOUNT');
+export const setIsLoadingValidateAccountAction = setIsLoadingValidateAccount.action;
+
 const initialState = {
   accountChannels: [],
   isLoadingAccountChannels: false,
@@ -27,6 +33,8 @@ const initialState = {
   isLoadingAddAccount: false,
   isLoadingDeleteAccount: false,
   statements: [],
+  accountValid: null,
+  isLoadingValidateAccount: false,
   account: false,
 };
 
@@ -63,6 +71,17 @@ export default function accountsReducer(state = initialState, action) {
       return {
         ...state,
         isLoadingDeleteAccount: action.payload,
+      };
+
+    case setIsLoadingValidateAccount.actionType:
+      return {
+        ...state,
+        isLoadingValidateAccount: action.payload,
+      };
+    case setAccountValid.actionType:
+      return {
+        ...state,
+        accountValid: action.payload,
       };
     default:
       return state;

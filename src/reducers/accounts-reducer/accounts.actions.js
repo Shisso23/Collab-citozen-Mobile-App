@@ -7,6 +7,8 @@ import {
   setAddAccountAction,
   setDeleteccountAction,
   setIsLoadingDeleteAccountAction,
+  setAccountValidAction,
+  setIsLoadingValidateAccountAction,
 } from './accounts.reducer';
 
 export const getChannelsWithValidAccountsAction = () => (dispatch) => {
@@ -27,7 +29,9 @@ export const addAccountAction = (channelId, userId, accountNumber) => (dispatch)
     .then(async (response) => {
       dispatch(setAddAccountAction(response));
       const channels = await dispatch(getChannelsWithValidAccountsAction());
-      const currentChannel = channels.find((channel) => _.get(channel, 'obj_id', '') === channelId);
+      const currentChannel = channels.find(
+        (channel) => _.get(channel, 'objectId', '') === channelId,
+      );
       const accounts = _.get(currentChannel, 'accounts', []);
       return accounts;
     })
@@ -41,15 +45,30 @@ export const deleteAccountAction = (channelId, userId, accountNumber) => (dispat
     .then(async (response) => {
       dispatch(setDeleteccountAction(response));
       const channels = await dispatch(getChannelsWithValidAccountsAction());
-      const currentChannel = channels.find((channel) => _.get(channel, 'obj_id', '') === channelId);
+      const currentChannel = channels.find(
+        (channel) => _.get(channel, 'objectId', '') === channelId,
+      );
       const accounts = _.get(currentChannel, 'accounts', []);
       return accounts;
     })
     .finally(() => dispatch(setIsLoadingDeleteAccountAction(false)));
 };
 
+export const validateAccountAction = (accountNumber, channelId) => (dispatch) => {
+  dispatch(setIsLoadingValidateAccountAction(true));
+  return accountsService
+    .validateAccount(accountNumber, channelId)
+    .then((response) => {
+      const accountValid = _.get(response, 'Account_Validation', null)[0].account_valid || false;
+      dispatch(setAccountValidAction(accountValid));
+      return accountValid;
+    })
+    .finally(() => dispatch(setIsLoadingValidateAccountAction(false)));
+};
+
 export default {
   addAccountAction,
   deleteAccountAction,
   getChannelsWithValidAccountsAction,
+  validateAccountAction,
 };

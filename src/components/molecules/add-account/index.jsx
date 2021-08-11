@@ -13,7 +13,7 @@ import flashService from '../../../services/sub-services/flash-service/flash.ser
 
 const AddAccounts = ({ selectedChannel }) => {
   const dispatch = useDispatch();
-  const { isLoadingAddAccount } = useSelector(accountsSelector);
+  const { isLoadingAddAccount, isLoadingValidateAccount } = useSelector(accountsSelector);
   const { user } = useSelector((reducer) => reducer.userReducer);
   const userId = useMemo(() => _.get(user, 'user_id', ''), []);
   const { Common, Gutters, Colors, Layout } = useTheme();
@@ -26,13 +26,23 @@ const AddAccounts = ({ selectedChannel }) => {
     if (accountNumber === null || `${accountNumber}`.length < 1) {
       return setAccountNumberError(true);
     }
-    return dispatch(accountActions.addAccountAction(channelId, userId, accountNumber))
-      .then(() => {
-        flashService.success('Account validated!');
-        navigation.navigate('Accounts');
+    return dispatch(accountActions.validateAccountAction(accountNumber, channelId))
+      .then((accountValid) => {
+        if (accountValid) {
+          dispatch(accountActions.addAccountAction(channelId, userId, accountNumber))
+            .then(() => {
+              flashService.success('Account successfully validated!');
+              navigation.navigate('Accounts');
+            })
+            .catch(() => {
+              flashService.error('Could not verify Account!');
+            });
+        } else {
+          flashService.error('Invalid account Number!');
+        }
       })
-      .catch((error) => {
-        flashService.error(_.get(error, 'message', 'Could not verify account!'));
+      .catch(() => {
+        flashService.error('Invalid account Number!');
       });
   };
 
@@ -49,7 +59,6 @@ const AddAccounts = ({ selectedChannel }) => {
         onChangeText={handleAccountNumberChange}
         value={accountNumber}
         error={accountNumberError}
-        showSoftInputOnFocus={false}
         multiline={false}
       />
       {accountNumberError && (
@@ -69,8 +78,8 @@ const AddAccounts = ({ selectedChannel }) => {
           styles.submitBUtton,
         ]}
         onPress={handleSubmit}
-        loading={isLoadingAddAccount}
-        disabled={isLoadingAddAccount}
+        loading={isLoadingAddAccount || isLoadingValidateAccount}
+        disabled={isLoadingAddAccount || isLoadingValidateAccount}
       >
         Verify
       </Button>
