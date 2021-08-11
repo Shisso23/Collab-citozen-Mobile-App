@@ -10,6 +10,7 @@ import Moment from 'moment';
 import useTheme from '../../../theme/hooks/useTheme';
 import { accountActions } from '../../../reducers/accounts-reducer';
 import { constructStatementModels } from '../../../models/app/accounts/statement.model';
+import { flashService } from '../../../services';
 
 const StatementsScreen = ({ route }) => {
   const dispatch = useDispatch();
@@ -45,7 +46,10 @@ const StatementsScreen = ({ route }) => {
   }, []);
 
   const onSelectStatement = (statement) => {
-    navigation.navigate('StatementView', { statement });
+    if (!_.get(statement, 'statementPdf')) {
+      return flashService.info('Statement not yet Available!');
+    }
+    return navigation.navigate('StatementView', { statement });
   };
 
   const renderDescription = (item) => {
@@ -60,12 +64,13 @@ const StatementsScreen = ({ route }) => {
   };
 
   const viewStatementItem = ({ item }) => {
+    const year = _.get(item, 'year', '');
+    const month = _.get(item, 'month', '');
+    const dateString = `${year}/${month}`;
     return (
       <View style={[Common.textInputWithShadow, Gutters.smallVMargin]}>
         <List.Item
-          title={Moment(`${_.get(item, 'year', '')}/${_.get(item, 'month', '')}`).format(
-            'MMMM YYYY',
-          )}
+          title={Moment(dateString, 'YYYY/MM').format('MMMM YYYY')}
           description={() => renderDescription(item)}
           onPress={() => onSelectStatement(item)}
           titleStyle={Common.cardTitle}
