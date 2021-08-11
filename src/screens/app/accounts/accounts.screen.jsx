@@ -115,7 +115,7 @@ const AccountsScreen = () => {
     return _.map(_.get(item, 'accounts', []), (account, accountIndex) => {
       return (
         <SwipeRowContainer
-          key={`${_.get(item, 'objectId', accountIndex)}`}
+          key={`${_.get(item, 'objectId', accountIndex)}-${accountIndex}`}
           renderHiddenComponent={() => renderHiddenComponent(account, item)}
           renderVisibleComponent={() => renderVisibleComponent(account, accountIndex, item, index)}
         />
@@ -136,7 +136,7 @@ const AccountsScreen = () => {
           contentContainerStyle={Gutters.smallHMargin}
           data={accountChannels}
           renderItem={viewAccountChannelsItem}
-          keyExtractor={(item, i) => `${_.get(item, 'obj_id', i)}`}
+          keyExtractor={(item, i) => `${_.get(item, 'objectId', i)}`}
           refreshControl={
             <RefreshControl
               refreshing={isLoadingAccountChannels}
