@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
-import { FlatList, Text, View, ImageBackground, RefreshControl } from 'react-native';
+import { FlatList, Text, View, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { List } from 'react-native-paper';
 import PropTypes from 'prop-types';
@@ -8,23 +7,17 @@ import _ from 'lodash';
 import Moment from 'moment';
 
 import useTheme from '../../../theme/hooks/useTheme';
-import { accountActions } from '../../../reducers/accounts-reducer';
 import { constructStatementModels } from '../../../models/app/accounts/statement.model';
+import { flashService } from '../../../services';
 
 const StatementsScreen = ({ route }) => {
-  const dispatch = useDispatch();
   const navigation = useNavigation();
   const { params } = route;
   const { account } = params;
-  const accountId = useMemo(() => _.get(account, 'accountId', ''), []);
   const accountName = useMemo(() => _.get(account, 'accountName', ''), []);
   const statements = _.get(params, 'statements', []);
   const [statementsWithPdfFiles, setStatementsWithPdfFiles] = useState([]);
-  const { Gutters, Fonts, Common, Layout, Colors, Images } = useTheme();
-
-  const _loadMyStatements = () => {
-    dispatch(accountActions.getAccountStatementsAction(accountId));
-  };
+  const { Gutters, Fonts, Common, Layout, Images } = useTheme();
 
   const sortStatements = (unsortedStatements) => {
     return unsortedStatements.sort((st1, st2) => {
@@ -45,7 +38,10 @@ const StatementsScreen = ({ route }) => {
   }, []);
 
   const onSelectStatement = (statement) => {
-    navigation.navigate('StatementView', { statement });
+    if (!_.get(statement, 'statementPdf')) {
+      return flashService.info('Statement not yet Available!');
+    }
+    return navigation.navigate('StatementView', { statement });
   };
 
   const renderDescription = (item) => {
@@ -53,19 +49,20 @@ const StatementsScreen = ({ route }) => {
       <View style={[Layout.rowBetween, Gutters.smallTMargin]}>
         <Text style={Common.cardDescription}>Outstanding balance</Text>
         <Text style={Common.cardDescription}>
-          {_.get(item, 'outstandingBalance', 0).toFixed(2)}
+          R{_.get(item, 'outstandingBalance', 0).toFixed(2)}
         </Text>
       </View>
     );
   };
 
   const viewStatementItem = ({ item }) => {
+    const year = _.get(item, 'year', '');
+    const month = _.get(item, 'month', '');
+    const dateString = `${year}/${month}`;
     return (
       <View style={[Common.textInputWithShadow, Gutters.smallVMargin]}>
         <List.Item
-          title={Moment(`${_.get(item, 'year', '')}/${_.get(item, 'month', '')}`).format(
-            'MMMM YYYY',
-          )}
+          title={Moment(dateString, 'YYYY/MM').format('MMMM YYYY')}
           description={() => renderDescription(item)}
           onPress={() => onSelectStatement(item)}
           titleStyle={Common.cardTitle}
@@ -89,13 +86,6 @@ const StatementsScreen = ({ route }) => {
           data={statementsWithPdfFiles}
           renderItem={viewStatementItem}
           keyExtractor={(item, index) => `${_.get(item, 'objectId', index)}`}
-          refreshControl={
-            <RefreshControl
-              onRefresh={_loadMyStatements}
-              tintColor={Colors.primary}
-              colors={[Colors.primary]}
-            />
-          }
         />
       </ImageBackground>
     </>

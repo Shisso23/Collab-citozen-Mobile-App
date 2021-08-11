@@ -6,6 +6,14 @@ export const apiFunctionWithUniqName = async (functionName) => {
   };
 };
 
+export const dataValidateAccount = async ({ channelId, accountNumber }) => {
+  return {
+    taskID: 0,
+    uniqName: 'validate_account_no',
+    InputValues: `<valRoot><val>${accountNumber}</val><val>${channelId}</val></valRoot>`,
+  };
+};
+
 export const notificationActivityData = ({ notificationId, userId, action, dateTime }) =>
   `<Objects><User_Notification_Activity><F1>${notificationId}</F1><F2>${userId}</F2><F3>${action}</F3><F4>${dateTime}</F4></User_Notification_Activity></Objects>`;
 

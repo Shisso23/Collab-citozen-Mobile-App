@@ -83,7 +83,9 @@ const AccountsScreen = () => {
           onPress={() => onSelectAccount(account)}
           right={() => (
             <View style={[Layout.rowVCenter, styles.accountCard]}>
-              <Text>{_.get(channel, 'name', '')}</Text>
+              <Text style={[Gutters.tinyTMargin, Gutters.regularLMargin]}>
+                {_.get(channel, 'name', '')}
+              </Text>
             </View>
           )}
           descriptionNumberOfLines={10}
