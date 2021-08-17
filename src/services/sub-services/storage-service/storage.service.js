@@ -5,7 +5,9 @@ const EMAIL = 'EMAIL';
 
 const accessTokenOperations = {
   getAccessToken: () => getItem(config.accessTokenKey),
-  storeAccessToken: (token) => saveItem(config.accessTokenKey, token),
+  storeAccessToken: (token) => {
+    saveItem(config.accessTokenKey, token);
+  },
   removeAccessToken: () => removeItem(config.accessTokenKey),
 };
 

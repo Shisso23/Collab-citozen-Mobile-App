@@ -6,6 +6,7 @@ export function saveItem(key, value) {
   if (_.isObject(value)) {
     saveValue = JSON.stringify(value);
   }
+
   return AsyncStorage.setItem(key, saveValue).catch((error) =>
     // eslint-disable-next-line no-console
     console.warn(`WARNING: Failed to save item with key: ${key}. Error: ${error.message}`),
@@ -14,7 +15,7 @@ export function saveItem(key, value) {
 
 // eslint-disable-next-line consistent-return
 export async function getItem(key) {
-  if (key !== null) {
+  if (key) {
     return AsyncStorage.getItem(key).then((value) => {
       return value;
     });

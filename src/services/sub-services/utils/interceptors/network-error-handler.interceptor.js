@@ -4,6 +4,8 @@ import {
   ServerNetworkError,
   ServerNotFoundError,
 } from '../../../../exceptions';
+import { signOutAction } from '../../../../reducers/user-auth-reducer/user-auth.actions';
+import store from '../../../../reducers/store';
 
 const createNetworkErrorHandlerInterceptor = (axiosInstance) => {
   const _serverResponded = (error) => {
@@ -21,7 +23,9 @@ const createNetworkErrorHandlerInterceptor = (axiosInstance) => {
       let exception;
       if (_serverResponded(error)) {
         const statusCode = _.get(error, 'response.status');
-        if (_serverSideError(statusCode)) {
+        if (statusCode === 401) {
+          store.dispatch(signOutAction());
+        } else if (_serverSideError(statusCode)) {
           exception = new ServerNetworkError(statusCode, error.response.data);
         } else if (_clientSideError(statusCode)) {
           exception = new ClientNetworkError(statusCode, error.response.data);

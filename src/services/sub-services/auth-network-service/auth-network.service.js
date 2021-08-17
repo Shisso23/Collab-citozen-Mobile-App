@@ -19,9 +19,10 @@ const authNetworkService = ax.create({
 });
 
 const refreshTokenLogic = () => {
-  const _tryToRefreshToken = (refreshOAuthData) => {
+  const _tryToRefreshToken = async (refreshOAuthData) => {
     const tokenUrl = userAuthUrls.tokenUrl();
-    return ax.post(tokenUrl, refreshOAuthData);
+    const result = await ax.post(tokenUrl, refreshOAuthData);
+    return result;
   };
 
   const _storeNewTokens = (apiResponse) => {
