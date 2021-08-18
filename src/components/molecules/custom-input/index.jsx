@@ -27,8 +27,9 @@ const CustomInput = (props) => {
 
 const styles = StyleSheet.create({
   inputContainer: {
+    borderBottomWidth: 0,
     borderColor: Colors.primary,
-    borderWidth: 0.5,
+    borderWidth: 0,
     elevation: 2,
     shadowColor: Colors.black,
     shadowOffset: {

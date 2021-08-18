@@ -10,6 +10,7 @@ import {
   registerPasswordSchema,
   confirmPasswordSchema,
   termsAndConditionsSchema,
+  saIdNumberSchema,
 } from '../form-validaton-schemas';
 import CustomInput from '../../molecules/custom-input';
 import { getFormError } from '../form-utils';
@@ -26,7 +27,7 @@ const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
     lastName: Yup.string().required('Surname is required'),
     mobileNumber: phoneSchema,
     telNumber: phoneSchema,
-    idNumber: Yup.number().required('ID Number is required'),
+    idNumber: saIdNumberSchema,
     password: registerPasswordSchema(edit),
     confirmPassword: confirmPasswordSchema(edit),
     termsAndConditions: termsAndConditionsSchema(edit),
@@ -68,6 +69,7 @@ const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
         setFieldValue,
       }) => {
         const error = (name) => getFormError(name, { touched, status, errors });
+
         return (
           <>
             <CustomInput
