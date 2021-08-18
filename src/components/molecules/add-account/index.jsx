@@ -23,7 +23,7 @@ const AddAccounts = ({ selectedChannel }) => {
   const navigation = useNavigation();
 
   const handleSubmit = () => {
-    if (accountNumber === null || `${accountNumber}`.length < 1) {
+    if (!accountNumber || `${accountNumber}`.length < 1) {
       return setAccountNumberError(true);
     }
     return dispatch(accountActions.validateAccountAction(accountNumber, channelId))
