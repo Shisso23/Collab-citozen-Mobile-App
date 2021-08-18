@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { StyleSheet, Dimensions, View } from 'react-native';
+import { StyleSheet, Dimensions, SafeAreaView } from 'react-native';
 import Pdf from 'react-native-pdf';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
@@ -14,7 +14,7 @@ const AccountStatement = ({ statement }) => {
   const source = useMemo(() => _.get(statement, 'statementPdf', {}), []);
 
   return (
-    <View style={[Layout.fill, Layout.alignItemsCenter, Layout.justifyContentFlexStart]}>
+    <SafeAreaView style={[Layout.fill, Layout.alignItemsCenter, Layout.justifyContentFlexStart]}>
       <Pdf
         source={source}
         onError={(error) => {
@@ -22,16 +22,19 @@ const AccountStatement = ({ statement }) => {
         }}
         activityIndicator={<LoadingComponent style={styles.loadingComponent} size="small" />}
         style={[Layout.fill, styles.pdf]}
+        fitPolicy={1}
+        scrollIndicatorInsets={{ right: 0 }}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   loadingComponent: { height: 30, width: 30 },
   pdf: {
-    height: Dimensions.get('window').height,
-    width: Dimensions.get('window').width,
+    alignSelf: 'flex-start',
+    height: Dimensions.get('screen').height,
+    width: Dimensions.get('screen').width,
   },
 });
 

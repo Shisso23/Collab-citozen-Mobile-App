@@ -11,10 +11,10 @@ import {
   setIsLoadingValidateAccountAction,
 } from './accounts.reducer';
 
-export const getChannelsWithValidAccountsAction = () => (dispatch) => {
+export const getChannelsWithValidAccountsAction = (userData) => (dispatch) => {
   dispatch(setIsLoadingAccountChannelsAction(true));
   return accountsService
-    .getChannelsWithValidAccounts()
+    .getChannelsWithValidAccounts(userData)
     .then((channels) => {
       dispatch(setAccountChannelsAction(channels));
       return channels;

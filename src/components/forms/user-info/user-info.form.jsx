@@ -1,28 +1,32 @@
 import React from 'react';
+import { StyleSheet } from 'react-native';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { TextInput, HelperText } from 'react-native-paper';
+import { Button } from 'react-native-elements';
 import {
-  emailSchema,
   phoneSchema,
   registerPasswordSchema,
   confirmPasswordSchema,
   termsAndConditionsSchema,
 } from '../form-validaton-schemas';
+import CustomInput from '../../molecules/custom-input';
 import { getFormError } from '../form-utils';
 import { TermsAndConditions } from '../../atoms';
 import { flashService } from '../../../services';
 import useTheme from '../../../theme/hooks/useTheme';
+import { Colors } from '../../../theme/Variables';
 
 const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
-  const { Common } = useTheme();
+  const { Gutters } = useTheme();
   const validationSchema = Yup.object().shape({
-    email: emailSchema,
+    email: Yup.string().email('Invalid Email').trim(),
     firstName: Yup.string().required('First Name is required'),
     lastName: Yup.string().required('Surname is required'),
     mobileNumber: phoneSchema,
+    telNumber: phoneSchema,
+    idNumber: Yup.number().required('ID Number is required'),
     password: registerPasswordSchema(edit),
     confirmPassword: confirmPasswordSchema(edit),
     termsAndConditions: termsAndConditionsSchema(edit),
@@ -52,57 +56,66 @@ const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
       validationSchema={validationSchema}
       enableReinitialize
     >
-      {({ handleChange, values, errors, handleBlur, touched, status, setFieldValue }) => {
+      {({
+        handleChange,
+        handleSubmit,
+        isSubmitting,
+        values,
+        errors,
+        handleBlur,
+        touched,
+        status,
+        setFieldValue,
+      }) => {
         const error = (name) => getFormError(name, { touched, status, errors });
         return (
           <>
-            <TextInput
+            <CustomInput
               value={values.firstName}
               onChangeText={handleChange('firstName')}
               onBlur={handleBlur('firstName')}
               label="First Name"
-              disabled={true}
-              style={[Common.textInputWithShadow]}
+              errorMessage={error('firstName')}
             />
-            <HelperText style={[Common.errorStyle]} type={'error'} visible={error('firstName')}>
-              {error('firstName')}
-            </HelperText>
-            <TextInput
+            <CustomInput
               value={values.lastName}
               onChangeText={handleChange('lastName')}
               onBlur={handleBlur('lastName')}
               label="Surname"
-              disabled={true}
-              style={[Common.textInputWithShadow]}
+              errorMessage={error('lastName')}
             />
-            <HelperText style={[Common.errorStyle]} type={'error'} visible={error('lastName')}>
-              {error('lastName')}
-            </HelperText>
-            <TextInput
+            <CustomInput
               value={values.mobileNumber}
               onChangeText={handleChange('mobileNumber')}
               onBlur={handleBlur('mobileNumber')}
               label="Number"
-              disabled={true}
-              style={[Common.textInputWithShadow]}
+              errorMessage={error('mobileNumber')}
             />
-            <HelperText style={[Common.errorStyle]} type={'error'} visible={error('mobileNumber')}>
-              {error('mobileNumber')}
-            </HelperText>
-            <TextInput
+            <CustomInput
+              value={values.telNumber}
+              onChangeText={handleChange('telNumber')}
+              onBlur={handleBlur('telNumber')}
+              label="Tel. Number"
+              errorMessage={error('telNumber')}
+            />
+            <CustomInput
+              value={values.idNumber}
+              onChangeText={handleChange('idNumber')}
+              onBlur={handleBlur('idNumber')}
+              label="ID Number"
+              errorMessage={error('idNumber')}
+            />
+            <CustomInput
               value={values.email}
               onChangeText={handleChange('email')}
               onBlur={handleBlur('email')}
               label="Email"
-              disabled={true}
-              style={[Common.textInputWithShadow]}
+              disabled
+              errorMessage={error('email')}
             />
-            <HelperText style={[Common.errorStyle]} type={'error'} visible={error('email')}>
-              {error('email')}
-            </HelperText>
             {!edit && (
               <>
-                <TextInput
+                <CustomInput
                   value={values.password}
                   onChangeText={handleChange('password')}
                   label="Password"
@@ -110,7 +123,7 @@ const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
                   onBlur={handleBlur('password')}
                   errorMessage={error('password')}
                 />
-                <TextInput
+                <CustomInput
                   value={values.confirmPassword}
                   onChangeText={handleChange('confirmPassword')}
                   label="Confirm Password"
@@ -126,12 +139,22 @@ const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
                 onPress={() => setFieldValue('termsAndConditions', !values.termsAndConditions)}
               />
             )}
+            <Button
+              title="Update"
+              onPress={handleSubmit}
+              loading={isSubmitting}
+              containerStyle={[styles.button, Gutters.regularTMargin]}
+            />
           </>
         );
       }}
     </Formik>
   );
 };
+
+const styles = StyleSheet.create({
+  button: { backgroundColor: Colors.softBlue },
+});
 
 UserInfoForm.propTypes = {
   submitForm: PropTypes.func.isRequired,

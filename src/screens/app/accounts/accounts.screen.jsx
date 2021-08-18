@@ -23,7 +23,7 @@ const AccountsScreen = () => {
   const navigation = useNavigation();
 
   const _loadMyChannels = () => {
-    dispatch(accountActions.getChannelsWithValidAccountsAction());
+    dispatch(accountActions.getChannelsWithValidAccountsAction(user));
   };
 
   useFocusEffect(

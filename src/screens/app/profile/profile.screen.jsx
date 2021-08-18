@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Text } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { UserInfoForm } from '../../../components/forms';
 import { userService } from '../../../services';
 import useTheme from '../../../theme/hooks/useTheme';
@@ -8,7 +9,10 @@ import FormScreenContainer from '../../../components/containers/form-screen-cont
 
 const ProfileScreen = () => {
   const { user } = useSelector((reducers) => reducers.userReducer);
-  const _onFormSuccess = () => {};
+  const navigation = useNavigation();
+  const _onFormSuccess = () => {
+    navigation.navigate('Home');
+  };
   const { Gutters, Fonts } = useTheme();
 
   return (

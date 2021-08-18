@@ -6,11 +6,27 @@ export const apiFunctionWithUniqName = async (functionName) => {
   };
 };
 
+export const dataGetAccounts = async (functionName, data) => {
+  return {
+    taskID: 0,
+    uniqName: `${functionName}`,
+    InputValues: `<valRoot><val>${data.firstName}</val><val>${data.lastName}</val><val>${data.idNumber}</val><val>${data.telNumber}</val><val>${data.mobileNumber}</val></valRoot>`,
+  };
+};
+
 export const dataValidateAccount = async ({ channelId, accountNumber }) => {
   return {
     taskID: 0,
     uniqName: 'validate_account_no',
     InputValues: `<valRoot><val>${accountNumber}</val><val>${channelId}</val></valRoot>`,
+  };
+};
+
+export const dataUpdateUserProfile = async (functionName, data) => {
+  return {
+    taskID: 0,
+    uniqName: `${functionName}`,
+    InputValues: `<valRoot><val>${data.name}</val><val>${data.lastName}</val><val>${data.idNumber}</val><val>${data.telNumber}</val><val>${data.mobileNumber}</val></valRoot>`,
   };
 };
 
