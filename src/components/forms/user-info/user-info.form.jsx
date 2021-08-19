@@ -12,6 +12,7 @@ import {
   confirmPasswordSchema,
   termsAndConditionsSchema,
   saIdNumberSchema,
+  telNumberSchema,
 } from '../form-validaton-schemas';
 import CustomInput from '../../molecules/custom-input';
 import { getFormError } from '../form-utils';
@@ -27,7 +28,7 @@ const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
     firstName: Yup.string().required('First Name is required'),
     lastName: Yup.string().required('Surname is required'),
     mobileNumber: phoneSchema,
-    telNumber: phoneSchema,
+    telNumber: telNumberSchema,
     idNumber: saIdNumberSchema,
     password: registerPasswordSchema(edit),
     confirmPassword: confirmPasswordSchema(edit),
@@ -91,14 +92,14 @@ const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
               value={values.mobileNumber}
               onChangeText={handleChange('mobileNumber')}
               onBlur={handleBlur('mobileNumber')}
-              label="Number"
+              label="Mobile Number"
               errorMessage={error('mobileNumber')}
             />
             <CustomInput
               value={values.telNumber}
               onChangeText={handleChange('telNumber')}
               onBlur={handleBlur('telNumber')}
-              label="Tel. Number"
+              label="Telephone Number"
               errorMessage={error('telNumber')}
             />
             <CustomInput
@@ -143,10 +144,11 @@ const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
               />
             )}
             <Button
-              title="Update"
+              title="UPDATE"
               onPress={handleSubmit}
               loading={isSubmitting}
               buttonStyle={styles.button}
+              titleStyle={styles.titleStyle}
               containerStyle={[styles.button, Gutters.regularVMargin]}
             />
           </>
@@ -157,7 +159,8 @@ const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
 };
 
 const styles = StyleSheet.create({
-  button: { backgroundColor: Colors.softBlue, borderRadius: 15 },
+  button: { backgroundColor: Colors.secondary, borderRadius: 10 },
+  titleStyle: { fontSize: 19 },
 });
 
 UserInfoForm.propTypes = {

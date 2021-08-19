@@ -9,6 +9,10 @@ export const passwordSchema = Yup.string().required('Password is required');
 export const phoneSchema = Yup.string()
   .matches(/^(\+27|0|27)[6-8][0-9]{8}$/, 'Error: Invalid mobile number')
   .required('Mobile number is required');
+export const telNumberSchema = Yup.string().matches(
+  /^(\+27|0|27)[1-8][0-9]{8}$/,
+  'Error: Invalid telephone number',
+);
 
 export const saIdNumberSchema = Yup.string()
   .matches(IdExpression, 'Error: Invalid ID Number')
