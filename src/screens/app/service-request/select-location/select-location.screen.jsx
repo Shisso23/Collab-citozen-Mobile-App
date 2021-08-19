@@ -28,6 +28,7 @@ import {
 import appConfig from '../../../../config';
 import { getMunicipalitiesAction } from '../../../../reducers/municipalities-reducer/municipalities.actions';
 import { getUnsubscribedChannelsByLocationAction } from '../../../../reducers/unsubscribed-channels/unsubscribed-channels.actions';
+import { flashService } from '../../../../services';
 
 const { width } = Dimensions.get('window');
 
@@ -75,11 +76,16 @@ const SelectLocationScreen = () => {
       dispatch(
         getUnsubscribedChannelsByLocationAction(regionChange.longitude, regionChange.latitude),
       );
-      navigation.navigate('SubscribeToChannels');
-    } else {
-      dispatch(getMunicipalitiesAction(regionChange.longitude, regionChange.latitude));
-      navigation.navigate('CreateServiceRequest');
+      return navigation.navigate('SubscribeToChannels');
     }
+    return dispatch(getMunicipalitiesAction(regionChange.longitude, regionChange.latitude)).then(
+      (channels) => {
+        if (channels.length === 0 || Object.keys(channels).length === 0) {
+          return flashService.info('There are no municipalities at this location!');
+        }
+        return navigation.navigate('CreateServiceRequest');
+      },
+    );
   };
 
   const _setRegion = (newRegion) => {
