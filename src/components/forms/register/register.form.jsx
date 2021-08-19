@@ -26,7 +26,7 @@ const RegisterForm = ({ edit, submitForm, onSuccess, initialValues, containerSty
   const [isConfirmPasswordHidden, setIsConfirmPasswordHidden] = useState(true);
 
   const validationSchema = Yup.object().shape({
-    email: emailSchema,
+    email: emailSchema.required('Email is required'),
     firstName: firstNameSchema,
     lastName: lastNameSchema,
     mobileNumber: phoneSchema,

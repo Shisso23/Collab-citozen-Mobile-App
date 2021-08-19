@@ -16,7 +16,7 @@ const SignInForm = ({ submitForm, onSuccess, containerStyle, initialValues }) =>
   const [isPasswordHidden, setIsPasswordHidden] = useState(true);
 
   const validationSchema = Yup.object().shape({
-    email: emailSchema,
+    email: emailSchema.required('Email is required'),
     password: passwordSchema,
   });
 

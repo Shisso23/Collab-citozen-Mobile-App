@@ -23,7 +23,7 @@ import { Colors } from '../../../theme/Variables';
 const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
   const { Gutters } = useTheme();
   const validationSchema = Yup.object().shape({
-    email: emailSchema,
+    email: emailSchema.required('Email is required'),
     firstName: Yup.string().required('First Name is required'),
     lastName: Yup.string().required('Surname is required'),
     mobileNumber: phoneSchema,

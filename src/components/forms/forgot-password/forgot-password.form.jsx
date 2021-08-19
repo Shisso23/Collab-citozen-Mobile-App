@@ -15,7 +15,7 @@ import useTheme from '../../../theme/hooks/useTheme';
 const ForgotPasswordForm = ({ submitForm, onSuccess, initialValues, containerStyle }) => {
   const { Common, Gutters, Layout, Colors } = useTheme();
   const validationSchema = Yup.object().shape({
-    email: emailSchema,
+    email: emailSchema.required('Email is required'),
   });
   const _handleSubmission = (formData, actions) => {
     submitForm(formData)
