@@ -88,13 +88,13 @@ const SelectLocationScreen = () => {
     );
   };
 
-  const _setRegion = (newRegion) => {
+  const _setRegion = async (newRegion) => {
     if (
       newRegion.latitude.toFixed(5) !== region.latitude.toFixed(5) &&
       newRegion.longitude.toFixed(5) !== region.latitude.toFixed(5)
     ) {
-      dispatch(getAddressFromRegionAction(newRegion));
-      setAddress(selectedAddress);
+      const addressSelected = await dispatch(getAddressFromRegionAction(newRegion));
+      setAddress(addressSelected);
       setRegionChange(newRegion);
     }
   };

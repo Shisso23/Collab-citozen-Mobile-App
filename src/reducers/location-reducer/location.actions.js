@@ -38,7 +38,9 @@ export const getAddressFromRegionAction = (newRegion) => async (dispatch) => {
   try {
     const address = await locationService.getAddressFromCoordinates(newRegion);
     dispatch(setSelectedAddressAction(address));
+    return address;
   } catch (err) {
     flashService.error(err.message);
+    return null;
   }
 };
