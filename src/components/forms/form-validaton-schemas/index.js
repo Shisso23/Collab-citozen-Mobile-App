@@ -2,8 +2,7 @@ import * as Yup from 'yup';
 
 export const firstNameSchema = Yup.string().required('First Name is required');
 export const lastNameSchema = Yup.string().required('Surname is required');
-const IdExpression =
-  /[1-9][0-9](([0][1-9])|([1][0-2]))(([0-2][0-9])|([3][0-1]))[0-9][0-9][0-9][0-9][0-2]\d{2}/;
+const IdExpression = /[1-9]\d(([0][1-9])|([1][0-2]))(([0-2]\d)|([3][0-1]))\d{4}[0-2]\d{2}/;
 
 export const emailSchema = Yup.string().email('Invalid Email').trim().required('Email is required');
 export const passwordSchema = Yup.string().required('Password is required');
