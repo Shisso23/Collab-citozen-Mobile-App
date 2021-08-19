@@ -6,6 +6,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Button } from 'react-native-elements';
 import {
+  emailSchema,
   phoneSchema,
   registerPasswordSchema,
   confirmPasswordSchema,
@@ -22,7 +23,7 @@ import { Colors } from '../../../theme/Variables';
 const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
   const { Gutters } = useTheme();
   const validationSchema = Yup.object().shape({
-    email: Yup.string().email('Invalid Email').trim(),
+    email: emailSchema,
     firstName: Yup.string().required('First Name is required'),
     lastName: Yup.string().required('Surname is required'),
     mobileNumber: phoneSchema,
@@ -145,7 +146,8 @@ const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
               title="Update"
               onPress={handleSubmit}
               loading={isSubmitting}
-              containerStyle={[styles.button, Gutters.regularTMargin]}
+              buttonStyle={styles.button}
+              containerStyle={[styles.button, Gutters.regularVMargin]}
             />
           </>
         );
@@ -155,7 +157,7 @@ const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
 };
 
 const styles = StyleSheet.create({
-  button: { backgroundColor: Colors.softBlue },
+  button: { backgroundColor: Colors.softBlue, borderRadius: 15 },
 });
 
 UserInfoForm.propTypes = {

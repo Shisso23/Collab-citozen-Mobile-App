@@ -4,7 +4,7 @@ export const firstNameSchema = Yup.string().required('First Name is required');
 export const lastNameSchema = Yup.string().required('Surname is required');
 const IdExpression = /[1-9]\d(([0][1-9])|([1][0-2]))(([0-2]\d)|([3][0-1]))\d{4}[0-2]\d{2}/;
 
-export const emailSchema = Yup.string().email('Invalid Email').trim().required('Email is required');
+export const emailSchema = Yup.string().email('Invalid Email').trim();
 export const passwordSchema = Yup.string().required('Password is required');
 export const phoneSchema = Yup.string()
   .matches(/^(\+27|0|27)[6-8][0-9]{8}$/, 'Error: Invalid mobile number')
@@ -13,7 +13,7 @@ export const phoneSchema = Yup.string()
 export const saIdNumberSchema = Yup.string()
   .matches(IdExpression, 'Error: Invalid ID Number')
   .length(13)
-  .notRequired('Invalid id number');
+  .notRequired('Invalid ID Number');
 
 export const selectChannelSchema = Yup.string().required('Channel is required');
 export const selectServiceTypeCategorySchema = Yup.string().required(
