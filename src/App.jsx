@@ -2,27 +2,34 @@ import React, { useEffect } from 'react';
 import { LogBox } from 'react-native';
 import messaging from '@react-native-firebase/messaging';
 import PushNotification from 'react-native-push-notification';
+import DeviceInfo from 'react-native-device-info';
 
 import { useDispatch } from 'react-redux';
 import NavigationContainer from './navigation/root.navigator';
 import { initAppAction } from './reducers/app-reducer/app.actions';
-import { firebaseService } from './services';
+import { firebaseService, firebaseNotificationService } from './services';
 
 const App = () => {
   const dispatch = useDispatch();
+  const deviceId = DeviceInfo.getDeviceId();
 
   const requestPermission = async () => {
     await messaging().requestPermission();
-    await firebaseService.getAndSetToken();
+    const token = await firebaseService.getAndSetToken();
+    firebaseNotificationService.updateNotificationToken(token, deviceId);
+    return token;
   };
 
   const checkPermission = async () => {
     const enabled = await messaging().hasPermission();
     if (enabled === 1) {
-      await firebaseService.getAndSetToken();
-    } else {
-      requestPermission();
+      const token = await firebaseService.getAndSetToken();
+      firebaseNotificationService.updateNotificationToken(token, deviceId);
+      return token;
     }
+    const token = await requestPermission();
+    firebaseNotificationService.updateNotificationToken(token, deviceId);
+    return token;
   };
 
   const createNotificationListeners = async () => {

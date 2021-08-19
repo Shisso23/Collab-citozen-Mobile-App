@@ -14,6 +14,14 @@ export const dataGetAccounts = async (functionName, data) => {
   };
 };
 
+export const dataUpdateNotificationToken = async (token, deviceID) => {
+  return {
+    taskID: 0,
+    uniqName: 'update_notification_token',
+    InputValues: `<valRoot><val>${token}</val><val>${deviceID}</val></valRoot>`,
+  };
+};
+
 export const dataValidateAccount = async ({ channelId, accountNumber }) => {
   return {
     taskID: 0,
