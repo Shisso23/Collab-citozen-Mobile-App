@@ -7,4 +7,5 @@ export const getMunicipalitiesAction = (longitude, latitude) => async (dispatch)
     latitude,
   );
   dispatch(setMunicipalitiesAction(channles));
+  return channles;
 };
