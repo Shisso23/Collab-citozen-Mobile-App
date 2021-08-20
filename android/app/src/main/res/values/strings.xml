@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">collaboratorapp</string>
+     <string moduleConfig="true" name="CodePushDeploymentKey">tnk-c3Nzt2uCEAszOk19O71MCTwKrORJOsF02</string>
 </resources>

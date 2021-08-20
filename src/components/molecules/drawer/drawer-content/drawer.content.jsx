@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { Text, Drawer, Divider } from 'react-native-paper';
@@ -7,6 +7,7 @@ import { DrawerContentScrollView } from '@react-navigation/drawer';
 import { useSelector, useDispatch } from 'react-redux';
 import { Avatar } from 'react-native-elements';
 import DeviceInfo from 'react-native-device-info';
+import codePush from 'react-native-code-push';
 
 import { signOutAction } from '../../../../reducers/user-auth-reducer/user-auth.actions';
 import useTheme from '../../../../theme/hooks/useTheme';
@@ -20,12 +21,22 @@ const theme = {
 const DrawerContent = (props) => {
   const { navigation } = props;
   const { user } = useSelector((reducers) => reducers.userReducer);
+  const [codePushVersion, setCodePushVersion] = useState();
   const avatarUrl = { uri: _.get(user, 'avatar', '') };
   const dispatch = useDispatch();
   const { Fonts, Gutters, Layout, Common } = useTheme();
   const _signOut = () => {
     dispatch(signOutAction());
   };
+
+  const getAppCenterCodeVersion = () => {
+    codePush.getCurrentPackage().then((update) => {
+      setCodePushVersion(_.get(update, 'label', 'v0'));
+    });
+  };
+  useEffect(() => {
+    getAppCenterCodeVersion();
+  }, []);
 
   return (
     <View style={[Layout.fill]}>
@@ -79,6 +90,9 @@ const DrawerContent = (props) => {
       <View style={styles.versionContainer}>
         <Text style={[Colors.gray]}>Version </Text>
         <Text style={[Colors.gray]}>{DeviceInfo.getVersion()}</Text>
+        <Text
+          style={[styles.smallText, Gutters.smallLPadding]}
+        >{`Code Version ${codePushVersion}`}</Text>
       </View>
     </View>
   );
@@ -89,6 +103,10 @@ DrawerContent.propTypes = {
 };
 
 const styles = StyleSheet.create({
+  smallText: {
+    color: Colors.black,
+    fontSize: 12,
+  },
   versionContainer: {
     alignItems: 'center',
     flexDirection: 'row',

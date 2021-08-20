@@ -73,6 +73,8 @@
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>BootSplash</string>
+	<key>CodePushDeploymentKey</key>
+	<string>r2wJf6935aebwBFq1E4ChbyVlxTNzltogf4P0</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>

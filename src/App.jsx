@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { LogBox } from 'react-native';
+import { LogBox, Alert, Platform } from 'react-native';
 import messaging from '@react-native-firebase/messaging';
 import PushNotification from 'react-native-push-notification';
 import DeviceInfo from 'react-native-device-info';
+import codePush from 'react-native-code-push';
 
 import { useDispatch, useSelector } from 'react-redux';
 import NavigationContainer from './navigation/root.navigator';
 import { initAppAction } from './reducers/app-reducer/app.actions';
 import { firebaseService, firebaseNotificationService } from './services';
+import config from './config';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -42,6 +44,37 @@ const App = () => {
     });
   };
 
+  const loadAppCenter = () => {
+    const deploymentKey =
+      Platform.OS === 'ios'
+        ? config.appEnvironment === 'production'
+          ? config.appCenterIos
+          : config.appCenterIosStaging
+        : config.appEnvironment === 'production'
+        ? config.appCenterAndroid
+        : config.appCenterAndroidStaging;
+    console.log({ deploymentKey });
+
+    codePush
+      .sync(
+        {
+          deploymentKey,
+          updateDialog: true,
+          installMode: codePush.InstallMode.IMMEDIATE,
+        },
+        (status) => {
+          switch (status) {
+            case codePush.SyncStatus.DOWNLOADING_PACKAGE:
+              Alert.alert('Downloading new update');
+              break;
+            default:
+              break;
+          }
+        },
+      )
+      .then();
+  };
+
   useEffect(() => {
     if (isAuthenticated && messagingEnabled) {
       firebaseNotificationService.updateNotificationToken(fcmToken, deviceId);
@@ -55,6 +88,7 @@ const App = () => {
       'VirtualizedLists should never be nested',
       'Usage of "messaging().registerDeviceForRemoteMessages()" is not required.',
     ]);
+    loadAppCenter();
     messaging()
       .registerDeviceForRemoteMessages()
       .then(() => {
@@ -73,5 +107,4 @@ const App = () => {
 
   return <NavigationContainer />;
 };
-
 export default App;
