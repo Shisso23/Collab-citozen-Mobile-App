@@ -1,7 +1,8 @@
 import React, { useState, useMemo } from 'react';
+import { StyleSheet, Keyboard } from 'react-native';
 import { TextInput, Button, Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
-import { StyleSheet } from 'react-native';
+
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 
@@ -10,6 +11,7 @@ import useTheme from '../../../theme/hooks/useTheme';
 import { accountsSelector } from '../../../reducers/accounts-reducer/accounts.reducer';
 import { accountActions } from '../../../reducers/accounts-reducer';
 import flashService from '../../../services/sub-services/flash-service/flash.service';
+import FormScreenContainer from '../../containers/form-screen-container/form-screen.container';
 
 const AddAccounts = ({ selectedChannel }) => {
   const dispatch = useDispatch();
@@ -52,7 +54,9 @@ const AddAccounts = ({ selectedChannel }) => {
   };
 
   return (
-    <>
+    <FormScreenContainer
+      contentContainerStyle={[Layout.fill, Gutters.largeBMargin, Gutters.largeBPadding]}
+    >
       <TextInput
         label="Account Number"
         style={[Common.textInput, styles.accountInput]}
@@ -60,11 +64,10 @@ const AddAccounts = ({ selectedChannel }) => {
         value={accountNumber}
         error={accountNumberError}
         multiline={false}
+        onSubmitEditing={() => Keyboard.dismiss()}
       />
       {accountNumberError && (
-        <Text style={[Gutters.smallMargin, Common.errorStyle]}>
-          Account. No. Should be of length 10
-        </Text>
+        <Text style={[Gutters.smallMargin, Common.errorStyle]}>Invalid account number</Text>
       )}
 
       <Button
@@ -74,6 +77,7 @@ const AddAccounts = ({ selectedChannel }) => {
           Gutters.tinyVPadding,
           Layout.alignSelfCenter,
           Gutters.largeHPadding,
+          Gutters.largeBMargin,
           styles.submitBUtton,
         ]}
         onPress={handleSubmit}
@@ -82,7 +86,7 @@ const AddAccounts = ({ selectedChannel }) => {
       >
         Verify
       </Button>
-    </>
+    </FormScreenContainer>
   );
 };
 
@@ -97,7 +101,7 @@ const styles = StyleSheet.create({
     marginHorizontal: '3.5%',
   },
   submitBUtton: {
-    bottom: 0,
+    bottom: 15,
     position: 'absolute',
   },
 });
