@@ -1,6 +1,6 @@
 import React, { createRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { View } from 'react-native';
+import { View, Keyboard } from 'react-native';
 import { Text } from 'react-native-elements';
 import ActionSheet from 'react-native-actions-sheet';
 import { Button } from 'react-native-paper';
@@ -20,7 +20,10 @@ const UploadDocumentButton = ({ onImageSelect, errorMessage, title, style, disab
   const [imageSource, setImageSource] = useState({});
   const { isLoadingServiceRequests } = useSelector(serviceRequestSelector);
 
-  const openActionSheet = () => actionSheetRef.current.setModalVisible(true);
+  const openActionSheet = () => {
+    Keyboard.dismiss();
+    return actionSheetRef.current.setModalVisible(true);
+  };
   const closeActionSheet = () => actionSheetRef.current.setModalVisible(false);
 
   const _updateFormData = (selectedImage) => {
