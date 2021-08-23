@@ -16,7 +16,7 @@ const AddAccounts = ({ selectedChannel }) => {
   const { isLoadingAddAccount, isLoadingValidateAccount } = useSelector(accountsSelector);
   const { user } = useSelector((reducer) => reducer.userReducer);
   const userId = useMemo(() => _.get(user, 'user_id', ''), []);
-  const { Common, Gutters, Colors, Layout } = useTheme();
+  const { Common, Gutters, Layout } = useTheme();
   const [accountNumber, setAccountNumber] = useState(null);
   const channelId = useMemo(() => _.get(selectedChannel, 'objId', ''), []);
   const [accountNumberError, setAccountNumberError] = useState(false);
@@ -74,7 +74,6 @@ const AddAccounts = ({ selectedChannel }) => {
           Gutters.tinyVPadding,
           Layout.alignSelfCenter,
           Gutters.largeHPadding,
-          { backgroundColor: Colors.secondary },
           styles.submitBUtton,
         ]}
         onPress={handleSubmit}

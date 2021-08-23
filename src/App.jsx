@@ -53,7 +53,6 @@ const App = () => {
         : config.appEnvironment === 'production'
         ? config.appCenterAndroid
         : config.appCenterAndroidStaging;
-    console.log({ deploymentKey });
 
     codePush
       .sync(

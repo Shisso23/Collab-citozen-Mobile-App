@@ -1,10 +1,9 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { Button } from 'react-native-elements';
+import { Button } from 'react-native-paper';
 import {
   emailSchema,
   phoneSchema,
@@ -19,10 +18,9 @@ import { getFormError } from '../form-utils';
 import { TermsAndConditions } from '../../atoms';
 import { flashService } from '../../../services';
 import useTheme from '../../../theme/hooks/useTheme';
-import { Colors } from '../../../theme/Variables';
 
 const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
-  const { Gutters } = useTheme();
+  const { Gutters, Layout } = useTheme();
   const validationSchema = Yup.object().shape({
     email: emailSchema,
     firstName: Yup.string().required('First Name is required'),
@@ -144,24 +142,20 @@ const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
               />
             )}
             <Button
-              title="UPDATE"
+              mode="contained"
+              style={[Layout.fill, Gutters.tinyLMargin]}
               onPress={handleSubmit}
               loading={isSubmitting}
-              buttonStyle={styles.button}
-              titleStyle={styles.titleStyle}
-              containerStyle={[styles.button, Gutters.regularVMargin]}
-            />
+              disabled={isSubmitting}
+            >
+              UPDATE
+            </Button>
           </>
         );
       }}
     </Formik>
   );
 };
-
-const styles = StyleSheet.create({
-  button: { backgroundColor: Colors.secondary, borderRadius: 10 },
-  titleStyle: { fontSize: 19 },
-});
 
 UserInfoForm.propTypes = {
   submitForm: PropTypes.func.isRequired,

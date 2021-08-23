@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Text } from 'react-native';
+import { Text, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { UserInfoForm } from '../../../components/forms';
 import { userService } from '../../../services';
@@ -16,7 +16,7 @@ const ProfileScreen = () => {
   const { Gutters, Fonts } = useTheme();
 
   return (
-    <FormScreenContainer contentContainerStyle={[Gutters.smallHMargin]}>
+    <FormScreenContainer contentContainerStyle={[Gutters.smallHMargin, styles.container]}>
       <Text style={[Gutters.smallVMargin, Fonts.titleTiny]}>Profile</Text>
       <UserInfoForm
         edit
@@ -31,5 +31,9 @@ const ProfileScreen = () => {
 ProfileScreen.propTypes = {};
 
 ProfileScreen.defaultProps = {};
+
+const styles = StyleSheet.create({
+  container: { paddingBottom: 100 },
+});
 
 export default ProfileScreen;

@@ -1,43 +1,32 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import { Input } from 'react-native-elements';
+import { HelperText, TextInput } from 'react-native-paper';
 import _ from 'lodash';
 
 import useTheme from '../../../theme/hooks/useTheme';
-import { Colors } from '../../../theme/Variables';
 
 const CustomInput = (props) => {
-  const { Layout, Common, Gutters } = useTheme();
+  const { Common } = useTheme();
 
   return (
-    <Input
-      labelStyle={styles.label}
-      inputContainerStyle={[
-        Common.textInputWithShadow,
-        Gutters.smallLPadding,
-        Layout.alignItemsStart,
-        { height: _.get(props, 'height', 60) },
-        styles.inputContainer,
-      ]}
-      inputStyle={[styles.inputStyle, { height: _.get(props, 'height', 60) }]}
-      {...props}
-    />
+    <>
+      <TextInput
+        labelStyle={styles.label}
+        inputStyle={[styles.inputStyle, { height: _.get(props, 'height', 60) }]}
+        {...props}
+      />
+      <HelperText
+        style={[Common.errorStyle]}
+        type="error"
+        visible={_.get(props, 'errorMessage', '')}
+      >
+        {_.get(props, 'errorMessage', '')}
+      </HelperText>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
-  inputContainer: {
-    borderBottomWidth: 0.3,
-    borderWidth: 0.3,
-    elevation: 2,
-    shadowColor: Colors.black,
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
   inputStyle: { height: '100%' },
   label: {
     fontWeight: '500',
