@@ -25,17 +25,25 @@ export const createServiceRequestAction =
       .createServiceRequest(newServiceRequestForm, user)
       .then(async (response) => {
         const objID = _.get(response.data.Data, 'ObjID');
-        const fileAttachment = _.get(newServiceRequestForm, 'imageUri');
-        if (fileAttachment) {
-          await _dispatch(uploadServiceRequestImage(objID, fileAttachment));
+        const fileAttachments = _.get(newServiceRequestForm, 'images');
+        if (fileAttachments) {
+          await _dispatch(uploadServiceRequestImages(objID, fileAttachments));
         }
       });
   };
 
-export const uploadServiceRequestImage = (objId, fileAttachment) => async (dispatch) => {
-  dispatch(setIsLoadingServiceRequestsAction(true));
-  await serviceRequestService
-    .uploadServiceRequestPhoto(objId, fileAttachment)
-    .then(() => dispatch(getServiceRequestsAction()))
-    .finally(() => dispatch(setIsLoadingServiceRequestsAction(false)));
+export const uploadServiceRequestImages = (objId, fileAttachments) => async (dispatch) => {
+  try {
+    dispatch(setIsLoadingServiceRequestsAction(true));
+    await fileAttachments.forEach(async (attachment) => {
+      await serviceRequestService
+        .uploadServiceRequestPhoto(objId, attachment)
+        .then(() => dispatch(getServiceRequestsAction()));
+    });
+    flashService.success('Upload completed successfully');
+  } catch (error) {
+    flashService.error('Upload did not complete!');
+  } finally {
+    dispatch(setIsLoadingServiceRequestsAction(false));
+  }
 };

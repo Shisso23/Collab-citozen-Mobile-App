@@ -9,7 +9,7 @@ export const createServiceRequestModel = (_initialValues = {}) => ({
   serviceType: _.get(_initialValues, 'serviceType', null),
   description: _.get(_initialValues, 'description', ''),
   location: _.get(_initialValues, 'location', null),
-  imageUri: _.get(_initialValues, 'imageUri', ''),
+  images: _.get(_initialValues, 'images', ''),
   municipalityCode: _.get(_initialValues, 'municipalityCode', ''),
   address: _.get(_initialValues, 'address', ''),
   channelRef: _.get(_initialValues, 'channelRef', ''),

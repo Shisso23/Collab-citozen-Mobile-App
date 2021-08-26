@@ -26,7 +26,7 @@ const uploadServiceRequestPhoto = async (objId, photo) => {
   try {
     const authToken = await storageService.getAccessToken();
     const path = Platform.OS === 'ios' ? photo.uri.replace('file://', '') : photo.uri;
-    await RNFetchBlob.fetch(
+    const response = await RNFetchBlob.fetch(
       'POST',
       `${fileUploadUrl}`,
       {
@@ -41,9 +41,8 @@ const uploadServiceRequestPhoto = async (objId, photo) => {
           data: RNFetchBlob.wrap(path),
         },
       ],
-    )
-      .then(() => flashService.success('Upload completed successfully'))
-      .catch(() => flashService.error('Upload did not complete!'));
+    );
+    return response;
   } catch (err) {
     console.warn(JSON.stringify(err, null, 2));
     throw err;

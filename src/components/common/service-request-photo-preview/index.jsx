@@ -1,20 +1,59 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Modal, Portal } from 'react-native-paper';
-import { Image } from 'react-native-elements';
+import { Icon } from 'react-native-elements';
 import PropTypes from 'prop-types';
-import { ActivityIndicator, Dimensions, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, Dimensions, StyleSheet, View, ImageBackground } from 'react-native';
+import _ from 'lodash';
 import { Colors } from '../../../theme/Variables';
 import { useTheme } from '../../../theme';
 
 const { width, height } = Dimensions.get('window');
 const ServiceRequestPhotoPreview = ({
-  source,
+  sources,
   isVisible,
   onDismiss,
   openActionSheet,
   updateFormData,
+  cancelSelection,
 }) => {
+  const [sourceIndex, setSourceIndex] = useState(0);
   const { Fonts, Common, Layout } = useTheme();
+  const showPreviousImage = () => {
+    if (sourceIndex > 0) {
+      const newIndex = sourceIndex - 1;
+      setSourceIndex(newIndex);
+      setSourceIndex(newIndex);
+    }
+  };
+  const showNextImage = () => {
+    if (sourceIndex < sources.length - 1) {
+      const newIndex = sourceIndex + 1;
+      setSourceIndex(newIndex);
+      setSourceIndex(newIndex);
+    }
+  };
+  const renderNextPrev = () => {
+    return sources.length > 1 ? (
+      <View style={[styles.nextPrev, Layout.rowBetween]}>
+        <Icon
+          name="chevron-left"
+          type="font-awesome"
+          size={35}
+          disabled={sourceIndex === 0}
+          onPress={showPreviousImage}
+        />
+        <Icon
+          name="chevron-right"
+          type="font-awesome"
+          size={35}
+          disabled={sourceIndex === sources.length - 1}
+          onPress={showNextImage}
+        />
+      </View>
+    ) : (
+      <View />
+    );
+  };
   return (
     <>
       <Portal>
@@ -23,11 +62,13 @@ const ServiceRequestPhotoPreview = ({
           onDismiss={onDismiss}
           contentContainerStyle={styles.containerStyle}
         >
-          <Image
-            source={{ uri: source }}
-            style={styles.image}
+          <ImageBackground
+            source={{ uri: _.get(sources[sourceIndex], 'uri', null) }}
+            style={[styles.image, Layout.alignItemsCenter, Layout.justifyContentCenter]}
             PlaceholderContent={<ActivityIndicator />}
-          />
+          >
+            {renderNextPrev()}
+          </ImageBackground>
           <View style={[Layout.rowBetween]}>
             <Button
               mode="outlined"
@@ -40,7 +81,7 @@ const ServiceRequestPhotoPreview = ({
                 onDismiss();
               }}
             >
-              Use Image
+              Use Image{sources.length > 1 ? 's' : ''}
             </Button>
             <Button
               mode="outlined"
@@ -49,6 +90,7 @@ const ServiceRequestPhotoPreview = ({
               style={[styles.button]}
               labelStyle={[Fonts.textRegular, Common.whiteText]}
               onPress={() => {
+                cancelSelection();
                 openActionSheet();
                 onDismiss();
               }}
@@ -63,11 +105,12 @@ const ServiceRequestPhotoPreview = ({
 };
 
 ServiceRequestPhotoPreview.propTypes = {
-  source: PropTypes.string.isRequired,
+  sources: PropTypes.array.isRequired,
   isVisible: PropTypes.bool.isRequired,
   onDismiss: PropTypes.func.isRequired,
   openActionSheet: PropTypes.func.isRequired,
   updateFormData: PropTypes.func.isRequired,
+  cancelSelection: PropTypes.func.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -84,5 +127,6 @@ const styles = StyleSheet.create({
     height: height * 0.6,
     width,
   },
+  nextPrev: { width: '90%' },
 });
 export default ServiceRequestPhotoPreview;

@@ -270,7 +270,9 @@ const CreateServiceRequestForm = ({
                   title="Take Photo"
                   style={[Layout.fill, Gutters.tinyRMargin]}
                   disabled={isSubmitting}
-                  onImageSelect={(image) => setFieldValue('imageUri', image)}
+                  onImageSelect={(images) => {
+                    setFieldValue('images', images);
+                  }}
                 />
 
                 <Button

@@ -1,24 +1,30 @@
-import * as ImagePicker from 'react-native-image-picker';
+import ImagePicker from 'react-native-image-crop-picker';
 import * as DocumentPicker from 'react-native-document-picker';
+import { Platform } from 'react-native';
 
 const successfullySelectedImage = (res) => !res.didCancel;
 const errorOccured = (res) => res.errorCode;
 
-const constructFormData = (res) => ({
-  uri: res.uri,
-  type: res.type,
-});
+const constructFormData = (res) =>
+  res.map((image) => {
+    return {
+      uri: Platform.OS === 'ios' ? image.sourceURL : image.path,
+      type: image.mime,
+    };
+  });
 
 const imageOptions = {
   mediaType: 'photo',
-  quality: 0.5,
-  maxWidth: 400,
-  maxHeight: 400,
+  multiple: true,
+  compressImageQuality: 0.5,
+  width: 400,
+  height: 400,
+  cropping: true,
 };
 
 const genericLaunch = (launchFunction) => {
   return new Promise((resolve, reject) => {
-    launchFunction(imageOptions, (res) => {
+    launchFunction(imageOptions).then((res) => {
       if (successfullySelectedImage(res)) {
         resolve(constructFormData(res));
       } else if (errorOccured(res)) {
@@ -29,15 +35,17 @@ const genericLaunch = (launchFunction) => {
 };
 
 export const openUserGallery = () => {
-  return genericLaunch(ImagePicker.launchImageLibrary);
+  return genericLaunch(ImagePicker.openPicker);
 };
 
 export const openUserCamera = () => {
-  return genericLaunch(ImagePicker.launchCamera);
+  return genericLaunch(ImagePicker.openCamera);
 };
 
 export const openDocumentPicker = () => {
-  return DocumentPicker.pick({
+  return DocumentPicker.pickMultiple({
     type: [DocumentPicker.types.pdf],
-  }).then(constructFormData);
+  }).then((DocumentPickerResponse) => {
+    constructFormData(DocumentPickerResponse);
+  });
 };

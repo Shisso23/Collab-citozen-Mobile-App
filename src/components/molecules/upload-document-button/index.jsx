@@ -17,7 +17,8 @@ const UploadDocumentButton = ({ onImageSelect, errorMessage, title, style, disab
   const { Common } = useTheme();
   const [documentSelected, setDocumentSelected] = useState(false);
   const [isPhotoVisible, setPhotoVisible] = useState(false);
-  const [imageSource, setImageSource] = useState({});
+  const [imagesSources, setImagesSources] = useState([]);
+  const [newSelectedImages, setNewSelectedImages] = useState([]);
   const { isLoadingServiceRequests } = useSelector(serviceRequestSelector);
 
   const openActionSheet = () => {
@@ -26,15 +27,23 @@ const UploadDocumentButton = ({ onImageSelect, errorMessage, title, style, disab
   };
   const closeActionSheet = () => actionSheetRef.current.setModalVisible(false);
 
-  const _updateFormData = (selectedImage) => {
-    onImageSelect(selectedImage);
-    setDocumentSelected(true);
+  const _updateFormData = (selectedImages, docSelected = true) => {
+    onImageSelect(selectedImages);
+    setDocumentSelected(docSelected);
     closeActionSheet();
   };
 
+  const removeDuplicates = (arrayOfObjectsImages) => {
+    return arrayOfObjectsImages
+      .map((image) => image)
+      .filter((value, index, self) => self.indexOf(value) === index);
+  };
+
   const _handlePhotoLibrary = () => {
-    openUserGallery().then((selectedImage) => {
-      setImageSource(selectedImage);
+    openUserGallery().then((selectedImages) => {
+      setNewSelectedImages(selectedImages);
+      const uniqueImages = removeDuplicates([...imagesSources, ...selectedImages]);
+      setImagesSources(uniqueImages);
       setPhotoVisible(true);
       closeActionSheet();
     });
@@ -74,11 +83,16 @@ const UploadDocumentButton = ({ onImageSelect, errorMessage, title, style, disab
       </ActionSheet>
 
       <ServiceRequestPhotoPreview
-        source={imageSource.uri}
+        sources={newSelectedImages}
         isVisible={isPhotoVisible}
         onDismiss={() => setPhotoVisible(false)}
         openActionSheet={() => openActionSheet}
-        updateFormData={() => _updateFormData(imageSource)}
+        cancelSelection={() => {
+          setImagesSources([]);
+        }}
+        updateFormData={() => {
+          _updateFormData(imagesSources);
+        }}
       />
     </>
   );

@@ -15,7 +15,7 @@ import { useDispatch } from 'react-redux';
 import useTheme from '../../../../theme/hooks/useTheme';
 import ServiceRequestDetails from '../../../../components/common/service-request-details';
 import { Colors } from '../../../../theme/Variables';
-import { uploadServiceRequestImage } from '../../../../reducers/service-request-reducer/service-request.actions';
+import { uploadServiceRequestImages } from '../../../../reducers/service-request-reducer/service-request.actions';
 import UploadDocumentButton from '../../../../components/molecules/upload-document-button';
 
 const { width, height } = Dimensions.get('window');
@@ -29,8 +29,8 @@ const ViewServiceRequestScreen = () => {
   const hideModal = () => setVisible(false);
   const { Gutters, Fonts, Common, Images, Layout } = useTheme();
 
-  const _uploadPhoto = (image) => {
-    dispatch(uploadServiceRequestImage(serviceRequest.id, image));
+  const _uploadPhotos = (images) => {
+    dispatch(uploadServiceRequestImages(serviceRequest.id, images));
     navigation.popToTop();
   };
 
@@ -57,8 +57,8 @@ const ViewServiceRequestScreen = () => {
           <UploadDocumentButton
             title="Take Photo"
             style={[Gutters.regularMargin, styles.button]}
-            disabled={false}
-            onImageSelect={(image) => _uploadPhoto(image)}
+            disabled={_.get(serviceRequest, 'status', '') === 'Submitted'}
+            onImageSelect={(images) => _uploadPhotos(images)}
           />
         )}
 
