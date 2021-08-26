@@ -3,6 +3,7 @@ import { flashService, serviceRequestService } from '../../services';
 import {
   setIsLoadingServiceRequestsAction,
   setServiceRequestsAction,
+  setImagesSourcesAction,
 } from './service-request.reducer';
 
 export const getServiceRequestsAction = () => (dispatch) => {
@@ -45,5 +46,13 @@ export const uploadServiceRequestImages = (objId, fileAttachments) => async (dis
     flashService.error('Upload did not complete!');
   } finally {
     dispatch(setIsLoadingServiceRequestsAction(false));
+  }
+};
+
+export const setImagesSources = (images) => async (dispatch) => {
+  try {
+    dispatch(setImagesSourcesAction(images));
+  } catch (error) {
+    console.warn('Could not set images');
   }
 };

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -15,7 +15,10 @@ import { useDispatch } from 'react-redux';
 import useTheme from '../../../../theme/hooks/useTheme';
 import ServiceRequestDetails from '../../../../components/common/service-request-details';
 import { Colors } from '../../../../theme/Variables';
-import { uploadServiceRequestImages } from '../../../../reducers/service-request-reducer/service-request.actions';
+import {
+  setImagesSources,
+  uploadServiceRequestImages,
+} from '../../../../reducers/service-request-reducer/service-request.actions';
 import UploadDocumentButton from '../../../../components/molecules/upload-document-button';
 
 const { width, height } = Dimensions.get('window');
@@ -28,6 +31,10 @@ const ViewServiceRequestScreen = () => {
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
   const { Gutters, Fonts, Common, Images, Layout } = useTheme();
+
+  useEffect(() => {
+    dispatch(setImagesSources([]));
+  }, []);
 
   const _uploadPhotos = (images) => {
     dispatch(uploadServiceRequestImages(serviceRequest.id, images));

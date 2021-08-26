@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Modal, Portal } from 'react-native-paper';
 import { Icon } from 'react-native-elements';
 import PropTypes from 'prop-types';
@@ -25,6 +25,13 @@ const ServiceRequestPhotoPreview = ({
       setSourceIndex(newIndex);
     }
   };
+
+  useEffect(() => {
+    if (sources.length === 1) {
+      setSourceIndex(0);
+    }
+  }, [sources.length]);
+
   const showNextImage = () => {
     if (sourceIndex < sources.length - 1) {
       const newIndex = sourceIndex + 1;

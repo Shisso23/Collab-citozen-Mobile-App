@@ -5,21 +5,22 @@ import { Text } from 'react-native-elements';
 import ActionSheet from 'react-native-actions-sheet';
 import { Button } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { openUserGallery, openUserCamera } from './upload-document-button.utils';
 import UploadDocumentSelectionItem from './upload-document-selection-item';
 import useTheme from '../../../theme/hooks/useTheme';
 import ServiceRequestPhotoPreview from '../../common/service-request-photo-preview';
 import { serviceRequestSelector } from '../../../reducers/service-request-reducer/service-request.reducer';
+import { setImagesSources } from '../../../reducers/service-request-reducer/service-request.actions';
 
 const actionSheetRef = createRef();
 const UploadDocumentButton = ({ onImageSelect, errorMessage, title, style, disabled }) => {
   const { Common } = useTheme();
+  const dispatch = useDispatch();
   const [documentSelected, setDocumentSelected] = useState(false);
   const [isPhotoVisible, setPhotoVisible] = useState(false);
-  const [imagesSources, setImagesSources] = useState([]);
   const [newSelectedImages, setNewSelectedImages] = useState([]);
-  const { isLoadingServiceRequests } = useSelector(serviceRequestSelector);
+  const { isLoadingServiceRequests, imagesSources } = useSelector(serviceRequestSelector);
 
   const openActionSheet = () => {
     Keyboard.dismiss();
@@ -33,19 +34,31 @@ const UploadDocumentButton = ({ onImageSelect, errorMessage, title, style, disab
     closeActionSheet();
   };
 
-  const removeDuplicates = (arrayOfObjectsImages) => {
-    return arrayOfObjectsImages
-      .map((image) => image)
-      .filter((value, index, self) => self.indexOf(value) === index);
+  const removeDuplicates = (images) => {
+    return images.reduce((unique, image) => {
+      if (!unique.some((uniqueImg) => uniqueImg.uri === image.uri)) {
+        unique.push(image);
+      }
+      return unique;
+    }, []);
   };
 
   const _handlePhotoLibrary = () => {
     openUserGallery().then((selectedImages) => {
       setNewSelectedImages(selectedImages);
       const uniqueImages = removeDuplicates([...imagesSources, ...selectedImages]);
+      dispatch(setImagesSources(uniqueImages));
       setImagesSources(uniqueImages);
       setPhotoVisible(true);
       closeActionSheet();
+    });
+  };
+
+  const canceleImages = () => {
+    return imagesSources.filter((image) => {
+      return !newSelectedImages.some((newImage) => {
+        return newImage.uri === image.uri;
+      });
     });
   };
 
@@ -88,7 +101,7 @@ const UploadDocumentButton = ({ onImageSelect, errorMessage, title, style, disab
         onDismiss={() => setPhotoVisible(false)}
         openActionSheet={() => openActionSheet}
         cancelSelection={() => {
-          setImagesSources([]);
+          dispatch(setImagesSources(canceleImages()));
         }}
         updateFormData={() => {
           _updateFormData(imagesSources);
