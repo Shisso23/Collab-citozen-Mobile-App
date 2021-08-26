@@ -29,6 +29,7 @@ const CreateServiceRequestForm = ({
   containerStyle,
   initialValues,
   municipalities,
+  setThumbNailImages,
 }) => {
   const { Common, Layout, Gutters, Colors } = useTheme();
   const { selectedAddress, region } = useSelector(locationSelector);
@@ -271,7 +272,8 @@ const CreateServiceRequestForm = ({
                   style={[Layout.fill, Gutters.tinyRMargin]}
                   disabled={isSubmitting}
                   onImageSelect={(images) => {
-                    setFieldValue('images', images);
+                    setFieldValue('images', [...values.images, ...images]);
+                    setThumbNailImages([...values.images, ...images]);
                   }}
                 />
 
@@ -299,6 +301,7 @@ CreateServiceRequestForm.propTypes = {
   onSuccess: PropTypes.func,
   containerStyle: ViewPropTypes.style,
   municipalities: PropTypes.object.isRequired,
+  setThumbNailImages: PropTypes.func.isRequired,
 };
 
 CreateServiceRequestForm.defaultProps = {
