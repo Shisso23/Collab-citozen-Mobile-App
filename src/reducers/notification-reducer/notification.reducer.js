@@ -11,10 +11,14 @@ export const setIsLoadingAction = setIsLoading.action;
 const setUnOpenedNotifications = CreateAction(reducerName, 'SET_UNOPENED_NOTIFICATIONS');
 export const setUnOpenedNotificationsAction = setUnOpenedNotifications.action;
 
+const setDeleteNotificationPreview = CreateAction(reducerName, 'SET_IS_LOADING_VALIDATE_ACCOUNT');
+export const setDeleteNotificationPreviewAction = setDeleteNotificationPreview.action;
+
 const initialState = {
   notifications: [],
   isLoading: false,
   unOpenedNotifications: {},
+  deleteNotificationPreview: true,
 };
 
 export default function notificationReducer(state = initialState, action) {
@@ -33,6 +37,11 @@ export default function notificationReducer(state = initialState, action) {
       return {
         ...state,
         unOpenedNotifications: action.payload,
+      };
+    case setDeleteNotificationPreview.actionType:
+      return {
+        ...state,
+        deleteNotificationPreview: action.payload,
       };
     default:
       return state;

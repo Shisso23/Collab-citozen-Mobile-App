@@ -12,6 +12,7 @@ import {
   openNotificationAction,
   getUnOpenedNotificationsAction,
   deleteNotificationAction,
+  previewDeleNotificationAction,
 } from '../../../reducers/notification-reducer/notification.actions';
 import { TrashButton } from '../../atoms';
 import { promptConfirmDelete } from '../../../helpers/prompt.helper';
@@ -21,6 +22,7 @@ import SwipeRowContainer from '../../atoms/swipe-row/swipe-row';
 const Notification = ({ notification }) => {
   const dispatch = useDispatch();
   const { user } = useSelector((reducers) => reducers.userReducer);
+  const { deleteNotificationPreview } = useSelector((reducers) => reducers.notificationReducer);
   const notificationId = _.get(notification, 'obj_id');
   const message = `${_.get(notification, 'title', '')}\n\n${_.get(notification, 'body', '')}`;
   const seen = _.get(notification, 'seen', false) === 'Yes';
@@ -99,7 +101,12 @@ const Notification = ({ notification }) => {
 
   return (
     <SwipeRowContainer
+      preview={deleteNotificationPreview}
       key={_.get(notification, 'obj_id', '')}
+      swipeKey={`${_.get(notification, 'obj_id', '')}`}
+      onPreviewEnd={() => {
+        dispatch(previewDeleNotificationAction(false));
+      }}
       renderHiddenComponent={renderHiddenComponent}
       renderVisibleComponent={renderVisibleComponent}
     />

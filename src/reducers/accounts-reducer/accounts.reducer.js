@@ -26,6 +26,9 @@ export const setAccountValidAction = setAccountValid.action;
 const setIsLoadingValidateAccount = CreateAction(reducerName, 'SET_IS_LOADING_VALIDATE_ACCOUNT');
 export const setIsLoadingValidateAccountAction = setIsLoadingValidateAccount.action;
 
+const setDeleteAccountPreview = CreateAction(reducerName, 'SET_DELETE_ACCOUNT_PREVIEW');
+export const setDeleteAccountPreviewAction = setDeleteAccountPreview.action;
+
 const initialState = {
   accountChannels: [],
   isLoadingAccountChannels: false,
@@ -35,6 +38,7 @@ const initialState = {
   statements: [],
   accountValid: null,
   isLoadingValidateAccount: false,
+  deleteAccountPreview: true,
   account: false,
 };
 
@@ -82,6 +86,11 @@ export default function accountsReducer(state = initialState, action) {
       return {
         ...state,
         accountValid: action.payload,
+      };
+    case setDeleteAccountPreview.actionType:
+      return {
+        ...state,
+        deleteAccountPreview: action.payload,
       };
     default:
       return state;

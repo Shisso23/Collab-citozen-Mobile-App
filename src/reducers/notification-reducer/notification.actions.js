@@ -3,6 +3,7 @@ import {
   setIsLoadingAction,
   setNotificationAction,
   setUnOpenedNotificationsAction,
+  setDeleteNotificationPreviewAction,
 } from './notification.reducer';
 
 import { notificationService } from '../../services';
@@ -44,4 +45,8 @@ export const deleteNotificationAction = (notificationId, dateTime, userId) => {
     notificationService
       .deleteNotification(notificationId, dateTime, userId)
       .then(() => dispatch(getNotificationsAction()));
+};
+
+export const previewDeleNotificationAction = (shoudlPreview) => {
+  return (dispatch) => dispatch(setDeleteNotificationPreviewAction(shoudlPreview));
 };
