@@ -5,13 +5,15 @@ import { Platform } from 'react-native';
 const successfullySelectedImage = (res) => !res.didCancel;
 const errorOccured = (res) => res.errorCode;
 
-const constructFormData = (res) =>
-  res.map((image) => {
+const constructFormData = (res = []) => {
+  const response = [res].flat();
+  return response.map((image) => {
     return {
       uri: Platform.OS === 'ios' ? image.sourceURL : image.path,
       type: image.mime,
     };
   });
+};
 
 const imageOptions = {
   mediaType: 'photo',
