@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+/* eslint-disable react/prop-types */
+import React from 'react';
 import { Button, Modal, Portal } from 'react-native-paper';
-import { Icon } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import { ActivityIndicator, Dimensions, StyleSheet, View, ImageBackground } from 'react-native';
 import _ from 'lodash';
+import Carousel from 'react-native-snap-carousel';
+
 import { Colors } from '../../../theme/Variables';
 import { useTheme } from '../../../theme';
 
@@ -16,49 +18,25 @@ const ServiceRequestPhotoPreview = ({
   updateFormData,
   cancelSelection,
 }) => {
-  const [sourceIndex, setSourceIndex] = useState(0);
   const { Fonts, Common, Layout } = useTheme();
-  const showPreviousImage = () => {
-    if (sourceIndex > 0) {
-      const newIndex = sourceIndex - 1;
-      setSourceIndex(newIndex);
-      setSourceIndex(newIndex);
-    }
-  };
 
-  useEffect(() => {
-    if (sources.length === 1) {
-      setSourceIndex(0);
-    }
-  }, [sources.length]);
-
-  const showNextImage = () => {
-    if (sourceIndex < sources.length - 1) {
-      const newIndex = sourceIndex + 1;
-      setSourceIndex(newIndex);
-      setSourceIndex(newIndex);
-    }
+  const _renderCarouselItem = ({ item }) => {
+    return (
+      <ImageBackground
+        source={{ uri: _.get(item, 'uri', null) }}
+        style={[styles.image, Layout.alignItemsCenter, Layout.justifyContentCenter]}
+        PlaceholderContent={<ActivityIndicator />}
+      />
+    );
   };
-  const renderNextPrev = () => {
-    return sources.length > 1 ? (
-      <View style={[styles.nextPrev, Layout.rowBetween]}>
-        <Icon
-          name="chevron-left"
-          type="font-awesome"
-          size={35}
-          disabled={sourceIndex === 0}
-          onPress={showPreviousImage}
-        />
-        <Icon
-          name="chevron-right"
-          type="font-awesome"
-          size={35}
-          disabled={sourceIndex === sources.length - 1}
-          onPress={showNextImage}
-        />
-      </View>
-    ) : (
-      <View />
+  const renderCarousel = () => {
+    return (
+      <Carousel
+        data={sources}
+        renderItem={_renderCarouselItem}
+        sliderWidth={width}
+        itemWidth={width}
+      />
     );
   };
   return (
@@ -69,13 +47,7 @@ const ServiceRequestPhotoPreview = ({
           onDismiss={onDismiss}
           contentContainerStyle={styles.containerStyle}
         >
-          <ImageBackground
-            source={{ uri: _.get(sources[sourceIndex], 'uri', null) }}
-            style={[styles.image, Layout.alignItemsCenter, Layout.justifyContentCenter]}
-            PlaceholderContent={<ActivityIndicator />}
-          >
-            {renderNextPrev()}
-          </ImageBackground>
+          {renderCarousel()}
           <View style={[Layout.rowBetween]}>
             <Button
               mode="outlined"
@@ -132,8 +104,7 @@ const styles = StyleSheet.create({
   },
   image: {
     height: height * 0.6,
-    width,
+    width: width * 0.95,
   },
-  nextPrev: { width: '90%' },
 });
 export default ServiceRequestPhotoPreview;
