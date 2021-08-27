@@ -62,8 +62,8 @@ const CreateServiceRequestScreen = () => {
             name="times-circle"
             type="font-awesome-5"
             size={30}
-            style={[Layout.alignSelfEnd, styles.deleteIcon]}
-            iconStyle={{ color: Colors.white }}
+            style={[Layout.alignSelfEnd]}
+            iconStyle={styles.deleteIcon}
           />
         </ImageBackground>
       </View>
@@ -108,7 +108,7 @@ CreateServiceRequestScreen.propTypes = {};
 CreateServiceRequestScreen.defaultProps = {};
 
 const styles = StyleSheet.create({
-  deleteIcon: { backgroundColor: Colors.primary, borderRadius: 10 },
+  deleteIcon: { backgroundColor: Colors.primary, borderRadius: 15, color: Colors.white },
   thumbnail: { borderRadius: 10, height: 90, overflow: 'hidden', width: 115 },
 });
 
