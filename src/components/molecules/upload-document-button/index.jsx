@@ -63,7 +63,14 @@ const UploadDocumentButton = ({ onImageSelect, errorMessage, title, style, disab
   };
 
   const _handleCamera = () => {
-    openUserCamera().then(_updateFormData);
+    openUserCamera().then((cameraPhotos) => {
+      setNewSelectedImages(cameraPhotos);
+      const uniqueImages = removeDuplicates([...imagesSources, ...cameraPhotos]);
+      dispatch(setImagesSources(uniqueImages));
+      setImagesSources(uniqueImages);
+      setPhotoVisible(true);
+      closeActionSheet();
+    });
   };
   const insets = useSafeAreaInsets();
   const safeArea = {
