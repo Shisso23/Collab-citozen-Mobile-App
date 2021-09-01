@@ -17,7 +17,6 @@ const AddAccounts = ({ selectedChannel }) => {
   const dispatch = useDispatch();
   const { isLoadingAddAccount, isLoadingValidateAccount } = useSelector(accountsSelector);
   const { user } = useSelector((reducer) => reducer.userReducer);
-  const userId = useMemo(() => _.get(user, 'user_id', ''), []);
   const { Common, Gutters, Layout } = useTheme();
   const [accountNumber, setAccountNumber] = useState(null);
   const channelId = useMemo(() => _.get(selectedChannel, 'objId', ''), []);
@@ -31,7 +30,7 @@ const AddAccounts = ({ selectedChannel }) => {
     return dispatch(accountActions.validateAccountAction(accountNumber, channelId))
       .then((accountValid) => {
         if (accountValid) {
-          dispatch(accountActions.addAccountAction(channelId, userId, accountNumber))
+          dispatch(accountActions.addAccountAction(channelId, user, accountNumber))
             .then(() => {
               flashService.success('Account successfully validated!');
               navigation.navigate('Accounts');

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback } from 'react';
 import { FAB, List } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { FlatList, Text, ImageBackground, RefreshControl, View, StyleSheet } from 'react-native';
@@ -12,13 +12,15 @@ import { accountActions } from '../../../reducers/accounts-reducer';
 import { TrashButton } from '../../../components/atoms';
 import SwipeRowContainer from '../../../components/atoms/swipe-row/swipe-row';
 import { promptConfirmDelete } from '../../../helpers/prompt.helper';
+import { previewDeleAccountAction } from '../../../reducers/accounts-reducer/accounts.actions';
 
 const AccountsScreen = () => {
   const dispatch = useDispatch();
   const { accountChannels, isLoadingAccountChannels } = useSelector(accountsSelector);
   const { user } = useSelector((reducer) => reducer.userReducer);
-  const { isLoadingDeleteAccount } = useSelector((reducer) => reducer.accountsReducer);
-  const userId = useMemo(() => _.get(user, 'user_id', ''), []);
+  const { isLoadingDeleteAccount, deleteAccountPreview } = useSelector(
+    (reducer) => reducer.accountsReducer,
+  );
   const { Common, Gutters, Fonts, Layout, Images, Colors } = useTheme();
   const navigation = useNavigation();
 
@@ -99,7 +101,7 @@ const AccountsScreen = () => {
     const channelId = _.get(channel, 'objectId', '');
     const accountNumber = _.get(account, 'accountNumber', '');
     promptConfirmDelete('Are you sure you want to delete this item?', () => {
-      dispatch(accountActions.deleteAccountAction(channelId, userId, accountNumber));
+      dispatch(accountActions.deleteAccountAction(channelId, user, accountNumber));
     });
   };
 
@@ -115,7 +117,12 @@ const AccountsScreen = () => {
     return _.map(_.get(item, 'accounts', []), (account, accountIndex) => {
       return (
         <SwipeRowContainer
-          key={`${_.get(item, 'objectId', accountIndex)}-${accountIndex}`}
+          key={`${_.get(item, 'objectId', accountIndex)}-${_.get(account, 'accountNumber', '')}`}
+          swipeKey={`${_.get(item, 'objectId', accountIndex)}-${accountIndex}`}
+          preview={deleteAccountPreview}
+          onPreviewEnd={() => {
+            dispatch(previewDeleAccountAction(false));
+          }}
           renderHiddenComponent={() => renderHiddenComponent(account, item)}
           renderVisibleComponent={() => renderVisibleComponent(account, accountIndex, item, index)}
         />
