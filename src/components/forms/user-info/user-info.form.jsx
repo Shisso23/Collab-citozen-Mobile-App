@@ -6,12 +6,10 @@ import * as Yup from 'yup';
 import { Button } from 'react-native-paper';
 import {
   emailSchema,
-  phoneSchema,
   registerPasswordSchema,
   confirmPasswordSchema,
   termsAndConditionsSchema,
   saIdNumberSchema,
-  telNumberSchema,
 } from '../form-validaton-schemas';
 import CustomInput from '../../molecules/custom-input';
 import { getFormError } from '../form-utils';
@@ -25,8 +23,8 @@ const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
     email: emailSchema,
     firstName: Yup.string().required('First Name is required'),
     lastName: Yup.string().required('Surname is required'),
-    mobileNumber: phoneSchema,
-    telNumber: telNumberSchema,
+    mobileNumber: Yup.string().required('Mobile number is required'),
+    telNumber: Yup.string(),
     idNumber: saIdNumberSchema,
     password: registerPasswordSchema(edit),
     confirmPassword: confirmPasswordSchema(edit),
@@ -91,6 +89,7 @@ const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
               onChangeText={handleChange('mobileNumber')}
               onBlur={handleBlur('mobileNumber')}
               label="Mobile Number"
+              keyboardType="phone-pad"
               errorMessage={error('mobileNumber')}
             />
             <CustomInput
@@ -98,6 +97,7 @@ const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
               onChangeText={handleChange('telNumber')}
               onBlur={handleBlur('telNumber')}
               label="Telephone Number"
+              keyboardType="phone-pad"
               errorMessage={error('telNumber')}
             />
             <CustomInput
