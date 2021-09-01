@@ -1,14 +1,6 @@
 import React, { useEffect } from 'react';
-import {
-  ActivityIndicator,
-  Dimensions,
-  ScrollView,
-  StyleSheet,
-  Text,
-  ImageBackground,
-} from 'react-native';
+import { ScrollView, StyleSheet, Text, ImageBackground } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { Image } from 'react-native-elements';
 import { Modal, Button, Portal } from 'react-native-paper';
 import _ from 'lodash';
 import { useDispatch } from 'react-redux';
@@ -20,8 +12,8 @@ import {
   uploadServiceRequestImages,
 } from '../../../../reducers/service-request-reducer/service-request.actions';
 import UploadDocumentButton from '../../../../components/molecules/upload-document-button';
+import CustomCarousel from '../../../../components/molecules/custom-carousel';
 
-const { width, height } = Dimensions.get('window');
 const ViewServiceRequestScreen = () => {
   const { params } = useRoute();
   const dispatch = useDispatch();
@@ -31,6 +23,7 @@ const ViewServiceRequestScreen = () => {
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
   const { Gutters, Fonts, Common, Images, Layout } = useTheme();
+  const serviceRequestImages = [serviceRequest.serviceRequestImage].flat();
 
   useEffect(() => {
     dispatch(setImagesSources([]));
@@ -57,7 +50,7 @@ const ViewServiceRequestScreen = () => {
               showModal();
             }}
           >
-            View Image
+            View Image{serviceRequestImages.length > 1 ? 's' : ''}
           </Button>
         )}
         {!_.isEmpty(serviceRequest.serviceRequestImage) ? null : (
@@ -75,11 +68,7 @@ const ViewServiceRequestScreen = () => {
             onDismiss={hideModal}
             contentContainerStyle={styles.containerStyle}
           >
-            <Image
-              source={serviceRequest.serviceRequestImage}
-              style={styles.image}
-              PlaceholderContent={<ActivityIndicator />}
-            />
+            <CustomCarousel sources={serviceRequestImages} isHttpUrl />
           </Modal>
         </Portal>
       </ScrollView>
@@ -97,10 +86,6 @@ const styles = StyleSheet.create({
   containerStyle: {
     backgroundColor: Colors.white,
     padding: 10,
-  },
-  image: {
-    height: height * 0.6,
-    width,
   },
 });
 export default ViewServiceRequestScreen;
