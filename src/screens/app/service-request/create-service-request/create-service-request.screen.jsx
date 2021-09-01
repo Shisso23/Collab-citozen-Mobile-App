@@ -38,6 +38,7 @@ const CreateServiceRequestScreen = () => {
     dispatch(setImagesSources([]));
   }, []);
   const _handleFormSubmit = (form) => {
+    form.images = thumNailImages;
     return dispatch(createServiceRequestAction(form));
   };
   const handleDeleteImage = (imageToDelete) => {
