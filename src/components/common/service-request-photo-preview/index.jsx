@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useState } from 'react';
 import { Button, Modal, Portal } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import { ActivityIndicator, Dimensions, StyleSheet, View, ImageBackground } from 'react-native';
 import _ from 'lodash';
-import Carousel from 'react-native-snap-carousel';
+import Carousel, { Pagination } from 'react-native-snap-carousel';
 
 import { Colors } from '../../../theme/Variables';
 import { useTheme } from '../../../theme';
@@ -18,7 +18,25 @@ const ServiceRequestPhotoPreview = ({
   updateFormData,
   cancelSelection,
 }) => {
+  const [activeImage, setActiveImage] = useState(0);
   const { Fonts, Common, Layout } = useTheme();
+
+  const renderPagination = () => {
+    return (
+      <Pagination
+        dotsLength={sources.length}
+        activeDotIndex={activeImage}
+        containerStyle={{ backgroundColor: Colors.transparent }}
+        dotStyle={styles.paginationDots}
+        inactiveDotStyle={{
+          backgroundColor: Colors.darkgray,
+        }}
+        activeOpacity={1}
+        inactiveDotOpacity={0.4}
+        inactiveDotScale={0.6}
+      />
+    );
+  };
 
   const _renderCarouselItem = ({ item }) => {
     return (
@@ -31,12 +49,18 @@ const ServiceRequestPhotoPreview = ({
   };
   const renderCarousel = () => {
     return (
-      <Carousel
-        data={sources}
-        renderItem={_renderCarouselItem}
-        sliderWidth={width}
-        itemWidth={width}
-      />
+      <>
+        <Carousel
+          data={sources}
+          renderItem={_renderCarouselItem}
+          sliderWidth={width}
+          itemWidth={width}
+          layout="tinder"
+          layoutCardOffset="9"
+          onSnapToItem={(index) => setActiveImage(index)}
+        />
+        {renderPagination()}
+      </>
     );
   };
   return (
@@ -100,11 +124,19 @@ const styles = StyleSheet.create({
   },
   containerStyle: {
     backgroundColor: Colors.white,
+    marginTop: '20%',
     padding: 10,
   },
   image: {
-    height: height * 0.6,
+    height: height * 0.55,
     width: width * 0.95,
+  },
+  paginationDots: {
+    backgroundColor: Colors.primary,
+    borderRadius: 5,
+    height: 10,
+    marginHorizontal: 8,
+    width: 10,
   },
 });
 export default ServiceRequestPhotoPreview;
