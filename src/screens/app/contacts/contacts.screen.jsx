@@ -1,24 +1,30 @@
-/* eslint-disable no-unused-vars */
-import React from 'react';
-import { List } from 'react-native-paper';
+import React, { useEffect } from 'react';
+import { List, Button } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { FlatList, Text, View, ImageBackground, RefreshControl } from 'react-native';
+import { FlatList, Text, View, ImageBackground, RefreshControl, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import useTheme from '../../../theme/hooks/useTheme';
 import { permissionsService } from '../../../services';
 import { myChannelsSelector } from '../../../reducers/my-channels/my-channels.reducer';
 import { getMyChannelsAction } from '../../../reducers/my-channels/my-channels.actions';
+import { getContactDetailsAction } from '../../../reducers/contacts-reducer/contacts.actions';
+import { Colors } from '../../../theme/Variables';
 
 const ContactsScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const { Common, Gutters, Fonts, Layout, Images, Colors } = useTheme();
+  const { Common, Gutters, Fonts, Layout, Images } = useTheme();
   const { myChannels, isLoadingMyChannels } = useSelector(myChannelsSelector);
+  const { contactDetails } = useSelector((reducers) => reducers.contactsReducer);
 
   const _loadMyChannels = () => {
     dispatch(getMyChannelsAction());
   };
+
+  useEffect(() => {
+    dispatch(getContactDetailsAction('My location'));
+  }, []);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -28,7 +34,7 @@ const ContactsScreen = () => {
 
   const _handleOnNewLocationPress = async () => {
     await permissionsService.checkLocationPermissions();
-    navigation.navigate('SelectLocationScreen', true);
+    navigation.navigate('SelectLocationScreen', contactDetails);
   };
 
   const _getStatusIndicator = (status) => {
@@ -92,6 +98,15 @@ const ContactsScreen = () => {
             />
           }
         />
+        <Button
+          mode="outlined"
+          color={Colors.white}
+          style={[styles.button, Layout.alignSelfCenter, Gutters.largeBMargin]}
+          labelStyle={[Fonts.textRegular, Common.whiteText]}
+          onPress={_handleOnNewLocationPress}
+        >
+          choose location
+        </Button>
       </ImageBackground>
     </>
   );
@@ -100,5 +115,13 @@ const ContactsScreen = () => {
 ContactsScreen.propTypes = {};
 
 ContactsScreen.defaultProps = {};
+
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: Colors.primary,
+    marginTop: 10,
+    width: '45%',
+  },
+});
 
 export default ContactsScreen;
