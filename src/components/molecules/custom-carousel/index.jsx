@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { StyleSheet, ActivityIndicator, Dimensions, ImageBackground } from 'react-native';
+import { StyleSheet, ActivityIndicator, Dimensions } from 'react-native';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
+import { Image } from 'react-native-elements';
 
 import { Colors } from '../../../theme/Variables';
 import useTheme from '../../../theme/hooks/useTheme';
@@ -32,7 +33,7 @@ const CustomCarousel = ({ sources, isHttpUrl }) => {
   // eslint-disable-next-line react/prop-types
   const _renderCarouselItem = ({ item }) => {
     return (
-      <ImageBackground
+      <Image
         source={isHttpUrl ? item : { uri: _.get(item, 'uri', null) }}
         style={[styles.image, Layout.alignItemsCenter, Layout.justifyContentCenter]}
         PlaceholderContent={<ActivityIndicator />}
@@ -47,8 +48,6 @@ const CustomCarousel = ({ sources, isHttpUrl }) => {
         renderItem={_renderCarouselItem}
         sliderWidth={width}
         itemWidth={width}
-        layout="tinder"
-        layoutCardOffset="9"
         onSnapToItem={(index) => setActiveImage(index)}
       />
       {renderPagination()}

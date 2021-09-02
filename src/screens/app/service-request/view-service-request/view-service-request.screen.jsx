@@ -23,7 +23,7 @@ const ViewServiceRequestScreen = () => {
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
   const { Gutters, Fonts, Common, Images, Layout } = useTheme();
-  const serviceRequestImages = [serviceRequest.serviceRequestImage].flat();
+  const serviceRequestImages = serviceRequest.serviceRequestImage;
 
   useEffect(() => {
     dispatch(setImagesSources([]));
