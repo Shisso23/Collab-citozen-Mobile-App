@@ -83,6 +83,11 @@ const DrawerContent = (props) => {
               label="Profile"
               onPress={() => navigation.navigate('Profile')}
             />
+            <Drawer.Item
+              icon="phone"
+              label="Contacts"
+              onPress={() => navigation.navigate('Contacts')}
+            />
           </Drawer.Section>
           <Drawer.Item icon="exit-to-app" label="Sign Out" onPress={_signOut} />
         </View>

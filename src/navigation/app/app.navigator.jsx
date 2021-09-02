@@ -25,6 +25,7 @@ import StatementsScreen from '../../screens/app/accounts/statements.screen';
 import StatementViewScreen from '../../screens/app/accounts/statementView.screen';
 import AccountChannelsScreen from '../../screens/app/accounts/account.channels.screen';
 import AddAccountScreen from '../../screens/app/accounts/add-account.screen';
+import ContactsScreen from '../../screens/app/contacts/contacts.screen';
 
 const Drawer = createDrawerNavigator();
 const AppStack = createStackNavigator();
@@ -185,6 +186,16 @@ const DrawerNavigator = () => {
           title: 'Profile',
         }}
       />
+
+      <Drawer.Screen
+        name="Contacts"
+        component={ContactsScreen}
+        options={{
+          headerShown: true,
+          title: 'Contacts',
+        }}
+      />
+
       <Drawer.Screen
         name="ViewSubscribeToChannels"
         component={ViewSubscribedToChannelsScreen}
