@@ -3,9 +3,8 @@ import { setContactDetailsAction, setIsLoadingContactDetailsAction } from './con
 
 export const getContactDetailsAction = (location) => async (dispatch) => {
   dispatch(setIsLoadingContactDetailsAction(true));
-  const contactDetails = await dispatch(
-    setContactDetailsAction(contactsService.getContactDetails(location)),
-  );
+  const contactDetails = await contactsService.getContactDetails(location);
+  dispatch(setContactDetailsAction(contactDetails));
   dispatch(setIsLoadingContactDetailsAction(false));
   return contactDetails;
 };

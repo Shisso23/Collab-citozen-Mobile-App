@@ -11,6 +11,7 @@ import newsFeedsReducer from './news-feed-reducer/news-feed.reducer';
 import myChannelsReducer from './my-channels/my-channels.reducer';
 import unsubscribedChannelsReducer from './unsubscribed-channels/unsubscribed-channels.reducer';
 import notificationReducer from './notification-reducer/notification.reducer';
+import contactsReducer from './contacts-reducer/contacts.reducer';
 
 export default combineReducers({
   userAuthReducer,
@@ -24,4 +25,5 @@ export default combineReducers({
   myChannelsReducer,
   unsubscribedChannelsReducer,
   notificationReducer,
+  contactsReducer,
 });

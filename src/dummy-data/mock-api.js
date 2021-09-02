@@ -17,10 +17,9 @@ export const mockApi = axios.create({
   },
 });
 const mockAdapter = new MockAdapter(mockApi, { delayResponse: 400 });
-
 // mocking get contacts api
 mockAdapter.onPost(`${apiUrl}/contacts`).reply((config) => {
-  const { location } = JSON.parse(config);
+  // const { location } = JSON.parse(config);
   const data = {
     contacts: [
       {
