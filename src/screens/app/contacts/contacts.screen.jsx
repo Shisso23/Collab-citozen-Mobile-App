@@ -34,7 +34,7 @@ const ContactsScreen = () => {
 
   const _handleOnNewLocationPress = async () => {
     await permissionsService.checkLocationPermissions();
-    navigation.navigate('SelectLocationScreen', contactDetails);
+    navigation.navigate('channelsContacts');
   };
 
   const _getStatusIndicator = (status) => {
@@ -55,7 +55,7 @@ const ContactsScreen = () => {
           title={item.name}
           titleStyle={Common.cardTitle}
           onPress={() => {
-            navigation.navigate('contactDetails', { channelItem: item });
+            navigation.navigate('ContactDetails', { contactDetails });
           }}
           description={() => (
             <View style={[Layout.column, Gutters.largeRMargin]}>
@@ -105,7 +105,7 @@ const ContactsScreen = () => {
           labelStyle={[Fonts.textRegular, Common.whiteText]}
           onPress={_handleOnNewLocationPress}
         >
-          choose location
+          Choose from map
         </Button>
       </ImageBackground>
     </>
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: Colors.primary,
     marginTop: 10,
-    width: '45%',
+    width: '50%',
   },
 });
 
