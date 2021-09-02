@@ -16,3 +16,4 @@ export { default as subscribeToChannelService } from './sub-services/subscribe-t
 export { default as myChannelsService } from './sub-services/my-channels/my-channels.service';
 export { default as notificationService } from './sub-services/notification-service/notification.service';
 export { default as firebaseNotificationService } from './sub-services/update-notification-token/update-notification-token.service';
+export { default as contactsService } from './sub-services/contacts-service/contacts-service';
