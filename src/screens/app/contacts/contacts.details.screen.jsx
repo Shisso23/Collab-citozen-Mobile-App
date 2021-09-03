@@ -24,29 +24,31 @@ const ContactDetailsScreen = ({ route }) => {
       .catch((error) => console.warn(_.get(error, 'message', 'Failed to open!')));
   };
 
+  const callPrompt = (item) => {
+    Alert.alert(
+      `Call for ${item.name} ?`,
+      '',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Call',
+          onPress: () => onCall(item),
+        },
+      ],
+      { cancelable: false },
+    );
+  };
+
   const renderContactDetails = ({ item }) => {
     return (
       <View style={[Common.textInputWithShadow, Gutters.tinyMargin]}>
         <List.Item
           title={item.name}
           titleStyle={Common.cardTitle}
-          onPress={() => {
-            Alert.alert(
-              `Call for ${item.name} ?`,
-              '',
-              [
-                {
-                  text: 'Cancel',
-                  style: 'cancel',
-                },
-                {
-                  text: 'Call',
-                  onPress: () => onCall(item),
-                },
-              ],
-              { cancelable: false },
-            );
-          }}
+          onPress={() => callPrompt(item)}
           description={() => (
             <View style={[Layout.column, Gutters.largeRMargin]}>
               <View style={[Layout.rowHCenter, Gutters.tinyTPadding]}>
