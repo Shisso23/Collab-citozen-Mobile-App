@@ -12,6 +12,7 @@ import codePush from 'react-native-code-push';
 import { signOutAction } from '../../../../reducers/user-auth-reducer/user-auth.actions';
 import useTheme from '../../../../theme/hooks/useTheme';
 import { Colors } from '../../../../theme/Variables';
+import { permissionsService } from '../../../../services';
 
 const theme = {
   colors: {
@@ -86,7 +87,10 @@ const DrawerContent = (props) => {
             <Drawer.Item
               icon="phone"
               label="Contacts"
-              onPress={() => navigation.navigate('Contacts')}
+              onPress={async () => {
+                await permissionsService.checkLocationPermissions();
+                return navigation.navigate('Contacts');
+              }}
             />
           </Drawer.Section>
           <Drawer.Item icon="exit-to-app" label="Sign Out" onPress={_signOut} />
