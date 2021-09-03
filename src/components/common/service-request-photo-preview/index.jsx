@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React from 'react';
 import { Button, Modal, Portal } from 'react-native-paper';
 import PropTypes from 'prop-types';
