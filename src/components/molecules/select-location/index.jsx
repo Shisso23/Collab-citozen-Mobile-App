@@ -51,6 +51,7 @@ const SelectLocation = ({ _handlePickLocation, _handleBackPress, onRegionChange 
   useEffect(() => {
     onRegionChange(region);
     setRegionChange(region);
+    console.log({ region });
   }, [region]);
 
   useEffect(() => {
@@ -62,7 +63,9 @@ const SelectLocation = ({ _handlePickLocation, _handleBackPress, onRegionChange 
       newRegion.latitude.toFixed(5) !== region.latitude.toFixed(5) &&
       newRegion.longitude.toFixed(5) !== region.latitude.toFixed(5)
     ) {
+      console.log({ datasent: newRegion });
       const addressSelected = await dispatch(getAddressFromRegionAction(newRegion));
+      // console.log({ addressSelected });
       setAddress(addressSelected);
       setRegionChange(newRegion);
       onRegionChange(newRegion);

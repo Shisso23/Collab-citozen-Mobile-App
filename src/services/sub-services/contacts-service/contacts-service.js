@@ -1,17 +1,22 @@
-/* eslint-disable no-unused-vars */
 import _ from 'lodash';
-import contactsUrls from './contacts.urls';
 import authNetworkService from '../auth-network-service/auth-network.service';
-import { mockApi } from '../../../dummy-data/mock-api';
-import { constructContactsModels } from '../../../models/app/contacts/contacts.model';
+import { constructContactsChannelsModel } from '../../../models/app/contacts/contacts.model';
+import globalServiceUrls from '../global/global.service.urls';
+import { apiFunctionWithUniqNameChannels } from '../../../helpers/api-function-name.helper';
 
-const getContactDetails = async (location) => {
-  const url = contactsUrls.contactsUrl();
-  const apiResponse = await mockApi.post(url, location);
-  const contacts = constructContactsModels(_.get(apiResponse, 'data.contacts', []));
-  return contacts;
+const getChannelsContacts = async (location) => {
+  const url = globalServiceUrls.globalFunctionUrl();
+  const data = await apiFunctionWithUniqNameChannels(
+    'get_channel_contacts_by_location',
+    location.longitude,
+    location.latitude,
+  );
+  const apiResponse = await authNetworkService.post(url, data);
+  console.log({ apiResponse });
+  const channelsContacts = constructContactsChannelsModel(_.get(apiResponse, 'data.Channels', []));
+  return channelsContacts;
 };
 
 export default {
-  getContactDetails,
+  getChannelsContacts,
 };

@@ -1,31 +1,31 @@
 import CreateAction from '../action-utilities/action-creator';
 
-const reducerName = 'contacts';
+const reducerName = 'channelContacts';
 
-const setContactDetails = CreateAction(reducerName, 'SET_CONTACTS_DETAILS');
-export const setContactDetailsAction = setContactDetails.action;
+const setChannelsContacts = CreateAction(reducerName, 'SET_CHANNELS_CONTACTS');
+export const setChannelsContactsAction = setChannelsContacts.action;
 
-const setIsLoadingContactDetails = CreateAction(reducerName, 'SET_IS_LOADING_CONTACTS_DETAILS');
-export const setIsLoadingContactDetailsAction = setIsLoadingContactDetails.action;
+const setIsLoadingChannelsContacts = CreateAction(reducerName, 'SET_IS_LOADING_CHANNELS_CONTACTS');
+export const setIsLoadingChannelsContactsAction = setIsLoadingChannelsContacts.action;
 
 const initialState = {
-  contactDetails: [],
-  isLoadingContactDetails: false,
+  channelsContacts: [],
+  isLoadingChannelsContacts: false,
 };
 
-export const contactsSelector = (reducers) => reducers.contactsReducer;
+export const channelContactsSelector = (reducers) => reducers.channelContactsReducer;
 
-export default function contactsReducer(state = initialState, action) {
+export default function channelContactsReducer(state = initialState, action) {
   switch (action.type) {
-    case setContactDetails.actionType:
+    case setChannelsContacts.actionType:
       return {
         ...state,
-        contactDetails: action.payload,
+        channelsContacts: action.payload,
       };
-    case setIsLoadingContactDetails:
+    case setIsLoadingChannelsContacts:
       return {
         ...state,
-        isLoadingContactDetails: action.payload,
+        isLoadingChannelsContacts: action.payload,
       };
     default:
       return state;

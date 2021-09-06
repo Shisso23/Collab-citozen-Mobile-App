@@ -1,30 +1,47 @@
 import React, { useEffect, useState } from 'react';
 import { List } from 'react-native-paper';
-import { Icon } from 'react-native-elements';
-import { FlatList, Text, View, ImageBackground, Linking, Alert } from 'react-native';
+import { Icon, Divider } from 'react-native-elements';
+import {
+  FlatList,
+  Text,
+  View,
+  ImageBackground,
+  Linking,
+  Alert,
+  TouchableOpacity,
+  StyleSheet,
+} from 'react-native';
 import Geolocation from 'react-native-geolocation-service';
-import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
 import _ from 'lodash';
 
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
-import { getContactDetailsAction } from '../../../reducers/contacts-reducer/contacts.actions';
+import { promptConfirm } from '../../../helpers/prompt.helper';
+import { getChannelsContactsAction } from '../../../reducers/contacts-reducer/contacts.actions';
+import { getAddressFromRegionAction } from '../../../reducers/location-reducer/location.actions';
+import { channelContactsSelector } from '../../../reducers/contacts-reducer/contacts.reducer';
+import { locationSelector } from '../../../reducers/location-reducer/location.reducer';
 
-const ContactDetailsScreen = ({ route }) => {
+const ContactDetailsScreen = () => {
   const { Common, Gutters, Fonts, Layout, Images } = useTheme();
-  const { params } = route;
-  const [currentLocationCordinates, setCurrentLocationCordinates] = useState({
-    latitude: null,
-    longitude: null,
-    atitudeDelta: 0.00922 * 1.5,
-    longitudeDelta: 0.00421 * 1.5,
-  });
-  const { contactDetails } = params;
 
-  useEffect(() => {
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
+  const [currentLocationCordinates, setCurrentLocationCordinates] = useState({
+    latitude: -34.224471,
+    longitude: 19.434491,
+    latitudeDelta: 0.011,
+    longitudeDelta: 0.011,
+  });
+
+  const { channelsContacts } = useSelector(channelContactsSelector);
+  const { selectedAddress } = useSelector(locationSelector);
+
+  const getCurrentLocation = () => {
     Geolocation.getCurrentPosition(
       (position) => {
-        console.log({ position });
         setCurrentLocationCordinates({
           ...currentLocationCordinates,
           latitude: position.coords.latitude,
@@ -36,11 +53,27 @@ const ContactDetailsScreen = ({ route }) => {
       },
       { timeout: 600, maximumAge: 0, enableHightAccuracy: true },
     );
-  }, []);
+  };
 
   useEffect(() => {
-    getContactDetailsAction(currentLocationCordinates);
-    console.log({ changed: currentLocationCordinates });
+    getContacts();
+    getCurrentLocation();
+    getAddress(currentLocationCordinates);
+  }, []);
+
+  const getAddress = async (coords) => {
+    const addressFromCoords = await dispatch(getAddressFromRegionAction(coords));
+    return addressFromCoords;
+  };
+
+  const getContacts = async () => {
+    return dispatch(getChannelsContactsAction(currentLocationCordinates));
+  };
+
+  useEffect(() => {
+    dispatch(getChannelsContactsAction(currentLocationCordinates));
+    getContacts();
+    getAddress(currentLocationCordinates);
   }, [currentLocationCordinates.latitude]);
 
   const onCall = (item) => {
@@ -54,66 +87,79 @@ const ContactDetailsScreen = ({ route }) => {
       .catch((error) => console.warn(_.get(error, 'message', 'Failed to open!')));
   };
 
-  const callPrompt = (item) => {
-    Alert.alert(
-      `Call for ${item.name} ?`,
-      '',
-      [
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-        {
-          text: 'Call',
-          onPress: () => onCall(item),
-        },
-      ],
-      { cancelable: false },
-    );
-  };
-
   const renderContactDetails = ({ item }) => {
     return (
-      <View style={[Common.textInputWithShadow, Gutters.tinyMargin]}>
-        <List.Item
-          title={item.name}
-          titleStyle={Common.cardTitle}
-          onPress={() => callPrompt(item)}
-          description={() => (
-            <View style={[Layout.column, Gutters.largeRMargin]}>
-              <View style={[Layout.rowHCenter, Gutters.tinyTPadding]}>
-                <Icon
-                  name="phone"
-                  type="font-awesome"
-                  color={Colors.primary}
-                  style={Gutters.smallRMargin}
-                />
-                <Text style={[Fonts.textRegular, Common.cardDescription]}>{item.number}</Text>
-              </View>
-            </View>
-          )}
-        />
+      <View style={Gutters.smallBMargin}>
+        <Text style={Gutters.smallVMargin}>{item.name}</Text>
+        {item.contacts.map((contact) => (
+          <View key={contact.objId} style={[Common.textInputWithShadow, Gutters.tinyMargin]}>
+            <List.Item
+              title={contact.name}
+              titleStyle={[Common.cardTitle]}
+              onPress={() =>
+                promptConfirm(`Contact ${contact.name} ?`, '', 'Call', () => onCall(contact))
+              }
+              description={() => (
+                <View style={[Layout.column, Gutters.largeRMargin]}>
+                  <View style={[Layout.rowHCenter, Gutters.tinyTPadding]}>
+                    <Icon
+                      name="phone"
+                      type="font-awesome"
+                      color={Colors.primary}
+                      style={Gutters.smallRMargin}
+                    />
+                    <Text style={[Fonts.textRegular, Common.cardDescription]}>
+                      {contact.number}
+                    </Text>
+                  </View>
+                </View>
+              )}
+            />
+          </View>
+        ))}
+        <Divider width={1} />
       </View>
     );
   };
 
   return (
     <>
-      {/* <TextInput
-        value={address}
-        label="Location Selected"
-        underlineColor={Colors.transparent}
-        onFocus={() => navigation.navigate('SelectLocationScreen')}
-      /> */}
       <ImageBackground
         source={Images.serviceRequest}
         style={[Layout.fullSize, Layout.fill]}
         resizeMode="cover"
       >
         <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>Contact details</Text>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('channelsContacts', {
+              initialCoords: currentLocationCordinates,
+              latitude: null,
+              longitude: null,
+            });
+          }}
+          activeOpacity={1}
+          style={[Gutters.tinyLPadding, Gutters.smallPadding, { backgroundColor: Colors.shadow }]}
+        >
+          <Text
+            style={[
+              Layout.alignSelfStart,
+              Gutters.smallLPadding,
+              Gutters.tinyBMargin,
+              styles.locationLabel,
+            ]}
+          >
+            Location selected
+          </Text>
+          <View style={[Layout.rowBetween, Layout.alignItemsCenter]}>
+            <Text style={Gutters.smallLPadding}>{selectedAddress}</Text>
+            <Icon name="location-pin" type="entypo" size={25} style={[Gutters.smallRMargin]} />
+          </View>
+        </TouchableOpacity>
+
         <FlatList
           contentContainerStyle={Gutters.smallHMargin}
-          data={contactDetails}
+          data={channelsContacts}
           renderItem={renderContactDetails}
           keyExtractor={(item) => String(item.number)}
         />
@@ -122,10 +168,8 @@ const ContactDetailsScreen = ({ route }) => {
   );
 };
 
-ContactDetailsScreen.propTypes = {
-  route: PropTypes.object.isRequired,
-};
-
-ContactDetailsScreen.defaultProps = {};
+const styles = StyleSheet.create({
+  locationLabel: { fontSize: 11 },
+});
 
 export default ContactDetailsScreen;

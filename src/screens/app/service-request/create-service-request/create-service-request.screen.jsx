@@ -18,7 +18,7 @@ import { flashService } from '../../../../services';
 import { createServiceRequestModel } from '../../../../models';
 import { municipalitiesSelector } from '../../../../reducers/municipalities-reducer/municipalities.reducer';
 import HeaderBackGround from '../../../../components/atoms/header-background/index';
-import { promptConfirmDelete } from '../../../../helpers/prompt.helper';
+import { promptConfirm } from '../../../../helpers/prompt.helper';
 import { Colors } from '../../../../theme/Variables';
 
 const CreateServiceRequestScreen = () => {
@@ -42,7 +42,7 @@ const CreateServiceRequestScreen = () => {
     return dispatch(createServiceRequestAction(form));
   };
   const handleDeleteImage = (imageToDelete) => {
-    promptConfirmDelete('Are you sure you want to delete this item?', () => {
+    promptConfirm('Are you sure?', 'Are you sure you want to delete this item?', 'Delete', () => {
       const remainingImages = thumNailImages.filter((image) => {
         return image.uri !== imageToDelete.uri;
       });

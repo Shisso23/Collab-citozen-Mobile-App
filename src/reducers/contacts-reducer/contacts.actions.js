@@ -1,10 +1,10 @@
 import { contactsService } from '../../services';
-import { setContactDetailsAction, setIsLoadingContactDetailsAction } from './contacts.reducer';
+import { setChannelsContactsAction, setIsLoadingChannelsContactsAction } from './contacts.reducer';
 
-export const getContactDetailsAction = (location) => async (dispatch) => {
-  dispatch(setIsLoadingContactDetailsAction(true));
-  const contactDetails = await contactsService.getContactDetails(location);
-  dispatch(setContactDetailsAction(contactDetails));
-  dispatch(setIsLoadingContactDetailsAction(false));
-  return contactDetails;
+export const getChannelsContactsAction = (location) => async (dispatch) => {
+  dispatch(setIsLoadingChannelsContactsAction(true));
+  const channelsContacts = await contactsService.getChannelsContacts(location);
+  dispatch(setChannelsContactsAction(channelsContacts));
+  dispatch(setIsLoadingChannelsContactsAction(false));
+  return channelsContacts;
 };

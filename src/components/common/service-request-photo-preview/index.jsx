@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import { Button, Modal, Portal } from 'react-native-paper';
 import PropTypes from 'prop-types';
@@ -37,7 +38,7 @@ const ServiceRequestPhotoPreview = ({
     );
   };
 
-  const _renderCarouselItem = (item) => {
+  const _renderCarouselItem = ({ item }) => {
     return (
       <ImageBackground
         source={{ uri: _.get(item, 'uri', null) }}

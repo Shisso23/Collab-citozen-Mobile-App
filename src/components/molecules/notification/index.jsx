@@ -15,7 +15,7 @@ import {
   previewDeleNotificationAction,
 } from '../../../reducers/notification-reducer/notification.actions';
 import { TrashButton } from '../../atoms';
-import { promptConfirmDelete } from '../../../helpers/prompt.helper';
+import { promptConfirm } from '../../../helpers/prompt.helper';
 import useTheme from '../../../theme/hooks/useTheme';
 import SwipeRowContainer from '../../atoms/swipe-row/swipe-row';
 
@@ -51,7 +51,7 @@ const Notification = ({ notification }) => {
 
   const _handleDelete = () => {
     const deletedAt = Moment(new Date()).format('yyyy-mm-DD hh:mm:ss');
-    promptConfirmDelete('Are you sure you want to delete this item?', () => {
+    promptConfirm('Are you sure?', 'Are you sure you want to delete this item?', 'Delete', () => {
       setDeleting(true);
       dispatch(deleteNotificationAction(notificationId, deletedAt, _.get(user, 'user_id', '')));
     });

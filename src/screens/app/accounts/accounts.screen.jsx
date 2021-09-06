@@ -11,7 +11,7 @@ import { accountActions } from '../../../reducers/accounts-reducer';
 
 import { TrashButton } from '../../../components/atoms';
 import SwipeRowContainer from '../../../components/atoms/swipe-row/swipe-row';
-import { promptConfirmDelete } from '../../../helpers/prompt.helper';
+import { promptConfirm } from '../../../helpers/prompt.helper';
 import { previewDeleAccountAction } from '../../../reducers/accounts-reducer/accounts.actions';
 
 const AccountsScreen = () => {
@@ -100,7 +100,7 @@ const AccountsScreen = () => {
   const _handleDelete = (account, channel) => {
     const channelId = _.get(channel, 'objectId', '');
     const accountNumber = _.get(account, 'accountNumber', '');
-    promptConfirmDelete('Are you sure you want to delete this item?', () => {
+    promptConfirm('Are you sure?', 'Are you sure you want to delete this item?', 'Delete', () => {
       dispatch(accountActions.deleteAccountAction(channelId, user, accountNumber));
     });
   };

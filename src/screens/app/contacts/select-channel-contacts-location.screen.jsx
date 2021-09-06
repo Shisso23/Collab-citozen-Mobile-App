@@ -1,28 +1,29 @@
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import SelectLocation from '../../../components/molecules/select-location';
-import { getContactDetailsAction } from '../../../reducers/contacts-reducer/contacts.actions';
+import { getChannelsContactsAction } from '../../../reducers/contacts-reducer/contacts.actions';
 
-const LocateContactsChannelScreen = () => {
+const selectChannelContactsScreen = ({ route }) => {
   const navigation = useNavigation();
+  const { params } = route;
+  const { initialCoords } = params;
   const dispatch = useDispatch();
   const [regionChange, setRegionChange] = useState(null);
-  const { contactDetails } = useSelector((reducers) => reducers.contactsReducer);
 
   const _handleBackPress = () => {
-    navigation.goBack();
+    navigation.navigate('ContactDetails');
   };
 
   const _handlePickLocation = () => {
     dispatch(
-      getContactDetailsAction({
+      getChannelsContactsAction({
         longitude: regionChange.longitude,
         latitude: regionChange.latitude,
       }),
     );
-    return navigation.navigate('ContactDetails', { contactDetails });
+    return navigation.navigate('ContactDetails');
   };
 
   return (
@@ -30,8 +31,9 @@ const LocateContactsChannelScreen = () => {
       _handleBackPress={_handleBackPress}
       _handlePickLocation={_handlePickLocation}
       onRegionChange={setRegionChange}
+      inititialCoords={initialCoords}
     />
   );
 };
 
-export default LocateContactsChannelScreen;
+export default selectChannelContactsScreen;

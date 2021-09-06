@@ -1,8 +1,8 @@
 import { Alert } from 'react-native';
 
-export const promptConfirmDelete = (message, onConfirm) => {
+export const promptConfirm = (text = '', message, confirmText = 'Confirm', onConfirm) => {
   Alert.alert(
-    'Are you sure?',
+    text,
     message,
     [
       {
@@ -10,7 +10,7 @@ export const promptConfirmDelete = (message, onConfirm) => {
         style: 'cancel',
       },
       {
-        text: 'Delete',
+        text: confirmText,
         onPress: onConfirm,
       },
     ],

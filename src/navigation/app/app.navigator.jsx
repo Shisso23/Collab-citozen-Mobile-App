@@ -25,9 +25,8 @@ import StatementsScreen from '../../screens/app/accounts/statements.screen';
 import StatementViewScreen from '../../screens/app/accounts/statementView.screen';
 import AccountChannelsScreen from '../../screens/app/accounts/account.channels.screen';
 import AddAccountScreen from '../../screens/app/accounts/add-account.screen';
-import ContactsScreen from '../../screens/app/contacts/contacts.screen';
 import ContactDetails from '../../screens/app/contacts/contacts.details.screen';
-import LocateContactsChannelScreen from '../../screens/app/contacts/select-channel-location.screen';
+import selectChannelContactsScreen from '../../screens/app/contacts/select-channel-contacts-location.screen';
 
 const Drawer = createDrawerNavigator();
 const AppStack = createStackNavigator();
@@ -190,25 +189,16 @@ const DrawerNavigator = () => {
       />
 
       <Drawer.Screen
-        name="Contacts"
-        component={ContactsScreen}
-        options={{
-          headerShown: true,
-        }}
-      />
-
-      <Drawer.Screen
         name="ContactDetails"
         component={ContactDetails}
         options={{
           headerShown: true,
-          header: (props) => <HeaderBackGround {...props} backButton />,
         }}
       />
 
       <Drawer.Screen
         name="channelsContacts"
-        component={LocateContactsChannelScreen}
+        component={selectChannelContactsScreen}
         options={{
           headerShown: false,
         }}

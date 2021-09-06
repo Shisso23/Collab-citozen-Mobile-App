@@ -89,7 +89,7 @@ const DrawerContent = (props) => {
               label="Contacts"
               onPress={async () => {
                 await permissionsService.checkLocationPermissions();
-                return navigation.navigate('Contacts');
+                return navigation.navigate('ContactDetails');
               }}
             />
           </Drawer.Section>
