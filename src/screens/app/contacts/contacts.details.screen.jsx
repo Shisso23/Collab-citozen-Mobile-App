@@ -23,6 +23,7 @@ import { getChannelsContactsAction } from '../../../reducers/contacts-reducer/co
 import { getAddressFromRegionAction } from '../../../reducers/location-reducer/location.actions';
 import { channelContactsSelector } from '../../../reducers/contacts-reducer/contacts.reducer';
 import { locationSelector } from '../../../reducers/location-reducer/location.reducer';
+import { flashService } from '../../../services';
 
 const ContactDetailsScreen = () => {
   const { Common, Gutters, Fonts, Layout, Images } = useTheme();
@@ -48,8 +49,8 @@ const ContactDetailsScreen = () => {
           longitude: position.coords.longitude,
         });
       },
-      (error) => {
-        console.log({ error });
+      () => {
+        flashService.error('Failed to get current location');
       },
       { timeout: 600, maximumAge: 0, enableHightAccuracy: true },
     );

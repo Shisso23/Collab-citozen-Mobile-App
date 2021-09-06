@@ -40,7 +40,7 @@ const SelectLocationScreen = () => {
     return dispatch(getMunicipalitiesAction(regionChange.longitude, regionChange.latitude)).then(
       (channels) => {
         if (channels.length === 0 || Object.keys(channels).length === 0) {
-          return flashService.info('There are no channels at this location!');
+          return flashService.info('There are no available channels to submit service request.');
         }
         return navigation.navigate('CreateServiceRequest');
       },

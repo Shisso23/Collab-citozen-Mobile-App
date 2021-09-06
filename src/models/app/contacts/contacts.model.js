@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { flashService } from '../../../services';
 
 export const contactsModel = (_apiContactsModel = {}) => ({
   objId: _.get(_apiContactsModel, 'obj_id', ''),
@@ -23,6 +24,7 @@ export const constructContactsChannelsModel = (apiContactsChannelsModel) => {
       contactsChannelsModel(channelContacts),
     );
   } catch (error) {
+    flashService.info('No contacts information available!');
     return [];
   }
 };
