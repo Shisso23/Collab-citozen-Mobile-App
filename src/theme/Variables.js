@@ -24,7 +24,7 @@ export const Colors = {
   red: '#d01a1a',
   gray: '#7e7e7e',
   darkgray: '#5d5d5d',
-  shadow: '#d6d6d6',
+  shadow: '#e3e3e3',
 };
 
 export const NavigationColors = {

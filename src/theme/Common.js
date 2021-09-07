@@ -165,8 +165,8 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
         width: 0,
         height: 3,
       },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
+      shadowOpacity: 0.16,
+      shadowRadius: 16,
     },
     whiteText: {
       color: Colors.white,

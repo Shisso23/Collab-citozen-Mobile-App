@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { List } from 'react-native-paper';
-import { Icon, Divider } from 'react-native-elements';
+import { Button, List } from 'react-native-paper';
+import { Icon } from 'react-native-elements';
 import {
   FlatList,
   Text,
@@ -91,9 +91,11 @@ const ContactDetailsScreen = () => {
   const renderContactDetails = ({ item }) => {
     return (
       <View style={Gutters.smallBMargin}>
-        <Text style={Gutters.smallVMargin}>{item.name}</Text>
+        <Text style={[Gutters.smallVMargin, Gutters.regularBMargin, styles.channel]}>
+          {item.name}
+        </Text>
         {item.contacts.map((contact) => (
-          <View key={contact.objId} style={[Common.textInputWithShadow, Gutters.tinyMargin]}>
+          <View key={contact.objId} style={[Common.textInputWithShadow, styles.contactItem]}>
             <List.Item
               title={contact.name}
               titleStyle={[Common.cardTitle]}
@@ -101,24 +103,28 @@ const ContactDetailsScreen = () => {
                 promptConfirm(`Contact ${contact.name} ?`, '', 'Call', () => onCall(contact))
               }
               description={() => (
-                <View style={[Layout.column, Gutters.largeRMargin]}>
-                  <View style={[Layout.rowHCenter, Gutters.tinyTPadding]}>
-                    <Icon
-                      name="phone"
-                      type="font-awesome"
-                      color={Colors.primary}
-                      style={Gutters.smallRMargin}
-                    />
-                    <Text style={[Fonts.textRegular, Common.cardDescription]}>
-                      {contact.number}
-                    </Text>
-                  </View>
+                <View style={[Layout.rowHCenter, Gutters.tinyTPadding]}>
+                  <Icon
+                    name="phone"
+                    type="font-awesome"
+                    color={Colors.primary}
+                    style={Gutters.smallRMargin}
+                  />
+                  <Text
+                    style={[Fonts.textRegular, Common.cardDescription, { color: Colors.darkgray }]}
+                  >
+                    {contact.number}
+                  </Text>
                 </View>
+              )}
+              right={() => (
+                <Button mode="contained" style={[Layout.alignItemsCenter, Layout.alignSelfCenter]}>
+                  Call
+                </Button>
               )}
             />
           </View>
         ))}
-        <Divider width={1} />
       </View>
     );
   };
@@ -140,21 +146,19 @@ const ContactDetailsScreen = () => {
             });
           }}
           activeOpacity={1}
-          style={[Gutters.tinyLPadding, Gutters.smallPadding, { backgroundColor: Colors.shadow }]}
+          style={[
+            Gutters.tinyLPadding,
+            Gutters.smallHMargin,
+            Gutters.smallPadding,
+            Gutters.smallBMargin,
+            { backgroundColor: Colors.shadow },
+          ]}
         >
-          <Text
-            style={[
-              Layout.alignSelfStart,
-              Gutters.smallLPadding,
-              Gutters.tinyBMargin,
-              styles.locationLabel,
-            ]}
-          >
+          <Text style={[Gutters.smallLPadding, Gutters.tinyBMargin, styles.locationLabel]}>
             Location selected
           </Text>
           <View style={[Layout.rowBetween, Layout.alignItemsCenter]}>
-            <Text style={Gutters.smallLPadding}>{selectedAddress}</Text>
-            <Icon name="location-pin" type="entypo" size={25} style={[Gutters.smallRMargin]} />
+            <Text style={[Gutters.smallLPadding, styles.address]}>{selectedAddress}</Text>
           </View>
         </TouchableOpacity>
 
@@ -170,7 +174,10 @@ const ContactDetailsScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  locationLabel: { fontSize: 11 },
+  address: { fontSize: 15 },
+  channel: { fontSize: 16, fontWeight: '500' },
+  contactItem: { margin: 8 },
+  locationLabel: { color: Colors.gray, fontSize: 12 },
 });
 
 export default ContactDetailsScreen;
