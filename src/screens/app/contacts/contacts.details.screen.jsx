@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { Button, List } from 'react-native-paper';
 import { Icon } from 'react-native-elements';
 import {
@@ -10,72 +10,60 @@ import {
   Alert,
   TouchableOpacity,
   StyleSheet,
+  Platform,
 } from 'react-native';
-import Geolocation from 'react-native-geolocation-service';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigation } from '@react-navigation/native';
-import _ from 'lodash';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
 import { promptConfirm } from '../../../helpers/prompt.helper';
 import { getChannelsContactsAction } from '../../../reducers/contacts-reducer/contacts.actions';
-import { getAddressFromRegionAction } from '../../../reducers/location-reducer/location.actions';
+import {
+  getAddressFromRegionAction,
+  getCurrentPositionAction,
+} from '../../../reducers/location-reducer/location.actions';
 import { channelContactsSelector } from '../../../reducers/contacts-reducer/contacts.reducer';
 import { locationSelector } from '../../../reducers/location-reducer/location.reducer';
-import { flashService } from '../../../services';
 
 const ContactDetailsScreen = () => {
   const { Common, Gutters, Fonts, Layout, Images } = useTheme();
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const [currentLocationCordinates, setCurrentLocationCordinates] = useState({
-    latitude: -34.224471,
-    longitude: 19.434491,
-    latitudeDelta: 0.011,
-    longitudeDelta: 0.011,
-  });
 
   const { channelsContacts } = useSelector(channelContactsSelector);
-  const { selectedAddress } = useSelector(locationSelector);
-
-  const getCurrentLocation = () => {
-    Geolocation.getCurrentPosition(
-      (position) => {
-        setCurrentLocationCordinates({
-          ...currentLocationCordinates,
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-        });
-      },
-      () => {
-        flashService.error('Failed to get current location');
-      },
-      { timeout: 600, maximumAge: 0, enableHightAccuracy: true },
-    );
-  };
+  const { selectedAddress, region } = useSelector(locationSelector);
 
   useEffect(() => {
-    getContacts();
-    getCurrentLocation();
-    getAddress(currentLocationCordinates);
+    dispatch(getCurrentPositionAction());
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (region) {
+        getAddress(region);
+        getContacts(region);
+      }
+    }, [region]),
+  );
+
+  const onBack = () => {
+    navigation.navigate('ContactDetails');
+  };
+
+  const handlePickLocation = () => {
+    return navigation.navigate('ContactDetails');
+  };
 
   const getAddress = async (coords) => {
     const addressFromCoords = await dispatch(getAddressFromRegionAction(coords));
     return addressFromCoords;
   };
 
-  const getContacts = async () => {
-    return dispatch(getChannelsContactsAction(currentLocationCordinates));
+  const getContacts = async (currentRegion) => {
+    return dispatch(getChannelsContactsAction(currentRegion));
   };
-
-  useEffect(() => {
-    dispatch(getChannelsContactsAction(currentLocationCordinates));
-    getContacts();
-    getAddress(currentLocationCordinates);
-  }, [currentLocationCordinates.latitude]);
 
   const onCall = (item) => {
     Linking.openURL(`tel://${item.number}`)
@@ -85,7 +73,7 @@ const ContactDetailsScreen = () => {
         }
         return Linking.openURL(item.number);
       })
-      .catch((error) => console.warn(_.get(error, 'message', 'Failed to open!')));
+      .catch((error) => error);
   };
 
   const renderContactDetails = ({ item }) => {
@@ -100,7 +88,9 @@ const ContactDetailsScreen = () => {
               title={contact.name}
               titleStyle={[Common.cardTitle]}
               onPress={() =>
-                promptConfirm(`Contact ${contact.name} ?`, '', 'Call', () => onCall(contact))
+                Platform.OS === 'ios'
+                  ? onCall(contact)
+                  : promptConfirm(`Contact ${contact.name} ?`, '', 'Call', () => onCall(contact))
               }
               description={() => (
                 <View style={[Layout.rowHCenter, Gutters.tinyTPadding]}>
@@ -139,10 +129,9 @@ const ContactDetailsScreen = () => {
         <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>Contact details</Text>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('channelsContacts', {
-              initialCoords: currentLocationCordinates,
-              latitude: null,
-              longitude: null,
+            navigation.navigate('SelectLocationScreen', {
+              onBack,
+              handlePickLocation,
             });
           }}
           activeOpacity={1}
