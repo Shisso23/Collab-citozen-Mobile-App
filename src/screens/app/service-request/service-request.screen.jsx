@@ -39,9 +39,9 @@ const ServiceRequestScreen = () => {
   const _getStatusIndicator = (status) => {
     switch (status) {
       case 'Registered':
-        return Colors.softBlue;
-      case 'Assigned':
         return Colors.primary;
+      case 'Assigned':
+        return Colors.softBlue;
       case 'Work in Progress':
         return Colors.warning;
       default:
@@ -97,7 +97,6 @@ const ServiceRequestScreen = () => {
                   style={[Layout.alignSelfCenter, Gutters.smallHMargin]}
                 />
               )}
-              <Icon name="ellipsis-v" style={[Layout.alignSelfCenter]} />
             </View>
           )}
           descriptionNumberOfLines={10}
