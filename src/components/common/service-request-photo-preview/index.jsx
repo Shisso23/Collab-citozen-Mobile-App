@@ -1,13 +1,11 @@
-/* eslint-disable react/prop-types */
-import React, { useState } from 'react';
+import React from 'react';
 import { Button, Modal, Portal } from 'react-native-paper';
 import PropTypes from 'prop-types';
-import { ActivityIndicator, Dimensions, StyleSheet, View, ImageBackground } from 'react-native';
-import _ from 'lodash';
-import Carousel, { Pagination } from 'react-native-snap-carousel';
+import { Dimensions, StyleSheet, View } from 'react-native';
 
 import { Colors } from '../../../theme/Variables';
 import { useTheme } from '../../../theme';
+import CustomCarousel from '../../molecules/custom-carousel';
 
 const { width, height } = Dimensions.get('window');
 const ServiceRequestPhotoPreview = ({
@@ -18,51 +16,8 @@ const ServiceRequestPhotoPreview = ({
   updateFormData,
   cancelSelection,
 }) => {
-  const [activeImage, setActiveImage] = useState(0);
   const { Fonts, Common, Layout } = useTheme();
 
-  const renderPagination = () => {
-    return (
-      <Pagination
-        dotsLength={sources.length}
-        activeDotIndex={activeImage}
-        containerStyle={{ backgroundColor: Colors.transparent }}
-        dotStyle={styles.paginationDots}
-        inactiveDotStyle={{
-          backgroundColor: Colors.darkgray,
-        }}
-        activeOpacity={1}
-        inactiveDotOpacity={0.4}
-        inactiveDotScale={0.6}
-      />
-    );
-  };
-
-  const _renderCarouselItem = ({ item }) => {
-    return (
-      <ImageBackground
-        source={{ uri: _.get(item, 'uri', null) }}
-        style={[styles.image, Layout.alignItemsCenter, Layout.justifyContentCenter]}
-        PlaceholderContent={<ActivityIndicator />}
-      />
-    );
-  };
-  const renderCarousel = () => {
-    return (
-      <>
-        <Carousel
-          data={sources}
-          renderItem={_renderCarouselItem}
-          sliderWidth={width}
-          itemWidth={width}
-          layout="tinder"
-          layoutCardOffset="9"
-          onSnapToItem={(index) => setActiveImage(index)}
-        />
-        {renderPagination()}
-      </>
-    );
-  };
   return (
     <>
       <Portal>
@@ -71,7 +26,7 @@ const ServiceRequestPhotoPreview = ({
           onDismiss={onDismiss}
           contentContainerStyle={styles.containerStyle}
         >
-          {renderCarousel()}
+          <CustomCarousel sources={sources} />
           <View style={[Layout.rowBetween]}>
             <Button
               mode="outlined"

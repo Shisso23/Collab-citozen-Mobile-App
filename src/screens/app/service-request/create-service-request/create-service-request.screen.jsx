@@ -38,7 +38,6 @@ const CreateServiceRequestScreen = () => {
     dispatch(setImagesSources([]));
   }, []);
   const _handleFormSubmit = (form) => {
-    form.images = thumNailImages;
     return dispatch(createServiceRequestAction(form));
   };
   const handleDeleteImage = (imageToDelete) => {
@@ -53,7 +52,7 @@ const CreateServiceRequestScreen = () => {
   };
   const renderThumbNails = ({ item }) => {
     return (
-      <View key={item.uri} style={[Gutters.largeTMargin, Gutters.smallHMargin]}>
+      <View style={[Gutters.largeTMargin, Gutters.smallHMargin]}>
         <ImageBackground
           source={{ uri: item.uri } || null}
           style={[styles.thumbnail, Layout.alignItemsEnd]}
@@ -93,6 +92,7 @@ const CreateServiceRequestScreen = () => {
           <FlatList
             style={[Gutters.alignSelfCenter, Gutters.tinyLMargin]}
             data={thumNailImages}
+            keyExtractor={(item, index) => `${item.uri}-${index}`}
             renderItem={renderThumbNails}
             horizontal
           />

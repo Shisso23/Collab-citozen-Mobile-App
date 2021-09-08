@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { ViewPropTypes, View, Keyboard } from 'react-native';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
@@ -30,11 +30,13 @@ const CreateServiceRequestForm = ({
   initialValues,
   municipalities,
   setThumbNailImages,
+  thumbNailImages,
 }) => {
   const { Common, Layout, Gutters, Colors } = useTheme();
   const { selectedAddress, region } = useSelector(locationSelector);
   const [address, setAddress] = useState('');
   const navigation = useNavigation();
+  const formikRef = useRef(null);
   const [serviceTypesAvailable, setServiceTypesAvailable] = useState(false);
   const [requirementsExist, setRequirementsExist] = useState(false);
   const [requirementsServiceType, setRequirementsServiceType] = useState('');
@@ -53,6 +55,10 @@ const CreateServiceRequestForm = ({
       checkIfServiceTypesAvaliable();
     }, []),
   );
+
+  useEffect(() => {
+    formikRef.current.setFieldValue('images', thumbNailImages);
+  }, [JSON.stringify(thumbNailImages)]);
 
   useEffect(() => {
     setAddress(selectedAddress);
@@ -86,8 +92,8 @@ const CreateServiceRequestForm = ({
         initialValues={initialValues}
         initialStatus={{ apiErrors: {} }}
         onSubmit={_handleSubmission}
-        enableReinitialize
         validationSchema={validationSchema}
+        innerRef={formikRef}
       >
         {({
           handleChange,
@@ -272,8 +278,8 @@ const CreateServiceRequestForm = ({
                   style={[Layout.fill, Gutters.tinyRMargin]}
                   disabled={isSubmitting}
                   onImageSelect={(images) => {
-                    setFieldValue('images', [...values.images, ...images]);
-                    setThumbNailImages([...values.images, ...images]);
+                    const uniqueImages = [...new Set([...values.images, ...images])];
+                    setThumbNailImages(uniqueImages);
                   }}
                 />
 
@@ -302,11 +308,13 @@ CreateServiceRequestForm.propTypes = {
   containerStyle: ViewPropTypes.style,
   municipalities: PropTypes.object.isRequired,
   setThumbNailImages: PropTypes.func.isRequired,
+  thumbNailImages: PropTypes.array,
 };
 
 CreateServiceRequestForm.defaultProps = {
   onSuccess: () => null,
   containerStyle: {},
+  thumbNailImages: [],
 };
 
 export default CreateServiceRequestForm;

@@ -4,20 +4,27 @@ import srUrls from '../../../services/sub-services/service-request-service/servi
 import storageService from '../../../services/sub-services/storage-service/storage.service';
 
 const getServiceRequestImageUrl = (_apiServiceRequestModel, token) => {
-  const fileId = _.get(_apiServiceRequestModel, 'files[0].file_id');
   const objId = _.get(_apiServiceRequestModel, 'obj_id');
-  if (!fileId) {
+
+  const files = _.get(_apiServiceRequestModel, 'files', null);
+  if (!files) {
     return null;
   }
-  const uri = srUrls.viewSrImageUrl(objId, fileId);
-
-  return {
-    uri,
-    timeout: 20000,
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  };
+  const srImages = files.map((file) => {
+    const fileId = file.file_id;
+    if (!fileId) {
+      return null;
+    }
+    const uri = srUrls.viewSrImageUrl(objId, fileId);
+    return {
+      uri,
+      timeout: 20000,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+  });
+  return srImages;
 };
 
 export const serviceRequestModel = (_apiServiceRequestModel = {}, accessToken) => ({

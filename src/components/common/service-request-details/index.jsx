@@ -12,7 +12,7 @@ const ServiceRequestDetails = ({ serviceRequest }) => {
   const { Gutters, Layout, Fonts } = useTheme();
 
   const _setImageUrl = (item) => {
-    return _.isEmpty(item.serviceRequestImage) ? null : item.serviceRequestImage;
+    return _.isEmpty(item.serviceRequestImage) ? null : [item.serviceRequestImage].flat()[0];
   };
 
   return (
