@@ -8,6 +8,7 @@ import useTheme from '../../../theme/hooks/useTheme';
 import { permissionsService } from '../../../services';
 import { myChannelsSelector } from '../../../reducers/my-channels/my-channels.reducer';
 import { getMyChannelsAction } from '../../../reducers/my-channels/my-channels.actions';
+import { getCurrentPositionAction } from '../../../reducers/location-reducer/location.actions';
 
 const ViewSubscribeToChannelsScreen = () => {
   const navigation = useNavigation();
@@ -22,12 +23,15 @@ const ViewSubscribeToChannelsScreen = () => {
   useFocusEffect(
     React.useCallback(() => {
       _loadMyChannels();
+      return () => {
+        dispatch(getCurrentPositionAction());
+      };
     }, []),
   );
 
   const _handleOnSubscribeToChannelsPress = async () => {
     await permissionsService.checkLocationPermissions();
-    navigation.navigate('SelectLocationScreen', true);
+    navigation.navigate('SelectLocationScreen', { fromSubscribedChannels: true });
   };
 
   const _getStatusIndicator = (status) => {

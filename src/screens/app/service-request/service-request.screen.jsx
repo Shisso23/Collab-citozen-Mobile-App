@@ -11,6 +11,7 @@ import useTheme from '../../../theme/hooks/useTheme';
 import { serviceRequestSelector } from '../../../reducers/service-request-reducer/service-request.reducer';
 import { getServiceRequestsAction } from '../../../reducers/service-request-reducer/service-request.actions';
 import { permissionsService } from '../../../services';
+import { getCurrentPositionAction } from '../../../reducers/location-reducer/location.actions';
 
 const ServiceRequestScreen = () => {
   const navigation = useNavigation();
@@ -25,6 +26,9 @@ const ServiceRequestScreen = () => {
   useFocusEffect(
     React.useCallback(() => {
       _loadServiceRequests();
+      return () => {
+        dispatch(getCurrentPositionAction());
+      };
     }, []),
   );
 
@@ -46,12 +50,12 @@ const ServiceRequestScreen = () => {
   };
 
   const _setImageUrl = (item) => {
-    return !item.serviceRequestImage ? null : item.serviceRequestImage[0];
+    return _.isEmpty(item.serviceRequestImage) ? null : item.serviceRequestImage;
   };
 
   const _handleOnServiceRequestCreatePress = async () => {
     await permissionsService.checkLocationPermissions();
-    navigation.navigate('SelectLocationScreen', false);
+    navigation.navigate('SelectLocationScreen', { fromSubscribedChannels: false });
   };
 
   const serviceRequestItem = ({ item }) => {
