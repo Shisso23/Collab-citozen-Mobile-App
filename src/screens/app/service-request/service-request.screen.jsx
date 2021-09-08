@@ -50,7 +50,7 @@ const ServiceRequestScreen = () => {
   };
 
   const _setImageUrl = (item) => {
-    return _.isEmpty(item.serviceRequestImage) ? null : item.serviceRequestImage;
+    return !item.serviceRequestImage ? null : item.serviceRequestImage[0];
   };
 
   const _handleOnServiceRequestCreatePress = async () => {

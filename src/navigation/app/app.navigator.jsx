@@ -26,7 +26,6 @@ import StatementViewScreen from '../../screens/app/accounts/statementView.screen
 import AccountChannelsScreen from '../../screens/app/accounts/account.channels.screen';
 import AddAccountScreen from '../../screens/app/accounts/add-account.screen';
 import ContactDetails from '../../screens/app/contacts/contacts.details.screen';
-import selectChannelContactsScreen from '../../screens/app/contacts/select-channel-contacts-location.screen';
 
 const Drawer = createDrawerNavigator();
 const AppStack = createStackNavigator();
@@ -193,14 +192,6 @@ const DrawerNavigator = () => {
         component={ContactDetails}
         options={{
           headerShown: true,
-        }}
-      />
-
-      <Drawer.Screen
-        name="channelsContacts"
-        component={selectChannelContactsScreen}
-        options={{
-          headerShown: false,
         }}
       />
 
