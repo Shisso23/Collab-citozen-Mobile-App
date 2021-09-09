@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Image, Modal } from 'react-native';
+import { View, StyleSheet, Image, Modal, Pressable } from 'react-native';
 import PropTypes from 'prop-types';
 import { Button, Text } from 'react-native-elements';
 import { useDispatch } from 'react-redux';
@@ -7,6 +7,8 @@ import { useDispatch } from 'react-redux';
 import useTheme from '../../../theme/hooks/useTheme';
 import { initAppAction } from '../../../reducers/app-reducer/app.actions';
 import Common from '../../../theme/Common';
+import { Colors } from '../../../theme/Variables';
+import { setIsServerOfflineAction } from '../../../reducers/user-auth-reducer/user-auth.reducer';
 
 const TimeoutScreen = ({ route }) => {
   const { Fonts, Images, Gutters, Layout } = useTheme();
@@ -34,6 +36,26 @@ const TimeoutScreen = ({ route }) => {
           titleStyle={styles.buttonTitle}
           containerStyle={[Layout.alignItemsCenter, Layout.alignSelfCenter, styles.submitButton]}
         />
+        <Pressable
+          onPress={() => {
+            dispatch(setIsServerOfflineAction(false));
+          }}
+        >
+          {() => {
+            return (
+              <Text
+                style={[
+                  styles.signOut,
+                  Layout.alignItemsCenter,
+                  Layout.alignSelfCenter,
+                  styles.submitButton,
+                ]}
+              >
+                Sign out
+              </Text>
+            );
+          }}
+        </Pressable>
       </View>
     </Modal>
   );
@@ -57,6 +79,7 @@ const styles = StyleSheet.create({
     marginTop: '44%',
     width: 310,
   },
+  signOut: { color: Colors.primary, fontSize: 19, textDecorationLine: 'underline' },
   submitButton: {
     marginTop: 25,
   },
