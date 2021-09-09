@@ -19,7 +19,10 @@ export const initAppAction = () => {
         dispatch(setIsAuthenticatedAction(false));
       });
     }
-    RNBootSplash.hide({ fade: true });
+    setTimeout(() => {
+      RNBootSplash.hide({ fade: true });
+    }, 900); // force process to run a bit later.
+    // ensures that the login screen is not shown when the user is authenticated.
   };
 };
 
