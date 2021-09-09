@@ -22,7 +22,7 @@ export default function channelContactsReducer(state = initialState, action) {
         ...state,
         channelsContacts: action.payload,
       };
-    case setIsLoadingChannelsContacts:
+    case setIsLoadingChannelsContacts.actionType:
       return {
         ...state,
         isLoadingChannelsContacts: action.payload,

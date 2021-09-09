@@ -86,6 +86,7 @@ const App = () => {
       'Require cycle',
       'VirtualizedLists should never be nested',
       'Usage of "messaging().registerDeviceForRemoteMessages()" is not required.',
+      'Non-serializable values were found in the navigation state',
     ]);
     loadAppCenter();
     messaging()

@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Platform,
+  RefreshControl,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
@@ -32,7 +33,7 @@ const ContactDetailsScreen = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  const { channelsContacts } = useSelector(channelContactsSelector);
+  const { channelsContacts, isLoadingChannelsContacts } = useSelector(channelContactsSelector);
   const { selectedAddress, region } = useSelector(locationSelector);
 
   useEffect(() => {
@@ -156,6 +157,15 @@ const ContactDetailsScreen = () => {
           data={channelsContacts}
           renderItem={renderContactDetails}
           keyExtractor={(item) => String(item.number)}
+          refreshing={isLoadingChannelsContacts}
+          refreshControl={
+            <RefreshControl
+              refreshing={isLoadingChannelsContacts}
+              onRefresh={() => getContacts(region)}
+              tintColor={Colors.primary}
+              colors={[Colors.primary]}
+            />
+          }
         />
       </ImageBackground>
     </>

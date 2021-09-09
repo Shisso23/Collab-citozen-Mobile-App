@@ -62,6 +62,15 @@ const ViewServiceRequestScreen = () => {
           />
         )}
 
+        {!_.isEmpty(serviceRequest.serviceRequestImage) && serviceRequest.status !== 'Submitted' ? (
+          <UploadDocumentButton
+            title="Add Images"
+            style={[Gutters.regularMargin, styles.button]}
+            disabled={_.get(serviceRequest, 'status', '') === 'Submitted'}
+            onImageSelect={(images) => _uploadPhotos(images)}
+          />
+        ) : null}
+
         <Portal>
           <Modal
             visible={visible}
