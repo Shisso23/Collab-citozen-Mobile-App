@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { List } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { FlatList, Text, View, ImageBackground, RefreshControl } from 'react-native';
+import { FlatList, Text, View, ImageBackground, RefreshControl, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 
@@ -49,7 +49,7 @@ const AccountChannelsScreen = () => {
 
   const viewChannelItem = ({ item }) => {
     return (
-      <View style={[Common.textInputWithShadow, Gutters.tinyMargin]}>
+      <View style={[Common.textInputWithShadow, Gutters.tinyMargin, styles.channelItem]}>
         <List.Item
           title={item.name}
           onPress={() => onSelectChannel(item)}
@@ -99,6 +99,17 @@ const AccountChannelsScreen = () => {
     </>
   );
 };
+
+const styles = StyleSheet.create({
+  channelItem: {
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 0,
+  },
+});
 
 AccountChannelsScreen.propTypes = {};
 

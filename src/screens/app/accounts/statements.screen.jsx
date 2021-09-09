@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { FlatList, Text, View, ImageBackground } from 'react-native';
+import { FlatList, Text, View, ImageBackground, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { List } from 'react-native-paper';
 import PropTypes from 'prop-types';
@@ -60,7 +60,7 @@ const StatementsScreen = ({ route }) => {
     const month = _.get(item, 'month', '');
     const dateString = `${year}/${month}`;
     return (
-      <View style={[Common.textInputWithShadow, Gutters.smallVMargin]}>
+      <View style={[Common.textInputWithShadow, Gutters.smallVMargin, styles.statementItem]}>
         <List.Item
           title={Moment(dateString, 'YYYY/MM').format('MMMM YYYY')}
           description={() => renderDescription(item)}
@@ -79,7 +79,7 @@ const StatementsScreen = ({ route }) => {
         resizeMode="cover"
       >
         <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>My Statements</Text>
-        <Text style={[Gutters.smallMargin, Fonts.textLeft]}>{accountName}</Text>
+        <Text style={[Gutters.smallMargin, Fonts.textLeft, styles.accountName]}>{accountName}</Text>
 
         <FlatList
           contentContainerStyle={Gutters.smallHMargin}
@@ -95,6 +95,20 @@ const StatementsScreen = ({ route }) => {
 StatementsScreen.propTypes = {
   route: PropTypes.object.isRequired,
 };
+
+const styles = StyleSheet.create({
+  accountName: {
+    fontWeight: '500',
+  },
+  statementItem: {
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 0.16,
+  },
+});
 
 StatementsScreen.defaultProps = {};
 

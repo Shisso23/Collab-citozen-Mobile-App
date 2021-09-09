@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
-import { Text, View, FlatList } from 'react-native';
+import { Text, View, FlatList, StyleSheet } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { Button, List } from 'react-native-paper';
 
@@ -69,7 +69,7 @@ const SubscribingToChannelsDetails = (props) => {
 
   const subscribeToItem = ({ item }) => {
     return (
-      <View style={[Common.textInputWithShadow, Gutters.tinyMargin]}>
+      <View style={[Common.textInputWithShadow, Gutters.tinyMargin, styles.typeItem]}>
         <List.Item
           title={item.name}
           right={() => (
@@ -110,6 +110,17 @@ const SubscribingToChannelsDetails = (props) => {
 SubscribingToChannelsDetails.propTypes = {
   channel: PropTypes.object.isRequired,
 };
+
+const styles = StyleSheet.create({
+  typeItem: {
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 0.16,
+  },
+});
 
 SubscribingToChannelsDetails.defaultProps = {};
 

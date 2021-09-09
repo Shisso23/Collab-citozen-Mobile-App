@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ViewPropTypes, View, FlatList } from 'react-native';
+import { ViewPropTypes, View, FlatList, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { HelperText, TextInput, List } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -43,7 +43,7 @@ const SubscribeToChannelsForm = ({ containerStyle, unsubscribedChannels }) => {
 
   const subscribeToItem = ({ item }) => {
     return (
-      <View style={[Common.textInputWithShadow, Gutters.tinyMargin]}>
+      <View style={[Common.textInputWithShadow, Gutters.tinyMargin, styles.channelItem]}>
         <List.Item
           title={item.name}
           onPress={() => {
@@ -82,5 +82,16 @@ SubscribeToChannelsForm.propTypes = {
 SubscribeToChannelsForm.defaultProps = {
   containerStyle: {},
 };
+
+const styles = StyleSheet.create({
+  channelItem: {
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 1,
+  },
+});
 
 export default SubscribeToChannelsForm;

@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import { Avatar, FAB, List } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { FlatList, Text, View, RefreshControl, ImageBackground } from 'react-native';
+import { FlatList, Text, View, RefreshControl, ImageBackground, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -60,7 +60,7 @@ const ServiceRequestScreen = () => {
 
   const serviceRequestItem = ({ item }) => {
     return (
-      <View style={[Common.textInputWithShadow, Gutters.tinyMargin]}>
+      <View style={[Common.textInputWithShadow, Gutters.tinyMargin, styles.serviceRequestItem]}>
         <List.Item
           title={item.serviceType}
           titleStyle={Common.cardTitle}
@@ -138,5 +138,16 @@ const ServiceRequestScreen = () => {
 ServiceRequestScreen.propTypes = {};
 
 ServiceRequestScreen.defaultProps = {};
+
+const styles = StyleSheet.create({
+  serviceRequestItem: {
+    shadowOffset: {
+      width: 2,
+      height: 5,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+  },
+});
 
 export default ServiceRequestScreen;
