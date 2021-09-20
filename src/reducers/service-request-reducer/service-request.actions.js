@@ -4,6 +4,8 @@ import {
   setIsLoadingServiceRequestsAction,
   setServiceRequestsAction,
   setImagesSourcesAction,
+  setDeleteServiceRequestPreviewAction,
+  setIsLoadingDeleteServiceRequestAction,
 } from './service-request.reducer';
 
 export const getServiceRequestsAction = () => (dispatch) => {
@@ -55,4 +57,20 @@ export const setImagesSources = (images) => async (dispatch) => {
   } catch (error) {
     console.warn('Could not set images');
   }
+};
+
+export const deleteServiceRequestAction = (channelId, user, serviceRequestId) => (dispatch) => {
+  const userId = _.get(user, 'user_id', '');
+  dispatch(setIsLoadingDeleteServiceRequestAction(true));
+  return serviceRequestService
+    .deleteServiceRequest(channelId, userId, serviceRequestId)
+    .then(async (response) => {
+      console.warn(response);
+      // dispatch(setDeleteS(response));
+    })
+    .finally(() => dispatch(setIsLoadingDeleteServiceRequestAction(false)));
+};
+
+export const previewDeleteServiceRequestAction = (shoudlPreview) => {
+  return (dispatch) => dispatch(setDeleteServiceRequestPreviewAction(shoudlPreview));
 };

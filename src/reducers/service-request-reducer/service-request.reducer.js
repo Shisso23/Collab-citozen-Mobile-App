@@ -18,9 +18,26 @@ const initialState = {
   serviceRequests: [],
   isLoadingServiceRequests: false,
   imagesSources: [],
+  isLoadingDeleteServiceRequest: false,
+  deleteServiceRequestPreview: true,
 };
 
 export const serviceRequestSelector = (reducers) => reducers.serviceRequestReducer;
+
+const setDeleteServiceRequest = CreateAction(reducerName, 'SET_DELETE_SERVICE_REQUEST');
+export const setDeleteServiceRequestAction = setDeleteServiceRequest.action;
+
+const setIsLoadingDeleteServiceRequest = CreateAction(
+  reducerName,
+  'SET_IS_LOADING_DELETE_SERVICE-REQUEST',
+);
+export const setIsLoadingDeleteServiceRequestAction = setIsLoadingDeleteServiceRequest.action;
+
+const setDeleteServiceRequestPreview = CreateAction(
+  reducerName,
+  'SET_DELETE_SERVICE_REQUEST_PREVIEW',
+);
+export const setDeleteServiceRequestPreviewAction = setDeleteServiceRequestPreview.action;
 
 export default function serviceRequestReducer(state = initialState, action) {
   switch (action.type) {
@@ -43,6 +60,16 @@ export default function serviceRequestReducer(state = initialState, action) {
       return {
         ...state,
         imagesSources: action.payload,
+      };
+    case setDeleteServiceRequestPreview.actionType:
+      return {
+        ...state,
+        deleteServiceRequestPreview: action.payload,
+      };
+    case setIsLoadingDeleteServiceRequest.actionType:
+      return {
+        ...state,
+        isLoadingDeleteServiceRequest: action.payload,
       };
     default:
       return state;

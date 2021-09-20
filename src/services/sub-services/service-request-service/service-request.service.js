@@ -3,7 +3,10 @@ import { Platform } from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
 import { constructServiceRequestModels, apiCreateServiceRequestModel } from '../../../models';
 import globalUrl from '../global/global.service.urls';
-import { apiFunctionWithUniqName } from '../../../helpers/api-function-name.helper';
+import {
+  apiFunctionWithUniqName,
+  dataDeleteServiceRequest,
+} from '../../../helpers/api-function-name.helper';
 import authNetworkService from '../auth-network-service/auth-network.service';
 import srUrls from './service-request.urls';
 import { flashService } from '../../index';
@@ -61,11 +64,21 @@ const getServiceRequests = async () => {
     flashService.info('You have no service requests.');
   }
 
+  console.log({ response: serviceRequests });
+
   return constructServiceRequestModels(serviceRequests);
+};
+
+const deleteServiceRequest = async (channelId, userId, serviceRequestId) => {
+  const url = srUrls.deleteSRUrl();
+  const data = dataDeleteServiceRequest({ serviceRequestId, channelId, userId });
+  const apiResponse = await authNetworkService.post(url, data);
+  return _.get(apiResponse, 'data', null);
 };
 
 export default {
   createServiceRequest,
   getServiceRequests,
   uploadServiceRequestPhoto,
+  deleteServiceRequest,
 };

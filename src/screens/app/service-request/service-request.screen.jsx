@@ -1,22 +1,35 @@
-import _ from 'lodash';
 import React from 'react';
-import { Avatar, FAB, List } from 'react-native-paper';
+import { FAB } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { FlatList, Text, View, RefreshControl, ImageBackground, StyleSheet } from 'react-native';
+import { FlatList, Text, RefreshControl, ImageBackground } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import _ from 'lodash';
 
 import useTheme from '../../../theme/hooks/useTheme';
 import { serviceRequestSelector } from '../../../reducers/service-request-reducer/service-request.reducer';
-import { getServiceRequestsAction } from '../../../reducers/service-request-reducer/service-request.actions';
+import {
+  deleteServiceRequestAction,
+  getServiceRequestsAction,
+  previewDeleteServiceRequestAction,
+} from '../../../reducers/service-request-reducer/service-request.actions';
 import { permissionsService } from '../../../services';
 import { getCurrentPositionAction } from '../../../reducers/location-reducer/location.actions';
+import ServiceRequestItem from '../../../components/molecules/service-request-item';
+import SwipeRowContainer from '../../../components/atoms/swipe-row/swipe-row';
+import { promptConfirm } from '../../../helpers/prompt.helper';
+import { TrashButton } from '../../../components/atoms';
 
 const ServiceRequestScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const { serviceRequests, isLoadingServiceRequests } = useSelector(serviceRequestSelector);
+  const {
+    serviceRequests,
+    isLoadingServiceRequests,
+    isLoadingDeleteServiceRequest,
+    deleteServiceRequestPreview,
+  } = useSelector(serviceRequestSelector);
+  const { user } = useSelector((reducer) => reducer.userReducer);
   const { Common, Gutters, Fonts, Layout, Colors, Images } = useTheme();
 
   const _loadServiceRequests = () => {
@@ -36,73 +49,47 @@ const ServiceRequestScreen = () => {
     return serviceRequest.sort((a, b) => moment(b.requestedDate) - moment(a.requestedDate));
   };
 
-  const _getStatusIndicator = (status) => {
-    switch (status) {
-      case 'Registered':
-        return Colors.primary;
-      case 'Assigned':
-        return Colors.softBlue;
-      case 'Work in Progress':
-        return Colors.warning;
-      default:
-        return Colors.error;
-    }
-  };
-
-  const _setImageUrl = (item) => {
-    return !item.serviceRequestImage ? null : item.serviceRequestImage[0];
-  };
-
   const _handleOnServiceRequestCreatePress = async () => {
     await permissionsService.checkLocationPermissions();
     navigation.navigate('SelectLocationScreen', { fromSubscribedChannels: false });
   };
 
-  const serviceRequestItem = ({ item }) => {
+  const renderHiddenComponent = (account, channel) => (
+    <TrashButton
+      onPress={() => _handleDelete(account, channel)}
+      iconSize={35}
+      loading={isLoadingDeleteServiceRequest}
+    />
+  );
+
+  const _handleDelete = (serviceRequest, channel) => {
+    const channelId = _.get(channel, 'objectId', '');
+    const serviceRequestId = _.get(serviceRequest, 'id', '');
+    promptConfirm('Are you sure?', 'Are you sure you want to delete this item?', 'Delete', () => {
+      dispatch(deleteServiceRequestAction(channelId, user, serviceRequestId));
+    });
+  };
+
+  const renderServiceRequest = ({ item }) => {
+    const deletable = _.get(item, 'status', '') === 'Completed';
+    console.log({ status: _.get(item, 'status', '') });
     return (
-      <View style={[Common.textInputWithShadow, Gutters.tinyMargin, styles.serviceRequestItem]}>
-        <List.Item
-          title={item.serviceType}
-          titleStyle={Common.cardTitle}
-          description={() => (
-            <View style={[Layout.column, Gutters.largeRMargin]}>
-              <Text style={Common.cardDescription}>{item.gpsAddress}</Text>
-              <View style={[Layout.rowHCenter, Gutters.tinyTPadding]}>
-                <View
-                  style={[
-                    Gutters.tinyHMargin,
-                    Common.statusIndicator,
-                    { backgroundColor: _getStatusIndicator(item.status) },
-                  ]}
-                />
-                <Text style={[Fonts.textRegular, Common.cardDescription]}>{item.status}</Text>
-              </View>
-            </View>
-          )}
-          onPress={() => {
-            navigation.navigate('ViewServiceRequest', { serviceRequest: item });
-          }}
-          left={() => (
-            <View style={[Layout.justifyContentCenter]}>
-              <Avatar.Image rounded size={50} source={_setImageUrl(item)} />
-            </View>
-          )}
-          right={() => (
-            <View style={[Layout.rowVCenter]}>
-              {!_.isEmpty(item.serviceRequestImage) ? null : (
-                <Icon
-                  color={Colors.red}
-                  size={20}
-                  name="camera"
-                  style={[Layout.alignSelfCenter, Gutters.smallHMargin]}
-                />
-              )}
-            </View>
-          )}
-          descriptionNumberOfLines={10}
-          descriptionStyle={[Gutters.largeRMargin]}
-        />
-      </View>
+      <SwipeRowContainer
+        key={`${item.id}`}
+        swipeKey={`${item.id}`}
+        preview={deleteServiceRequestPreview && deletable}
+        deletable={deletable}
+        onPreviewEnd={() => {
+          dispatch(previewDeleteServiceRequestAction(false));
+        }}
+        renderHiddenComponent={() => renderHiddenComponent(item)}
+        renderVisibleComponent={() => (
+          <ServiceRequestItem
+            item={item}
+            onPress={() => navigation.navigate('ViewServiceRequest', { serviceRequest: item })}
+          />
+        )}
+      />
     );
   };
 
@@ -117,7 +104,7 @@ const ServiceRequestScreen = () => {
         <FlatList
           contentContainerStyle={[Gutters.smallHMargin]}
           data={_sortServiceRequestDescending(serviceRequests)}
-          renderItem={serviceRequestItem}
+          renderItem={renderServiceRequest}
           keyExtractor={(item) => String(item.id)}
           refreshControl={
             <RefreshControl
@@ -138,16 +125,5 @@ const ServiceRequestScreen = () => {
 ServiceRequestScreen.propTypes = {};
 
 ServiceRequestScreen.defaultProps = {};
-
-const styles = StyleSheet.create({
-  serviceRequestItem: {
-    shadowOffset: {
-      width: 2,
-      height: 5,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-  },
-});
 
 export default ServiceRequestScreen;

@@ -12,6 +12,7 @@ const SwipeRowContainer = ({
   preview,
   onPreviewEnd,
   swipeKey,
+  deletable,
 }) => {
   const SwipeRowRef = useRef(null);
   const isFocused = useIsFocused();
@@ -31,6 +32,7 @@ const SwipeRowContainer = ({
       rightOpenValue={-SIZE}
       closeOnRowPress
       disableRightSwipe
+      disableLeftSwipe={deletable === false}
     >
       <View style={styles.deleteRow}>{renderHiddenComponent()}</View>
       {renderVisibleComponent()}
@@ -55,11 +57,13 @@ SwipeRowContainer.propTypes = {
   onPreviewEnd: PropTypes.func.isRequired,
   preview: PropTypes.bool,
   swipeKey: PropTypes.string,
+  deletable: PropTypes.bool,
 };
 
 SwipeRowContainer.defaultProps = {
   preview: true,
   swipeKey: '',
+  deletable: true,
 };
 
 export default SwipeRowContainer;
