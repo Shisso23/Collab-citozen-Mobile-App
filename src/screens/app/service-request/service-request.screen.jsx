@@ -112,8 +112,6 @@ const ServiceRequestScreen = () => {
               colors={[Colors.primary]}
             />
           }
-          onEndReached={_loadServiceRequests}
-          onEndReachedThreshold={0.7}
         />
       </ImageBackground>
 
