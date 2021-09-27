@@ -53,6 +53,6 @@ export const dataCreateRecord = ({ userId, channelId, accountNumber, status }) =
   return `<Objects><User_Account><F1>${userId}</F1><F2>${channelId}</F2><F3>${accountNumber}</F3><F4>${status}</F4></User_Account></Objects>`;
 };
 
-export const dataDeleteServiceRequest = ({ userId, channelId, serviceRequestId }) => {
-  return `<Objects><ServiceRequest><F1>${userId}</F1><F3>${serviceRequestId}</F3><F19>${channelId}</F19><F33>T</F33></ServiceRequest></Objects>`;
+export const dataDeleteServiceRequest = ({ channelId, serviceRequestId }) => {
+  return `<Objects><ServiceRequest><ObjectId>${serviceRequestId}</ObjectId><F19>${channelId}</F19><F33>T</F33></ServiceRequest></Objects>`;
 };

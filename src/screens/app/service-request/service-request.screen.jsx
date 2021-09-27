@@ -29,7 +29,6 @@ const ServiceRequestScreen = () => {
     isLoadingDeleteServiceRequest,
     deleteServiceRequestPreview,
   } = useSelector(serviceRequestSelector);
-  const { user } = useSelector((reducer) => reducer.userReducer);
   const { Common, Gutters, Fonts, Layout, Colors, Images } = useTheme();
 
   const _loadServiceRequests = () => {
@@ -66,18 +65,17 @@ const ServiceRequestScreen = () => {
     const channelId = _.get(channel, 'objectId', '');
     const serviceRequestId = _.get(serviceRequest, 'id', '');
     promptConfirm('Are you sure?', 'Are you sure you want to delete this item?', 'Delete', () => {
-      dispatch(deleteServiceRequestAction(channelId, user, serviceRequestId));
+      dispatch(deleteServiceRequestAction(channelId, serviceRequestId));
     });
   };
 
   const renderServiceRequest = ({ item }) => {
     const deletable = _.get(item, 'status', '') === 'Completed';
-    console.log({ status: _.get(item, 'status', '') });
     return (
       <SwipeRowContainer
         key={`${item.id}`}
         swipeKey={`${item.id}`}
-        preview={deleteServiceRequestPreview && deletable}
+        preview={deleteServiceRequestPreview && false}
         deletable={deletable}
         onPreviewEnd={() => {
           dispatch(previewDeleteServiceRequestAction(false));
@@ -114,6 +112,8 @@ const ServiceRequestScreen = () => {
               colors={[Colors.primary]}
             />
           }
+          onEndReached={_loadServiceRequests}
+          onEndReachedThreshold={0.7}
         />
       </ImageBackground>
 

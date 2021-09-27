@@ -59,14 +59,12 @@ export const setImagesSources = (images) => async (dispatch) => {
   }
 };
 
-export const deleteServiceRequestAction = (channelId, user, serviceRequestId) => (dispatch) => {
-  const userId = _.get(user, 'user_id', '');
+export const deleteServiceRequestAction = (channelId, serviceRequestId) => (dispatch) => {
   dispatch(setIsLoadingDeleteServiceRequestAction(true));
   return serviceRequestService
-    .deleteServiceRequest(channelId, userId, serviceRequestId)
-    .then(async (response) => {
-      console.warn(response);
-      // dispatch(setDeleteS(response));
+    .deleteServiceRequest(channelId, serviceRequestId)
+    .then(async () => {
+      dispatch(getServiceRequestsAction());
     })
     .finally(() => dispatch(setIsLoadingDeleteServiceRequestAction(false)));
 };

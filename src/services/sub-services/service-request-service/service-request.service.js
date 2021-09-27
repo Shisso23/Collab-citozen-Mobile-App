@@ -64,14 +64,12 @@ const getServiceRequests = async () => {
     flashService.info('You have no service requests.');
   }
 
-  console.log({ response: serviceRequests });
-
   return constructServiceRequestModels(serviceRequests);
 };
 
-const deleteServiceRequest = async (channelId, userId, serviceRequestId) => {
+const deleteServiceRequest = async (channelId, serviceRequestId) => {
   const url = srUrls.deleteSRUrl();
-  const data = dataDeleteServiceRequest({ serviceRequestId, channelId, userId });
+  const data = dataDeleteServiceRequest({ serviceRequestId, channelId });
   const apiResponse = await authNetworkService.post(url, data);
   return _.get(apiResponse, 'data', null);
 };
