@@ -27,6 +27,14 @@ const getServiceRequestImageUrl = (_apiServiceRequestModel, token) => {
   return srImages;
 };
 
+export const commentModel = (_apiCommentModel = {}) => ({
+  id: _.get(_apiCommentModel, 'obj_id', ''),
+  serviceRequestId: _.get(_apiCommentModel, 'service_request_ref', ''),
+  origin: _.get(_apiCommentModel, 'origin', ''),
+  comment: _.get(_apiCommentModel, 'comment', ''),
+  date: _.get(_apiCommentModel, 'Date', new Date()),
+});
+
 export const serviceRequestModel = (_apiServiceRequestModel = {}, accessToken) => ({
   id: _.get(_apiServiceRequestModel, 'obj_id', ''),
   serviceType: _.get(_apiServiceRequestModel, 'service_type_id', ''),
@@ -36,7 +44,15 @@ export const serviceRequestModel = (_apiServiceRequestModel = {}, accessToken) =
   referenceNumber: _.get(_apiServiceRequestModel, 'on_premises_ref', ''),
   serviceRequestImage: getServiceRequestImageUrl(_apiServiceRequestModel, accessToken),
   status: _.get(_apiServiceRequestModel, 'status', ''),
+  channelId: _.get(_apiServiceRequestModel, 'channel_ref ', ''),
 });
+
+export const construcCommentModels = async (apiComments) => {
+  return async.map(apiComments, async (comment, done) => {
+    const model = commentModel(comment);
+    done(null, model);
+  });
+};
 
 export const constructServiceRequestModels = async (apiServiceRequests) => {
   const token = await storageService.getAccessToken();

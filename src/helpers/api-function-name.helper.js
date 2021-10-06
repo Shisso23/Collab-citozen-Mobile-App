@@ -56,3 +56,15 @@ export const dataCreateRecord = ({ userId, channelId, accountNumber, status }) =
 export const dataDeleteServiceRequest = ({ channelId, serviceRequestId }) => {
   return `<Objects><ServiceRequest><ObjectId>${serviceRequestId}</ObjectId><F19>${channelId}</F19><F33>T</F33></ServiceRequest></Objects>`;
 };
+
+export const dataServiceRequestComments = (serviceRequestId) => {
+  return {
+    taskID: 0,
+    uniqName: 'get_service_request_comments',
+    InputValues: `<valRoot><val>${serviceRequestId}</val></valRoot>`,
+  };
+};
+
+export const dataNewComment = (serviceRequestId, comment) => {
+  return `<Objects><Service_Request_Comment><F1>${serviceRequestId}</F1><F2>User</F2><F3>${comment}</F3></Service_Request_Comment></Objects>`;
+};
