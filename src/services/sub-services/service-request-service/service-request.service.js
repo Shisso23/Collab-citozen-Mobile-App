@@ -1,11 +1,17 @@
 import _ from 'lodash';
 import { Platform } from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
-import { constructServiceRequestModels, apiCreateServiceRequestModel } from '../../../models';
+import {
+  constructServiceRequestModels,
+  apiCreateServiceRequestModel,
+  construcCommentModels,
+} from '../../../models';
 import globalUrl from '../global/global.service.urls';
 import {
   apiFunctionWithUniqName,
   dataDeleteServiceRequest,
+  dataServiceRequestComments,
+  dataNewComment,
 } from '../../../helpers/api-function-name.helper';
 import authNetworkService from '../auth-network-service/auth-network.service';
 import srUrls from './service-request.urls';
@@ -74,9 +80,25 @@ const deleteServiceRequest = async (channelId, serviceRequestId) => {
   return _.get(apiResponse, 'data', null);
 };
 
+const getServiceRequestComments = async (serviceRequestId) => {
+  const url = globalUrl.globalFunctionUrl();
+  const data = dataServiceRequestComments(serviceRequestId);
+  const apiResponse = await authNetworkService.post(url, data);
+  return construcCommentModels(_.get(apiResponse, 'data.Feed', []));
+};
+
+const addNewComment = async (serviceRequestId, comment) => {
+  const url = srUrls.addNewComment();
+  const data = dataNewComment(serviceRequestId, comment);
+  const apiResponse = await authNetworkService.post(url, data);
+  return apiResponse;
+};
+
 export default {
   createServiceRequest,
   getServiceRequests,
   uploadServiceRequestPhoto,
   deleteServiceRequest,
+  getServiceRequestComments,
+  addNewComment,
 };

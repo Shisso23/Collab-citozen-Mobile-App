@@ -6,6 +6,8 @@ import {
   setImagesSourcesAction,
   setDeleteServiceRequestPreviewAction,
   setIsLoadingDeleteServiceRequestAction,
+  setServiceRequestCommentsAction,
+  setIsLoadingCommentsAction,
 } from './service-request.reducer';
 
 export const getServiceRequestsAction = () => (dispatch) => {
@@ -67,6 +69,16 @@ export const deleteServiceRequestAction = (channelId, serviceRequestId) => (disp
       dispatch(getServiceRequestsAction());
     })
     .finally(() => dispatch(setIsLoadingDeleteServiceRequestAction(false)));
+};
+
+export const getCommentsAction = (serviceRequestId) => (dispatch) => {
+  dispatch(setIsLoadingCommentsAction(true));
+  return serviceRequestService
+    .getServiceRequestComments(serviceRequestId)
+    .then(async (comments) => {
+      dispatch(setServiceRequestCommentsAction(comments));
+    })
+    .finally(() => dispatch(setIsLoadingCommentsAction(false)));
 };
 
 export const previewDeleteServiceRequestAction = (shoudlPreview) => {

@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
-import { ScrollView, StyleSheet, Text, ImageBackground } from 'react-native';
+import { StyleSheet, Text, ImageBackground } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Modal, Button, Portal } from 'react-native-paper';
 import _ from 'lodash';
@@ -13,6 +14,8 @@ import {
 } from '../../../../reducers/service-request-reducer/service-request.actions';
 import UploadDocumentButton from '../../../../components/molecules/upload-document-button';
 import CustomCarousel from '../../../../components/molecules/custom-carousel';
+import Comments from '../../../../components/molecules/service-request-comments';
+import { serviceRequestService } from '../../../../services';
 
 const ViewServiceRequestScreen = () => {
   const { params } = useRoute();
@@ -34,9 +37,13 @@ const ViewServiceRequestScreen = () => {
     navigation.popToTop();
   };
 
+  const onSendComment = async (comment) => {
+    await serviceRequestService.addNewComment(serviceRequest.id, comment);
+  };
+
   return (
     <ImageBackground source={Images.serviceRequest} style={[Layout.fullSize]} resizeMode="cover">
-      <ScrollView>
+      <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" enableOnAndroid extraHeight>
         <Text style={[Gutters.regularMargin, Fonts.titleTiny]}>Service Request</Text>
         <ServiceRequestDetails serviceRequest={serviceRequest} />
         {_.isEmpty(serviceRequest.serviceRequestImage) ? null : (
@@ -70,7 +77,7 @@ const ViewServiceRequestScreen = () => {
             onImageSelect={(images) => _uploadPhotos(images)}
           />
         ) : null}
-
+        <Comments onSend={onSendComment} serviceRequest={serviceRequest} />
         <Portal>
           <Modal
             visible={visible}
@@ -80,7 +87,7 @@ const ViewServiceRequestScreen = () => {
             <CustomCarousel sources={serviceRequestImages} isHttpUrl />
           </Modal>
         </Portal>
-      </ScrollView>
+      </KeyboardAwareScrollView>
     </ImageBackground>
   );
 };

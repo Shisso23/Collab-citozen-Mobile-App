@@ -20,6 +20,8 @@ const initialState = {
   imagesSources: [],
   isLoadingDeleteServiceRequest: false,
   deleteServiceRequestPreview: true,
+  comments: [],
+  isLoadingComments: false,
 };
 
 export const serviceRequestSelector = (reducers) => reducers.serviceRequestReducer;
@@ -32,6 +34,12 @@ const setIsLoadingDeleteServiceRequest = CreateAction(
   'SET_IS_LOADING_DELETE_SERVICE-REQUEST',
 );
 export const setIsLoadingDeleteServiceRequestAction = setIsLoadingDeleteServiceRequest.action;
+
+const setServiceRequestComments = CreateAction(reducerName, 'SET_SERVICE_REQUEST_COMMENTS');
+export const setServiceRequestCommentsAction = setServiceRequestComments.action;
+
+const setIsLoadingComments = CreateAction(reducerName, 'SET_IS_LOADING_COMMENTS');
+export const setIsLoadingCommentsAction = setIsLoadingComments.action;
 
 const setDeleteServiceRequestPreview = CreateAction(
   reducerName,
@@ -70,6 +78,18 @@ export default function serviceRequestReducer(state = initialState, action) {
       return {
         ...state,
         isLoadingDeleteServiceRequest: action.payload,
+      };
+
+    case setServiceRequestComments.actionType:
+      return {
+        ...state,
+        comments: action.payload,
+      };
+
+    case setIsLoadingComments.actionType:
+      return {
+        ...state,
+        isLoadingComments: action.payload,
       };
     default:
       return state;

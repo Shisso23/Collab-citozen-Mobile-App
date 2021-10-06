@@ -7,4 +7,5 @@ export default {
   upLoadFile: () => `${apiUrl}/file/post`,
   viewSrImageUrl: (objId, fileId) => `${apiUrl}/File/Get?objid=${objId}&fileid=${fileId}`,
   deleteSRUrl: () => `${apiUrl}/Records/CreateUpdateRecord`,
+  addNewComment: () => `${apiUrl}/Records/CreateUpdateRecord`,
 };
