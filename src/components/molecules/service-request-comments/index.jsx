@@ -82,7 +82,7 @@ const Comments = ({ serviceRequest, onSend }) => {
                   {...props}
                   wrapperStyle={{
                     right: {
-                      backgroundColor: '#538536',
+                      backgroundColor: '#6e9e52',
                       marginBottom: 5,
                       padding: 5,
                     },
