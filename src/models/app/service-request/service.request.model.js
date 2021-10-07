@@ -1,3 +1,4 @@
+/* eslint-disable import/no-cycle */
 import _ from 'lodash';
 import async from 'async';
 import srUrls from '../../../services/sub-services/service-request-service/service-request.urls';
@@ -27,13 +28,20 @@ const getServiceRequestImageUrl = (_apiServiceRequestModel, token) => {
   return srImages;
 };
 
-export const commentModel = (_apiCommentModel = {}) => ({
-  id: _.get(_apiCommentModel, 'obj_id', ''),
-  serviceRequestId: _.get(_apiCommentModel, 'service_request_ref', ''),
-  origin: _.get(_apiCommentModel, 'origin', ''),
-  comment: _.get(_apiCommentModel, 'comment', ''),
-  date: _.get(_apiCommentModel, 'Date', new Date()),
-});
+export const commentModel = (_apiCommentModel = {}) => {
+  const serviceRequestId = _.get(_apiCommentModel, 'service_request_ref', '');
+  const origin = _.get(_apiCommentModel, 'origin', '');
+  return {
+    _id: _.get(_apiCommentModel, 'obj_id', ''),
+    serviceRequestId,
+    origin,
+    text: _.get(_apiCommentModel, 'comment', ''),
+    createdAt: _.get(_apiCommentModel, 'Date', new Date()),
+    user: {
+      _id: origin === 'User' ? 1 : 2,
+    },
+  };
+};
 
 export const serviceRequestModel = (_apiServiceRequestModel = {}, accessToken) => ({
   id: _.get(_apiServiceRequestModel, 'obj_id', ''),
@@ -45,6 +53,7 @@ export const serviceRequestModel = (_apiServiceRequestModel = {}, accessToken) =
   serviceRequestImage: getServiceRequestImageUrl(_apiServiceRequestModel, accessToken),
   status: _.get(_apiServiceRequestModel, 'status', ''),
   channelId: _.get(_apiServiceRequestModel, 'channel_ref ', ''),
+  channelName: _.get(_apiServiceRequestModel, 'channel_name ', ''),
 });
 
 export const construcCommentModels = async (apiComments) => {

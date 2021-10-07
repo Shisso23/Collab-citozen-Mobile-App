@@ -42,8 +42,17 @@ const ViewServiceRequestScreen = () => {
   };
 
   return (
-    <ImageBackground source={Images.serviceRequest} style={[Layout.fullSize]} resizeMode="cover">
-      <KeyboardAwareScrollView keyboardShouldPersistTaps="handled" enableOnAndroid extraHeight>
+    <ImageBackground
+      source={Images.serviceRequest}
+      style={[Layout.fullSize, Gutters.regularBPadding]}
+      resizeMode="cover"
+    >
+      <KeyboardAwareScrollView
+        scrollIndicatorInsets={{ right: 1 }}
+        keyboardShouldPersistTaps="handled"
+        enableOnAndroid
+        nestedScrollEnabled
+      >
         <Text style={[Gutters.regularMargin, Fonts.titleTiny]}>Service Request</Text>
         <ServiceRequestDetails serviceRequest={serviceRequest} />
         {_.isEmpty(serviceRequest.serviceRequestImage) ? null : (
