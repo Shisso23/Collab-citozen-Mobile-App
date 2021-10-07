@@ -1,5 +1,5 @@
-import React, { useState, useLayoutEffect, useCallback } from 'react';
-import { StyleSheet, View, Text, SafeAreaView, Keyboard } from 'react-native';
+import React, { useState, useLayoutEffect, useCallback, useEffect } from 'react';
+import { StyleSheet, View, Text, SafeAreaView, Keyboard, Platform } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import { TextInput } from 'react-native-paper';
@@ -12,7 +12,7 @@ import CustomInput from '../custom-input';
 import { getCommentsAction } from '../../../reducers/service-request-reducer/service-request.actions';
 import { serviceRequestSelector } from '../../../reducers/service-request-reducer/service-request.reducer';
 
-const Comments = ({ serviceRequest, onSend }) => {
+const Comments = ({ serviceRequest, onSend, parentScrollViewRef, setScrollEnabled }) => {
   const { comments } = useSelector(serviceRequestSelector);
   const dispatch = useDispatch();
 
@@ -22,7 +22,7 @@ const Comments = ({ serviceRequest, onSend }) => {
   const [commentsExpanded, setCommentsExpanded] = useState(false);
 
   const containerStyle = {
-    marginBottom: keyboardVisible ? 100 : 30,
+    marginBottom: keyboardVisible ? (Platform.OS === 'ios' ? 1000 : 0) : 30,
   };
 
   useLayoutEffect(() => {
@@ -43,6 +43,16 @@ const Comments = ({ serviceRequest, onSend }) => {
       clearInterval(interval);
     };
   }, []);
+
+  useEffect(() => {
+    if (commentsExpanded) {
+      parentScrollViewRef.current.scrollToEnd();
+      setScrollEnabled(false);
+    } else {
+      parentScrollViewRef.current.scrollToPosition(0, 0);
+      setScrollEnabled(true);
+    }
+  }, [commentsExpanded]);
 
   const sendMessage = useCallback((messages = []) => {
     onSend(messages[0].text).then(() => {
@@ -75,7 +85,8 @@ const Comments = ({ serviceRequest, onSend }) => {
             messages={comments}
             placeholder="Type a comment"
             isKeyboardInternallyHandled={false}
-            keyboardShouldPersistTaps
+            nestedScrollEnabled
+            keyboardShouldPersistTaps="always"
             renderBubble={(props) => {
               return (
                 <Bubble
@@ -136,6 +147,8 @@ const styles = StyleSheet.create({
 Comments.propTypes = {
   serviceRequest: PropTypes.object.isRequired,
   onSend: PropTypes.func.isRequired,
+  parentScrollViewRef: PropTypes.object.isRequired,
+  setScrollEnabled: PropTypes.func.isRequired,
 };
 
 Comments.defaultProps = {};

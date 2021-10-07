@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, createRef, useState } from 'react';
 import { StyleSheet, Text, ImageBackground } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -21,10 +21,12 @@ const ViewServiceRequestScreen = () => {
   const { params } = useRoute();
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const keyBoardAwareRef = createRef(null);
   const { serviceRequest } = params;
   const [visible, setVisible] = React.useState(false);
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
+  const [scrollEnabled, setScrollEnabled] = useState(true);
   const { Gutters, Fonts, Common, Images, Layout } = useTheme();
   const serviceRequestImages = serviceRequest.serviceRequestImage;
 
@@ -49,9 +51,11 @@ const ViewServiceRequestScreen = () => {
     >
       <KeyboardAwareScrollView
         scrollIndicatorInsets={{ right: 1 }}
-        keyboardShouldPersistTaps="handled"
+        keyboardShouldPersistTaps="always"
         enableOnAndroid
         nestedScrollEnabled
+        scrollEnabled={scrollEnabled}
+        ref={keyBoardAwareRef}
       >
         <Text style={[Gutters.regularMargin, Fonts.titleTiny]}>Service Request</Text>
         <ServiceRequestDetails serviceRequest={serviceRequest} />
@@ -86,7 +90,12 @@ const ViewServiceRequestScreen = () => {
             onImageSelect={(images) => _uploadPhotos(images)}
           />
         ) : null}
-        <Comments onSend={onSendComment} serviceRequest={serviceRequest} />
+        <Comments
+          parentScrollViewRef={keyBoardAwareRef}
+          setScrollEnabled={setScrollEnabled}
+          onSend={onSendComment}
+          serviceRequest={serviceRequest}
+        />
         <Portal>
           <Modal
             visible={visible}
