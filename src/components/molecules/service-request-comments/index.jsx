@@ -1,5 +1,5 @@
 import React, { useState, useLayoutEffect, useCallback, useEffect } from 'react';
-import { StyleSheet, View, Text, SafeAreaView, Keyboard, Platform } from 'react-native';
+import { StyleSheet, View, Text, SafeAreaView, Keyboard, Platform, Dimensions } from 'react-native';
 import { ListItem } from 'react-native-elements';
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import { TextInput } from 'react-native-paper';
@@ -12,6 +12,8 @@ import CustomInput from '../custom-input';
 import { getCommentsAction } from '../../../reducers/service-request-reducer/service-request.actions';
 import { serviceRequestSelector } from '../../../reducers/service-request-reducer/service-request.reducer';
 
+const DEVICE_HEIGHT = Dimensions.get('window').height;
+
 const Comments = ({ serviceRequest, onSend, parentScrollViewRef, setScrollEnabled }) => {
   const { comments } = useSelector(serviceRequestSelector);
   const dispatch = useDispatch();
@@ -22,7 +24,8 @@ const Comments = ({ serviceRequest, onSend, parentScrollViewRef, setScrollEnable
   const [commentsExpanded, setCommentsExpanded] = useState(false);
 
   const containerStyle = {
-    marginBottom: keyboardVisible ? (Platform.OS === 'ios' ? 1000 : 0) : 30,
+    marginBottom: keyboardVisible ? (Platform.OS === 'ios' ? 50 : 0) : 20,
+    flex: 1,
   };
 
   useLayoutEffect(() => {
@@ -62,7 +65,7 @@ const Comments = ({ serviceRequest, onSend, parentScrollViewRef, setScrollEnable
   }, []);
 
   return (
-    <View style={containerStyle}>
+    <View style={[containerStyle]}>
       <ListItem.Accordion
         underlayColor={Colors.transparent}
         content={
@@ -72,16 +75,26 @@ const Comments = ({ serviceRequest, onSend, parentScrollViewRef, setScrollEnable
             </Text>
           </>
         }
-        containerStyle={{ backgroundColor: Colors.transparent }}
         isExpanded={commentsExpanded}
         onPress={() => {
           setCommentsExpanded(!commentsExpanded);
         }}
       >
-        <SafeAreaView style={styles.giftedChat}>
+        <SafeAreaView
+          style={[
+            {
+              height: keyboardVisible
+                ? Platform.OS === 'ios'
+                  ? DEVICE_HEIGHT * 0.2
+                  : DEVICE_HEIGHT * 0.7
+                : DEVICE_HEIGHT * 0.7,
+            },
+          ]}
+        >
           <GiftedChat
             alignTop
             inverted={false}
+            infiniteScroll
             messages={comments}
             placeholder="Type a comment"
             isKeyboardInternallyHandled={false}
@@ -110,6 +123,12 @@ const Comments = ({ serviceRequest, onSend, parentScrollViewRef, setScrollEnable
                 value={comment}
                 placeholder="Type a comment"
                 onChangeText={(text) => setComment(text)}
+                onSubmitEditing={() => {
+                  if (Platform.OS === 'ios') {
+                    setScrollEnabled(true);
+                  }
+                  parentScrollViewRef.current.scrollToEnd();
+                }}
                 returnKeyType="done"
                 right={
                   <TextInput.Icon
@@ -141,7 +160,6 @@ const Comments = ({ serviceRequest, onSend, parentScrollViewRef, setScrollEnable
 
 const styles = StyleSheet.create({
   commentsText: { fontSize: 17, fontWeight: '500' },
-  giftedChat: { height: 500 },
 });
 
 Comments.propTypes = {
@@ -150,7 +168,5 @@ Comments.propTypes = {
   parentScrollViewRef: PropTypes.object.isRequired,
   setScrollEnabled: PropTypes.func.isRequired,
 };
-
-Comments.defaultProps = {};
 
 export default Comments;
