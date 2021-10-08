@@ -1,4 +1,3 @@
-/* eslint-disable import/no-cycle */
 import _ from 'lodash';
 import async from 'async';
 import srUrls from '../../../services/sub-services/service-request-service/service-request.urls';

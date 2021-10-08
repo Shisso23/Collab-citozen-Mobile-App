@@ -106,7 +106,7 @@ const Comments = ({ serviceRequest, onSend, parentScrollViewRef, setScrollEnable
                   {...props}
                   wrapperStyle={{
                     right: {
-                      backgroundColor: '#6e9e52',
+                      backgroundColor: Colors.commentsBubble,
                       marginBottom: 5,
                       padding: 5,
                     },

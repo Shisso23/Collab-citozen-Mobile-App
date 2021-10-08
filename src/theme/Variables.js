@@ -25,6 +25,7 @@ export const Colors = {
   gray: '#7e7e7e',
   darkgray: '#5d5d5d',
   shadow: '#e3e3e3',
+  commentsBubble: '#6e9e52',
 };
 
 export const NavigationColors = {
