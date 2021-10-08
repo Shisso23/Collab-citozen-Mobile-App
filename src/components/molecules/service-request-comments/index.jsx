@@ -115,6 +115,14 @@ const Comments = ({ serviceRequest, onSend, parentScrollViewRef, setScrollEnable
                       padding: 5,
                     },
                   }}
+                  textStyle={{
+                    right: {
+                      fontSize: 14,
+                    },
+                    left: {
+                      fontSize: 14,
+                    },
+                  }}
                 />
               );
             }}
