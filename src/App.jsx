@@ -4,16 +4,18 @@ import messaging from '@react-native-firebase/messaging';
 import PushNotification from 'react-native-push-notification';
 import DeviceInfo from 'react-native-device-info';
 import codePush from 'react-native-code-push';
+import { HmsPushEvent } from '@hmscore/react-native-hms-push';
 
 import { useDispatch, useSelector } from 'react-redux';
 import NavigationContainer from './navigation/root.navigator';
 import { initAppAction } from './reducers/app-reducer/app.actions';
-import { firebaseService, firebaseNotificationService } from './services';
+import { firebaseService, firebaseNotificationService, pushKitService } from './services';
 import config from './config';
 
 const App = () => {
   const dispatch = useDispatch();
   const [fcmToken, setFcmToken] = useState(null);
+  const [pushKitToken, setPushKitToken] = useState(null);
   const [messagingEnabled, setMessagingEnabled] = useState(false);
   const { isAuthenticated } = useSelector((reducers) => reducers.userAuthReducer);
   const deviceId = DeviceInfo.getDeviceId();
@@ -26,21 +28,39 @@ const App = () => {
   };
 
   const checkPermission = async () => {
-    const enabled = await messaging().hasPermission();
-    setMessagingEnabled(enabled === 1);
-    if (enabled === 1) {
-      const token = await firebaseService.getAndSetToken();
+    return DeviceInfo.hasHms().then(async (hasHms) => {
+      console.log({ hasHms });
+      if (hasHms) {
+        setMessagingEnabled(true);
+        const token = await pushKitService.getAndSetToken();
+        console.log({ token });
+        setPushKitToken(token);
+        return token;
+      }
+      const enabled = await messaging().hasPermission();
+      setMessagingEnabled(enabled === 1);
+      if (enabled === 1) {
+        const token = await firebaseService.getAndSetToken();
+        setFcmToken(token);
+        return token;
+      }
+      const token = await requestPermission();
       setFcmToken(token);
       return token;
-    }
-    const token = await requestPermission();
-    setFcmToken(token);
-    return token;
+    });
   };
 
   const createNotificationListeners = async () => {
-    messaging().onMessage((remoteMessage) => {
-      firebaseService.processMessage(remoteMessage);
+    DeviceInfo.hasHms().then((hasHms) => {
+      if (hasHms) {
+        HmsPushEvent.onRemoteMessageReceived((remoteMessageHuawei) => {
+          pushKitService.processMessage(remoteMessageHuawei.msg.data);
+        });
+      } else {
+        messaging().onMessage((remoteMessage) => {
+          firebaseService.processMessage(remoteMessage);
+        });
+      }
     });
   };
 
@@ -76,7 +96,13 @@ const App = () => {
 
   useEffect(() => {
     if (isAuthenticated && messagingEnabled) {
-      firebaseNotificationService.updateNotificationToken(fcmToken, deviceId);
+      DeviceInfo.hasHms().then((hasHms) => {
+        if (hasHms) {
+          firebaseNotificationService.updateNotificationToken(pushKitToken, deviceId);
+        } else {
+          firebaseNotificationService.updateNotificationToken(fcmToken, deviceId);
+        }
+      });
     }
   }, [isAuthenticated]);
 
@@ -89,20 +115,32 @@ const App = () => {
       'Non-serializable values were found in the navigation state',
     ]);
     loadAppCenter();
-    messaging()
-      .registerDeviceForRemoteMessages()
-      .then(() => {
-        checkPermission().then(() => {
-          createNotificationListeners().then(() => {
-            messaging().setBackgroundMessageHandler((remoteMessage) => {
-              firebaseService.processMessage(remoteMessage).then();
-            });
+    DeviceInfo.hasHms().then((hasHms) => {
+      if (hasHms) {
+        checkPermission()
+          .then(() => {
+            createNotificationListeners();
+          })
+          .finally(() => {
+            dispatch(initAppAction());
           });
-        });
-      })
-      .finally(() => {
-        dispatch(initAppAction());
-      });
+      } else {
+        messaging()
+          .registerDeviceForRemoteMessages()
+          .then(() => {
+            checkPermission().then(() => {
+              createNotificationListeners().then(() => {
+                messaging().setBackgroundMessageHandler((remoteMessage) => {
+                  firebaseService.processMessage(remoteMessage).then();
+                });
+              });
+            });
+          })
+          .finally(() => {
+            dispatch(initAppAction());
+          });
+      }
+    });
   }, []);
 
   return <NavigationContainer />;
