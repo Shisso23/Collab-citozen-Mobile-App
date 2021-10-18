@@ -85,7 +85,7 @@ const Comments = ({ serviceRequest, onSend, parentScrollViewRef, setScrollEnable
             {
               height: keyboardVisible
                 ? Platform.OS === 'ios'
-                  ? DEVICE_HEIGHT * 0.2
+                  ? DEVICE_HEIGHT * 0.4
                   : DEVICE_HEIGHT * 0.7
                 : DEVICE_HEIGHT * 0.7,
             },
@@ -152,6 +152,7 @@ const Comments = ({ serviceRequest, onSend, parentScrollViewRef, setScrollEnable
                     color={comment.length > 0 ? Colors.primary : Colors.darkgray}
                   />
                 }
+                // style={{position: keyboardVisible? 'absolute':'relative', width:'100%', bottom: keyboardVisible? 0:0}}
               />
             )}
             onSend={(messages) => sendMessage(messages)}
