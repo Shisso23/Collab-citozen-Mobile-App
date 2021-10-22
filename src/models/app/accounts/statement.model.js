@@ -28,6 +28,7 @@ export const statementModel = (_apiStatementModel, accessToken) => {
     year: _.get(_apiStatementModel, 'year', null),
     month: _.get(_apiStatementModel, 'month', null),
     objectId: _.get(_apiStatementModel, 'obj_id', null),
+    fileId: _.get(_apiStatementModel, 'file_id', null),
     outstandingBalance: _.get(_apiStatementModel, 'outstanding_balance', null),
   };
 };

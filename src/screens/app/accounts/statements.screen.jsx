@@ -15,6 +15,7 @@ const StatementsScreen = ({ route }) => {
   const { params } = route;
   const { account } = params;
   const accountName = useMemo(() => _.get(account, 'accountName', ''), []);
+  const statusText = useMemo(() => _.get(account, 'statusText', ''), []);
   const statements = _.get(params, 'statements', []);
   const [statementsWithPdfFiles, setStatementsWithPdfFiles] = useState([]);
   const { Gutters, Fonts, Common, Layout, Images } = useTheme();
@@ -38,6 +39,9 @@ const StatementsScreen = ({ route }) => {
   }, []);
 
   const onSelectStatement = (statement) => {
+    if (statusText.length > 1) {
+      return flashService.info(statusText);
+    }
     if (!_.get(statement, 'statementPdf')) {
       return flashService.info('Statement not yet Available!');
     }
@@ -47,7 +51,7 @@ const StatementsScreen = ({ route }) => {
   const renderDescription = (item) => {
     return (
       <View style={[Layout.rowBetween, Gutters.smallTMargin]}>
-        <Text style={Common.cardDescription}>Outstanding balance</Text>
+        <Text style={Common.cardDescription}>Balance</Text>
         <Text style={Common.cardDescription}>
           R{_.get(item, 'outstandingBalance', 0).toFixed(2)}
         </Text>
@@ -55,6 +59,9 @@ const StatementsScreen = ({ route }) => {
     );
   };
 
+  const _handleOpenStatement = (item) => {
+    onSelectStatement(item);
+  };
   const viewStatementItem = ({ item }) => {
     const year = _.get(item, 'year', '');
     const month = _.get(item, 'month', '');
@@ -64,7 +71,7 @@ const StatementsScreen = ({ route }) => {
         <List.Item
           title={Moment(dateString, 'YYYY/MM').format('MMMM YYYY')}
           description={() => renderDescription(item)}
-          onPress={() => onSelectStatement(item)}
+          onPress={() => _handleOpenStatement(item)}
           titleStyle={Common.cardTitle}
         />
       </View>

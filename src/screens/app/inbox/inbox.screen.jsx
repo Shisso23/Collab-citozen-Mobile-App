@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { ImageBackground } from 'react-native';
 import { Text } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
@@ -12,7 +13,7 @@ import { getNotificationsAction } from '../../../reducers/notification-reducer/n
 
 const InboxScreen = () => {
   const { notifications, isLoading } = useSelector((reducers) => reducers.notificationReducer);
-  const { Fonts, Layout } = useTheme();
+  const { Fonts, Layout, Images } = useTheme();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -20,16 +21,26 @@ const InboxScreen = () => {
   }, []);
 
   return !isLoading ? (
-    <ScreenContainer>
-      <PaddedContainer>
-        <Text style={[Layout.alignSelfCenter, Fonts.titleTiny]}>Notifications</Text>
-      </PaddedContainer>
-      {_.get(notifications, 'Feed', []).map((notification, index) => {
-        return (
-          <Notification notification={notification} key={_.get(notification, 'obj_id', index)} />
-        );
-      })}
-    </ScreenContainer>
+    <ImageBackground
+      source={Images.serviceRequest}
+      style={[Layout.fullSize, Layout.fill]}
+      resizeMode="cover"
+    >
+      <ScreenContainer>
+        <PaddedContainer>
+          <Text style={[Layout.alignSelfCenter, Fonts.titleTiny]}>Notifications</Text>
+        </PaddedContainer>
+        {_.get(notifications, 'Feed', []).map((notification, index) => {
+          return (
+            <Notification
+              notification={notification}
+              key={_.get(notification, 'obj_id', index)}
+              index={index}
+            />
+          );
+        })}
+      </ScreenContainer>
+    </ImageBackground>
   ) : (
     <LoadingComponent />
   );
