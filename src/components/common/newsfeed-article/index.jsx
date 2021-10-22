@@ -1,17 +1,15 @@
 import _ from 'lodash';
 import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { Image, Divider } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { userHasOpenedNewsFeedAction } from '../../../reducers/news-feed-reducer/news-feed.actions';
 import useTheme from '../../../theme/hooks/useTheme';
-
-const { width: screenWidth } = Dimensions.get('window');
+import { Colors } from '../../../theme/Variables';
 
 const NewsFeedArticle = (newsFeedArticle) => {
-  const { Gutters, Fonts, Colors } = useTheme();
+  const { Gutters, Fonts } = useTheme();
   const dispatch = useDispatch();
   const newsFeedItem = _.get(newsFeedArticle, 'NewsFeedArticle.newsFeedItem');
   const { user } = useSelector((reducers) => reducers.userReducer);
@@ -25,7 +23,7 @@ const NewsFeedArticle = (newsFeedArticle) => {
   };
 
   const bodyText = newsFeedItem.body;
-  const bodyTextFormatted = bodyText.replace(/\./g, '.\n \n');
+  const bodyTextFormatted = bodyText.replace(/\. /g, '.\n \n');
 
   return (
     <View style={Gutters.regularHMargin}>
@@ -42,20 +40,23 @@ const NewsFeedArticle = (newsFeedArticle) => {
 
 const styles = StyleSheet.create({
   imageStyle: {
-    aspectRatio: 1,
+    aspectRatio: 1 / 1,
+    borderColor: Colors.shadow,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
-    flex: 1,
-    height: 200,
-    maxWidth: screenWidth,
+    borderWidth: 1,
+    elevation: 5,
+    height: null,
+    resizeMode: 'cover',
+    shadowColor: Colors.shadow,
+    shadowOffset: {
+      width: 3,
+      height: 5,
+    },
+    shadowOpacity: 0.6,
+    shadowRadius: 20,
+    width: null,
   },
 });
-
-NewsFeedArticle.propTypes = {
-  // eslint-disable-next-line react/no-unused-prop-types
-  newsFeedArticle: PropTypes.object.isRequired,
-};
-
-NewsFeedArticle.defaultProps = {};
 
 export default NewsFeedArticle;

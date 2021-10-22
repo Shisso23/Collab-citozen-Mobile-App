@@ -90,12 +90,15 @@ const ViewServiceRequestScreen = () => {
             onImageSelect={(images) => _uploadPhotos(images)}
           />
         ) : null}
-        <Comments
-          parentScrollViewRef={keyBoardAwareRef}
-          setScrollEnabled={setScrollEnabled}
-          onSend={onSendComment}
-          serviceRequest={serviceRequest}
-        />
+        {(_.get(serviceRequest, 'status', false) !== 'Completed' && (
+          <Comments
+            parentScrollViewRef={keyBoardAwareRef}
+            setScrollEnabled={setScrollEnabled}
+            onSend={onSendComment}
+            serviceRequest={serviceRequest}
+          />
+        )) || <Text />}
+
         <Portal>
           <Modal
             visible={visible}
