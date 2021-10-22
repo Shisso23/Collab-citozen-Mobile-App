@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import { StyleSheet, Text, View, Dimensions } from 'react-native';
 import { Image, Divider } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
+import moment from 'moment';
 
 import { userHasOpenedNewsFeedAction } from '../../../reducers/news-feed-reducer/news-feed.actions';
 import useTheme from '../../../theme/hooks/useTheme';
@@ -32,6 +33,8 @@ const NewsFeedArticle = (newsFeedArticle) => {
       {newsFeedItem.newsFeedImage != null ? (
         <Image source={newsFeedItem.newsFeedImage} style={styles.imageStyle} />
       ) : null}
+      <Divider color={Colors.transparent} />
+      <Text>{moment(_.get(newsFeedItem, 'date', new Date())).format('YYYY/MM/DD HH:mm')}</Text>
       <Divider color={Colors.transparent} />
       <Text style={Fonts.titleRegular}>{`${newsFeedItem.title}`}</Text>
       <Divider color={Colors.transparent} />

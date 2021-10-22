@@ -8,10 +8,11 @@ import {
   Dimensions,
 } from 'react-native';
 import { List } from 'react-native-paper';
-import { Text, Image } from 'react-native-elements';
+import { Text, Image, Icon } from 'react-native-elements';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import PushNotification from 'react-native-push-notification';
+import moment from 'moment';
 
 import useTheme from '../../../theme/hooks/useTheme';
 import { getNewsFeedAction } from '../../../reducers/news-feed-reducer/news-feed.actions';
@@ -37,6 +38,9 @@ const HomeScreen = () => {
 
   const _loadNewsFeeds = () => {
     dispatch(getNewsFeedAction());
+  };
+  const formatDate = (date) => {
+    return moment(date).fromNow();
   };
 
   const _getStatusIndicator = (status) => {
@@ -67,7 +71,16 @@ const HomeScreen = () => {
           title={item.title}
           titleStyle={Common.cardTitle}
           description={() => (
-            <View style={Layout.alignItemsEnd}>
+            <View style={[Layout.rowBetween, Layout.alignItemsCenter]}>
+              <View style={[Layout.row, Gutters.tinyTMargin]}>
+                <Icon
+                  name="clock-o"
+                  type="font-awesome"
+                  size={15}
+                  style={[Gutters.smallRMargin, styles.clockIcon]}
+                />
+                <Text style={{ color: Colors.black }}>{formatDate(item.date)}</Text>
+              </View>
               <View
                 style={[
                   Common.statusIndicator,
@@ -113,6 +126,7 @@ const HomeScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  clockIcon: { opacity: 0.75 },
   imageStyle: {
     aspectRatio: 1,
     borderTopLeftRadius: 10,
