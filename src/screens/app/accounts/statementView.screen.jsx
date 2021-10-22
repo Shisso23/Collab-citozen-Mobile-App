@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Text,
   ImageBackground,
@@ -18,7 +18,7 @@ import Share from 'react-native-share';
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
 import AccountStatement from '../../../components/molecules/add-account/AccountStatement';
-import { flashService } from '../../../services';
+import { flashService, permissionsService } from '../../../services';
 
 const { height } = Dimensions.get('window');
 
@@ -31,6 +31,12 @@ const StatementViewScreen = ({ route }) => {
   const year = _.get(statement, 'year', '');
   const month = _.get(statement, 'month', '');
   const dateString = `${year}/${month}`;
+
+  useEffect(() => {
+    permissionsService.checkAndroidDownloadWithoutNotificationPermissions();
+    permissionsService.checkAndroidReadStoragePermissions();
+    permissionsService.checkAndroidWriteStoragePermissions();
+  }, []);
 
   const handleDownloadStatement = (showDownloadStatus = true) => {
     const { config, fs } = RNFetchBlob;

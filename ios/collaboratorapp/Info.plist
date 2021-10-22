@@ -29,7 +29,7 @@
 	<string>tel</string> 
 	<string>telprompt</string> 
 	</array>
-	<key> UIFileSharingEnabled</key>
+	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
