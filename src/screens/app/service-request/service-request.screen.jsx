@@ -69,13 +69,13 @@ const ServiceRequestScreen = () => {
     });
   };
 
-  const renderServiceRequest = ({ item, index }) => {
+  const renderServiceRequest = ({ item }) => {
     const deletable = _.get(item, 'status', '') === 'Completed';
     return (
       <SwipeRowContainer
         key={`${item.id}`}
         swipeKey={`${item.id}`}
-        preview={deleteServiceRequestPreview && index === 0}
+        preview={deleteServiceRequestPreview && deletable}
         deletable={deletable}
         onPreviewEnd={() => {
           dispatch(previewDeleteServiceRequestAction(false));

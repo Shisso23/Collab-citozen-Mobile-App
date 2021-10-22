@@ -393,6 +393,8 @@ PODS:
     - React-Core
   - RNScreens (2.18.1):
     - React-Core
+  - RNShare (7.2.0):
+    - React-Core
   - RNVectorIcons (8.1.0):
     - React-Core
   - SSZipArchive (2.2.3)
@@ -456,6 +458,7 @@ DEPENDENCIES:
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
+  - RNShare (from `../node_modules/react-native-share`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
@@ -583,6 +586,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
     :path: "../node_modules/react-native-screens"
+  RNShare:
+    :path: "../node_modules/react-native-share"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
   Yoga:
@@ -655,6 +660,7 @@ SPEC CHECKSUMS:
   RNPermissions: 3e5bb8afd93c787681bbacbf54d586a6272ecc92
   RNReanimated: 514a11da3a2bcc6c3dfd9de32b38e2b9bf101926
   RNScreens: f7ad633b2e0190b77b6a7aab7f914fad6f198d8d
+  RNShare: 70356a1bb406bc46ae03196a5d3048c702bb71a7
   RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4
   SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
   TOCropViewController: 3105367e808b7d3d886a74ff59bf4804e7d3ab38
