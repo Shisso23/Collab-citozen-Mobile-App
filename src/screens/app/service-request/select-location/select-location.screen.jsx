@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import MapView from 'react-native-maps';
+import HmsMapView, { MapTypes } from '@hmscore/react-native-hms-map';
+import HMSLocation from '@hmscore/react-native-hms-location';
 import { Icon } from 'react-native-elements';
 import {
   StyleSheet,
@@ -12,12 +14,14 @@ import {
   Dimensions,
   KeyboardAvoidingView,
   Platform,
+  SafeAreaView,
 } from 'react-native';
 import { Button, TextInput, IconButton } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation, useFocusEffect, DefaultTheme, useRoute } from '@react-navigation/native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import _ from 'lodash';
+import { hasGmsSync, hasHmsSync } from 'react-native-device-info';
 
 import useTheme from '../../../../theme/hooks/useTheme';
 import { locationSelector } from '../../../../reducers/location-reducer/location.reducer';
@@ -41,11 +45,34 @@ const SelectLocationScreen = () => {
   const { region, selectedAddress } = useSelector(locationSelector);
   const [address, setAddress] = useState('');
   const [mapRef, setMapRef] = useState(undefined);
+  const [hmsMapRef, setHmsMapRef] = useState(undefined);
   const [regionChange, setRegionChange] = useState({
     ...region,
     latitudeDelta: 0.011,
     longitudeDelta: 0.011,
   });
+
+  const removeLocationAndListener = (code) => {
+    console.log({ code });
+    HMSLocation.FusedLocation.Native.removeLocationUpdates(code)
+      .then((res) => console.log(res))
+      .catch((err) => alert(err.message));
+    HMSLocation.FusedLocation.Events.removeFusedLocationEventListener((removedResponse) => {
+      console.log({ removedResponse });
+    });
+  };
+
+  useEffect(() => {
+    console.log('none');
+    if (hasHmsSync()) {
+      HMSLocation.LocationKit.Native.init()
+        .then((resp) => console.log('Done loading', resp))
+        .catch((err) => alert(err.message));
+    }
+    return () => {
+      removeLocationAndListener(1);
+    };
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -136,67 +163,95 @@ const SelectLocationScreen = () => {
         </View>
       </View>
 
-      <GooglePlacesAutocomplete
-        placeholder="Location"
-        enablePoweredByContainer={false}
-        debounce={3}
-        fetchDetails
-        enableHighAccuracyLocation
-        minLength={3}
-        onPress={(data, details = null) => {
-          _handleNewRegion(details);
-        }}
-        query={{
-          key: appConfig.googleMapsApiKey,
-          language: 'en',
-          components: 'country:za',
-        }}
-        styles={{
-          container: {
-            position: 'absolute',
-            width: '100%',
-            marginTop: 80,
-            zIndex: 1,
-          },
-          textInput: {
-            height: 53,
-          },
-        }}
-        textInputProps={{
-          InputComp: TextInput,
-          autoFocus: true,
-          backgroundColor: DefaultTheme.colors.background,
-          clearButtonMode: 'never',
-          listViewDisplayed: true,
-          underlineColor: Colors.transparent,
-          autoCorrect: false,
-          onChangeText: (text) => {
-            setAddress(text);
-          },
-          value: address,
-        }}
-        renderRightButton={() => (
-          <TouchableOpacity
-            style={styles.clearContainer}
-            hitSlop={hitSlop}
-            onPress={() => {
-              setAddress('');
+      {Platform.OS === 'ios' ||
+        (hasGmsSync() && (
+          <GooglePlacesAutocomplete
+            placeholder="Location"
+            enablePoweredByContainer={false}
+            debounce={3}
+            fetchDetails
+            enableHighAccuracyLocation
+            minLength={3}
+            onPress={(data, details = null) => {
+              _handleNewRegion(details);
             }}
-          >
-            <Icon name="clear" size={15} color={Colors.black} />
-          </TouchableOpacity>
-        )}
-      />
+            query={{
+              key: appConfig.googleMapsApiKey,
+              language: 'en',
+              components: 'country:za',
+            }}
+            styles={{
+              container: {
+                position: 'absolute',
+                width: '100%',
+                marginTop: 80,
+                zIndex: 1,
+              },
+              textInput: {
+                height: 53,
+              },
+            }}
+            textInputProps={{
+              InputComp: TextInput,
+              autoFocus: true,
+              backgroundColor: DefaultTheme.colors.background,
+              clearButtonMode: 'never',
+              listViewDisplayed: true,
+              underlineColor: Colors.transparent,
+              autoCorrect: false,
+              onChangeText: (text) => {
+                setAddress(text);
+              },
+              value: address,
+            }}
+            renderRightButton={() => (
+              <TouchableOpacity
+                style={styles.clearContainer}
+                hitSlop={hitSlop}
+                onPress={() => {
+                  setAddress('');
+                }}
+              >
+                <Icon name="clear" size={15} color={Colors.black} />
+              </TouchableOpacity>
+            )}
+          />
+        ))}
 
-      <MapView
-        style={[Layout.fill]}
-        initialRegion={regionChange}
-        showsUserLocation
-        onPress={Keyboard.dismiss}
-        ref={setMapRef}
-        onRegionChangeComplete={(newRegion) => _setRegion(newRegion)}
-        showsMyLocationButton={false}
-      />
+      {Platform.OS === 'ios' || hasGmsSync() ? (
+        <MapView
+          style={[Layout.fill]}
+          initialRegion={regionChange}
+          showsUserLocation
+          onPress={Keyboard.dismiss}
+          ref={setMapRef}
+          onRegionChangeComplete={(newRegion) => _setRegion(newRegion)}
+          showsMyLocationButton={false}
+        />
+      ) : hasHmsSync() ? (
+        <SafeAreaView>
+          <HmsMapView
+            ref={setHmsMapRef}
+            // style={styles.fullHeight}
+            mapType={MapTypes.NORMAL}
+            camera={{
+              target: regionChange,
+              zoom: 17,
+            }}
+            onCameraMove={(event) => {
+              if (hmsMapRef) {
+                const coords = hmsMapRef.getPointFromCoordinate();
+                console.log({ coords });
+              }
+              console.log({ event });
+              console.log({ children: event.currentTarget });
+            }}
+            useAnimation
+          />
+        </SafeAreaView>
+      ) : (
+        <View />
+      )}
 
       <View style={[Common.pinContainer]}>
         <Icon type="ionicon" name="pin-outline" size={30} color={Colors.primary} />
@@ -229,6 +284,15 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 40,
   },
+  // hmsMapContainer: {
+  //   borderRadius: 10,
+  //   overflow: 'hidden',
+  //   ...StyleSheet.absoluteFillObject,
+  // },
+  // map: {
+  //   ...StyleSheet.absoluteFillObject,
+  //   borderRadius: 10,
+  // },
 });
 
 SelectLocationScreen.propTypes = {};

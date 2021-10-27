@@ -1,11 +1,13 @@
 import React from 'react';
 import { FAB } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { FlatList, Text, RefreshControl, ImageBackground } from 'react-native';
+import { FlatList, Text, RefreshControl, ImageBackground, Platform } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import _ from 'lodash';
+import { hasGmsSync, hasHmsSync } from 'react-native-device-info';
 
+// import { requestAuthorization } from 'react-native-geolocation-service';
 import useTheme from '../../../theme/hooks/useTheme';
 import { serviceRequestSelector } from '../../../reducers/service-request-reducer/service-request.reducer';
 import {
@@ -49,7 +51,10 @@ const ServiceRequestScreen = () => {
   };
 
   const _handleOnServiceRequestCreatePress = async () => {
-    await permissionsService.checkLocationPermissions();
+    if (Platform.OS === 'ios' || hasGmsSync()) await permissionsService.checkLocationPermissions();
+    if (hasHmsSync()) {
+      permissionsService.requestHmsLocationPermissions();
+    }
     navigation.navigate('SelectLocationScreen', { fromSubscribedChannels: false });
   };
 

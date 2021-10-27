@@ -7,9 +7,7 @@ import FlashService from '../flash-service/flash.service';
 
 const getAndSetToken = async () => {
   let pushKitToken = await AsyncStorage.getItem(config.pushKitTokenKey);
-  console.log({ pushKitToken });
   const pushKitEnabled = await AsyncStorage.getItem(config.pushKitEnabled);
-  console.log({ pushKitEnabled });
 
   if (!pushKitEnabled) {
     await AsyncStorage.setItem(config.pushKitEnabled, 'true');
@@ -19,11 +17,10 @@ const getAndSetToken = async () => {
     if (!pushKitToken) {
       await HmsPushInstanceId.getToken('')
         .then((token) => {
-          console.log({ tok: token });
           pushKitToken = token.result;
         })
         .catch((error) => {
-          console.log({ error });
+          console.warn({ error });
           pushKitToken = null;
         });
       if (pushKitToken) {

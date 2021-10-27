@@ -1,19 +1,19 @@
 {
 	"agcgw":{
-		"backurl":"connect-dre.dbankcloud.cn",
-		"url":"connect-dre.hispace.hicloud.com",
+		"backurl":"connect-dre.hispace.hicloud.com",
+		"url":"connect-dre.dbankcloud.cn",
 		"websocketbackurl":"connect-ws-dre.hispace.dbankcloud.cn",
 		"websocketurl":"connect-ws-dre.hispace.dbankcloud.com"
 	},
 	"agcgw_all":{
-		"CN":"connect-drcn.hispace.hicloud.com",
-		"CN_back":"connect-drcn.dbankcloud.cn",
-		"DE":"connect-dre.hispace.hicloud.com",
-		"DE_back":"connect-dre.dbankcloud.cn",
-		"RU":"connect-drru.hispace.hicloud.com",
-		"RU_back":"connect-drru.dbankcloud.cn",
-		"SG":"connect-dra.hispace.hicloud.com",
-		"SG_back":"connect-dra.dbankcloud.cn"
+		"CN":"connect-drcn.dbankcloud.cn",
+		"CN_back":"connect-drcn.hispace.hicloud.com",
+		"DE":"connect-dre.dbankcloud.cn",
+		"DE_back":"connect-dre.hispace.hicloud.com",
+		"RU":"connect-drru.dbankcloud.cn",
+		"RU_back":"connect-drru.hispace.hicloud.com",
+		"SG":"connect-dra.dbankcloud.cn",
+		"SG_back":"connect-dra.hispace.hicloud.com"
 	},
 	"client":{
 		"cp_id":"2640027000023877757",
@@ -25,6 +25,10 @@
 		"api_key":"CwEAAAAAdPuR1nvVhn0qCF1Qv8M83IeJM9xVNZX8UJ13+mVnGgctfT3WEjBLITTgFg0c0HeQ/721dDbIjHHEgPvMid7cfWnSm/Q=",
 		"package_name":"com.collaboratorapp"
 	},
+	"oauth_client":{
+		"client_id":"104847131",
+		"client_type":1
+	},
 	"app_info":{
 		"app_id":"104847131",
 		"package_name":"com.collaboratorapp"
@@ -32,6 +36,10 @@
 	"service":{
 		"analytics":{
 			"collector_url":"datacollector-dre.dt.hicloud.com,datacollector-dre.dt.dbankcloud.cn",
+			"collector_url_ru":"datacollector-drru.dt.hicloud.com,datacollector-drru.dt.dbankcloud.cn",
+			"collector_url_sg":"datacollector-dra.dt.hicloud.com,datacollector-dra.dt.dbankcloud.cn",
+			"collector_url_de":"datacollector-dre.dt.hicloud.com,datacollector-dre.dt.dbankcloud.cn",
+			"collector_url_cn":"datacollector-drcn.dt.hicloud.com,datacollector-drcn.dt.dbankcloud.cn",
 			"resource_id":"p1",
 			"channel_id":""
 		},
@@ -50,9 +58,16 @@
 	"appInfos":[
 		{
 			"package_name":"com.collaboratorapp",
+			"client":{
+				"app_id":"104847131"
+			},
 			"app_info":{
 				"package_name":"com.collaboratorapp",
 				"app_id":"104847131"
+			},
+			"oauth_client":{
+				"client_type":1,
+				"client_id":"104847131"
 			}
 		}
 	]

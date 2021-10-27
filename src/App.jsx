@@ -29,11 +29,9 @@ const App = () => {
 
   const checkPermission = async () => {
     return DeviceInfo.hasHms().then(async (hasHms) => {
-      console.log({ hasHms });
       if (hasHms) {
         setMessagingEnabled(true);
         const token = await pushKitService.getAndSetToken();
-        console.log({ token });
         setPushKitToken(token);
         return token;
       }

@@ -11,6 +11,7 @@ const {
   APPCENTER_IOS_PRODUCTION,
   APPCENTER_IOS_STAGING,
   ENVIRONMENT,
+  HUAWEI_API_KEY,
 } = Config;
 export default {
   accessTokenKey: 'access_token',
@@ -27,4 +28,5 @@ export default {
   appCenterIos: APPCENTER_IOS_PRODUCTION,
   appCenterIosStaging: APPCENTER_IOS_STAGING,
   appEnvironment: ENVIRONMENT,
+  huaweiApiKey: HUAWEI_API_KEY,
 };
