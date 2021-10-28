@@ -45,6 +45,7 @@ const CommentsActionSheetContent = ({ onSend, serviceRequest }) => {
     >
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : null}
+        keyboardShouldPersistTaps="handled"
         keyboardVerticalOffset={Platform.OS === 'ios' ? deviceHeight * 0.19 : 0}
       >
         <SafeAreaView style={[styles.commentsModal]}>
@@ -55,20 +56,18 @@ const CommentsActionSheetContent = ({ onSend, serviceRequest }) => {
             messages={comments}
             placeholder="Type a comment"
             isKeyboardInternallyHandled={false}
-            keyboardShouldPersistTaps="always"
+            keyboardShouldPersistTaps="handled"
             renderBubble={(props) => {
               return (
                 <Bubble
                   {...props}
                   wrapperStyle={{
                     right: {
-                      backgroundColor: '#6e9e52',
-                      marginBottom: 5,
-                      padding: 5,
+                      backgroundColor: Colors.commentsBubble,
+                      marginBottom: 3,
                     },
                     left: {
-                      marginBottom: 5,
-                      padding: 5,
+                      marginBottom: 3,
                     },
                   }}
                   textStyle={{
@@ -87,7 +86,8 @@ const CommentsActionSheetContent = ({ onSend, serviceRequest }) => {
                 value={comment}
                 placeholder="Type a comment"
                 onChangeText={(text) => setComment(text)}
-                returnKeyType="done"
+                style={styles.input}
+                multiline
                 right={
                   <TextInput.Icon
                     name="send-outline"
@@ -108,6 +108,7 @@ const CommentsActionSheetContent = ({ onSend, serviceRequest }) => {
               _id: 1,
             }}
             renderAvatar={() => null}
+            showAvatarForEveryMessage
           />
         </SafeAreaView>
       </KeyboardAvoidingView>
@@ -119,6 +120,7 @@ const styles = StyleSheet.create({
   commentsModal: {
     height: '95%',
   },
+  input: { height: 55 },
 });
 
 CommentsActionSheetContent.propTypes = {

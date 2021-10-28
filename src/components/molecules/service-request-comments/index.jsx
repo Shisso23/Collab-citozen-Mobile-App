@@ -61,7 +61,11 @@ const Comments = ({ serviceRequest, onSend }) => {
         }}
       />
 
-      <Overlay isVisible={commentsExpanded} overlayStyle={[styles.overlay, Gutters.largeTMargin]}>
+      <Overlay
+        onBackdropPress={() => setCommentsExpanded(false)}
+        isVisible={commentsExpanded}
+        overlayStyle={[styles.overlay, Gutters.largeTMargin]}
+      >
         <View
           style={[
             Gutters.regularVPadding,
