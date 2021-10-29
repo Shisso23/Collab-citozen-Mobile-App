@@ -62,13 +62,13 @@ const CommentsActionSheetContent = ({ onSend, serviceRequest }) => {
                 <Bubble
                   {...props}
                   wrapperStyle={{
-                    right: {
-                      backgroundColor: Colors.commentsBubble,
-                      marginBottom: 3,
-                    },
-                    left: {
-                      marginBottom: 3,
-                    },
+                    right: [
+                      {
+                        backgroundColor: Colors.commentsBubble,
+                      },
+                      Gutters.tinyBMargin,
+                    ],
+                    left: Gutters.tinyBMargin,
                   }}
                   textStyle={{
                     right: {
