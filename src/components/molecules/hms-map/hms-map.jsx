@@ -1,53 +1,61 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { StyleSheet, TextInput, Button, View, ScrollView } from 'react-native';
 import RNHMSSite from '@hmscore/react-native-hms-site';
+import ax from 'axios';
+import _ from 'lodash';
 import appConfig from '../../../config';
 
-const defaultLocation = {
-  location: {
-    lat: 48.8815,
-    lng: 2.4444,
+const axiosService = ax.create({
+  timeout: 20000,
+  headers: {
+    Accept: 'application/json',
+    'content-type': 'application/json',
   },
-  bounds: {
-    northeast: {
-      lat: 49,
-      lng: 2.47,
-    },
-    southwest: {
-      lat: 47.8815,
-      lng: 2.0,
-    },
-  },
-};
+  responseType: 'json',
+});
+
+const apiKey = encodeURIComponent(appConfig.huaweiApiKey);
 
 const BasicMap = () => {
-  const [strictBounds, setStrictBounds] = useState(false);
   const [query, setQuery] = useState('France');
-  const [radius, setRadius] = useState(1000);
+  const [radius, setRadius] = useState(100);
+  const defaultLocation = {
+    query,
+    location: {
+      lat: -25.73134,
+      lng: 28.21837,
+    },
+    bounds: {
+      northeast: {
+        lat: 49,
+        lng: 2.47,
+      },
+      southwest: {
+        lat: -24.73134,
+        lng: 28.0,
+      },
+    },
+    poiTypes: [RNHMSSite.LocationType.GEOCODE, RNHMSSite.LocationType.ADDRESS],
+  };
 
-  useEffect(() => {
-    console.log({ key: appConfig.mapKitKey });
-    console.log({ encoded: encodeURIComponent(appConfig.mapKitKey) });
-    const config = {
-      apiKey: encodeURIComponent(appConfig.mapKitKey),
-    };
-
-    RNHMSSite.initializeService(config)
-      .then(() => {
-        console.log('Service is initialized successfully');
+  const apiSearch = (action, keyword) => {
+    axiosService
+      .post(`${appConfig.hmsSiteApiUrl}/${action}?key=${apiKey}`, {
+        ...defaultLocation,
+        query: keyword,
       })
-      .catch((err) => {
-        console.log(`Error : ${err}`);
-      });
-  }, []);
+      .then((results) => {
+        console.log({ results });
+      })
+      .catch((error) => console.log({ error }));
+  };
+
+  const debounce = useMemo(() => _.throttle(apiSearch, 1000, false), []);
 
   const setStateByKey = (key, data) => {
     switch (key) {
       case 'query':
         setQuery(data);
-        break;
-      case 'strictBounds':
-        setStrictBounds(data);
         break;
       case 'radius':
         setRadius(data);
@@ -68,84 +76,6 @@ const BasicMap = () => {
     setRadius(data);
   };
 
-  const onTextSearch = () => {
-    const textSearchReq = {
-      query,
-      location: {
-        lat: 48.8815,
-        lng: 2.4444,
-      },
-      radius,
-      countryCode: 'za',
-      language: 'fr',
-      pageIndex: 1,
-      pageSize: 5,
-      // hwPoiType: RNHMSSite.HwLocationType.RESTAURANT,
-      // poiType: RNHMSSite.LocationType.GYM,
-      children: true,
-    };
-    RNHMSSite.textSearch(textSearchReq)
-      .then((res) => {
-        alert(JSON.stringify(res));
-        console.log(JSON.stringify(res));
-      })
-      .catch((err) => {
-        alert(JSON.stringify(err));
-        console.log(JSON.stringify(err));
-      });
-  };
-
-  const onQuerySuggestion = () => {
-    const querySuggestionReq = {
-      ...defaultLocation,
-      query,
-      radius,
-      countryCode: 'FR',
-      language: 'fr',
-      poiTypes: [
-        RNHMSSite.LocationType.GEOCODE,
-        RNHMSSite.LocationType.ADDRESS,
-        RNHMSSite.LocationType.ESTABLISHMENT,
-        RNHMSSite.LocationType.REGIONS,
-        RNHMSSite.LocationType.CITIES,
-      ],
-      strictBounds,
-      children: false,
-    };
-    RNHMSSite.querySuggestion(querySuggestionReq)
-      .then((res) => {
-        alert(JSON.stringify(res));
-      })
-      .catch((err) => {
-        alert(JSON.stringify(err));
-        console.log(JSON.stringify(err));
-      });
-  };
-
-  const onQueryAutocomplete = () => {
-    const queryAutocompleteReq = {
-      query,
-      location: {
-        lat: 48.8815,
-        lng: 2.4444,
-      },
-      radius,
-      language: 'fr',
-      children: false,
-    };
-    RNHMSSite.queryAutocomplete(queryAutocompleteReq)
-      .then((res) => {
-        console.log({ res });
-        alert(JSON.stringify(res));
-        console.log(JSON.stringify(res));
-      })
-      .catch((err) => {
-        console.log({ err });
-        alert(JSON.stringify(err));
-        console.log(JSON.stringify(err));
-      });
-  };
-
   return (
     <ScrollView>
       <View style={[styles.container]}>
@@ -153,7 +83,10 @@ const BasicMap = () => {
           value={query}
           style={[styles.input, styles.width35]}
           placeholder="query"
-          onChangeText={(e) => changeInputValue('query', e)}
+          onChangeText={(e) => {
+            debounce('queryAutoComplete', e);
+            changeInputValue('query', e);
+          }}
         />
         <TextInput
           value={radius ? radius.toString() : null}
@@ -164,17 +97,10 @@ const BasicMap = () => {
           onChangeText={(e) => changeRadiusValue(e)}
         />
       </View>
-      <View>
-        <Button title="Text Search" onPress={onTextSearch} />
-      </View>
 
-      <View style={styles.btnContainer}>
-        <Button title="Query Suggestion" onPress={onQuerySuggestion} />
-      </View>
+      <Button title="Query Suggestion" onPress={() => apiSearch('querySuggestion', query)} />
 
-      <View style={styles.btnContainer}>
-        <Button title="Query AutoComplete" onPress={onQueryAutocomplete} />
-      </View>
+      <Button title="Query AutoComplete" onPress={() => apiSearch('queryAutoComplete', query)} />
     </ScrollView>
   );
 };

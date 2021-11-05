@@ -29,4 +29,5 @@ export default {
   appCenterIosStaging: APPCENTER_IOS_STAGING,
   appEnvironment: ENVIRONMENT,
   huaweiApiKey: HUAWEI_API_KEY,
+  hmsSiteApiUrl: 'https://siteapi.cloud.huawei.com/mapApi/v1/siteService',
 };

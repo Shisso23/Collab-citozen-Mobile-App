@@ -2,8 +2,8 @@
 	"agcgw":{
 		"backurl":"connect-dre.hispace.hicloud.com",
 		"url":"connect-dre.dbankcloud.cn",
-		"websocketbackurl":"connect-ws-dre.hispace.dbankcloud.cn",
-		"websocketurl":"connect-ws-dre.hispace.dbankcloud.com"
+		"websocketbackurl":"connect-ws-dre.hispace.dbankcloud.com",
+		"websocketurl":"connect-ws-dre.hispace.dbankcloud.cn"
 	},
 	"agcgw_all":{
 		"CN":"connect-drcn.dbankcloud.cn",

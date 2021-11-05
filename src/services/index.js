@@ -18,3 +18,4 @@ export { default as myChannelsService } from './sub-services/my-channels/my-chan
 export { default as notificationService } from './sub-services/notification-service/notification.service';
 export { default as firebaseNotificationService } from './sub-services/update-notification-token/update-notification-token.service';
 export { default as contactsService } from './sub-services/contacts-service/contacts-service';
+export { default as hmsSiteService } from './sub-services/hms-site-service/hms-site.service';
