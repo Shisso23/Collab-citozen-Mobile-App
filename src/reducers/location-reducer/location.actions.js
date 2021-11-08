@@ -1,6 +1,6 @@
 import { Platform } from 'react-native';
 import HMSLocation from '@hmscore/react-native-hms-location';
-import { hasGmsSync } from 'react-native-device-info';
+import { hasGmsSync, hasHmsSync } from 'react-native-device-info';
 
 import flashService from '../../services/sub-services/flash-service/flash.service';
 import locationService from '../../services/sub-services/location-service/location.service';
@@ -11,19 +11,21 @@ export const clearLocationAction = () => (dispatch) => {
   dispatch(setRegionAction(null));
   dispatch(setSelectedAddressAction(''));
 };
-
-const locationRequest = {
-  priority: HMSLocation.FusedLocation.Native.PriorityConstants.PRIORITY_HIGH_ACCURACY,
-  interval: 10000,
-  numUpdates: 2147483647,
-  fastestInterval: 10000,
-  expirationTime: 3372036854775807.0,
-  smallestDisplacement: 0.0,
-  maxWaitTime: 0,
-  needAddress: false,
-  language: '',
-  countryCode: '',
-};
+let locationRequest;
+if (hasHmsSync()) {
+  locationRequest = {
+    priority: HMSLocation.FusedLocation.Native.PriorityConstants.PRIORITY_HIGH_ACCURACY,
+    interval: 60000,
+    numUpdates: 2147483647,
+    fastestInterval: 30000.0,
+    expirationTime: 3372036854775807.0,
+    smallestDisplacement: 0.0,
+    maxWaitTime: 0,
+    needAddress: false,
+    language: 'en',
+    countryCode: 'ZA',
+  };
+}
 
 export const getCurrentPositionAction = () => async (dispatch) => {
   dispatch(setIsLoadingAction(true));
@@ -41,12 +43,10 @@ export const getCurrentPositionAction = () => async (dispatch) => {
         const { longitude } = locationResult.lastLocation;
         const region = { latitude, longitude, longitudeDelta: 0.011, latitudeDelta: 0.011 };
         dispatch(setRegionAction(region));
-
-        // await dispatch(getAddressFromRegionAction(region)); //TODO
+        await dispatch(getAddressFromRegionAction(region));
       });
     }
   } catch (err) {
-    console.log({ err });
     flashService.error(err.message);
   } finally {
     setIsLoadingAction(false);
@@ -61,7 +61,7 @@ export const setCurrentPositionAction = () => async (dispatch) => {
       region = await getCurrentPosition();
     } else {
       const pos = await HMSLocation.FusedLocation.Native.requestLocationUpdates(1, locationRequest);
-      console.log({ pos });
+
       const { latitude } = pos;
       const { longitude } = pos;
       region = { latitude, longitude, longitudeDelta: 0.011, latitudeDelta: 0.011 };

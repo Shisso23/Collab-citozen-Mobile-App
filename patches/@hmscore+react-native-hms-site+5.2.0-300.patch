@@ -1,0 +1,25 @@
+diff --git a/node_modules/@hmscore/react-native-hms-site/src/index.js b/node_modules/@hmscore/react-native-hms-site/src/index.js
+index e0c29fe..809efcc 100644
+--- a/node_modules/@hmscore/react-native-hms-site/src/index.js
++++ b/node_modules/@hmscore/react-native-hms-site/src/index.js
+@@ -14,14 +14,17 @@
+     limitations under the License.
+ */
+ 
+-import { NativeModules } from 'react-native';
++import { NativeModules, Platform } from 'react-native';
+ import LocationType from './constants/LocationType';
+ import HwLocationType from './constants/HwLocationType';
+ 
++
+ const { HmsSite } = NativeModules;
++if(Platform.OS==='android'){
++    HmsSite.LocationType = LocationType;
++    HmsSite.HwLocationType = HwLocationType;
++}
+ 
+-HmsSite.LocationType = LocationType;
+-HmsSite.HwLocationType = HwLocationType;
+ 
+ export default HmsSite;
+ 
