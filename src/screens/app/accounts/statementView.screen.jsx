@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, ImageBackground, View, StyleSheet, Dimensions, Alert } from 'react-native';
+import { Text, ImageBackground, View, StyleSheet, Dimensions, Alert, Platform } from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
@@ -76,7 +76,7 @@ const StatementViewScreen = ({ route }) => {
           </Text>
           <Icon
             name="share"
-            type="feather"
+            type={Platform.OS === 'ios' ? 'feather' : 'font-awesome-5'}
             size={28}
             containerStyle={Gutters.smallRMargin}
             color={Colors.commentsBubble}
