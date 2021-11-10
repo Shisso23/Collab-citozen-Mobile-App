@@ -1,12 +1,5 @@
 import React, { useEffect } from 'react';
-import {
-  View,
-  ImageBackground,
-  RefreshControl,
-  FlatList,
-  StyleSheet,
-  Dimensions,
-} from 'react-native';
+import { View, ImageBackground, RefreshControl, FlatList, StyleSheet } from 'react-native';
 import { List } from 'react-native-paper';
 import { Text, Image, Icon } from 'react-native-elements';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
@@ -19,8 +12,6 @@ import { getNewsFeedAction } from '../../../reducers/news-feed-reducer/news-feed
 import { newsFeedSelector } from '../../../reducers/news-feed-reducer/news-feed.reducer';
 import { exitAppOnHardwarePressListener } from '../../../helpers';
 import { handleNotificationOpenedBackGround } from '../../../hooks/notification-background/notification-background';
-
-const { width: screenWidth } = Dimensions.get('window');
 
 const HomeScreen = () => {
   const dispatch = useDispatch();
@@ -137,9 +128,8 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
-    flex: 1,
-    height: 200,
-    maxWidth: screenWidth,
+    height: 245,
+    width: undefined,
   },
 });
 

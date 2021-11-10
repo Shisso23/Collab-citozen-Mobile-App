@@ -1,6 +1,5 @@
 package com.collaboratorapp;
 import android.os.Bundle;
-import android.content.Intent;
 
 import com.facebook.react.ReactActivity;
 import com.zoontek.rnbootsplash.RNBootSplash;

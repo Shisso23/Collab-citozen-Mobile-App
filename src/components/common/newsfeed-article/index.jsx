@@ -47,9 +47,9 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
-    flex: 1,
-    height: 200,
+    height: 245,
     maxWidth: screenWidth,
+    width: undefined,
   },
 });
 
