@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React, { useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Dimensions } from 'react-native';
 import { Image, Divider } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
@@ -9,6 +9,7 @@ import { userHasOpenedNewsFeedAction } from '../../../reducers/news-feed-reducer
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
 
+const { width: screenWidth } = Dimensions.get('window');
 const NewsFeedArticle = (newsFeedArticle) => {
   const { Gutters, Fonts } = useTheme();
   const dispatch = useDispatch();
@@ -43,22 +44,12 @@ const NewsFeedArticle = (newsFeedArticle) => {
 
 const styles = StyleSheet.create({
   imageStyle: {
-    aspectRatio: 1 / 1,
-    borderColor: Colors.shadow,
+    aspectRatio: 1,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
-    borderWidth: 1,
-    elevation: 5,
-    height: null,
-    resizeMode: 'cover',
-    shadowColor: Colors.shadow,
-    shadowOffset: {
-      width: 3,
-      height: 5,
-    },
-    shadowOpacity: 0.6,
-    shadowRadius: 20,
-    width: null,
+    flex: 1,
+    height: 200,
+    maxWidth: screenWidth,
   },
 });
 
