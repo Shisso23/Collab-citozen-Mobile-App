@@ -80,7 +80,7 @@ const ServiceRequestScreen = () => {
       <SwipeRowContainer
         key={`${item.id}`}
         swipeKey={`${item.id}`}
-        preview={deleteServiceRequestPreview && false}
+        preview={deleteServiceRequestPreview && deletable}
         deletable={deletable}
         onPreviewEnd={() => {
           dispatch(previewDeleteServiceRequestAction(false));

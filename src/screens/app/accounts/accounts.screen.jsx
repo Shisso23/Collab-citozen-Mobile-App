@@ -38,7 +38,7 @@ const AccountsScreen = () => {
     switch (status) {
       case 'Denied':
         return Colors.red;
-      case 'Granted':
+      case 'Approved':
         return Colors.primary;
       case 'Requested':
         return Colors.warning;
@@ -119,7 +119,7 @@ const AccountsScreen = () => {
         <SwipeRowContainer
           key={`${_.get(item, 'objectId', accountIndex)}-${_.get(account, 'accountNumber', '')}`}
           swipeKey={`${_.get(item, 'objectId', accountIndex)}-${accountIndex}`}
-          preview={deleteAccountPreview}
+          preview={deleteAccountPreview && accountIndex === 0}
           onPreviewEnd={() => {
             dispatch(previewDeleAccountAction(false));
           }}

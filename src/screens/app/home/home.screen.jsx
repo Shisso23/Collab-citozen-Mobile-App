@@ -1,30 +1,24 @@
-import React from 'react';
-import {
-  View,
-  ImageBackground,
-  RefreshControl,
-  FlatList,
-  StyleSheet,
-  Dimensions,
-} from 'react-native';
+import React, { useEffect } from 'react';
+import { View, ImageBackground, RefreshControl, FlatList, StyleSheet } from 'react-native';
 import { List } from 'react-native-paper';
-import { Text, Image } from 'react-native-elements';
+import { Text, Image, Icon } from 'react-native-elements';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import PushNotification from 'react-native-push-notification';
+import moment from 'moment';
 
 import useTheme from '../../../theme/hooks/useTheme';
 import { getNewsFeedAction } from '../../../reducers/news-feed-reducer/news-feed.actions';
 import { newsFeedSelector } from '../../../reducers/news-feed-reducer/news-feed.reducer';
 import { exitAppOnHardwarePressListener } from '../../../helpers';
-
-const { width: screenWidth } = Dimensions.get('window');
+import { handleNotificationOpenedBackGround } from '../../../hooks/notification-background/notification-background';
 
 const HomeScreen = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const { Common, Gutters, Fonts, Layout, Colors, Images } = useTheme();
   const { newsFeeds, isLoadingNewsFeeds } = useSelector(newsFeedSelector);
+  const notificationOpenedBackGround = handleNotificationOpenedBackGround();
 
   useFocusEffect(exitAppOnHardwarePressListener);
 
@@ -35,16 +29,23 @@ const HomeScreen = () => {
     }, []),
   );
 
+  useEffect(() => {
+    notificationOpenedBackGround();
+  });
+
   const _loadNewsFeeds = () => {
     dispatch(getNewsFeedAction());
+  };
+  const formatDate = (date) => {
+    return moment(date).fromNow();
   };
 
   const _getStatusIndicator = (status) => {
     switch (status) {
       case 'Yes':
-        return Colors.primary;
+        return Colors.transparent;
       case 'No':
-        return Colors.red;
+        return Colors.primary;
       default:
         return Colors.error;
     }
@@ -67,7 +68,16 @@ const HomeScreen = () => {
           title={item.title}
           titleStyle={Common.cardTitle}
           description={() => (
-            <View style={Layout.alignItemsEnd}>
+            <View style={[Layout.rowBetween, Layout.alignItemsCenter]}>
+              <View style={[Layout.row, Gutters.tinyTMargin]}>
+                <Icon
+                  name="clock-o"
+                  type="font-awesome"
+                  size={15}
+                  style={[Gutters.smallRMargin, styles.clockIcon]}
+                />
+                <Text style={{ color: Colors.black }}>{formatDate(item.date)}</Text>
+              </View>
               <View
                 style={[
                   Common.statusIndicator,
@@ -113,13 +123,13 @@ const HomeScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  clockIcon: { opacity: 0.75 },
   imageStyle: {
     aspectRatio: 1,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
-    flex: 1,
-    height: 200,
-    maxWidth: screenWidth,
+    height: 245,
+    width: undefined,
   },
 });
 

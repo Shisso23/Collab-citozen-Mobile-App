@@ -6,6 +6,7 @@ export const accountModel = (_apiAccountModel = {}) => ({
   accountName: _.get(_apiAccountModel, 'account_name', ''),
   status: _.get(_apiAccountModel, 'status', ''),
   statements: _.get(_apiAccountModel, 'statements', []),
+  statusText: _.get(_apiAccountModel, 'status_text', ''),
 });
 
 export const constructAccountModels = (apiAccounts) =>

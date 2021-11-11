@@ -19,6 +19,8 @@ target 'collaboratorapp' do
 
   pod 'react-native-pdf', :path => '../node_modules/react-native-pdf'
 
+  pod 'RNShare', :path => '../node_modules/react-native-share'
+
   target 'collaboratorappTests' do
     inherit! :complete
     # Pods for testing

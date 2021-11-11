@@ -13,6 +13,7 @@ import { signOutAction } from '../../../../reducers/user-auth-reducer/user-auth.
 import useTheme from '../../../../theme/hooks/useTheme';
 import { Colors } from '../../../../theme/Variables';
 import { permissionsService } from '../../../../services';
+import { openAppSetting } from '../../../../helpers/app-seettings.helper';
 
 const theme = {
   colors: {
@@ -75,6 +76,15 @@ const DrawerContent = (props) => {
             onPress={() => navigation.navigate('ViewSubscribeToChannels')}
             theme={theme}
           />
+          <Drawer.Item
+            icon="phone"
+            label="Contacts"
+            onPress={async () => {
+              await permissionsService.checkLocationPermissions();
+              return navigation.navigate('ContactDetails');
+            }}
+            theme={theme}
+          />
         </Drawer.Section>
 
         <View style={{ backgroundColor: Colors.white }}>
@@ -84,14 +94,7 @@ const DrawerContent = (props) => {
               label="Profile"
               onPress={() => navigation.navigate('Profile')}
             />
-            <Drawer.Item
-              icon="phone"
-              label="Contacts"
-              onPress={async () => {
-                await permissionsService.checkLocationPermissions();
-                return navigation.navigate('ContactDetails');
-              }}
-            />
+            <Drawer.Item icon="cog" label="Settings" onPress={openAppSetting} />
           </Drawer.Section>
           <Drawer.Item icon="exit-to-app" label="Sign Out" onPress={_signOut} />
         </View>

@@ -28,7 +28,7 @@ const SwipeRowContainer = ({
       preview={preview}
       onPreviewEnd={onPreviewEnd}
       previewOpenValue={-SIZE}
-      previewDuration={1500}
+      previewDuration={600}
       rightOpenValue={-SIZE}
       closeOnRowPress
       disableRightSwipe

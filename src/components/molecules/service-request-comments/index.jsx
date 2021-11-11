@@ -1,25 +1,22 @@
-import React, { useState, useLayoutEffect, useCallback, useEffect } from 'react';
-import { StyleSheet, View, Text, SafeAreaView, Keyboard, Platform, Dimensions } from 'react-native';
-import { ListItem } from 'react-native-elements';
-import { GiftedChat, Bubble } from 'react-native-gifted-chat';
-import { TextInput } from 'react-native-paper';
+import React, { useState, useLayoutEffect } from 'react';
+import { StyleSheet, View, Text, Keyboard, Platform } from 'react-native';
+import { ListItem, Overlay } from 'react-native-elements';
+
+import Icon from 'react-native-vector-icons/FontAwesome5';
 import { useSelector, useDispatch } from 'react-redux';
 
 import PropTypes from 'prop-types';
 import { Colors } from '../../../theme/Variables';
 import useTheme from '../../../theme/hooks/useTheme';
-import CustomInput from '../custom-input';
 import { getCommentsAction } from '../../../reducers/service-request-reducer/service-request.actions';
 import { serviceRequestSelector } from '../../../reducers/service-request-reducer/service-request.reducer';
+import CommentsActionSheetContent from '../comments/action-sheet';
 
-const DEVICE_HEIGHT = Dimensions.get('window').height;
-
-const Comments = ({ serviceRequest, onSend, parentScrollViewRef, setScrollEnabled }) => {
+const Comments = ({ serviceRequest, onSend }) => {
   const { comments } = useSelector(serviceRequestSelector);
   const dispatch = useDispatch();
 
-  const { Gutters } = useTheme();
-  const [comment, setComment] = useState(false);
+  const { Gutters, Layout } = useTheme();
   const [keyboardVisible, setKeyboardVisible] = useState(undefined);
   const [commentsExpanded, setCommentsExpanded] = useState(false);
 
@@ -47,23 +44,6 @@ const Comments = ({ serviceRequest, onSend, parentScrollViewRef, setScrollEnable
     };
   }, []);
 
-  useEffect(() => {
-    if (commentsExpanded) {
-      parentScrollViewRef.current.scrollToEnd();
-      setScrollEnabled(false);
-    } else {
-      parentScrollViewRef.current.scrollToPosition(0, 0);
-      setScrollEnabled(true);
-    }
-  }, [commentsExpanded]);
-
-  const sendMessage = useCallback((messages = []) => {
-    onSend(messages[0].text).then(() => {
-      dispatch(getCommentsAction(serviceRequest.id));
-      GiftedChat.append(comments, messages);
-    });
-  }, []);
-
   return (
     <View style={[containerStyle]}>
       <ListItem.Accordion
@@ -79,102 +59,56 @@ const Comments = ({ serviceRequest, onSend, parentScrollViewRef, setScrollEnable
         onPress={() => {
           setCommentsExpanded(!commentsExpanded);
         }}
+      />
+
+      <Overlay
+        onBackdropPress={() => setCommentsExpanded(false)}
+        isVisible={commentsExpanded}
+        overlayStyle={[styles.overlay, Gutters.largeTMargin]}
       >
-        <SafeAreaView
+        <View
           style={[
-            {
-              height: keyboardVisible
-                ? Platform.OS === 'ios'
-                  ? DEVICE_HEIGHT * 0.2
-                  : DEVICE_HEIGHT * 0.7
-                : DEVICE_HEIGHT * 0.7,
-            },
+            Gutters.regularVPadding,
+            Gutters.smallBMargin,
+            Layout.row,
+            Layout.alignItemsCenter,
+            styles.commentsHeader,
           ]}
         >
-          <GiftedChat
-            alignTop
-            inverted={false}
-            infiniteScroll
-            messages={comments}
-            placeholder="Type a comment"
-            isKeyboardInternallyHandled={false}
-            nestedScrollEnabled
-            keyboardShouldPersistTaps="always"
-            renderBubble={(props) => {
-              return (
-                <Bubble
-                  {...props}
-                  wrapperStyle={{
-                    right: {
-                      backgroundColor: Colors.commentsBubble,
-                      marginBottom: 5,
-                      padding: 5,
-                    },
-                    left: {
-                      marginBottom: 5,
-                      padding: 5,
-                    },
-                  }}
-                  textStyle={{
-                    right: {
-                      fontSize: 14,
-                    },
-                    left: {
-                      fontSize: 14,
-                    },
-                  }}
-                />
-              );
-            }}
-            renderInputToolbar={() => (
-              <CustomInput
-                value={comment}
-                placeholder="Type a comment"
-                onChangeText={(text) => setComment(text)}
-                onSubmitEditing={() => {
-                  if (Platform.OS === 'ios') {
-                    setScrollEnabled(true);
-                  }
-                  parentScrollViewRef.current.scrollToEnd();
-                }}
-                returnKeyType="done"
-                right={
-                  <TextInput.Icon
-                    name="send-outline"
-                    type="ionicon"
-                    onPress={() => {
-                      onSend(comment).then(() => {
-                        setComment('');
-                        dispatch(getCommentsAction(serviceRequest.id));
-                      });
-                    }}
-                    disabled={comment.length === 0}
-                    color={comment.length > 0 ? Colors.primary : Colors.darkgray}
-                  />
-                }
-              />
-            )}
-            onSend={(messages) => sendMessage(messages)}
-            user={{
-              _id: 1,
-            }}
-            renderAvatar={() => null}
+          <Text style={styles.commentsTitle}>Comments</Text>
+          <Icon
+            onPress={() => setCommentsExpanded(false)}
+            style={styles.closeButton}
+            name="times-circle"
+            size={25}
           />
-        </SafeAreaView>
-      </ListItem.Accordion>
+        </View>
+        <CommentsActionSheetContent
+          closeComments={() => setCommentsExpanded(false)}
+          serviceRequest={serviceRequest}
+          onSend={onSend}
+        />
+      </Overlay>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  closeButton: { opacity: 0.65, position: 'absolute', right: '0%' },
+  commentsHeader: { width: '100%' },
   commentsText: { fontSize: 17, fontWeight: '500' },
+  commentsTitle: { fontSize: 18, fontWeight: '500', left: '38%', position: 'absolute' },
+  overlay: {
+    bottom: 0,
+    height: '88.5%',
+    position: 'absolute',
+    width: '99%',
+  },
 });
 
 Comments.propTypes = {
   serviceRequest: PropTypes.object.isRequired,
   onSend: PropTypes.func.isRequired,
-  parentScrollViewRef: PropTypes.object.isRequired,
-  setScrollEnabled: PropTypes.func.isRequired,
 };
 
 export default Comments;

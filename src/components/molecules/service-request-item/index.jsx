@@ -18,9 +18,13 @@ const ServiceRequestItem = ({ item, onPress }) => {
   const _getStatusIndicator = (status) => {
     switch (status) {
       case 'Registered':
-        return Colors.primary;
+        return Colors.warning;
+      case 'Initial':
+        return Colors.warning;
       case 'Assigned':
-        return Colors.softBlue;
+        return Colors.primary;
+      case 'Completed':
+        return Colors.secondary;
       case 'Work in Progress':
         return Colors.warning;
       default:

@@ -11,8 +11,14 @@ const CustomInput = (props) => {
   return (
     <>
       <TextInput
+        autoCorrect={false}
+        autoCompleteType="off"
         labelStyle={styles.label}
-        inputStyle={[styles.inputStyle, { height: _.get(props, 'height', 60) }]}
+        inputStyle={[
+          styles.inputStyle,
+          { height: _.get(props, 'height', 80) },
+          _.get(props, 'style', {}),
+        ]}
         {...props}
       />
       <HelperText
