@@ -7,7 +7,6 @@ import moment from 'moment';
 import _ from 'lodash';
 import { hasGmsSync, hasHmsSync } from 'react-native-device-info';
 
-// import { requestAuthorization } from 'react-native-geolocation-service';
 import useTheme from '../../../theme/hooks/useTheme';
 import { serviceRequestSelector } from '../../../reducers/service-request-reducer/service-request.reducer';
 import {
