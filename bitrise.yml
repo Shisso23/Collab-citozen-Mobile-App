@@ -1,181 +1,232 @@
-format_version: "8"
+---
+format_version: '8'
 default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
 project_type: react-native
 app:
   envs:
-    - PROJECT_LOCATION: android
-      opts:
-        is_expand: false
-    - MODULE: app
-      opts:
-        is_expand: false
-    - VARIANT: release
-      opts:
-        is_expand: false
-    - BITRISE_PROJECT_PATH: ios/collaboratorapp.xcworkspace
-      opts:
-        is_expand: false
-    - BITRISE_SCHEME: collaboratorapp
-      opts:
-        is_expand: false
-    - BITRISE_EXPORT_METHOD: app-store
-      opts:
-        is_expand: false
-    - APPLE_BUNDLE_ID: com.collab.citizen
-      opts:
-        is_expand: false
-    - IOS_PLIST: ./ios/collaboratorapp/Info.plist
-      opts:
-        is_expand: false
-    - ANDROID_BUNDLE_ID: com.collaboratorapp
-      opts:
-        is_expand: false
-    - APPLE_APP_ID: 1557197011
-      opts:
-        is_expand: false
-    - TEAM_ID: 8CC8A7GVRW
-      opts:
-        is_expand: false
-
-
+  - PROJECT_LOCATION: android
+    opts:
+      is_expand: false
+  - MODULE: app
+    opts:
+      is_expand: false
+  - VARIANT: release
+    opts:
+      is_expand: false
+  - BITRISE_PROJECT_PATH: ios/collaboratorapp.xcworkspace
+    opts:
+      is_expand: false
+  - BITRISE_SCHEME: collaboratorapp
+    opts:
+      is_expand: false
+  - BITRISE_EXPORT_METHOD: app-store
+    opts:
+      is_expand: false
+  - APPLE_BUNDLE_ID: com.collab.citizen
+    opts:
+      is_expand: false
+  - IOS_PLIST: "./ios/collaboratorapp/Info.plist"
+    opts:
+      is_expand: false
+  - ANDROID_BUNDLE_ID: com.collaboratorapp
+    opts:
+      is_expand: false
+  - APPLE_APP_ID: 1557197011
+    opts:
+      is_expand: false
+  - TEAM_ID: 8CC8A7GVRW
+    opts:
+      is_expand: false
+  - HUAWEI_CLIENT_ID: 104847131
+    opts:
+      is_expand: false
+  - HUAWEI_APP_ID: 104847131
+    opts:
+      is_expand: false
+  - HUAWEI_CLIENT_SECRET: 9a905b9df9a77532d385db4016576c479cb2e5f28b8e431211f776aad2a128e8
+    opts:
+      is_expand: false
 trigger_map:
-  - pull_request_target_branch: master
-    workflow: build
-  - tag: internal-android/*
-    workflow: staging_android
-  - tag: internal-ios/*
-    workflow: staging_ios
-  - tag: alpha-android/*
-    workflow: alpha_android
-  - tag: alpha-ios/*
-    workflow: alpha_ios
+- pull_request_target_branch: master
+  workflow: build
+- tag: internal-android/*
+  workflow: staging_android
+- tag: internal-ios/*
+  workflow: staging_ios
+- tag: alpha-android/*
+  workflow: alpha_android
+- tag: alpha-ios/*
+  workflow: alpha_ios
 workflows:
   _android_deploy:
     steps:
-      - google-play-deploy@3:
-          inputs:
-            - package_name: $ANDROID_BUNDLE_ID
-            - track: $ANDROID_TRACK
-            - service_account_json_key_path: $BITRISEIO_ANDROID_JSON_KEY_URL
+    - google-play-deploy@3:
+        inputs:
+        - package_name: "$ANDROID_BUNDLE_ID"
+        - track: "$ANDROID_TRACK"
+        - service_account_json_key_path: "$BITRISEIO_ANDROID_JSON_KEY_URL"
   _build_android:
     steps:
-      - install-missing-android-tools@2:
-          inputs:
-            - gradlew_path: $PROJECT_LOCATION/gradlew
-      - change-android-versioncode-and-versionname@1:
-          inputs:
-            - build_gradle_path: $BITRISE_SOURCE_DIR/android/app/build.gradle
-      - android-build@0:
-          inputs:
-            - module: app
-            - variant: release
-            - build_type: aab
-            - project_location: $PROJECT_LOCATION
-      - sign-apk@1: {}
-  _ios_deploy:
-    steps:
-      - deploy-to-itunesconnect-application-loader@0.11:
-          inputs:
-            - api_key_path: $BITRISEIO_APPLE_P8_FILE_PATH_URL
-            - api_issuer: $APPLE_P8_ISSUER
+    - install-missing-android-tools@2:
+        inputs:
+        - gradlew_path: "$PROJECT_LOCATION/gradlew"
+    - change-android-versioncode-and-versionname@1:
+        inputs:
+        - build_gradle_path: "$BITRISE_SOURCE_DIR/android/app/build.gradle"
+    - android-build@0:
+        inputs:
+        - module: app
+        - variant: release
+        - build_type: aab
+        - project_location: "$PROJECT_LOCATION"
+    - sign-apk@1: {}
   _build_ios:
     steps:
-      - set-xcode-build-number@1.0.9:
-          inputs:
-            - plist_path: $IOS_PLIST
-      - secure-delete-path@2.0.0:
-          inputs:
-            - path: ./ios/Podfile.lock
-      - cocoapods-install@1.11:
-          inputs:
-            - source_root_path: $BITRISE_SOURCE_DIR/ios
-      - ios-auto-provision-appstoreconnect@0:
-          inputs:
-            - distribution_type: $BITRISE_EXPORT_METHOD
-      - xcode-archive@3.2.0:
-          inputs:
-            - project_path: $BITRISE_PROJECT_PATH
-            - scheme: $BITRISE_SCHEME
-            - export_method: $BITRISE_EXPORT_METHOD
-            - configuration: Release
+    - set-xcode-build-number@1.0.9:
+        inputs:
+        - plist_path: "$IOS_PLIST"
+    - secure-delete-path@2.0.0:
+        inputs:
+        - path: "./ios/Podfile.lock"
+    - cocoapods-install@1.11:
+        inputs:
+        - source_root_path: "$BITRISE_SOURCE_DIR/ios"
+    - ios-auto-provision-appstoreconnect@0:
+        inputs:
+        - distribution_type: "$BITRISE_EXPORT_METHOD"
+    - xcode-archive@3.2.0:
+        inputs:
+        - project_path: "$BITRISE_PROJECT_PATH"
+        - scheme: "$BITRISE_SCHEME"
+        - export_method: "$BITRISE_EXPORT_METHOD"
+        - configuration: Release
   _cache:
     steps:
-      - deploy-to-bitrise-io@1: {}
-      - cache-push@2:
-          inputs:
-            - compress_archive: "true"
+    - deploy-to-bitrise-io@1: {}
+    - cache-push@2:
+        inputs:
+        - compress_archive: 'true'
   _init_install:
     steps:
-      - activate-ssh-key@4:
-          run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
-      - git-clone@4:
-          inputs:
-            - manual_merge: "yes"
-      - cache-pull@2: {}
-      - yarn@0:
-          inputs:
-            - command: install
-      - script@1.1.6:
-          inputs:
-            - content: ./node_modules/.bin/jetify
-      - file-downloader@1:
-          inputs:
-            - destination: .env
-            - source: $ENV_FILE
-      - file-downloader@1:
-          inputs:
-            - destination: ./ios/.env
-            - source: $ENV_FILE
-  build:
-    envs:
-      - ENV_FILE: $BITRISEIO_ENV_STAGING_URL
-      - BITRISE_EXPORT_METHOD: development
-    before_run:
-      - _init_install
-      - _build_android
-      - _build_ios
-    after_run:
-      - _cache
-  staging_ios:
-    envs:
-      - ENV_FILE: $BITRISEIO_ENV_STAGING_URL
-      - BITRISE_EXPORT_METHOD: app-store
-    before_run:
-      - _init_install
-      - _build_ios
-      - _ios_deploy
-    after_run:
-      - _cache
-  staging_android:
-    envs:
-      - ANDROID_TRACK: internal
-      - ENV_FILE: $BITRISEIO_ENV_STAGING_URL
-    before_run:
-      - _init_install
-      - _build_android
-      - _android_deploy
-    after_run:
-      - _cache
+    - activate-ssh-key@4:
+        run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
+    - git-clone@4:
+        inputs:
+        - manual_merge: 'yes'
+    - cache-pull@2: {}
+    - yarn@0:
+        inputs:
+        - command: install
+    - script@1.1.6:
+        inputs:
+        - content: "./node_modules/.bin/jetify"
+    - file-downloader@1:
+        inputs:
+        - destination: ".env"
+        - source: "$ENV_FILE"
+    - file-downloader@1:
+        inputs:
+        - destination: "./ios/.env"
+        - source: "$ENV_FILE"
+  _ios_deploy:
+    steps:
+    - deploy-to-itunesconnect-application-loader@0.11:
+        inputs:
+        - api_key_path: "$BITRISEIO_APPLE_P8_FILE_PATH_URL"
+        - api_issuer: "$APPLE_P8_ISSUER"
   alpha_android:
     envs:
-      - ANDROID_TRACK: alpha
-      - ENV_FILE: $BITRISEIO_ENV_PROD_URL
-      - BITRISE_EXPORT_METHOD: app-store
+    - ANDROID_TRACK: alpha
+    - ENV_FILE: "$BITRISEIO_ENV_PROD_URL"
+    - BITRISE_EXPORT_METHOD: app-store
     before_run:
-      - _init_install
-      - _build_android
-      - _android_deploy
+    - _init_install
+    - _build_android
+    - _android_deploy
     after_run:
-      - _cache
+    - _cache
   alpha_ios:
     envs:
-      - ANDROID_TRACK: alpha
-      - ENV_FILE: $BITRISEIO_ENV_PROD_URL
-      - BITRISE_EXPORT_METHOD: app-store
+    - ANDROID_TRACK: alpha
+    - ENV_FILE: "$BITRISEIO_ENV_PROD_URL"
+    - BITRISE_EXPORT_METHOD: app-store
     before_run:
-      - _init_install
-      - _build_ios
-      - _ios_deploy
+    - _init_install
+    - _build_ios
+    - _ios_deploy
     after_run:
-      - _cache
-
+    - _cache
+  build:
+    envs:
+    - ENV_FILE: "$BITRISEIO_ENV_STAGING_URL"
+    - BITRISE_EXPORT_METHOD: development
+    before_run:
+    - _init_install
+    - _build_android
+    - _build_ios
+    after_run:
+    - _cache
+  staging_android:
+    envs:
+    - ANDROID_TRACK: internal
+    - ENV_FILE: "$BITRISEIO_ENV_STAGING_URL"
+    before_run:
+    - _init_install
+    - _build_android
+    - _android_deploy
+    after_run:
+    - _cache
+  staging_ios:
+    envs:
+    - ENV_FILE: "$BITRISEIO_ENV_STAGING_URL"
+    - BITRISE_EXPORT_METHOD: app-store
+    before_run:
+    - _init_install
+    - _build_ios
+    - _ios_deploy
+    after_run:
+    - _cache
+  staging_huawei:
+    steps:
+    - activate-ssh-key@4: {}
+    - git-clone@6: {}
+    - file-downloader@1:
+        inputs:
+        - destination: ".env"
+        - source: "$ENV_FILE"
+    - file-downloader@1:
+        inputs:
+        - destination: ".env"
+        - source: "$ENV_FILE"
+    - file-downloader@1:
+        inputs:
+        - destination: android/app/agconnect-services.json
+        - source: "$BITRISEIO_HUAWEI_CONNECT_SERVICES_JSON_URL"
+    - yarn@0:
+        inputs:
+        - command: install
+    - install-missing-android-tools@3:
+        inputs:
+        - gradlew_path: "$PROJECT_LOCATION/gradlew"
+    - gradle-runner@2:
+        inputs:
+        - gradle_task: signingReport
+        - gradle_file: "$BITRISE_SOURCE_DIR/android/app/build.gradle"
+        - gradlew_path: "$PROJECT_LOCATION/gradlew"
+    - change-android-versioncode-and-versionname@1: {}
+    - android-build@1:
+        inputs:
+        - module: app
+        - variant: release
+        - build_type: aab
+        - project_location: "$PROJECT_LOCATION"
+    - sign-apk@1: {}
+    - app-gallery-deploy@1:
+        inputs:
+        - huawei_app_id: HUAWEI_APP_ID
+        - huawei_client_id: HUAWEI_CLIENT_ID
+        - huawei_client_secret: "$HUAWEI_CLIENT_SECRET"
+        - file_path: "$BITRISE_SIGNED_AAB_PATH"
+    - deploy-to-bitrise-io@2:
+        inputs:
+        - notify_email_list: "$HUAWEI_RELEASE_EMAILS"
