@@ -21,8 +21,8 @@
 		597FC6AF26832F9D00AE30D1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 597FC6AC26832F9D00AE30D1 /* GoogleService-Info.plist */; };
 		597FC6B026832F9D00AE30D1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 597FC6AC26832F9D00AE30D1 /* GoogleService-Info.plist */; };
 		5985E589270F0BA90078A92A /* libswiftWebKit.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 5985E588270F0BA90078A92A /* libswiftWebKit.tbd */; };
-		59E01F10273546BB00529BDA /* agconnect-services.plist in Resources */ = {isa = PBXBuildFile; fileRef = 59E01F0F273546BB00529BDA /* agconnect-services.plist */; };
-		59E01F11273546BB00529BDA /* agconnect-services.plist in Resources */ = {isa = PBXBuildFile; fileRef = 59E01F0F273546BB00529BDA /* agconnect-services.plist */; };
+		59BF8B46273E50D5009521EC /* agconnect-services.plist in Resources */ = {isa = PBXBuildFile; fileRef = 59BF8B45273E50D5009521EC /* agconnect-services.plist */; };
+		59BF8B47273E50D5009521EC /* agconnect-services.plist in Resources */ = {isa = PBXBuildFile; fileRef = 59BF8B45273E50D5009521EC /* agconnect-services.plist */; };
 		B4554069DA343637B1D161D8 /* libPods-collaboratorapp-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B3389A733FFFB8BF2D04E16 /* libPods-collaboratorapp-tvOS.a */; };
 		DA3CF3ED25C059F200ECC6D7 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = DA3CF3EC25C059F200ECC6D7 /* BootSplash.storyboard */; };
 		E935A009672730EDCC876818 /* libPods-collaboratorapp-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F31EBA4152D0FF45E7B93383 /* libPods-collaboratorapp-tvOSTests.a */; };
@@ -63,7 +63,7 @@
 		2D02E4901E0B4A5D006451C7 /* collaboratorapp-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "collaboratorapp-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		597FC6AC26832F9D00AE30D1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5985E588270F0BA90078A92A /* libswiftWebKit.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftWebKit.tbd; path = usr/lib/swift/libswiftWebKit.tbd; sourceTree = SDKROOT; };
-		59E01F0F273546BB00529BDA /* agconnect-services.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "agconnect-services.plist"; path = "../../../Desktop/agconnect-services.plist"; sourceTree = "<group>"; };
+		59BF8B45273E50D5009521EC /* agconnect-services.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "agconnect-services.plist"; sourceTree = "<group>"; };
 		59EF0317267780DC000449A9 /* collaboratorapp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = collaboratorapp.entitlements; path = collaboratorapp/collaboratorapp.entitlements; sourceTree = "<group>"; };
 		62144E6984F6F0EE508A65DB /* Pods-collaboratorapp-collaboratorappTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-collaboratorapp-collaboratorappTests.release.xcconfig"; path = "Target Support Files/Pods-collaboratorapp-collaboratorappTests/Pods-collaboratorapp-collaboratorappTests.release.xcconfig"; sourceTree = "<group>"; };
 		66D82B3C54308517F2A5F209 /* Pods-collaboratorapp-collaboratorappTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-collaboratorapp-collaboratorappTests.debug.xcconfig"; path = "Target Support Files/Pods-collaboratorapp-collaboratorappTests/Pods-collaboratorapp-collaboratorappTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -154,7 +154,7 @@
 		13B07FAE1A68108700A75B9A /* collaboratorapp */ = {
 			isa = PBXGroup;
 			children = (
-				59E01F0F273546BB00529BDA /* agconnect-services.plist */,
+				59BF8B45273E50D5009521EC /* agconnect-services.plist */,
 				597FC6AC26832F9D00AE30D1 /* GoogleService-Info.plist */,
 				59EF0317267780DC000449A9 /* collaboratorapp.entitlements */,
 				DA3CF35B25C0469A00ECC6D7 /* Fonts */,
@@ -402,7 +402,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				59E01F10273546BB00529BDA /* agconnect-services.plist in Resources */,
+				59BF8B46273E50D5009521EC /* agconnect-services.plist in Resources */,
 				DA3CF3ED25C059F200ECC6D7 /* BootSplash.storyboard in Resources */,
 				597FC6AD26832F9D00AE30D1 /* GoogleService-Info.plist in Resources */,
 			);
@@ -413,7 +413,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */,
-				59E01F11273546BB00529BDA /* agconnect-services.plist in Resources */,
+				59BF8B47273E50D5009521EC /* agconnect-services.plist in Resources */,
 				597FC6AF26832F9D00AE30D1 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -450,7 +450,6 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-collaboratorapp-collaboratorappTests/Pods-collaboratorapp-collaboratorappTests-resources.sh",
-				"${PODS_ROOT}/AGConnectCredential/AGCResources.bundle",
 				"${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.framework/Resources/GoogleMaps.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/RNImageCropPicker/QBImagePicker.bundle",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
@@ -474,7 +473,6 @@
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AGCResources.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleMaps.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/QBImagePicker.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntDesign.ttf",
@@ -623,7 +621,6 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-collaboratorapp/Pods-collaboratorapp-resources.sh",
-				"${PODS_ROOT}/AGConnectCredential/AGCResources.bundle",
 				"${PODS_ROOT}/GoogleMaps/Maps/Frameworks/GoogleMaps.framework/Resources/GoogleMaps.bundle",
 				"${PODS_CONFIGURATION_BUILD_DIR}/RNImageCropPicker/QBImagePicker.bundle",
 				"${PODS_ROOT}/../../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf",
@@ -647,7 +644,6 @@
 			);
 			name = "[CP] Copy Pods Resources";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AGCResources.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/GoogleMaps.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/QBImagePicker.bundle",
 				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/AntDesign.ttf",
