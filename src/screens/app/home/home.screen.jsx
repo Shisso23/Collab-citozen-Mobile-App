@@ -139,8 +139,8 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   imageStyle: {
-    borderTopLeftRadius: 15,
-    borderTopRightRadius: 15,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
     height: '100%',
     resizeMode: 'contain',
     width: '100%',
