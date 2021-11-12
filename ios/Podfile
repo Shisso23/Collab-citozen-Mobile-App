@@ -10,8 +10,6 @@ target 'collaboratorapp' do
   pod 'Google-Maps-iOS-Utils'
   permissions_path = '../node_modules/react-native-permissions/ios'
   pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse"
-  # add the AGC core pod
-  pod "AGConnectCore"
 
   config = use_native_modules!
 
