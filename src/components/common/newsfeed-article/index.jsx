@@ -30,7 +30,9 @@ const NewsFeedArticle = (newsFeedArticle) => {
   return (
     <View style={Gutters.regularHMargin}>
       {newsFeedItem.newsFeedImage != null ? (
-        <Image source={newsFeedItem.newsFeedImage} style={styles.imageStyle} />
+        <View style={styles.imageContainer}>
+          <Image source={newsFeedItem.newsFeedImage} style={styles.imageStyle} />
+        </View>
       ) : null}
       <Divider color={Colors.transparent} />
       <Text>{moment(_.get(newsFeedItem, 'date', new Date())).format('YYYY/MM/DD HH:mm')}</Text>
@@ -43,13 +45,16 @@ const NewsFeedArticle = (newsFeedArticle) => {
 };
 
 const styles = StyleSheet.create({
+  imageContainer: {
+    height: screenWidth * 0.6,
+    width: '100%',
+  },
   imageStyle: {
-    aspectRatio: 1,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    height: 245,
-    maxWidth: screenWidth,
-    width: undefined,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+    height: '100%',
+    resizeMode: 'contain',
+    width: '100%',
   },
 });
 

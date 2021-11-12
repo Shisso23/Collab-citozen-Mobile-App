@@ -1,5 +1,12 @@
 import React, { useEffect } from 'react';
-import { View, ImageBackground, RefreshControl, FlatList, StyleSheet } from 'react-native';
+import {
+  View,
+  ImageBackground,
+  RefreshControl,
+  FlatList,
+  StyleSheet,
+  Dimensions,
+} from 'react-native';
 import { List } from 'react-native-paper';
 import { Text, Image, Icon } from 'react-native-elements';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
@@ -13,6 +20,7 @@ import { newsFeedSelector } from '../../../reducers/news-feed-reducer/news-feed.
 import { exitAppOnHardwarePressListener } from '../../../helpers';
 import { handleNotificationOpenedBackGround } from '../../../hooks/notification-background/notification-background';
 
+const { width: screenWidth } = Dimensions.get('window');
 const HomeScreen = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -55,13 +63,15 @@ const HomeScreen = () => {
     return (
       <View style={[Common.textInputWithShadow, Gutters.tinyMargin]}>
         {item.newsFeedImage != null ? (
-          <Image
-            source={item.newsFeedImage}
-            style={styles.imageStyle}
-            onPress={() => {
-              navigation.navigate('ViewNewsFeedArticle', { newsFeedItem: item });
-            }}
-          />
+          <View style={styles.imageContainer}>
+            <Image
+              source={item.newsFeedImage}
+              style={styles.imageStyle}
+              onPress={() => {
+                navigation.navigate('ViewNewsFeedArticle', { newsFeedItem: item });
+              }}
+            />
+          </View>
         ) : null}
 
         <List.Item
@@ -124,12 +134,16 @@ const HomeScreen = () => {
 
 const styles = StyleSheet.create({
   clockIcon: { opacity: 0.75 },
+  imageContainer: {
+    height: screenWidth * 0.6,
+    width: '100%',
+  },
   imageStyle: {
-    aspectRatio: 1,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-    height: 245,
-    width: undefined,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+    height: '100%',
+    resizeMode: 'contain',
+    width: '100%',
   },
 });
 
