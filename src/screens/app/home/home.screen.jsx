@@ -67,26 +67,29 @@ const HomeScreen = () => {
           </View>
         ) : null}
         <List.Item
-          title={item.title}
           titleStyle={Common.cardTitle}
           description={() => (
-            <View style={[Layout.rowBetween, Layout.alignItemsCenter]}>
-              <View style={[Layout.row, Gutters.tinyTMargin]}>
-                <Icon
-                  name="clock-o"
-                  type="font-awesome"
-                  size={15}
-                  style={[Gutters.smallRMargin, styles.clockIcon]}
+            <>
+              <Text>{item.title}</Text>
+              <View style={[Layout.rowBetween, Layout.alignItemsCenter]}>
+                <View style={[Layout.row, Gutters.tinyTMargin]}>
+                  <Icon
+                    name="clock-o"
+                    type="font-awesome"
+                    size={15}
+                    containerStyle={[Layout.justifyContentCenter, Gutters.smallTMarin]}
+                    style={[Gutters.tinyRMargin, styles.clockIcon]}
+                  />
+                  <Text style={{ color: Colors.black }}>{formatDate(item.date)}</Text>
+                </View>
+                <View
+                  style={[
+                    Common.statusIndicator,
+                    { backgroundColor: _getStatusIndicator(item.seen) },
+                  ]}
                 />
-                <Text style={{ color: Colors.black }}>{formatDate(item.date)}</Text>
               </View>
-              <View
-                style={[
-                  Common.statusIndicator,
-                  { backgroundColor: _getStatusIndicator(item.seen) },
-                ]}
-              />
-            </View>
+            </>
           )}
           onPress={() => {
             navigation.navigate('ViewNewsFeedArticle', { newsFeedItem: item });

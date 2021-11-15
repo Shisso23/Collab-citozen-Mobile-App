@@ -35,7 +35,9 @@ const NewsFeedArticle = (newsFeedArticle) => {
         </View>
       ) : null}
       <Divider color={Colors.transparent} />
-      <Text>{moment(_.get(newsFeedItem, 'date', new Date())).format('YYYY/MM/DD HH:mm')}</Text>
+      <Text style={Gutters.regularTMargin}>
+        {moment(_.get(newsFeedItem, 'date', new Date())).format('YYYY/MM/DD HH:mm')}
+      </Text>
       <Divider color={Colors.transparent} />
       <Text style={Fonts.titleRegular}>{`${newsFeedItem.title}`}</Text>
       <Divider color={Colors.transparent} />
