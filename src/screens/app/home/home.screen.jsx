@@ -6,9 +6,10 @@ import {
   FlatList,
   StyleSheet,
   Dimensions,
+  Text,
 } from 'react-native';
 import { List } from 'react-native-paper';
-import { Text, Image, Icon } from 'react-native-elements';
+import { Image, Icon } from 'react-native-elements';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import PushNotification from 'react-native-push-notification';
@@ -70,7 +71,7 @@ const HomeScreen = () => {
           titleStyle={Common.cardTitle}
           description={() => (
             <>
-              <Text>{item.title}</Text>
+              <Text style={Common.cardTitle}>{item.title}</Text>
               <View style={[Layout.rowBetween, Layout.alignItemsCenter]}>
                 <View style={[Layout.row, Gutters.tinyTMargin]}>
                   <Icon
