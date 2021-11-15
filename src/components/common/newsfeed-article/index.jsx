@@ -35,7 +35,9 @@ const NewsFeedArticle = (newsFeedArticle) => {
         </View>
       ) : null}
       <Divider color={Colors.transparent} />
-      <Text>{moment(_.get(newsFeedItem, 'date', new Date())).format('YYYY/MM/DD HH:mm')}</Text>
+      <Text style={Gutters.regularTMargin}>
+        {moment(_.get(newsFeedItem, 'date', new Date())).format('YYYY/MM/DD HH:mm')}
+      </Text>
       <Divider color={Colors.transparent} />
       <Text style={Fonts.titleRegular}>{`${newsFeedItem.title}`}</Text>
       <Divider color={Colors.transparent} />
@@ -52,9 +54,9 @@ const styles = StyleSheet.create({
   imageStyle: {
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
-    height: '100%',
-    resizeMode: 'contain',
-    width: '100%',
+    height: 245,
+    resizeMode: 'stretch',
+    width: undefined,
   },
 });
 

@@ -6,14 +6,14 @@ import {
   FlatList,
   StyleSheet,
   Dimensions,
+  Text,
 } from 'react-native';
 import { List } from 'react-native-paper';
-import { Text, Image, Icon } from 'react-native-elements';
+import { Image, Icon } from 'react-native-elements';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import PushNotification from 'react-native-push-notification';
 import moment from 'moment';
-
 import useTheme from '../../../theme/hooks/useTheme';
 import { getNewsFeedAction } from '../../../reducers/news-feed-reducer/news-feed.actions';
 import { newsFeedSelector } from '../../../reducers/news-feed-reducer/news-feed.reducer';
@@ -27,27 +27,22 @@ const HomeScreen = () => {
   const { Common, Gutters, Fonts, Layout, Colors, Images } = useTheme();
   const { newsFeeds, isLoadingNewsFeeds } = useSelector(newsFeedSelector);
   const notificationOpenedBackGround = handleNotificationOpenedBackGround();
-
   useFocusEffect(exitAppOnHardwarePressListener);
-
   useFocusEffect(
     React.useCallback(() => {
       PushNotification.setApplicationIconBadgeNumber(0);
       _loadNewsFeeds();
     }, []),
   );
-
   useEffect(() => {
     notificationOpenedBackGround();
   });
-
   const _loadNewsFeeds = () => {
     dispatch(getNewsFeedAction());
   };
   const formatDate = (date) => {
     return moment(date).fromNow();
   };
-
   const _getStatusIndicator = (status) => {
     switch (status) {
       case 'Yes':
@@ -58,7 +53,6 @@ const HomeScreen = () => {
         return Colors.error;
     }
   };
-
   const newsFeedItem = ({ item }) => {
     return (
       <View style={[Common.textInputWithShadow, Gutters.tinyMargin]}>
@@ -73,28 +67,30 @@ const HomeScreen = () => {
             />
           </View>
         ) : null}
-
         <List.Item
-          title={item.title}
           titleStyle={Common.cardTitle}
           description={() => (
-            <View style={[Layout.rowBetween, Layout.alignItemsCenter]}>
-              <View style={[Layout.row, Gutters.tinyTMargin]}>
-                <Icon
-                  name="clock-o"
-                  type="font-awesome"
-                  size={15}
-                  style={[Gutters.smallRMargin, styles.clockIcon]}
+            <>
+              <Text style={Common.cardTitle}>{item.title}</Text>
+              <View style={[Layout.rowBetween, Layout.alignItemsCenter]}>
+                <View style={[Layout.row, Gutters.tinyTMargin]}>
+                  <Icon
+                    name="clock-o"
+                    type="font-awesome"
+                    size={15}
+                    containerStyle={[Layout.justifyContentCenter, Gutters.smallTMarin]}
+                    style={[Gutters.tinyRMargin, styles.clockIcon]}
+                  />
+                  <Text style={{ color: Colors.black }}>{formatDate(item.date)}</Text>
+                </View>
+                <View
+                  style={[
+                    Common.statusIndicator,
+                    { backgroundColor: _getStatusIndicator(item.seen) },
+                  ]}
                 />
-                <Text style={{ color: Colors.black }}>{formatDate(item.date)}</Text>
               </View>
-              <View
-                style={[
-                  Common.statusIndicator,
-                  { backgroundColor: _getStatusIndicator(item.seen) },
-                ]}
-              />
-            </View>
+            </>
           )}
           onPress={() => {
             navigation.navigate('ViewNewsFeedArticle', { newsFeedItem: item });
@@ -104,7 +100,6 @@ const HomeScreen = () => {
       </View>
     );
   };
-
   return (
     <>
       <ImageBackground
@@ -131,7 +126,6 @@ const HomeScreen = () => {
     </>
   );
 };
-
 const styles = StyleSheet.create({
   clockIcon: { opacity: 0.75 },
   imageContainer: {
@@ -141,14 +135,11 @@ const styles = StyleSheet.create({
   imageStyle: {
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
-    height: '100%',
-    resizeMode: 'contain',
-    width: '100%',
+    height: 245,
+    resizeMode: 'stretch',
+    width: undefined,
   },
 });
-
 HomeScreen.propTypes = {};
-
 HomeScreen.defaultProps = {};
-
 export default HomeScreen;
