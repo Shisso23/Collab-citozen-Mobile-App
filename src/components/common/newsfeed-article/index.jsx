@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React, { useEffect } from 'react';
 import { StyleSheet, Text, View, Dimensions } from 'react-native';
+import { Paragraph } from 'react-native-paper';
 import { Image, Divider } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
@@ -25,7 +26,6 @@ const NewsFeedArticle = (newsFeedArticle) => {
   };
 
   const bodyText = newsFeedItem.body;
-  const bodyTextFormatted = bodyText.replace(/\. /g, '.\n \n');
 
   return (
     <View style={Gutters.regularHMargin}>
@@ -41,7 +41,7 @@ const NewsFeedArticle = (newsFeedArticle) => {
       <Divider color={Colors.transparent} />
       <Text style={Fonts.titleRegular}>{`${newsFeedItem.title}`}</Text>
       <Divider color={Colors.transparent} />
-      <Text style={Fonts.textLarge}>{`${bodyTextFormatted}`}</Text>
+      <Paragraph style={Fonts.textLarge}>{bodyText}</Paragraph>
     </View>
   );
 };
