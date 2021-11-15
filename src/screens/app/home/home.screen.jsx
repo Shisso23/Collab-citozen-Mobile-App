@@ -1,45 +1,47 @@
 import React, { useEffect } from 'react';
-import { View, ImageBackground, RefreshControl, FlatList, StyleSheet } from 'react-native';
+import {
+  View,
+  ImageBackground,
+  RefreshControl,
+  FlatList,
+  StyleSheet,
+  Dimensions,
+} from 'react-native';
 import { List } from 'react-native-paper';
 import { Text, Image, Icon } from 'react-native-elements';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import PushNotification from 'react-native-push-notification';
 import moment from 'moment';
-
 import useTheme from '../../../theme/hooks/useTheme';
 import { getNewsFeedAction } from '../../../reducers/news-feed-reducer/news-feed.actions';
 import { newsFeedSelector } from '../../../reducers/news-feed-reducer/news-feed.reducer';
 import { exitAppOnHardwarePressListener } from '../../../helpers';
 import { handleNotificationOpenedBackGround } from '../../../hooks/notification-background/notification-background';
 
+const { width: screenWidth } = Dimensions.get('window');
 const HomeScreen = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const { Common, Gutters, Fonts, Layout, Colors, Images } = useTheme();
   const { newsFeeds, isLoadingNewsFeeds } = useSelector(newsFeedSelector);
   const notificationOpenedBackGround = handleNotificationOpenedBackGround();
-
   useFocusEffect(exitAppOnHardwarePressListener);
-
   useFocusEffect(
     React.useCallback(() => {
       PushNotification.setApplicationIconBadgeNumber(0);
       _loadNewsFeeds();
     }, []),
   );
-
   useEffect(() => {
     notificationOpenedBackGround();
   });
-
   const _loadNewsFeeds = () => {
     dispatch(getNewsFeedAction());
   };
   const formatDate = (date) => {
     return moment(date).fromNow();
   };
-
   const _getStatusIndicator = (status) => {
     switch (status) {
       case 'Yes':
@@ -50,20 +52,20 @@ const HomeScreen = () => {
         return Colors.error;
     }
   };
-
   const newsFeedItem = ({ item }) => {
     return (
       <View style={[Common.textInputWithShadow, Gutters.tinyMargin]}>
         {item.newsFeedImage != null ? (
-          <Image
-            source={item.newsFeedImage}
-            style={styles.imageStyle}
-            onPress={() => {
-              navigation.navigate('ViewNewsFeedArticle', { newsFeedItem: item });
-            }}
-          />
+          <View style={styles.imageContainer}>
+            <Image
+              source={item.newsFeedImage}
+              style={styles.imageStyle}
+              onPress={() => {
+                navigation.navigate('ViewNewsFeedArticle', { newsFeedItem: item });
+              }}
+            />
+          </View>
         ) : null}
-
         <List.Item
           title={item.title}
           titleStyle={Common.cardTitle}
@@ -94,7 +96,6 @@ const HomeScreen = () => {
       </View>
     );
   };
-
   return (
     <>
       <ImageBackground
@@ -121,20 +122,20 @@ const HomeScreen = () => {
     </>
   );
 };
-
 const styles = StyleSheet.create({
   clockIcon: { opacity: 0.75 },
+  imageContainer: {
+    height: screenWidth * 0.6,
+    width: '100%',
+  },
   imageStyle: {
-    aspectRatio: 1,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
     height: 245,
+    resizeMode: 'stretch',
     width: undefined,
   },
 });
-
 HomeScreen.propTypes = {};
-
 HomeScreen.defaultProps = {};
-
 export default HomeScreen;
