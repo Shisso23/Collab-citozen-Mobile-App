@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import React, { useEffect } from 'react';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
-import { Image, Divider } from 'react-native-elements';
+import { StyleSheet, Text, View, Dimensions, Image } from 'react-native';
+import { Paragraph } from 'react-native-paper';
+import { Divider } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 
@@ -25,14 +26,11 @@ const NewsFeedArticle = (newsFeedArticle) => {
   };
 
   const bodyText = newsFeedItem.body;
-  const bodyTextFormatted = bodyText.replace(/\. /g, '.\n \n');
 
   return (
     <View style={Gutters.regularHMargin}>
       {newsFeedItem.newsFeedImage != null ? (
-        <View style={styles.imageContainer}>
-          <Image source={newsFeedItem.newsFeedImage} style={styles.imageStyle} />
-        </View>
+        <Image source={newsFeedItem.newsFeedImage} style={styles.imageStyle} />
       ) : null}
       <Divider color={Colors.transparent} />
       <Text style={Gutters.regularTMargin}>
@@ -41,22 +39,18 @@ const NewsFeedArticle = (newsFeedArticle) => {
       <Divider color={Colors.transparent} />
       <Text style={Fonts.titleRegular}>{`${newsFeedItem.title}`}</Text>
       <Divider color={Colors.transparent} />
-      <Text style={Fonts.textLarge}>{`${bodyTextFormatted}`}</Text>
+      <Paragraph style={Fonts.textLarge}>{bodyText}</Paragraph>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  imageContainer: {
-    height: screenWidth * 0.6,
-    width: '100%',
-  },
   imageStyle: {
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
-    height: 245,
-    resizeMode: 'stretch',
-    width: undefined,
+    height: screenWidth * 0.5,
+    resizeMode: 'cover',
+    width: '100%',
   },
 });
 
