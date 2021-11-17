@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import React, { useEffect } from 'react';
-import { StyleSheet, Text, View, Dimensions } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, Image } from 'react-native';
 import { Paragraph } from 'react-native-paper';
-import { Image, Divider } from 'react-native-elements';
+import { Divider } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 
@@ -30,9 +30,7 @@ const NewsFeedArticle = (newsFeedArticle) => {
   return (
     <View style={Gutters.regularHMargin}>
       {newsFeedItem.newsFeedImage != null ? (
-        <View style={styles.imageContainer}>
-          <Image source={newsFeedItem.newsFeedImage} style={styles.imageStyle} />
-        </View>
+        <Image source={newsFeedItem.newsFeedImage} style={styles.imageStyle} />
       ) : null}
       <Divider color={Colors.transparent} />
       <Text style={Gutters.regularTMargin}>
@@ -47,16 +45,12 @@ const NewsFeedArticle = (newsFeedArticle) => {
 };
 
 const styles = StyleSheet.create({
-  imageContainer: {
-    height: screenWidth * 0.6,
-    width: '100%',
-  },
   imageStyle: {
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
-    height: '100%',
-    resizeMode: 'contain',
-    width: undefined,
+    height: screenWidth * 0.5,
+    resizeMode: 'cover',
+    width: '100%',
   },
 });
 

@@ -7,9 +7,11 @@ import {
   StyleSheet,
   Dimensions,
   Text,
+  Image,
+  Pressable,
 } from 'react-native';
 import { List } from 'react-native-paper';
-import { Image, Icon } from 'react-native-elements';
+import { Icon } from 'react-native-elements';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import PushNotification from 'react-native-push-notification';
@@ -57,15 +59,15 @@ const HomeScreen = () => {
     return (
       <View style={[Common.textInputWithShadow, Gutters.tinyMargin]}>
         {item.newsFeedImage != null ? (
-          <View style={styles.imageContainer}>
-            <Image
-              source={item.newsFeedImage}
-              style={styles.imageStyle}
-              onPress={() => {
-                navigation.navigate('ViewNewsFeedArticle', { newsFeedItem: item });
-              }}
-            />
-          </View>
+          <Pressable
+            onPress={() => {
+              navigation.navigate('ViewNewsFeedArticle', { newsFeedItem: item });
+            }}
+          >
+            {() => (
+              <Image resizeMode="cover" source={item.newsFeedImage} style={styles.imageStyle} />
+            )}
+          </Pressable>
         ) : null}
         <List.Item
           titleStyle={Common.cardTitle}
@@ -128,16 +130,12 @@ const HomeScreen = () => {
 };
 const styles = StyleSheet.create({
   clockIcon: { opacity: 0.75 },
-  imageContainer: {
-    height: screenWidth * 0.6,
-    width: '100%',
-  },
   imageStyle: {
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
-    height: '100%',
-    resizeMode: 'contain',
-    width: undefined,
+    height: screenWidth * 0.5,
+    resizeMode: 'cover',
+    width: '100%',
   },
 });
 HomeScreen.propTypes = {};
