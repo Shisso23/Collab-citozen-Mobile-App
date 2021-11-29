@@ -21,7 +21,6 @@ import ViewServiceRequestScreen from '../../screens/app/service-request/view-ser
 import ViewNewsFeedArticleScreen from '../../screens/app/newsfeed/view-newsfeed-article.screen';
 import InboxScreen from '../../screens/app/inbox/inbox.screen';
 import AccountsScreen from '../../screens/app/accounts/accounts.screen';
-import StatementsScreen from '../../screens/app/accounts/statements.screen';
 import StatementViewScreen from '../../screens/app/accounts/statementView.screen';
 import AccountChannelsScreen from '../../screens/app/accounts/account.channels.screen';
 import AddAccountScreen from '../../screens/app/accounts/add-account.screen';
@@ -107,14 +106,6 @@ const AppNavigator = () => {
       <AppStack.Screen
         name="Inbox"
         component={InboxScreen}
-        options={{
-          headerShown: true,
-          header: (props) => <HeaderBackGround {...props} backButton />,
-        }}
-      />
-      <AppStack.Screen
-        name="Statements"
-        component={StatementsScreen}
         options={{
           headerShown: true,
           header: (props) => <HeaderBackGround {...props} backButton />,

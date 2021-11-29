@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { FlatList, Text, View, ImageBackground, StyleSheet } from 'react-native';
+import { FlatList, Text, View, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { List } from 'react-native-paper';
 import PropTypes from 'prop-types';
@@ -9,16 +9,13 @@ import Moment from 'moment';
 import useTheme from '../../../theme/hooks/useTheme';
 import { constructStatementModels } from '../../../models/app/accounts/statement.model';
 import { flashService } from '../../../services';
+import { Colors } from '../../../theme/Variables';
 
-const StatementsScreen = ({ route }) => {
+const StatementsTabContent = ({ account, statements }) => {
   const navigation = useNavigation();
-  const { params } = route;
-  const { account } = params;
-  const accountName = useMemo(() => _.get(account, 'accountName', ''), []);
   const statusText = useMemo(() => _.get(account, 'statusText', ''), []);
-  const statements = _.get(params, 'statements', []);
   const [statementsWithPdfFiles, setStatementsWithPdfFiles] = useState([]);
-  const { Gutters, Fonts, Common, Layout, Images } = useTheme();
+  const { Gutters, Common, Layout } = useTheme();
 
   const sortStatements = (unsortedStatements) => {
     return unsortedStatements.sort((st1, st2) => {
@@ -62,51 +59,51 @@ const StatementsScreen = ({ route }) => {
   const _handleOpenStatement = (item) => {
     onSelectStatement(item);
   };
-  const viewStatementItem = ({ item }) => {
+  const viewStatementItem = ({ item, index }) => {
     const year = _.get(item, 'year', '');
     const month = _.get(item, 'month', '');
     const dateString = `${year}/${month}`;
     return (
-      <View style={[Common.textInputWithShadow, Gutters.smallVMargin, styles.statementItem]}>
-        <List.Item
-          title={Moment(dateString, 'YYYY/MM').format('MMMM YYYY')}
-          description={() => renderDescription(item)}
-          onPress={() => _handleOpenStatement(item)}
-          titleStyle={Common.cardTitle}
-        />
-      </View>
+      <>
+        <View style={[Common.textInputWithShadow, Gutters.smallVMargin, styles.statementItem]}>
+          <List.Item
+            title={Moment(dateString, 'YYYY/MM').format('MMMM YYYY')}
+            description={() => renderDescription(item)}
+            onPress={() => _handleOpenStatement(item)}
+            titleStyle={Common.cardTitle}
+          />
+        </View>
+        {index === statements.length - 1 && (
+          <Text style={styles.statementsInstruction}>
+            Your balances are updated each time you get a bill, make a payment or submit a meter
+            reading
+          </Text>
+        )}
+      </>
     );
   };
 
   return (
     <>
-      <ImageBackground
-        source={Images.serviceRequest}
-        style={[Layout.fullSize, Layout.fill]}
-        resizeMode="cover"
-      >
-        <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>My Statements</Text>
-        <Text style={[Gutters.smallMargin, Fonts.textLeft, styles.accountName]}>{accountName}</Text>
-
+      <View style={[Layout.fullSize, Layout.fill, Gutters.smallPadding]}>
+        <Text style={[Gutters.smallMargin, styles.title]}>My Statements</Text>
         <FlatList
           contentContainerStyle={Gutters.smallHMargin}
           data={statementsWithPdfFiles}
           renderItem={viewStatementItem}
           keyExtractor={(item, index) => `${_.get(item, 'objectId', index)}`}
         />
-      </ImageBackground>
+      </View>
     </>
   );
 };
 
-StatementsScreen.propTypes = {
-  route: PropTypes.object.isRequired,
+StatementsTabContent.propTypes = {
+  account: PropTypes.object.isRequired,
+  statements: PropTypes.object.isRequired,
 };
 
 const styles = StyleSheet.create({
-  accountName: {
-    fontWeight: '500',
-  },
   statementItem: {
     shadowOffset: {
       width: 0,
@@ -115,8 +112,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 0.16,
   },
+  statementsInstruction: { color: Colors.darkgray, textAlign: 'center' },
+  title: { fontSize: 16, fontWeight: '500' },
 });
 
-StatementsScreen.defaultProps = {};
+StatementsTabContent.defaultProps = {};
 
-export default StatementsScreen;
+export default StatementsTabContent;
