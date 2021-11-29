@@ -20,15 +20,15 @@ const MetersTabContent = () => {
   };
 
   const showMeterHistory = (item) => {
-    return item.type === 'Electricity'
-      ? navigation.navigate('electricityHistory')
-      : navigation.navigate('waterHistory');
+    return navigation.navigate('ReadingsHistory', {
+      meter: item,
+    });
   };
   const renderMeters = () => {
     const meterTypes = [
       // TODO get meters endpoint
-      { type: 'Electricity', meterNumber: '4712837438' },
-      { type: 'Water', meterNumber: '4224234223' },
+      { type: 'Electricity', meterNumber: '4712837438', date: new Date() },
+      { type: 'Water', meterNumber: '4224234223', date: new Date() },
     ];
     return meterTypes.map((meter, index) => {
       return (
