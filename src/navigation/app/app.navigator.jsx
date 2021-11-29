@@ -26,6 +26,7 @@ import StatementViewScreen from '../../screens/app/accounts/statementView.screen
 import AccountChannelsScreen from '../../screens/app/accounts/account.channels.screen';
 import AddAccountScreen from '../../screens/app/accounts/add-account.screen';
 import ContactDetails from '../../screens/app/contacts/contacts.details.screen';
+import AccountDetailsScreen from '../../screens/app/accounts/account-details.screen';
 
 const Drawer = createDrawerNavigator();
 const AppStack = createStackNavigator();
@@ -114,6 +115,14 @@ const AppNavigator = () => {
       <AppStack.Screen
         name="Statements"
         component={StatementsScreen}
+        options={{
+          headerShown: true,
+          header: (props) => <HeaderBackGround {...props} backButton />,
+        }}
+      />
+      <AppStack.Screen
+        name="AccountDetails"
+        component={AccountDetailsScreen}
         options={{
           headerShown: true,
           header: (props) => <HeaderBackGround {...props} backButton />,

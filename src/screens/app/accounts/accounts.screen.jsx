@@ -67,9 +67,10 @@ const AccountsScreen = () => {
     </View>
   );
 
-  const onSelectAccount = (account) =>
-    navigation.navigate('Statements', {
+  const onSelectAccount = (account, accountChannel) =>
+    navigation.navigate('AccountDetails', {
       account,
+      accountChannel,
       statements: _.get(account, 'statements', []),
     });
 
@@ -82,7 +83,7 @@ const AccountsScreen = () => {
         <List.Item
           title={_.get(account, 'accountName', '')}
           description={() => renderAccountDescription(account)}
-          onPress={() => onSelectAccount(account)}
+          onPress={() => onSelectAccount(account, channel)}
           right={() => (
             <View style={[Layout.rowVCenter, styles.accountCard]}>
               <Text style={[Gutters.tinyTMargin, Gutters.regularLMargin]}>
