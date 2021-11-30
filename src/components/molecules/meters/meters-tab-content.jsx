@@ -2,12 +2,13 @@ import React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { List } from 'react-native-paper';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
 
-const MetersTabContent = () => {
+const MetersTabContent = ({ accountNumber }) => {
   const navigation = useNavigation();
   const { Gutters, Common, Layout } = useTheme();
 
@@ -22,13 +23,14 @@ const MetersTabContent = () => {
   const showMeterHistory = (item) => {
     return navigation.navigate('ReadingsHistory', {
       meter: item,
+      accountNumber,
     });
   };
   const renderMeters = () => {
     const meterTypes = [
       // TODO get meters endpoint
-      { type: 'Electricity', meterNumber: '4712837438', date: new Date() },
-      { type: 'Water', meterNumber: '4224234223', date: new Date() },
+      { type: 'Electricity', meterNumber: '4712837438' },
+      { type: 'Water', meterNumber: '4224234223' },
     ];
     return meterTypes.map((meter, index) => {
       return (
@@ -77,6 +79,10 @@ const styles = StyleSheet.create({
   },
   title: { fontSize: 16, fontWeight: '500' },
 });
+
+MetersTabContent.propTypes = {
+  accountNumber: PropTypes.string.isRequired,
+};
 
 MetersTabContent.defaultProps = {};
 

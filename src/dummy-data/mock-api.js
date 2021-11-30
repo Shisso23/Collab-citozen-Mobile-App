@@ -18,113 +18,88 @@ export const mockApi = axios.create({
 });
 const mockAdapter = new MockAdapter(mockApi, { delayResponse: 400 });
 
-// mocking channelsWIth validated Accounts api
-mockAdapter.onPost(`${apiUrl}/function/execfunction`).reply(() => {
-  const response = 200;
+// mocking get electricity meter readings api
+mockAdapter.onPost(`${apiUrl}/function/getMeterReadings/electricity`).reply((config) => {
   const data = {
-    Channels: [
+    readings: [
       {
-        objectId: 601083,
-        name: 'WatersKloof Municipality',
-        category: 'Financial Services',
-        code: 'WC043',
-        status: 'pending',
-        accounts: [
-          {
-            obj_id: '212',
-            account_number: '0123456789',
-            account_name: 'Hyacinthe',
-            status: 'Requested',
-            statements: [
-              {
-                file_id: '5880',
-                obj_id: '142457',
-                month: 7,
-                year: 2020,
-              },
-            ],
-          },
-        ],
+        obj_id: 15362,
+        type: 'electricity',
+        readingNumber: 2895843,
+        date: new Date(),
       },
       {
-        objectId: 601084,
-        name: 'Msunduzi Municipality',
-        category: 'Financial Services',
-        code: 'WC044',
-        status: 'Subscribed',
-        accounts: [
-          {
-            obj_id: '213',
-            account_number: '0123456789',
-            account_name: 'Shisso',
-            status: 'Requested',
-            statements: [
-              {
-                file_id: '5880',
-                obj_id: '1424572',
-                month: 7,
-                year: 2021,
-              },
-              {
-                file_id: '5880',
-                obj_id: '142457',
-                month: 8,
-                year: 2021,
-              },
-            ],
-          },
-          {
-            obj_id: '214',
-            account_number: '0123456789',
-            account_name: 'Frans',
-            status: 'Granted',
-            statements: [
-              {
-                file_id: '5880',
-                obj_id: '142457',
-                month: 12,
-                year: 2020,
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  };
-
-  return [response, data];
-});
-
-// mocking getAccountStatements api
-mockAdapter.onGet(`${apiUrl}/statements`).reply(() => {
-  // const { accountId } = JSON.parse(config.data);
-  const data = {
-    statements: [
-      {
-        objectId: '123',
-        address: '129 Rosile street, Brooklyn',
-        paid_amount: 3000,
-        date: Moment(new Date()).format('DD MM YYYY'),
-        statementUrl: 'http://www.africau.edu/images/default/sample.pdf',
+        obj_id: 12962,
+        type: 'electricity',
+        readingNumber: 2425865,
+        date: new Date(),
       },
       {
-        objectId: '124',
-        address: '34 joubert street, Moreleta',
-        paid_amount: 800,
-        date: Moment(new Date()).format('DD MM YYYY'),
-        statementUrl:
-          'https://www.cs.cmu.edu/afs/cs.cmu.edu/user/gchen/www/download/java/LearnJava.pdf',
-      },
-      {
-        objectId: '125',
-        address: '445 main street, monument park',
-        paid_amount: 2100.35,
-        date: Moment(new Date()).format('DD MM YYYY'),
-        statementUrl: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+        obj_id: 15372,
+        type: 'electricity',
+        readingNumber: 2737286,
+        date: new Date(),
       },
     ],
   };
   const responseStatus = 200;
+
+  return [responseStatus, data];
+});
+
+// mocking get water meter readings api
+mockAdapter.onPost(`${apiUrl}/function/getMeterReadings/water`).reply((config) => {
+  const data = {
+    readings: [
+      {
+        obj_id: 15362,
+        type: 'water',
+        readingNumber: 2895880,
+        date: new Date(),
+      },
+      {
+        obj_id: 12962,
+        type: 'water',
+        readingNumber: 2425880,
+        date: new Date(),
+      },
+      {
+        obj_id: 15372,
+        type: 'water',
+        readingNumber: 2737221,
+        date: new Date(),
+      },
+    ],
+  };
+  const responseStatus = 200;
+
+  return [responseStatus, data];
+});
+
+// mocking get account meters api
+mockAdapter.onPost(`${apiUrl}/function/getAccountMeters`).reply((config) => {
+  const data = [
+    {
+      obj_id: 15362,
+      type: 'electricity',
+      meterNumber: 3279294326,
+    },
+    {
+      obj_id: 12962,
+      type: 'water',
+      meterNumber: 1387482347,
+    },
+  ];
+  const responseStatus = 200;
+
+  return [responseStatus, data];
+});
+
+// mocking submit reading api
+mockAdapter.onPost(`${apiUrl}/Records/CreateUpdateRecord/submitReading`).reply((config) => {
+  const data = true;
+  const responseStatus = 200;
+
   return [responseStatus, data];
 });
 

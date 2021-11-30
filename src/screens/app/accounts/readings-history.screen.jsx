@@ -1,48 +1,47 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { FlatList, Text, View, StyleSheet } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import { List } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import moment from 'moment';
 
+import {
+  getElectricityMeterReadingsAction,
+  getWaterMeterReadingsAction,
+} from '../../../reducers/account-meters/account-meters.actions';
+import { meterReadingsSelector } from '../../../reducers/account-meters/account-meters.reducer';
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
 
 const ReadingsHistoryScreen = ({ route }) => {
-  const [readings, setReadings] = useState([
-    { type: 'Electricity', readingNumber: '4712837438', date: new Date() },
-    { type: 'Water', readingNumber: '4224234223', date: new Date() },
-  ]); // get from reducer
+  const dispatch = useDispatch();
+  const { meterReadings, isLoadingMeterReadings } = useSelector(meterReadingsSelector);
   const meter = _.get(route, 'params.meter', '');
-  const meterType = _.get(meter, 'type', '');
+  const meterType = _.get(meter, 'type', '').toLowerCase();
+  const meterNumber = _.get(meter, 'meterNumber', '');
+  const accountNumber = _.get(route, 'params.accountNumber', '');
 
   const { Gutters, Common, Layout, Fonts } = useTheme();
 
-  // const sortReadings = (unsortedreadings) => { TODO make mock api and model. See readings tab content
-  //   return unsortedreadings.sort((st1, st2) => {
-  //     if (_.get(st1, 'month', '') > _.get(st2, 'month', '')) {
-  //       return -1;
-  //     }
-  //     if (_.get(st1, 'month', '') < _.get(st2, 'month', '')) {
-  //       return 1;
-  //     }
-  //     return 0;
-  //   });
-  // };
-
-  const fetchElectricityReadings = () => {};
-  const fetchWaterReadings = () => {};
+  const fetchElectricityReadings = () => {
+    dispatch(getElectricityMeterReadingsAction({ meterNumber, accountNumber }));
+  };
+  const fetchWaterReadings = () => {
+    dispatch(getWaterMeterReadingsAction({ meterNumber, accountNumber }));
+  };
 
   useEffect(() => {
-    if (meterType.toLowerCase() === 'electricity') {
+    refreshReadings();
+  }, []);
+
+  const refreshReadings = () => {
+    if (meterType === 'electricity') {
       fetchElectricityReadings();
     } else {
       fetchWaterReadings();
     }
-    return () => {
-      setReadings([]); // Remove. just testing
-    };
-  }, []);
+  };
 
   const renderDescription = (item) => {
     return (
@@ -79,15 +78,15 @@ const ReadingsHistoryScreen = ({ route }) => {
         <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>
           {meterType.toLowerCase() === 'electricity' ? 'Electricity History' : 'Water History'}
         </Text>
-        <Text style={[styles.meterDetails, Gutters.smallLMargin]}>
-          {_.get(meter, 'meterNumber', '')}
-        </Text>
+        <Text style={[styles.meterDetails, Gutters.smallLMargin]}>{meterNumber}</Text>
 
         <FlatList
           contentContainerStyle={Gutters.smallHMargin}
-          data={readings}
+          data={meterReadings}
           renderItem={renderReadingItem}
           keyExtractor={(item, index) => `${_.get(item, 'readingNumber', index)}`}
+          refreshing={isLoadingMeterReadings}
+          onRefresh={refreshReadings}
         />
       </View>
     </>

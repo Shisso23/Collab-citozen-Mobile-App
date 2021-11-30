@@ -68,3 +68,23 @@ export const dataServiceRequestComments = (serviceRequestId) => {
 export const dataNewComment = (serviceRequestId, comment) => {
   return `<Objects><Service_Request_Comment><F1>${serviceRequestId}</F1><F2>User</F2><F3>${comment}</F3></Service_Request_Comment></Objects>`;
 };
+
+export const dataGetAccountMeters = (accountNumber) => {
+  return {
+    taskID: 0,
+    uniqName: 'getAccountMeters',
+    InputValues: `<valRoot><val>${accountNumber}</val></valRoot>`,
+  };
+};
+
+export const dataGetMeterReadings = ({ meterNumber, accountNumber, meterType }) => {
+  return {
+    taskID: 0,
+    uniqName: 'getMeterReadings',
+    InputValues: `<valRoot><val>${accountNumber}</val><val>${meterNumber}</val><val>${meterType}</val></valRoot>`,
+  };
+};
+
+export const dataSubmitReading = ({ fileName, meterNumber }) => {
+  return `<Objects><submitReading><F1>${fileName}</F1>><F3>${meterNumber}</F3></submitReading></Objects>`;
+};

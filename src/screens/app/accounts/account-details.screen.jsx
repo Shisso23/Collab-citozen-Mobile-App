@@ -80,7 +80,7 @@ const AccountDetailsScreen = ({ route }) => {
         {tabIndex === 0 ? (
           <StatementsTabContent account={accountDetails} statements={statements} />
         ) : (
-          <MetersTabContent />
+          <MetersTabContent accountNumber={_.get(accountDetails, 'accountNumber', '')} />
         )}
         <TouchableOpacity
           onPress={tabIndex === 0 ? onMakePaymentPress : onSubmitReadingPress}
