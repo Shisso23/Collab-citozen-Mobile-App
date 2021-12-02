@@ -2,8 +2,11 @@ import _ from 'lodash';
 
 export const meterModel = (_apiMeterModel = {}) => ({
   objId: _.get(_apiMeterModel, 'obj_id', ''),
-  type: _.get(_apiMeterModel, 'type', ''),
-  meterNumber: _.get(_apiMeterModel, 'meter_number', ''),
+  type: _.get(_apiMeterModel, 'meter_Type', ''),
+  meterNumber: _.get(_apiMeterModel, 'meter_no', ''),
+  lastReadingValue: _.get(_apiMeterModel, 'lastReadingValue', 231523), // TODO get this from endpoint
+  lastReadingDate: _.get(_apiMeterModel, 'lastReadingDate', new Date()), // TODO get this from endpoint
+  averageReading: _.get(_apiMeterModel, 'averageReading', ''), // TODO Calculate , get it from endpoint
 });
 
 export const constructMeterModels = (_apiMeters) => _apiMeters.map((meter) => meterModel(meter));

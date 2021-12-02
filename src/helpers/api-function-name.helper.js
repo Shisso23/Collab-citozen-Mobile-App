@@ -85,6 +85,6 @@ export const dataGetMeterReadings = ({ meterNumber, accountNumber, meterType }) 
   };
 };
 
-export const dataSubmitReading = ({ fileName, meterNumber }) => {
-  return `<Objects><submitReading><F1>${fileName}</F1>><F3>${meterNumber}</F3></submitReading></Objects>`;
+export const dataSubmitReading = ({ channelRef, meterNumber, readingValue }) => {
+  return `<Objects><Meter_Reading><F1>${meterNumber}</F1><F2>${readingValue}</F2><F7>${channelRef}</F7></Meter_Reading></Objects>`;
 };

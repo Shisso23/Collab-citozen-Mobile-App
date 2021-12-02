@@ -4,6 +4,7 @@ import ActionSheet from 'react-native-actions-sheet';
 import { Tab } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import { useNavigation } from '@react-navigation/native';
 
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
@@ -14,7 +15,9 @@ import SubmitReadingActionSheetContent from '../../../components/molecules/meter
 const AccountDetailsScreen = ({ route }) => {
   const accountDetails = _.get(route, 'params.account', {});
   const accountChannel = _.get(route, 'params.accountChannel.name', '');
+  const channelRef = _.get(route, 'params.accountChannel.objectId', '');
   const statements = _.get(route, 'params.statements', []);
+  const navigation = useNavigation();
   const actionSheetRef = createRef();
   const [tabIndex, setTabIndex] = useState(0);
   const { Gutters, Fonts, Layout, Images } = useTheme();
@@ -46,6 +49,11 @@ const AccountDetailsScreen = ({ route }) => {
     openActionSheet();
   };
   const onMakePaymentPress = () => {};
+
+  const onSelectSubmitType = (meterType) => {
+    navigation.navigate('SubmitReading', { meterType, accountDetails, channelRef });
+    actionSheetRef.current.setModalVisible(false);
+  };
 
   return (
     <>
@@ -80,7 +88,7 @@ const AccountDetailsScreen = ({ route }) => {
         {tabIndex === 0 ? (
           <StatementsTabContent account={accountDetails} statements={statements} />
         ) : (
-          <MetersTabContent accountNumber={_.get(accountDetails, 'accountNumber', '')} />
+          <MetersTabContent accountDetails={accountDetails} />
         )}
         <TouchableOpacity
           onPress={tabIndex === 0 ? onMakePaymentPress : onSubmitReadingPress}
@@ -96,7 +104,7 @@ const AccountDetailsScreen = ({ route }) => {
         </TouchableOpacity>
       </ImageBackground>
       <ActionSheet ref={actionSheetRef} gestureEnabled>
-        <SubmitReadingActionSheetContent />
+        <SubmitReadingActionSheetContent onSelect={onSelectSubmitType} />
       </ActionSheet>
     </>
   );

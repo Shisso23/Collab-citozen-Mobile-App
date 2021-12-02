@@ -1,11 +1,12 @@
 import React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 import { Icon, ListItem } from 'react-native-elements';
+import PropTypes from 'prop-types';
 
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
 
-const SubmitReadingActionSheetContent = () => {
+const SubmitReadingActionSheetContent = ({ onSelect }) => {
   const { Gutters, Layout } = useTheme();
 
   const renderInstruction = () => {
@@ -31,14 +32,25 @@ const SubmitReadingActionSheetContent = () => {
   return (
     <View style={[Gutters.largePadding, Gutters.regularTPadding]}>
       {renderInstruction()}
-      <ListItem style={Gutters.regularTMargin} topDivider onPress={() => {}}>
+      <ListItem
+        style={Gutters.regularTMargin}
+        topDivider
+        onPress={() => {
+          onSelect('electricity');
+        }}
+      >
         <ListItem.Content style={Layout.rowBetween}>
           <ListItem.Title>Electricity</ListItem.Title>
           <Icon name="chevron-right" color={Colors.darkgray} />
         </ListItem.Content>
       </ListItem>
 
-      <ListItem topDivider onPress={() => {}}>
+      <ListItem
+        topDivider
+        onPress={() => {
+          onSelect('water');
+        }}
+      >
         <ListItem.Content style={[Layout.rowBetween, Gutters.largeBMargin]}>
           <ListItem.Title>Water</ListItem.Title>
           <Icon name="chevron-right" color={Colors.darkgray} />
@@ -59,6 +71,9 @@ const styles = StyleSheet.create({
   instructionText: { color: Colors.softBlue, fontWeight: '600' },
 });
 
+SubmitReadingActionSheetContent.propTypes = {
+  onSelect: PropTypes.func.isRequired,
+};
 SubmitReadingActionSheetContent.defaultProps = {};
 
 export default SubmitReadingActionSheetContent;

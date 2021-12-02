@@ -6,6 +6,8 @@ import ActionSheet from 'react-native-actions-sheet';
 import { Button } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
+import _ from 'lodash';
+
 import { openUserGallery, openUserCamera } from './upload-document-button.utils';
 import UploadDocumentSelectionItem from './upload-document-selection-item';
 import useTheme from '../../../theme/hooks/useTheme';
@@ -14,7 +16,7 @@ import { serviceRequestSelector } from '../../../reducers/service-request-reduce
 import { setImagesSources } from '../../../reducers/service-request-reducer/service-request.actions';
 
 const actionSheetRef = createRef();
-const UploadDocumentButton = ({ onImageSelect, errorMessage, title, style, disabled }) => {
+const UploadDocumentButton = (props) => {
   const { Common } = useTheme();
   const dispatch = useDispatch();
   const [documentSelected, setDocumentSelected] = useState(false);
@@ -29,7 +31,9 @@ const UploadDocumentButton = ({ onImageSelect, errorMessage, title, style, disab
   const closeActionSheet = () => actionSheetRef.current.setModalVisible(false);
 
   const _updateFormData = (selectedImages, docSelected = true) => {
-    onImageSelect(selectedImages);
+    if (props.onImageSelect) {
+      props.onImageSelect(selectedImages);
+    }
     setDocumentSelected(docSelected);
     closeActionSheet();
   };
@@ -80,17 +84,21 @@ const UploadDocumentButton = ({ onImageSelect, errorMessage, title, style, disab
   return (
     <>
       <Button
-        title={title}
+        title={_.get(props, 'title', '')}
         mode="contained"
         onPress={openActionSheet}
-        style={style}
+        style={_.get(props, 'style', {})}
         loading={isLoadingServiceRequests}
         icon={!documentSelected ? 'camera' : 'check'}
-        disabled={disabled}
+        disabled={_.get(props, 'disabled', false)}
+        // color={textColor}
+        // uppercase={textUpperCase}
+        // labelStyle={labelStyle}
+        {...props}
       >
-        {title}
+        {_.get(props, 'title', '')}
       </Button>
-      <Text style={[Common.errorStyle]}>{errorMessage}</Text>
+      <Text style={[Common.errorStyle]}>{_.get(props, 'errorMessage', '')}</Text>
       <ActionSheet ref={actionSheetRef} gestureEnabled>
         <View style={safeArea}>
           <UploadDocumentSelectionItem title="Take Photo" onPress={_handleCamera} />
@@ -124,12 +132,22 @@ UploadDocumentButton.propTypes = {
   title: PropTypes.string.isRequired,
   style: PropTypes.array,
   disabled: PropTypes.bool,
+  // buttonMode: PropTypes.string,
+  // textColor: PropTypes.string,
+  // textUpperCase: PropTypes.bool,
+  // labelStyle: PropTypes.object,
+  buttonProps: PropTypes.any,
 };
 
 UploadDocumentButton.defaultProps = {
   errorMessage: '',
   style: {},
   disabled: false,
+  // buttonMode: 'contained',
+  // textUpperCase: true,
+  // textColor: null,
+  // labelStyle: {},
+  buttonProps: {},
 };
 
 export default UploadDocumentButton;

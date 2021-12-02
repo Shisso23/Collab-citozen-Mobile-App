@@ -27,6 +27,7 @@ import AddAccountScreen from '../../screens/app/accounts/add-account.screen';
 import ContactDetails from '../../screens/app/contacts/contacts.details.screen';
 import AccountDetailsScreen from '../../screens/app/accounts/account-details.screen';
 import ReadingsHistoryScreen from '../../screens/app/accounts/readings-history.screen';
+import SubmitMeterReadingScreen from '../../screens/app/accounts/submit-readings.screen';
 
 const Drawer = createDrawerNavigator();
 const AppStack = createStackNavigator();
@@ -123,6 +124,14 @@ const AppNavigator = () => {
       <AppStack.Screen
         name="ReadingsHistory"
         component={ReadingsHistoryScreen}
+        options={{
+          headerShown: true,
+          header: (props) => <HeaderBackGround {...props} backButton />,
+        }}
+      />
+      <AppStack.Screen
+        name="SubmitReading"
+        component={SubmitMeterReadingScreen}
         options={{
           headerShown: true,
           header: (props) => <HeaderBackGround {...props} backButton />,

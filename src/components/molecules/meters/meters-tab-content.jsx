@@ -8,9 +8,11 @@ import _ from 'lodash';
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
 
-const MetersTabContent = ({ accountNumber }) => {
+const MetersTabContent = ({ accountDetails }) => {
   const navigation = useNavigation();
   const { Gutters, Common, Layout } = useTheme();
+  const accountNumber = _.get(accountDetails, 'accountNumber', '');
+  const meters = _.get(accountDetails, 'meters', '');
 
   const renderDescription = (meter) => {
     return (
@@ -27,12 +29,7 @@ const MetersTabContent = ({ accountNumber }) => {
     });
   };
   const renderMeters = () => {
-    const meterTypes = [
-      // TODO get meters endpoint
-      { type: 'Electricity', meterNumber: '4712837438' },
-      { type: 'Water', meterNumber: '4224234223' },
-    ];
-    return meterTypes.map((meter, index) => {
+    return meters.map((meter, index) => {
       return (
         <>
           <View
@@ -46,7 +43,7 @@ const MetersTabContent = ({ accountNumber }) => {
               titleStyle={Common.cardTitle}
             />
           </View>
-          {index === meterTypes.length - 1 && (
+          {index === meters.length - 1 && (
             <Text style={styles.instruction}>
               Your balances are updated each time you get a bill, make a payment or submit a meter
               reading
@@ -81,7 +78,7 @@ const styles = StyleSheet.create({
 });
 
 MetersTabContent.propTypes = {
-  accountNumber: PropTypes.string.isRequired,
+  accountDetails: PropTypes.object.isRequired,
 };
 
 MetersTabContent.defaultProps = {};
