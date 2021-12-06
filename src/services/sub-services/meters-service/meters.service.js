@@ -46,7 +46,7 @@ const uploadMeterReadingPhoto = async (objId, photo) => {
   const fileUploadUrl = metersUrls.upLoadFile();
   try {
     const authToken = await storageService.getAccessToken();
-    const path = Platform.OS === 'ios' ? photo.replace('file://', '') : '';
+    const path = Platform.OS === 'ios' ? photo.replace('file://', '') : photo;
     const response = await RNFetchBlob.fetch(
       'POST',
       `${fileUploadUrl}`,
@@ -75,8 +75,7 @@ const submitReading = async ({ channelRef, readingValue, meterNumber, photo }) =
   const data = dataSubmitReading({ channelRef, readingValue, meterNumber });
   try {
     const apiResponse = await authNetworkService.post(url, data);
-    await uploadMeterReadingPhoto(apiResponse, photo);
-    console.log({ apiResponse });
+    await uploadMeterReadingPhoto(_.get(apiResponse, 'data', ''), photo);
     flashService.success('Successfully submitted!');
 
     return apiResponse;
