@@ -115,12 +115,12 @@ const AccountsScreen = () => {
   );
 
   const viewAccountChannelsItem = ({ item, index }) => {
-    return _.map(_.get(item, 'accounts', []), (account, accountIndex) => {
+    return _.get(item, 'accounts', []).map((account, accountIndex) => {
       return (
         <SwipeRowContainer
           key={`${_.get(item, 'objectId', accountIndex)}-${_.get(account, 'accountNumber', '')}`}
           swipeKey={`${_.get(item, 'objectId', accountIndex)}-${accountIndex}`}
-          preview={deleteAccountPreview && accountIndex === 0}
+          preview={deleteAccountPreview && accountIndex === 0 && index === 0}
           onPreviewEnd={() => {
             dispatch(previewDeleAccountAction(false));
           }}
