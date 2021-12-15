@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { FlatList, Text, View, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { List, FAB } from 'react-native-paper';
@@ -7,13 +7,10 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import moment from 'moment';
 
-import {
-  getElectricityMeterReadingsAction,
-  getWaterMeterReadingsAction,
-} from '../../../reducers/account-meters/account-meters.actions';
 import { meterReadingsSelector } from '../../../reducers/account-meters/account-meters.reducer';
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
+import { getMeterReadingsAction } from '../../../reducers/account-meters/account-meters.actions';
 
 const ReadingsHistoryScreen = ({ route }) => {
   const dispatch = useDispatch();
@@ -21,29 +18,13 @@ const ReadingsHistoryScreen = ({ route }) => {
   const meter = _.get(route, 'params.meter', '');
   const meterType = _.get(meter, 'type', '').toLowerCase();
   const meterNumber = _.get(meter, 'meterNumber', '');
-  const accountNumber = _.get(route, 'params.accountNumber', '');
   const channelRef = _.get(route, 'params.channelRef', '');
   const navigation = useNavigation();
 
   const { Gutters, Common, Layout, Fonts } = useTheme();
 
-  const fetchElectricityReadings = () => {
-    dispatch(getElectricityMeterReadingsAction({ meterNumber, accountNumber }));
-  };
-  const fetchWaterReadings = () => {
-    dispatch(getWaterMeterReadingsAction({ meterNumber, accountNumber }));
-  };
-
-  useEffect(() => {
-    refreshReadings();
-  }, []);
-
-  const refreshReadings = () => {
-    if (meterType === 'electricity') {
-      fetchElectricityReadings();
-    } else {
-      fetchWaterReadings();
-    }
+  const getMeterReadings = async (meterObjId) => {
+    return dispatch(getMeterReadingsAction({ meterObjId }));
   };
 
   const renderDescription = (item) => {
@@ -93,7 +74,7 @@ const ReadingsHistoryScreen = ({ route }) => {
           renderItem={renderReadingItem}
           keyExtractor={(item, index) => `${_.get(item, 'readingNumber', index)}`}
           refreshing={isLoadingMeterReadings}
-          onRefresh={refreshReadings}
+          onRefresh={() => getMeterReadings(_.get(meter, 'objId', ''))}
         />
       </View>
       <FAB style={[Common.fabAlignment]} icon="plus" onPress={addMeterReading} />

@@ -14,8 +14,8 @@ export const constructMeterModels = (_apiMeters) => _apiMeters.map((meter) => me
 export const meterReadingModel = (_apiMeterReadingModel = {}) => ({
   objId: _.get(_apiMeterReadingModel, 'obj_id', ''),
   type: _.get(_apiMeterReadingModel, 'type', ''),
-  readingNumber: _.get(_apiMeterReadingModel, 'readingNumber', ''),
-  date: _.get(_apiMeterReadingModel, 'date', ''),
+  readingNumber: _.get(_apiMeterReadingModel, 'meter_reading', ''),
+  date: _.get(_apiMeterReadingModel, 'date_created', ''),
 });
 
 export const constructMeterReadingsModels = (apiMeterReadingsModel) => {
