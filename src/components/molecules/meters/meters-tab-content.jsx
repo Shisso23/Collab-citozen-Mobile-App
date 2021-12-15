@@ -1,16 +1,25 @@
 import React from 'react';
-import { Text, View, StyleSheet, FlatList } from 'react-native';
+import { Text, View, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
 import { List } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
+import { getMeterReadingsAction } from '../../../reducers/account-meters/account-meters.actions';
+import { meterReadingsSelector } from '../../../reducers/account-meters/account-meters.reducer';
 
 const MetersTabContent = ({ meters, accountNumber, channelRef }) => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const { isLoadingMeterReadings } = useSelector(meterReadingsSelector);
   const { Gutters, Common, Layout } = useTheme();
+
+  const getMeterReadings = async (meterObjId) => {
+    return dispatch(getMeterReadingsAction({ meterObjId }));
+  };
 
   const renderDescription = (meter) => {
     return (
@@ -20,11 +29,24 @@ const MetersTabContent = ({ meters, accountNumber, channelRef }) => {
     );
   };
 
+  const renderLoadingIndicator = () => {
+    return (
+      <ActivityIndicator
+        animating={isLoadingMeterReadings}
+        color={Colors.primary}
+        style={Gutters.tinyTMargin}
+        size={25}
+      />
+    );
+  };
+
   const showMeterHistory = (item) => {
-    return navigation.navigate('ReadingsHistory', {
-      meter: item,
-      accountNumber,
-      channelRef,
+    getMeterReadings(item.objId).then(() => {
+      return navigation.navigate('ReadingsHistory', {
+        meter: item,
+        accountNumber,
+        channelRef,
+      });
     });
   };
   const renderMeters = ({ item, index }) => {
@@ -36,6 +58,7 @@ const MetersTabContent = ({ meters, accountNumber, channelRef }) => {
             description={() => renderDescription(item)}
             onPress={() => showMeterHistory(item)}
             titleStyle={Common.cardTitle}
+            right={renderLoadingIndicator}
           />
         </View>
         {index === meters.length - 1 && (
