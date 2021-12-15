@@ -1,8 +1,7 @@
 import React from 'react';
-import { Text, View, StyleSheet, FlatList, Pressable } from 'react-native';
+import { Text, View, StyleSheet, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { List } from 'react-native-paper';
-import { Icon } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
@@ -21,36 +20,11 @@ const MetersTabContent = ({ meters, accountNumber, channelRef }) => {
     );
   };
 
-  const submitMeterReading = (item) => {
-    navigation.navigate('SubmitReading', { meter: item, channelRef });
-  };
-
-  const renderAddMeterButton = (item) => {
-    return (
-      <Pressable
-        onPress={() => submitMeterReading(item)}
-        hitSlop={{ top: 30, bottom: 30, left: 30, right: 30 }}
-      >
-        {({ pressed }) => {
-          return (
-            <Icon
-              name="add-circle-outline"
-              style={[Gutters.regularTMargin]}
-              size={35}
-              type="meterial-icons"
-              color={Colors.softBlue}
-              backgroundColor={pressed ? Colors.gray : Colors.transparent}
-            />
-          );
-        }}
-      </Pressable>
-    );
-  };
-
   const showMeterHistory = (item) => {
     return navigation.navigate('ReadingsHistory', {
       meter: item,
       accountNumber,
+      channelRef,
     });
   };
   const renderMeters = ({ item, index }) => {
@@ -62,11 +36,13 @@ const MetersTabContent = ({ meters, accountNumber, channelRef }) => {
             description={() => renderDescription(item)}
             onPress={() => showMeterHistory(item)}
             titleStyle={Common.cardTitle}
-            right={() => renderAddMeterButton(item)}
           />
         </View>
         {index === meters.length - 1 && (
-          <Text style={styles.instruction}>Press + button to submit meter reading</Text>
+          <Text style={styles.instruction}>
+            Your balances are updated each time you get a bill, make a payment or submit a meter
+            reading
+          </Text>
         )}
       </>
     );

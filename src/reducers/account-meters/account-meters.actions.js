@@ -1,9 +1,7 @@
 import { metersService } from '../../services';
 import {
   setAccountMeterReadingsAction,
-  setAccountMetersAction,
   setIsLoadingAccountMeterReadingsAction,
-  setIsLoadingAccountMetersAction,
 } from './account-meters.reducer';
 
 export const getWaterMeterReadingsAction =
@@ -31,19 +29,7 @@ export const getElectricityMeterReadingsAction =
       .finally(() => dispatch(setIsLoadingAccountMeterReadingsAction(false)));
   };
 
-export const getAccountMetersAction = (accountNumber) => (dispatch) => {
-  dispatch(setIsLoadingAccountMetersAction(true));
-  return metersService
-    .getAccountMeters(accountNumber)
-    .then((accountMeters) => {
-      dispatch(setAccountMetersAction(accountMeters));
-      return accountMeters;
-    })
-    .finally(() => dispatch(setIsLoadingAccountMetersAction(false)));
-};
-
 export default {
   getElectricityMeterReadingsAction,
   getWaterMeterReadingsAction,
-  getAccountMetersAction,
 };

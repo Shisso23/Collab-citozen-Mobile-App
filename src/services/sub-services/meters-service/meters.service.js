@@ -4,27 +4,12 @@ import RNFetchBlob from 'rn-fetch-blob';
 
 import metersUrls from './meters.urls';
 
-import {
-  dataGetAccountMeters,
-  dataGetMeterReadings,
-  dataSubmitReading,
-} from '../../../helpers/api-function-name.helper';
+import { dataGetMeterReadings, dataSubmitReading } from '../../../helpers/api-function-name.helper';
 import authNetworkService from '../auth-network-service/auth-network.service';
 import { mockApi } from '../../../dummy-data/mock-api';
-import {
-  constructMeterModels,
-  constructMeterReadingsModels,
-} from '../../../models/app/account-meters/account-meters.model';
+import { constructMeterReadingsModels } from '../../../models/app/account-meters/account-meters.model';
 import { flashService } from '../..';
 import storageService from '../storage-service/storage.service';
-
-const getAccountMeters = async (accountNumber) => {
-  const url = metersUrls.getAccountMetersUrl();
-  const data = dataGetAccountMeters(accountNumber);
-  const apiResponse = await mockApi.post(url, data);
-  const metersModel = constructMeterModels(_.get(apiResponse, 'data.Meters', []));
-  return metersModel;
-};
 
 const getWaterMeterReadings = async ({ meterNumber, accountNumber }) => {
   const url = metersUrls.getWaterMeterReadingsUrl();
@@ -85,7 +70,6 @@ const submitReading = async ({ channelRef, readingValue, meterNumber, photo }) =
 };
 
 export default {
-  getAccountMeters,
   getWaterMeterReadings,
   getElectricityMeterReadings,
   submitReading,

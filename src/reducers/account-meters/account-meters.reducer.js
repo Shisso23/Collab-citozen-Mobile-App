@@ -11,12 +11,6 @@ const setIsLoadingAccountMeterReadings = CreateAction(
 );
 export const setIsLoadingAccountMeterReadingsAction = setIsLoadingAccountMeterReadings.action;
 
-const setAccountMeters = CreateAction(reducerName, 'SET_ACCOUNT_METERS');
-export const setAccountMetersAction = setAccountMeters.action;
-
-const setIsLoadingAccountMeters = CreateAction(reducerName, 'SET_IS_LOADING_ACCOUNT_METERS');
-export const setIsLoadingAccountMetersAction = setIsLoadingAccountMeters.action;
-
 const initialState = {
   meterReadings: [],
   isLoadingMeterReadings: false,
@@ -28,16 +22,6 @@ export const meterReadingsSelector = (rootReducer) => rootReducer.meterReadingsR
 
 export default function accountsReducer(state = initialState, action) {
   switch (action.type) {
-    case setAccountMeters.actionType:
-      return {
-        ...state,
-        accountMeters: action.payload,
-      };
-    case setIsLoadingAccountMeters.actionType:
-      return {
-        ...state,
-        isLoadingAccountMeters: action.payload,
-      };
     case setAccountMeterReadings.actionType:
       return {
         ...state,

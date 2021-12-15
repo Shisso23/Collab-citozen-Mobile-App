@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { FlatList, Text, View, StyleSheet } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { List } from 'react-native-paper';
+import { List, FAB } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 import moment from 'moment';
@@ -21,6 +22,8 @@ const ReadingsHistoryScreen = ({ route }) => {
   const meterType = _.get(meter, 'type', '').toLowerCase();
   const meterNumber = _.get(meter, 'meterNumber', '');
   const accountNumber = _.get(route, 'params.accountNumber', '');
+  const channelRef = _.get(route, 'params.channelRef', '');
+  const navigation = useNavigation();
 
   const { Gutters, Common, Layout, Fonts } = useTheme();
 
@@ -53,6 +56,10 @@ const ReadingsHistoryScreen = ({ route }) => {
   };
 
   const _handleOpenreading = () => {};
+
+  const addMeterReading = () => {
+    navigation.navigate('SubmitReading', { meter, channelRef });
+  };
 
   const renderReadingItem = ({ item }) => {
     const readingMonth = moment(_.get(item, 'date', new Date())).month();
@@ -89,6 +96,7 @@ const ReadingsHistoryScreen = ({ route }) => {
           onRefresh={refreshReadings}
         />
       </View>
+      <FAB style={[Common.fabAlignment]} icon="plus" onPress={addMeterReading} />
     </>
   );
 };
