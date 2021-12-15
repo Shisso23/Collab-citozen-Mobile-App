@@ -6,4 +6,5 @@ export default {
   getMeterReadingsUrl: () => `${apiUrl}/function/execfunction`,
   submitMeterReadingsUrl: () => `${apiUrl}/Records/CreateUpdateRecord`,
   upLoadFile: () => `${apiUrl}/file/post`,
+  validateReadingUrl: () => `${apiUrl}/function/execfunction`,
 };

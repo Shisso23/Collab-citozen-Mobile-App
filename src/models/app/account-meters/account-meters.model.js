@@ -19,5 +19,12 @@ export const meterReadingModel = (_apiMeterReadingModel = {}) => ({
 });
 
 export const constructMeterReadingsModels = (apiMeterReadingsModel) => {
-  return apiMeterReadingsModel.map((meterReading) => meterReadingModel(meterReading));
+  return {
+    objectId: _.get(apiMeterReadingsModel, 'last_meter_reading', ''),
+    lastMeterReading: _.get(apiMeterReadingsModel, 'last_meter_reading', ''),
+    meterNumber: _.get(apiMeterReadingsModel, 'meter_device_id', ''),
+    meterReadings: _.get(apiMeterReadingsModel, 'meter_readings', []).map((apiMeterReadingModel) =>
+      meterReadingModel(apiMeterReadingModel),
+    ),
+  };
 };

@@ -39,7 +39,7 @@ const ReadingsHistoryScreen = ({ route }) => {
   const _handleOpenreading = () => {};
 
   const addMeterReading = () => {
-    navigation.navigate('SubmitReading', { meter, channelRef });
+    navigation.navigate('SubmitReading', { meter, channelRef, readingsDetails: meterReadings });
   };
 
   const renderReadingItem = ({ item }) => {
@@ -70,7 +70,7 @@ const ReadingsHistoryScreen = ({ route }) => {
 
         <FlatList
           contentContainerStyle={Gutters.smallHMargin}
-          data={meterReadings}
+          data={meterReadings.meterReadings}
           renderItem={renderReadingItem}
           keyExtractor={(item, index) => `${_.get(item, 'readingNumber', index)}`}
           refreshing={isLoadingMeterReadings}

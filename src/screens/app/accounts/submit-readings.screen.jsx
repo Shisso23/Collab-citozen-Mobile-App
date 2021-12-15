@@ -14,7 +14,7 @@ import FormScreenContainer from '../../../components/containers/form-screen-cont
 import UploadDocumentButton from '../../../components/molecules/upload-document-button';
 import { setImagesSources } from '../../../reducers/service-request-reducer/service-request.actions';
 import ConfirmReadingActionSheetContent from '../../../components/molecules/meters/confirm-reading-actionsheet-content';
-import { metersService } from '../../../services';
+import { flashService, metersService } from '../../../services';
 
 const SubmitMeterReadingScreen = ({ route }) => {
   const { Gutters, Common, Layout } = useTheme();
@@ -30,11 +30,12 @@ const SubmitMeterReadingScreen = ({ route }) => {
   const selectedMeter = _.get(route, 'params.meter', {});
   const meterType = _.get(selectedMeter, 'type', '').toLowerCase();
   const meterSerialNo = _.get(selectedMeter, 'meterNumber', '');
-  const averageReading = _.get(selectedMeter, 'averageReading', ''); // TODO Calculate or get it from endpoint
-  const lastReadingDate = moment(_.get(selectedMeter, 'lastReadingDate', new Date())).format(
+  const readingsDetails = _.get(route, 'params.readingsDetails', {});
+  const lastReadingDate = moment(_.get(readingsDetails, 'lastReadingDate', new Date())).format(
     'YYYY-MM-DD',
-  ); // TODO get this from endpoint
-  const lastReadingValue = _.get(selectedMeter, 'lastReadingValue', 142324); // TODO get this from endpoint
+  ); // TODO AsK for this
+
+  const lastReadingValue = _.get(readingsDetails, 'lastMeterReading', ''); // TODO get this from endpoint
 
   const onImageSelect = (images) => {
     setReadingPhoto(_.get(images[0], 'uri', ''));
@@ -54,19 +55,28 @@ const SubmitMeterReadingScreen = ({ route }) => {
       setReadingNumberError('reading value must be 6 digits long');
       return null;
     }
-    // TODO Check condition to open actionsheet
-    if (readingNumber > averageReading && !confirmedReading) {
-      openActionSheet();
-      return null;
-    }
+
     setIsSubmitting(true);
-    await metersService.submitReading({
-      channelRef,
-      readingValue: readingNumber,
-      meterNumber: meterSerialNo,
-      photo: readingPhoto,
-    });
-    return setIsSubmitting(false);
+
+    return metersService
+      .validateReading({
+        readingValue: readingNumber,
+        meterObjId: _.get(selectedMeter, 'objId', ''),
+      })
+      .then(async (response) => {
+        if (response.warning && !confirmedReading) {
+          flashService.info(response.message);
+          openActionSheet();
+          return setIsSubmitting(false);
+        }
+        await metersService.submitReading({
+          channelRef,
+          readingValue: readingNumber,
+          meterNumber: meterSerialNo,
+          photo: readingPhoto,
+        });
+        return setIsSubmitting(false);
+      });
   };
 
   const handleConfirmReading = async () => {
