@@ -35,7 +35,7 @@ const SubmitMeterReadingScreen = ({ route }) => {
     'YYYY-MM-DD',
   ); // TODO AsK for this
 
-  const lastReadingValue = _.get(readingsDetails, 'lastMeterReading', ''); // TODO get this from endpoint
+  const lastReadingValue = _.get(readingsDetails, 'lastMeterReading', '');
 
   const onImageSelect = (images) => {
     setReadingPhoto(_.get(images[0], 'uri', ''));
