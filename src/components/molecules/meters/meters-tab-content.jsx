@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { List } from 'react-native-paper';
 import PropTypes from 'prop-types';
@@ -8,11 +8,9 @@ import _ from 'lodash';
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
 
-const MetersTabContent = ({ accountDetails }) => {
+const MetersTabContent = ({ meters, accountNumber, channelRef }) => {
   const navigation = useNavigation();
   const { Gutters, Common, Layout } = useTheme();
-  const accountNumber = _.get(accountDetails, 'accountNumber', '');
-  const meters = _.get(accountDetails, 'meters', '');
 
   const renderDescription = (meter) => {
     return (
@@ -26,39 +24,39 @@ const MetersTabContent = ({ accountDetails }) => {
     return navigation.navigate('ReadingsHistory', {
       meter: item,
       accountNumber,
+      channelRef,
     });
   };
-  const renderMeters = () => {
-    return meters.map((meter, index) => {
-      return (
-        <>
-          <View
-            key={`${index * index}-`}
-            style={[Common.textInputWithShadow, Gutters.smallMargin, styles.meterItem]}
-          >
-            <List.Item
-              title={_.get(meter, 'type', '')}
-              description={() => renderDescription(meter)}
-              onPress={() => showMeterHistory(meter)}
-              titleStyle={Common.cardTitle}
-            />
-          </View>
-          {index === meters.length - 1 && (
-            <Text style={styles.instruction}>
-              Your balances are updated each time you get a bill, make a payment or submit a meter
-              reading
-            </Text>
-          )}
-        </>
-      );
-    });
+  const renderMeters = ({ item, index }) => {
+    return (
+      <>
+        <View style={[Common.textInputWithShadow, Gutters.smallMargin, styles.meterItem]}>
+          <List.Item
+            title={_.get(item, 'type', '')}
+            description={() => renderDescription(item)}
+            onPress={() => showMeterHistory(item)}
+            titleStyle={Common.cardTitle}
+          />
+        </View>
+        {index === meters.length - 1 && (
+          <Text style={styles.instruction}>
+            Your balances are updated each time you get a bill, make a payment or submit a meter
+            reading
+          </Text>
+        )}
+      </>
+    );
   };
 
   return (
     <>
       <View style={[Layout.fullSize, Layout.fill, Gutters.smallPadding]}>
         <Text style={[Gutters.smallMargin, styles.title]}>My Meters</Text>
-        {renderMeters()}
+        <FlatList
+          data={meters}
+          renderItem={renderMeters}
+          keyExtractor={(item) => item.meterNumber}
+        />
       </View>
     </>
   );
@@ -78,7 +76,9 @@ const styles = StyleSheet.create({
 });
 
 MetersTabContent.propTypes = {
-  accountDetails: PropTypes.object.isRequired,
+  meters: PropTypes.array.isRequired,
+  accountNumber: PropTypes.string.isRequired,
+  channelRef: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
 };
 
 MetersTabContent.defaultProps = {};

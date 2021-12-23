@@ -26,11 +26,9 @@ const SubmitMeterReadingScreen = ({ route }) => {
   const [readingPhoto, setReadingPhoto] = useState('');
   const [readingPhotoError, setReadingPhotoError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const meterType = _.get(route, 'params.meterType', '');
   const channelRef = _.get(route, 'params.channelRef', '');
-  const selectedMeter = _.get(route, 'params.accountDetails.meters', []).find(
-    (meter) => meter.type.toLowerCase() === meterType,
-  );
+  const selectedMeter = _.get(route, 'params.meter', {});
+  const meterType = _.get(selectedMeter, 'type', '').toLowerCase();
   const meterSerialNo = _.get(selectedMeter, 'meterNumber', '');
   const averageReading = _.get(selectedMeter, 'averageReading', ''); // TODO Calculate or get it from endpoint
   const lastReadingDate = moment(_.get(selectedMeter, 'lastReadingDate', new Date())).format(
@@ -235,7 +233,7 @@ const styles = StyleSheet.create({
 });
 
 SubmitMeterReadingScreen.propTypes = {
-  route: PropTypes.string.isRequired,
+  route: PropTypes.object.isRequired,
 };
 
 SubmitMeterReadingScreen.defaultProps = {};

@@ -69,14 +69,6 @@ export const dataNewComment = (serviceRequestId, comment) => {
   return `<Objects><Service_Request_Comment><F1>${serviceRequestId}</F1><F2>User</F2><F3>${comment}</F3></Service_Request_Comment></Objects>`;
 };
 
-export const dataGetAccountMeters = (accountNumber) => {
-  return {
-    taskID: 0,
-    uniqName: 'getAccountMeters',
-    InputValues: `<valRoot><val>${accountNumber}</val></valRoot>`,
-  };
-};
-
 export const dataGetMeterReadings = ({ meterNumber, accountNumber, meterType }) => {
   return {
     taskID: 0,
