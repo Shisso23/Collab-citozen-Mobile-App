@@ -140,6 +140,7 @@ android {
         vectorDrawables.useSupportLibrary = true
         try {
             resValue "string", "google_maps_api_key", project.env.get("GOOGLE_MAPS_API_KEY")
+            resValue 'string', "CODE_PUSH_APK_BUILD_TIME", String.format("\"%d\"", System.currentTimeMillis())
         }
         catch(e) {
             throw new GradleException('Error: Please make sure you have the latest environment variables.')

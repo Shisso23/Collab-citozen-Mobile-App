@@ -91,9 +91,6 @@ const UploadDocumentButton = (props) => {
         loading={isLoadingServiceRequests}
         icon={!documentSelected ? 'camera' : 'check'}
         disabled={_.get(props, 'disabled', false)}
-        // color={textColor}
-        // uppercase={textUpperCase}
-        // labelStyle={labelStyle}
         {...props}
       >
         {_.get(props, 'title', '')}
@@ -132,10 +129,6 @@ UploadDocumentButton.propTypes = {
   title: PropTypes.string.isRequired,
   style: PropTypes.array,
   disabled: PropTypes.bool,
-  // buttonMode: PropTypes.string,
-  // textColor: PropTypes.string,
-  // textUpperCase: PropTypes.bool,
-  // labelStyle: PropTypes.object,
   buttonProps: PropTypes.any,
 };
 
@@ -143,10 +136,6 @@ UploadDocumentButton.defaultProps = {
   errorMessage: '',
   style: {},
   disabled: false,
-  // buttonMode: 'contained',
-  // textUpperCase: true,
-  // textColor: null,
-  // labelStyle: {},
   buttonProps: {},
 };
 
