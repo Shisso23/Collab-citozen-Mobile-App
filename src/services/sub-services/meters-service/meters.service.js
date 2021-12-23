@@ -4,27 +4,29 @@ import RNFetchBlob from 'rn-fetch-blob';
 
 import metersUrls from './meters.urls';
 
-import { dataGetMeterReadings, dataSubmitReading } from '../../../helpers/api-function-name.helper';
+import {
+  dataGetMeterReadings,
+  dataSubmitReading,
+  dataValidateReading,
+} from '../../../helpers/api-function-name.helper';
 import authNetworkService from '../auth-network-service/auth-network.service';
-import { mockApi } from '../../../dummy-data/mock-api';
+
 import { constructMeterReadingsModels } from '../../../models/app/account-meters/account-meters.model';
 import { flashService } from '../..';
 import storageService from '../storage-service/storage.service';
 
-const getWaterMeterReadings = async ({ meterNumber, accountNumber }) => {
-  const url = metersUrls.getWaterMeterReadingsUrl();
-  const data = dataGetMeterReadings({ meterNumber, accountNumber, meterType: 'water' });
-  const apiResponse = await mockApi.post(url, data);
-  const readingsModel = constructMeterReadingsModels(_.get(apiResponse, 'data.readings', []));
-  return readingsModel;
-};
-
-const getElectricityMeterReadings = async ({ meterNumber, accountNumber }) => {
-  const url = metersUrls.getElectricityMeterReadingsUrl();
-  const data = dataGetMeterReadings({ meterNumber, accountNumber, meterType: 'electricity' });
-  const apiResponse = await mockApi.post(url, data);
-  const readingsModel = constructMeterReadingsModels(_.get(apiResponse, 'data.readings', []));
-  return readingsModel;
+const getMeterReadings = async ({ meterObjId }) => {
+  const url = metersUrls.getMeterReadingsUrl();
+  const data = dataGetMeterReadings({ meterObjId });
+  try {
+    const apiResponse = await authNetworkService.post(url, data);
+    const readingsModel = constructMeterReadingsModels(
+      _.get(apiResponse, 'data.Meter[0]', []), // TODO ask miguel if this is always going to return one meter with reading. It's Unnecessary to get the meter info here. Currently using the first meter
+    );
+    return readingsModel;
+  } catch (error) {
+    return flashService.error('No meter reading found!');
+  }
 };
 
 const uploadMeterReadingPhoto = async (objId, photo) => {
@@ -55,6 +57,28 @@ const uploadMeterReadingPhoto = async (objId, photo) => {
   }
 };
 
+const validateReading = async ({ readingValue, meterObjId }) => {
+  const url = metersUrls.validateReadingUrl();
+  const data = dataValidateReading({ meterObjId, readingValue });
+  try {
+    const apiResponse = await authNetworkService.post(url, data);
+    flashService.success('Validated!');
+    const validationResponse = _.get(
+      apiResponse,
+      'data.Meter_Reading_Validation[0].user_message',
+      false,
+    );
+
+    if (validationResponse) {
+      return { warning: true, message: validationResponse };
+    }
+    return { warning: false, message: '' };
+  } catch (error) {
+    flashService.error(`The meter reading is invalid! \n ${_.get(error, 'user_message', '')}`);
+    return { warning: false, message: _.get(error, 'user_message', '') };
+  }
+};
+
 const submitReading = async ({ channelRef, readingValue, meterNumber, photo }) => {
   const url = metersUrls.submitMeterReadingsUrl();
   const data = dataSubmitReading({ channelRef, readingValue, meterNumber });
@@ -70,7 +94,7 @@ const submitReading = async ({ channelRef, readingValue, meterNumber, photo }) =
 };
 
 export default {
-  getWaterMeterReadings,
-  getElectricityMeterReadings,
+  getMeterReadings,
   submitReading,
+  validateReading,
 };
