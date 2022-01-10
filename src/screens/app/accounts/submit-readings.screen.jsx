@@ -3,6 +3,7 @@ import { Text, View, StyleSheet } from 'react-native';
 import { TextInput, HelperText, Button } from 'react-native-paper';
 import { Icon, ListItem } from 'react-native-elements';
 import ActionSheet from 'react-native-actions-sheet';
+import { useNavigation } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { useDispatch } from 'react-redux';
@@ -20,6 +21,7 @@ import ImageThumbnail from '../../../components/molecules/image-thumbnail';
 const SubmitMeterReadingScreen = ({ route }) => {
   const { Gutters, Common, Layout } = useTheme();
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   const actionSheetRef = useRef();
   const [readingNumber, setReadingNumber] = useState('');
@@ -89,6 +91,7 @@ const SubmitMeterReadingScreen = ({ route }) => {
     submitReading({ confirmedReading: true }).then(() => {
       closeActionSheet();
     });
+    navigation.goBack();
   };
 
   const openActionSheet = () => {
@@ -171,7 +174,7 @@ const SubmitMeterReadingScreen = ({ route }) => {
             <Icon
               name="camera"
               color={Colors.softBlue}
-              style={Gutters.tinyTMargin}
+              style={styles.photoIcon}
               size={22}
               type="feather"
             />
@@ -253,6 +256,7 @@ const styles = StyleSheet.create({
   instruction: { fontSize: 12.5, fontWeight: '200', textAlign: 'center' },
   lastReadingInfo: { color: Colors.darkgray, fontSize: 14, textAlign: 'center' },
   photoError: { color: Colors.danger, fontWeight: '400' },
+  photoIcon: { marginTop: 8.5 },
   takePhotoButton: { marginTop: '15%' },
   title: { fontSize: 16, fontWeight: '400' },
 });
