@@ -3,22 +3,25 @@ import { Text, View, StyleSheet } from 'react-native';
 import { TextInput, HelperText, Button } from 'react-native-paper';
 import { Icon, ListItem } from 'react-native-elements';
 import ActionSheet from 'react-native-actions-sheet';
+import { useNavigation } from '@react-navigation/native';
 import PropTypes from 'prop-types';
 import moment from 'moment';
 import { useDispatch } from 'react-redux';
 import _ from 'lodash';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
-import FormScreenContainer from '../../../components/containers/form-screen-container/form-screen.container';
 import UploadDocumentButton from '../../../components/molecules/upload-document-button';
 import { setImagesSources } from '../../../reducers/service-request-reducer/service-request.actions';
 import ConfirmReadingActionSheetContent from '../../../components/molecules/meters/confirm-reading-actionsheet-content';
 import { flashService, metersService } from '../../../services';
+import ImageThumbnail from '../../../components/molecules/image-thumbnail';
 
 const SubmitMeterReadingScreen = ({ route }) => {
   const { Gutters, Common, Layout } = useTheme();
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   const actionSheetRef = useRef();
   const [readingNumber, setReadingNumber] = useState('');
@@ -38,17 +41,18 @@ const SubmitMeterReadingScreen = ({ route }) => {
   const lastReadingValue = _.get(readingsDetails, 'lastMeterReading', '');
 
   const onImageSelect = (images) => {
-    setReadingPhoto(_.get(images[0], 'uri', ''));
+    setReadingPhoto(images[images.length - 1] || {});
     setReadingPhotoError('');
+    return images[0];
   };
 
   const submitReading = async ({ confirmedReading = false }) => {
     if (
       `${readingNumberError}`.length > 0 ||
       `${readingNumber}`.length === 0 ||
-      readingPhoto.length === 0
+      _.get(readingPhoto, 'uri', '').length === 0
     ) {
-      if (readingPhoto.length === 0) {
+      if (_.get(readingPhoto, 'uri', '').length === 0) {
         setReadingPhotoError('Please ensure to take a photo of the meter reading as well.');
         return null;
       }
@@ -73,16 +77,21 @@ const SubmitMeterReadingScreen = ({ route }) => {
           channelRef,
           readingValue: readingNumber,
           meterNumber: meterSerialNo,
-          photo: readingPhoto,
+          photo: _.get(readingPhoto, 'uri', ''),
         });
         return setIsSubmitting(false);
       });
+  };
+
+  const removeMedia = () => {
+    setReadingPhoto({});
   };
 
   const handleConfirmReading = async () => {
     submitReading({ confirmedReading: true }).then(() => {
       closeActionSheet();
     });
+    navigation.goBack();
   };
 
   const openActionSheet = () => {
@@ -90,7 +99,7 @@ const SubmitMeterReadingScreen = ({ route }) => {
   };
 
   const closeActionSheet = () => {
-    return actionSheetRef.current.setModalVisible(false);
+    return actionSheetRef.current?.setModalVisible(false);
   };
 
   useEffect(() => {
@@ -153,7 +162,7 @@ const SubmitMeterReadingScreen = ({ route }) => {
 
   return (
     <>
-      <FormScreenContainer contentContainerStyle={[Gutters.smallPadding]}>
+      <KeyboardAwareScrollView contentContainerStyle={[Gutters.smallPadding]}>
         <Text style={[Gutters.smallMargin, styles.title]}>Submit reading</Text>
         {renderMeterDetails()}
         <ListItem
@@ -165,7 +174,7 @@ const SubmitMeterReadingScreen = ({ route }) => {
             <Icon
               name="camera"
               color={Colors.softBlue}
-              style={Gutters.tinyTMargin}
+              style={styles.photoIcon}
               size={22}
               type="feather"
             />
@@ -179,8 +188,8 @@ const SubmitMeterReadingScreen = ({ route }) => {
               style={[styles.button, Gutters.largeRPadding]}
               onImageSelect={onImageSelect}
             />
+            <Icon name="chevron-right" style={Gutters.tinyTMargin} color={Colors.darkgray} />
           </View>
-          <Icon name="chevron-right" style={Gutters.smallLMargin} color={Colors.darkgray} />
         </ListItem>
         {`${readingPhotoError}`.length > 0 && (
           <View style={[Layout.row, Gutters.largeHMargin]}>
@@ -194,6 +203,15 @@ const SubmitMeterReadingScreen = ({ route }) => {
             <Text style={[styles.instruction, styles.photoError]}>{readingPhotoError}</Text>
           </View>
         )}
+        {_.get(readingPhoto, 'uri', '').length > 0 && (
+          <ImageThumbnail
+            key={readingPhoto.uri}
+            media={readingPhoto}
+            deleteImage={() => {
+              removeMedia();
+            }}
+          />
+        )}
         <Button
           mode="contained"
           style={[Layout.fill, Gutters.tinyLMargin, Gutters.largeTMargin]}
@@ -204,7 +222,7 @@ const SubmitMeterReadingScreen = ({ route }) => {
         >
           Submit Reading
         </Button>
-      </FormScreenContainer>
+      </KeyboardAwareScrollView>
       <ActionSheet ref={actionSheetRef} gestureEnabled>
         <ConfirmReadingActionSheetContent
           loading={isSubmitting}
@@ -238,6 +256,7 @@ const styles = StyleSheet.create({
   instruction: { fontSize: 12.5, fontWeight: '200', textAlign: 'center' },
   lastReadingInfo: { color: Colors.darkgray, fontSize: 14, textAlign: 'center' },
   photoError: { color: Colors.danger, fontWeight: '400' },
+  photoIcon: { marginTop: 8.5 },
   takePhotoButton: { marginTop: '15%' },
   title: { fontSize: 16, fontWeight: '400' },
 });

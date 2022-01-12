@@ -25,7 +25,7 @@ const CommentsActionSheetContent = ({ onSend, serviceRequest }) => {
 
   const { comments } = useSelector(serviceRequestSelector);
   const dispatch = useDispatch();
-  const [comment, setComment] = useState(false);
+  const [comment, setComment] = useState('');
 
   useLayoutEffect(() => {
     dispatch(getCommentsAction(serviceRequest.id));

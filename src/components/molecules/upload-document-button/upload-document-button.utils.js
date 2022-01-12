@@ -1,5 +1,6 @@
 import ImagePicker from 'react-native-image-crop-picker';
 import * as DocumentPicker from 'react-native-document-picker';
+import _ from 'lodash';
 
 const successfullySelectedImage = (res) => !res.didCancel;
 const errorOccured = (res) => res.errorCode;
@@ -10,6 +11,7 @@ const constructFormData = (res = []) => {
     return {
       uri: image.path,
       type: image.mime,
+      size: _.get(image, 'size', 0) / 1000,
     };
   });
 };

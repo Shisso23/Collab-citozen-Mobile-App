@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ImageBackground, StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { ImageBackground, StyleSheet, Text, View, TouchableOpacity, Platform } from 'react-native';
 import { Tab } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
@@ -56,7 +56,10 @@ const AccountDetailsScreen = ({ route }) => {
           onChange={(index) => {
             setTabIndex(index);
           }}
-          indicatorStyle={{ backgroundColor: Colors.softBlue }}
+          indicatorStyle={[
+            { backgroundColor: Colors.softBlue },
+            Platform.select({ android: { borderWidth: 15 }, ios: {} }),
+          ]}
         >
           <Tab.Item
             titleStyle={[{ color: tabIndex === 0 ? Colors.black : Colors.gray }, styles.tabItem]}

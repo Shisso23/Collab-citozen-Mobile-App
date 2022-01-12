@@ -17,20 +17,13 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.3.6</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
-	<key>LSRequiresIPhoneOS</key>
-	<true/>
-	<key>LSApplicationQueriesSchemes</key> 
-	<array> 
-	<string>tel</string> 
-	<string>telprompt</string> 
-	</array>
-	<key>UIFileSharingEnabled</key>
-	<true/>
+	<key>CodePushDeploymentKey</key>
+	<string>r2wJf6935aebwBFq1E4ChbyVlxTNzltogf4P0</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>whatsapp</string>
@@ -40,6 +33,8 @@
 		<string>fb</string>
 		<string>facebook-stories</string>
 	</array>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -89,10 +84,10 @@
 		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>
+	<key>UIFileSharingEnabled</key>
+	<true/>
 	<key>UILaunchStoryboardName</key>
 	<string>BootSplash</string>
-	<key>CodePushDeploymentKey</key>
-	<string>r2wJf6935aebwBFq1E4ChbyVlxTNzltogf4P0</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
