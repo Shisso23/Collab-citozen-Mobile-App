@@ -99,7 +99,7 @@ const SubmitMeterReadingScreen = ({ route }) => {
   };
 
   const closeActionSheet = () => {
-    return actionSheetRef.current.setModalVisible(false);
+    return actionSheetRef.current?.setModalVisible(false);
   };
 
   useEffect(() => {
