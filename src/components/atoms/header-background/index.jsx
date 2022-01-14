@@ -23,7 +23,11 @@ const HeaderBackGround = (props) => {
     return navigation.toggleDrawer();
   };
   return (
-    <ImageBackground source={Images.skylineBackground} style={[Common.headerIcon, Layout.column]}>
+    <ImageBackground
+      source={Images.skylineBackground}
+      resizeMode="cover"
+      style={[Common.headerIcon, Layout.column]}
+    >
       <IconButton
         icon={backButton ? 'arrow-left' : 'menu'}
         size={30}

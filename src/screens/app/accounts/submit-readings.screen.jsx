@@ -17,6 +17,7 @@ import { setImagesSources } from '../../../reducers/service-request-reducer/serv
 import ConfirmReadingActionSheetContent from '../../../components/molecules/meters/confirm-reading-actionsheet-content';
 import { flashService, metersService } from '../../../services';
 import ImageThumbnail from '../../../components/molecules/image-thumbnail';
+import { getMeterReadingsAction } from '../../../reducers/account-meters/account-meters.actions';
 
 const SubmitMeterReadingScreen = ({ route }) => {
   const { Gutters, Common, Layout } = useTheme();
@@ -34,6 +35,7 @@ const SubmitMeterReadingScreen = ({ route }) => {
   const meterType = _.get(selectedMeter, 'type', '').toLowerCase();
   const meterSerialNo = _.get(selectedMeter, 'meterNumber', '');
   const readingsDetails = _.get(route, 'params.readingsDetails', {});
+  const meterObjId = _.get(selectedMeter, 'objId', '');
   const lastReadingDate = moment(_.get(readingsDetails, 'lastReadingDate', new Date())).format(
     'YYYY-MM-DD',
   ); // TODO AsK for this
@@ -44,6 +46,10 @@ const SubmitMeterReadingScreen = ({ route }) => {
     setReadingPhoto(images[images.length - 1] || {});
     setReadingPhotoError('');
     return images[0];
+  };
+
+  const getMeterReadings = async () => {
+    return dispatch(getMeterReadingsAction({ meterObjId }));
   };
 
   const submitReading = async ({ confirmedReading = false }) => {
@@ -76,10 +82,10 @@ const SubmitMeterReadingScreen = ({ route }) => {
         await metersService.submitReading({
           channelRef,
           readingValue: readingNumber,
-          meterNumber: meterSerialNo,
+          meterObjId,
           photo: _.get(readingPhoto, 'uri', ''),
         });
-        return setIsSubmitting(false);
+        return null;
       });
   };
 
@@ -88,10 +94,12 @@ const SubmitMeterReadingScreen = ({ route }) => {
   };
 
   const handleConfirmReading = async () => {
-    submitReading({ confirmedReading: true }).then(() => {
+    submitReading({ confirmedReading: true }).then(async () => {
+      await getMeterReadings();
+      setIsSubmitting(false);
       closeActionSheet();
+      return navigation.goBack();
     });
-    navigation.goBack();
   };
 
   const openActionSheet = () => {
