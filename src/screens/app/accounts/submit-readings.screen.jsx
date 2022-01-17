@@ -85,7 +85,7 @@ const SubmitMeterReadingScreen = ({ route }) => {
           meterObjId,
           photo: _.get(readingPhoto, 'uri', ''),
         });
-        return null;
+        return setIsSubmitting(false);
       });
   };
 
@@ -94,12 +94,11 @@ const SubmitMeterReadingScreen = ({ route }) => {
   };
 
   const handleConfirmReading = async () => {
-    submitReading({ confirmedReading: true }).then(async () => {
-      await getMeterReadings();
-      setIsSubmitting(false);
-      closeActionSheet();
-      return navigation.goBack();
-    });
+    await submitReading({ confirmedReading: true });
+    await getMeterReadings();
+    setIsSubmitting(false);
+    closeActionSheet();
+    return navigation.goBack();
   };
 
   const openActionSheet = () => {
