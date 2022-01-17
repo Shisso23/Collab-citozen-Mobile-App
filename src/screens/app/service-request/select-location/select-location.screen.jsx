@@ -20,7 +20,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation, useFocusEffect, DefaultTheme, useRoute } from '@react-navigation/native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import _ from 'lodash';
-import { hasGmsSync, hasHmsSync } from 'react-native-device-info';
+import { hasHmsSync } from 'react-native-device-info';
 
 import useTheme from '../../../../theme/hooks/useTheme';
 import { locationSelector } from '../../../../reducers/location-reducer/location.reducer';
@@ -134,6 +134,9 @@ const SelectLocationScreen = () => {
     setRegionChange(newRegion);
     if (!hasHmsSync()) {
       mapRef.animateToRegion(newRegion);
+    } else {
+      hmsMapRef.setCameraPosition({ target: newRegion, zoom: 15, tilt: 40 });
+      hmsMapRef.stopAnimation();
     }
   };
 
@@ -214,21 +217,11 @@ const SelectLocationScreen = () => {
           </TouchableOpacity>
         )}
       />
-      {Platform.OS === 'ios' || hasGmsSync() ? (
-        <MapView
-          style={[Layout.fill]}
-          initialRegion={regionChange}
-          showsUserLocation
-          onPress={Keyboard.dismiss}
-          ref={setMapRef}
-          onRegionChangeComplete={(newRegion) => {
-            return _setRegion(newRegion);
-          }}
-          showsMyLocationButton={false}
-        />
-      ) : hasHmsSync() ? (
+      {hasHmsSync() ? (
         <HmsMapView
-          ref={setHmsMapRef}
+          ref={(e) => {
+            setHmsMapRef(e);
+          }}
           style={Layout.fill}
           mapType={MapTypes.NORMAL}
           camera={{
@@ -246,7 +239,17 @@ const SelectLocationScreen = () => {
           useAnimation
         />
       ) : (
-        <View />
+        <MapView
+          style={[Layout.fill]}
+          initialRegion={regionChange}
+          showsUserLocation
+          onPress={Keyboard.dismiss}
+          ref={setMapRef}
+          onRegionChangeComplete={(newRegion) => {
+            return _setRegion(newRegion);
+          }}
+          showsMyLocationButton={false}
+        />
       )}
 
       <View style={[Common.pinContainer]}>
