@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, Text, View, StyleSheet } from 'react-native';
+import { FlatList, Text, View, StyleSheet, SafeAreaView } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { List, FAB } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -43,14 +43,11 @@ const ReadingsHistoryScreen = ({ route }) => {
   };
 
   const renderReadingItem = ({ item }) => {
-    const readingMonth = moment(_.get(item, 'date', new Date())).month();
-    const readingYear = moment(_.get(item, 'date', new Date())).year();
-    const dateString = `${readingYear}/${readingMonth}`;
     return (
       <>
         <View style={[Common.textInputWithShadow, Gutters.smallVMargin, styles.readingItem]}>
           <List.Item
-            title={moment(dateString, 'YYYY/MM').format('MMMM YYYY')}
+            title={moment(_.get(item, 'date', new Date())).format('DD MMMM YYYY')}
             description={() => renderDescription(item)}
             onPress={() => _handleOpenreading(item)}
             titleStyle={Common.cardTitle}
@@ -62,21 +59,21 @@ const ReadingsHistoryScreen = ({ route }) => {
 
   return (
     <>
-      <View style={[Layout.fullSize, Layout.fill, Gutters.smallPadding]}>
+      <SafeAreaView style={[Layout.fullSize, Layout.fill, Gutters.smallPadding]}>
         <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>
           {meterType.toLowerCase() === 'electricity' ? 'Electricity History' : 'Water History'}
         </Text>
         <Text style={[styles.meterDetails, Gutters.smallLMargin]}>{meterNumber}</Text>
 
         <FlatList
-          contentContainerStyle={Gutters.smallHMargin}
+          contentContainerStyle={[Gutters.smallHMargin, Gutters.largeBPadding]}
           data={meterReadings.meterReadings}
           renderItem={renderReadingItem}
           keyExtractor={(item, index) => `${_.get(item, 'readingNumber', index)}`}
           refreshing={isLoadingMeterReadings}
           onRefresh={() => getMeterReadings(_.get(meter, 'objId', ''))}
         />
-      </View>
+      </SafeAreaView>
       <FAB style={[Common.fabAlignment]} icon="plus" onPress={addMeterReading} />
     </>
   );

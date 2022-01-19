@@ -1,5 +1,5 @@
-import React, { useEffect, useCallback } from 'react';
-import { Button, List } from 'react-native-paper';
+import React, { useEffect, useCallback, useRef, useState } from 'react';
+import { List } from 'react-native-paper';
 import { Icon } from 'react-native-elements';
 import {
   FlatList,
@@ -7,18 +7,17 @@ import {
   View,
   ImageBackground,
   Linking,
-  Alert,
   TouchableOpacity,
   StyleSheet,
   Platform,
   RefreshControl,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
+import ActionSheet from 'react-native-actions-sheet';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
-import { promptConfirm } from '../../../helpers/prompt.helper';
 import { getChannelsContactsAction } from '../../../reducers/contacts-reducer/contacts.actions';
 import {
   getAddressFromRegionAction,
@@ -26,15 +25,19 @@ import {
 } from '../../../reducers/location-reducer/location.actions';
 import { channelContactsSelector } from '../../../reducers/contacts-reducer/contacts.reducer';
 import { locationSelector } from '../../../reducers/location-reducer/location.reducer';
+import { flashService } from '../../../services';
+import ContactsActionSheetContent from '../../../components/molecules/contacts-actionsheet-content';
 
 const ContactDetailsScreen = () => {
   const { Common, Gutters, Fonts, Layout, Images } = useTheme();
-
+  const actionSheetRef = useRef();
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
   const { channelsContacts, isLoadingChannelsContacts } = useSelector(channelContactsSelector);
   const { selectedAddress, region } = useSelector(locationSelector);
+  const [contactDetails, setContactDetails] = useState({});
+  const defaultMessage = 'Hi';
 
   useEffect(() => {
     dispatch(getCurrentPositionAction());
@@ -48,6 +51,42 @@ const ContactDetailsScreen = () => {
       }
     }, [region]),
   );
+
+  const handleLinkingFail = () => {
+    return flashService.error('Could not complete the operation!');
+  };
+
+  const handleLinkingResponse = (link) => {
+    Linking.openURL(link)
+      .then((supported) => {
+        if (!supported) {
+          return flashService.error('Operation is not supported!');
+        }
+        return Linking.openURL(link);
+      })
+      .catch(handleLinkingFail);
+  };
+
+  const handleContactAction = (action) => {
+    let link;
+    const separator = Platform.OS === 'ios' ? '&' : '?';
+    switch (action) {
+      case 'call':
+        link = `tel://${contactDetails.number.replace(/\s/g, '')}`;
+        break;
+      case 'whatsapp':
+        link = `whatsapp://send?text=${defaultMessage}&phone=+27${contactDetails?.number
+          .replace(/\s/g, '')
+          .substring(1)}`;
+        break;
+      case 'sms':
+        link = `sms:${contactDetails.number.replace(/\s/g, '')}${separator}body=${defaultMessage}`;
+        break;
+      default:
+        link = `tel://${contactDetails.number.replace(/\s/g, '')}`;
+    }
+    handleLinkingResponse(link);
+  };
 
   const onBack = () => {
     navigation.navigate('ContactDetails');
@@ -66,15 +105,13 @@ const ContactDetailsScreen = () => {
     return dispatch(getChannelsContactsAction(currentRegion));
   };
 
-  const onCall = (item) => {
-    Linking.openURL(`tel://${item.number}`)
-      .then((supported) => {
-        if (!supported) {
-          return Alert.alert('Phone number is not available');
-        }
-        return Linking.openURL(item.number);
-      })
-      .catch((error) => error);
+  const openActionSheet = (item) => {
+    setContactDetails(item);
+    return actionSheetRef.current?.setModalVisible(true);
+  };
+
+  const closeActionSheet = () => {
+    return actionSheetRef.current?.setModalVisible(false);
   };
 
   const renderContactDetails = ({ item }) => {
@@ -88,11 +125,7 @@ const ContactDetailsScreen = () => {
             <List.Item
               title={contact.name}
               titleStyle={[Common.cardTitle]}
-              onPress={() =>
-                Platform.OS === 'ios'
-                  ? onCall(contact)
-                  : promptConfirm(`Contact ${contact.name} ?`, '', 'Call', () => onCall(contact))
-              }
+              onPress={() => openActionSheet(contact)}
               description={() => (
                 <View style={[Layout.rowHCenter, Gutters.tinyTPadding]}>
                   <Icon
@@ -107,11 +140,6 @@ const ContactDetailsScreen = () => {
                     {contact.number}
                   </Text>
                 </View>
-              )}
-              right={() => (
-                <Button mode="contained" style={[Layout.alignItemsCenter, Layout.alignSelfCenter]}>
-                  Call
-                </Button>
               )}
             />
           </View>
@@ -168,6 +196,12 @@ const ContactDetailsScreen = () => {
           }
         />
       </ImageBackground>
+      <ActionSheet ref={actionSheetRef} gestureEnabled>
+        <ContactsActionSheetContent
+          handleContactAction={handleContactAction}
+          closeActionSheet={closeActionSheet}
+        />
+      </ActionSheet>
     </>
   );
 };
