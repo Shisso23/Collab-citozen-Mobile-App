@@ -6,16 +6,19 @@ import PropTypes from 'prop-types';
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
 
-const ConfirmReadingActionSheetContent = ({ onConfirmReading, onCancel, loading }) => {
+const ConfirmReadingActionSheetContent = ({
+  onConfirmReading,
+  onCancel,
+  loading,
+  warningMessage,
+}) => {
   const { Gutters, Layout } = useTheme();
 
   const renderTitle = () => {
     return (
       <>
         <ListItem style={Gutters.regularTMargin} bottomDivider>
-          <Text style={[styles.instructionText, Layout.alignSelfCenter]}>
-            Meter reading entered seems to be more than the AVG entered
-          </Text>
+          <Text style={[styles.instructionText, Layout.alignSelfCenter]}>{warningMessage}</Text>
         </ListItem>
       </>
     );
@@ -80,6 +83,7 @@ ConfirmReadingActionSheetContent.propTypes = {
   onConfirmReading: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
   loading: PropTypes.bool.isRequired,
+  warningMessage: PropTypes.string.isRequired,
 };
 ConfirmReadingActionSheetContent.defaultProps = {};
 

@@ -72,7 +72,7 @@ const DateTimeInput = ({
             styles.buttonStyle,
           ]}
           containerStyle={[theme.Input.inputContainerStyle, Gutters.largeHMargin]}
-          titleStyle={[Custom.buttonTextInput, theme.Input.inputStyle]}
+          titleStyle={[Custom.buttonTextInput, theme.Input.inputStyle, styles.titleStyle]}
         />
       </InputWrapper>
 
@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
     marginLeft: 28,
     marginTop: 30,
   },
+  titleStyle: { fontSize: 15, fontWeight: '400' },
 });
 
 DateTimeInput.propTypes = {

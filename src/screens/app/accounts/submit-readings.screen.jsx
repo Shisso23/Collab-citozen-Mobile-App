@@ -30,19 +30,17 @@ const SubmitMeterReadingScreen = ({ route }) => {
   const [readingNumberError, setReadingNumberError] = useState('');
   const [readingPhoto, setReadingPhoto] = useState('');
   const [readingPhotoError, setReadingPhotoError] = useState('');
-  const [readingDate, setReadingDate] = useState(moment(new Date()));
+  const [readingDate, setReadingDate] = useState(moment(new Date()).toDate());
+  const [warningMessage, setWarningMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const channelRef = _.get(route, 'params.channelRef', '');
   const selectedMeter = _.get(route, 'params.meter', {});
   const meterType = _.get(selectedMeter, 'type', '').toLowerCase();
   const meterSerialNo = _.get(selectedMeter, 'meterNumber', '');
   const readingsDetails = _.get(route, 'params.readingsDetails', {});
-  const meterObjId = _.get(selectedMeter, 'objId', '');
-  const lastReadingDate = moment(_.get(readingsDetails, 'lastReadingDate', new Date())).format(
-    'YYYY-MM-DD',
-  ); // TODO AsK for this
 
-  const lastReadingValue = _.get(readingsDetails, 'lastMeterReading', '');
+  const meterObjId = _.get(selectedMeter, 'objId', '');
+  const lastReading = _.get(readingsDetails, 'meterReadings', undefined)?.slice(-1)[0];
 
   const onImageSelect = (images) => {
     setReadingPhoto(images[images.length - 1] || {});
@@ -60,6 +58,9 @@ const SubmitMeterReadingScreen = ({ route }) => {
       `${readingNumber}`.length === 0 ||
       _.get(readingPhoto, 'uri', '').length === 0
     ) {
+      if (readingPhoto.length === 0) {
+        return setReadingPhotoError('Please upload a proof of your reading!');
+      }
       setReadingNumberError('No reading value entered!');
       return null;
     }
@@ -74,6 +75,7 @@ const SubmitMeterReadingScreen = ({ route }) => {
       .then(async (response) => {
         if (response.warning && !confirmedReading) {
           flashService.info(response.message);
+          await setWarningMessage(response.message);
           openActionSheet();
           return setIsSubmitting(false);
         }
@@ -82,6 +84,7 @@ const SubmitMeterReadingScreen = ({ route }) => {
           readingValue: readingNumber,
           meterObjId,
           photo: _.get(readingPhoto, 'uri', ''),
+          readingDate,
         });
         return setIsSubmitting(false);
       });
@@ -134,7 +137,7 @@ const SubmitMeterReadingScreen = ({ route }) => {
 
           <TextInput
             labelStyle={Layout.alignItemsCenter}
-            placeholder="reading"
+            placeholder="Reading"
             style={[Common.textInput, styles.accountInput]}
             onChangeText={(value) => {
               setReadingNumber(value);
@@ -162,9 +165,13 @@ const SubmitMeterReadingScreen = ({ route }) => {
           >
             {readingNumberError}
           </HelperText>
-          <Text
-            style={styles.lastReadingInfo}
-          >{`Last submitted reading ${lastReadingValue} on ${lastReadingDate}`}</Text>
+          {lastReading && (
+            <Text style={styles.lastReadingInfo}>{`Last submitted reading ${_.get(
+              lastReading,
+              'readingNumber',
+              '',
+            )} on ${moment(_.get(lastReading, 'date', new Date())).format('YYYY-MMMM-DD')}`}</Text>
+          )}
           <DateTimeInput
             value={readingDate}
             onChange={handleDateChange}
@@ -249,6 +256,7 @@ const SubmitMeterReadingScreen = ({ route }) => {
           onCancel={() => {
             closeActionSheet();
           }}
+          warningMessage={warningMessage}
         />
       </ActionSheet>
     </>
@@ -273,7 +281,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   instruction: { fontSize: 12.5, fontWeight: '200', textAlign: 'center' },
-  lastReadingInfo: { color: Colors.darkgray, fontSize: 14, textAlign: 'center' },
+  lastReadingInfo: {
+    color: Colors.darkgray,
+    fontSize: 14,
+    marginLeft: '14%',
+    marginTop: 10,
+    textAlign: 'center',
+    width: '75%',
+  },
   photoError: { color: Colors.danger, fontWeight: '400' },
   photoIcon: { marginTop: 8.5 },
   takePhotoButton: { marginTop: '15%' },
