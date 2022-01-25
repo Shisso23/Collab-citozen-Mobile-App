@@ -6,6 +6,10 @@ export const contactsModel = (_apiContactsModel = {}) => ({
   name: _.get(_apiContactsModel, 'contact_name', ''),
   number: _.get(_apiContactsModel, 'contact_number', ''),
   email: _.get(_apiContactsModel, 'contact_email', ''),
+  facebook: _.get(_apiContactsModel, 'facebook_account', ''),
+  twitter: _.get(_apiContactsModel, 'twitter_account', ''),
+  whatsapp: _.get(_apiContactsModel, 'whatsapp_number', ''),
+  sms: _.get(_apiContactsModel, 'sms_number', ''),
 });
 
 export const constructContactsModels = (apiContacts) =>

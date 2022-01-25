@@ -173,7 +173,7 @@ const SubmitMeterReadingScreen = ({ route }) => {
             )} on ${moment(_.get(lastReading, 'date', new Date())).format('YYYY-MMMM-DD')}`}</Text>
           )}
           <DateTimeInput
-            value={readingDate}
+            value={`${readingDate}`}
             onChange={handleDateChange}
             placeholder="Latest Date of Delivery"
             errorMessage=""
