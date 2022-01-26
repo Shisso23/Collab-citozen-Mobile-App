@@ -74,6 +74,9 @@ const HomeScreen = () => {
           description={() => (
             <>
               <Text style={Common.cardTitle}>{item.title}</Text>
+              <Text style={[Gutters.tinyTMargin, { color: Colors.primary }]}>
+                {item.channelName}
+              </Text>
               <View style={[Layout.rowBetween, Layout.alignItemsCenter]}>
                 <View style={[Layout.row, Gutters.tinyTMargin]}>
                   <Icon
