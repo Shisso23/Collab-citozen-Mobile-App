@@ -24,7 +24,7 @@ const SignInScreen = () => {
   };
 
   return (
-    <ImageBackground source={Images.loginBackground} style={[Layout.fullSize]} resizeMode="cover">
+    <ImageBackground source={Images.loginBackground} style={Layout.fullSize} resizeMode="cover">
       <FormScreenContainer contentContainerStyle={[Layout.scrollCenter]}>
         <LoginLogo containerStyle={[Gutters.largeMargin]} />
         <View style={[Gutters.largeBMargin]}>

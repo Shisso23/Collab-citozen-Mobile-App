@@ -29,6 +29,7 @@ export const newsFeedModel = (_apiNewsFeedModel, accessToken) => ({
   newsFeedImage: getNewsFeedImageUrl(_apiNewsFeedModel, accessToken),
   seen: _.get(_apiNewsFeedModel, 'seen', ''),
   date: _.get(_apiNewsFeedModel, 'date_published', new Date()),
+  channelName: _.get(_apiNewsFeedModel, 'channel_name', ''),
 });
 
 export const constructNewsFeedModels = async (apiNewsFeed) => {
