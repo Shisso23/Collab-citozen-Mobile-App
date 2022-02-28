@@ -1,19 +1,15 @@
-import React, { useEffect, useCallback, useRef, useState } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import { List } from 'react-native-paper';
-import { Icon } from 'react-native-elements';
 import {
   FlatList,
   Text,
   View,
   ImageBackground,
-  Linking,
   TouchableOpacity,
   StyleSheet,
-  Platform,
   RefreshControl,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import ActionSheet from 'react-native-actions-sheet';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 import useTheme from '../../../theme/hooks/useTheme';
@@ -25,19 +21,16 @@ import {
 } from '../../../reducers/location-reducer/location.actions';
 import { channelContactsSelector } from '../../../reducers/contacts-reducer/contacts.reducer';
 import { locationSelector } from '../../../reducers/location-reducer/location.reducer';
-import { flashService } from '../../../services';
-import ContactsActionSheetContent from '../../../components/molecules/contacts-actionsheet-content';
+import ContactButtons from '../../../components/molecules/contact-buttons';
 
 const ContactDetailsScreen = () => {
   const { Common, Gutters, Fonts, Layout, Images } = useTheme();
-  const actionSheetRef = useRef();
   const dispatch = useDispatch();
+  const [isCollapsed, setIsCollapsed] = useState(true);
+  const [collapsedIndex, setCollapedIndex] = useState(null);
   const navigation = useNavigation();
-
   const { channelsContacts, isLoadingChannelsContacts } = useSelector(channelContactsSelector);
   const { selectedAddress, region } = useSelector(locationSelector);
-  const [contactDetails, setContactDetails] = useState({});
-  const defaultMessage = 'Hi';
 
   useEffect(() => {
     dispatch(getCurrentPositionAction());
@@ -51,42 +44,6 @@ const ContactDetailsScreen = () => {
       }
     }, [region]),
   );
-
-  const handleLinkingFail = () => {
-    return flashService.error('Could not complete the operation!');
-  };
-
-  const handleLinkingResponse = (link) => {
-    Linking.openURL(link)
-      .then((supported) => {
-        if (!supported) {
-          return flashService.error('Operation is not supported!');
-        }
-        return Linking.openURL(link);
-      })
-      .catch(handleLinkingFail);
-  };
-
-  const handleContactAction = (action) => {
-    let link;
-    const separator = Platform.OS === 'ios' ? '&' : '?';
-    switch (action) {
-      case 'call':
-        link = `tel://${contactDetails.number.replace(/\s/g, '')}`;
-        break;
-      case 'whatsapp':
-        link = `whatsapp://send?text=${defaultMessage}&phone=+27${contactDetails?.number
-          .replace(/\s/g, '')
-          .substring(1)}`;
-        break;
-      case 'sms':
-        link = `sms:${contactDetails.number.replace(/\s/g, '')}${separator}body=${defaultMessage}`;
-        break;
-      default:
-        link = `tel://${contactDetails.number.replace(/\s/g, '')}`;
-    }
-    handleLinkingResponse(link);
-  };
 
   const onBack = () => {
     navigation.navigate('ContactDetails');
@@ -105,13 +62,9 @@ const ContactDetailsScreen = () => {
     return dispatch(getChannelsContactsAction(currentRegion));
   };
 
-  const openActionSheet = (item) => {
-    setContactDetails(item);
-    return actionSheetRef.current?.setModalVisible(true);
-  };
-
-  const closeActionSheet = () => {
-    return actionSheetRef.current?.setModalVisible(false);
+  const handleCollapse = (index) => () => {
+    setCollapedIndex(index);
+    setIsCollapsed(!isCollapsed);
   };
 
   const renderContactDetails = ({ item }) => {
@@ -120,29 +73,20 @@ const ContactDetailsScreen = () => {
         <Text style={[Gutters.smallVMargin, Gutters.regularBMargin, styles.channel]}>
           {item.name}
         </Text>
-        {item.contacts.map((contact) => (
-          <View key={contact.objId} style={[Common.textInputWithShadow, styles.contactItem]}>
-            <List.Item
-              title={contact.name}
-              titleStyle={[Common.cardTitle]}
-              onPress={() => openActionSheet(contact)}
-              description={() => (
-                <View style={[Layout.rowHCenter, Gutters.tinyTPadding]}>
-                  <Icon
-                    name="phone"
-                    type="font-awesome"
-                    color={Colors.primary}
-                    style={Gutters.smallRMargin}
-                  />
-                  <Text
-                    style={[Fonts.textRegular, Common.cardDescription, { color: Colors.darkgray }]}
-                  >
-                    {contact.number}
-                  </Text>
-                </View>
-              )}
-            />
-          </View>
+        {item.contacts.map((contact, index) => (
+          <List.Accordion
+            key={contact.name || index}
+            title={contact.name}
+            titleStyle={[Common.cardTitle]}
+            style={[
+              Gutters.smallVMargin,
+              // eslint-disable-next-line react-native/no-inline-styles
+              { borderBottomWidth: !isCollapsed && collapsedIndex === index ? 0 : 0.3 },
+            ]}
+            onPress={handleCollapse(index)}
+          >
+            <ContactButtons contact={contact} />
+          </List.Accordion>
         ))}
       </View>
     );
@@ -196,12 +140,6 @@ const ContactDetailsScreen = () => {
           }
         />
       </ImageBackground>
-      <ActionSheet ref={actionSheetRef} gestureEnabled>
-        <ContactsActionSheetContent
-          handleContactAction={handleContactAction}
-          closeActionSheet={closeActionSheet}
-        />
-      </ActionSheet>
     </>
   );
 };
@@ -209,7 +147,6 @@ const ContactDetailsScreen = () => {
 const styles = StyleSheet.create({
   address: { fontSize: 15 },
   channel: { fontSize: 16, fontWeight: '500' },
-  contactItem: { margin: 8 },
   locationLabel: { color: Colors.gray, fontSize: 12 },
 });
 
