@@ -13,6 +13,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
 import UploadDocumentButton from '../../../components/molecules/upload-document-button';
+import DateTimeInput from '../../../components/molecules/date-time-input';
 import { setImagesSources } from '../../../reducers/service-request-reducer/service-request.actions';
 import ConfirmReadingActionSheetContent from '../../../components/molecules/meters/confirm-reading-actionsheet-content';
 import { flashService, metersService } from '../../../services';
@@ -29,6 +30,7 @@ const SubmitMeterReadingScreen = ({ route }) => {
   const [readingNumberError, setReadingNumberError] = useState('');
   const [readingPhoto, setReadingPhoto] = useState('');
   const [readingPhotoError, setReadingPhotoError] = useState('');
+  const [readingDate, setReadingDate] = useState(moment(new Date()));
   const [isSubmitting, setIsSubmitting] = useState(false);
   const channelRef = _.get(route, 'params.channelRef', '');
   const selectedMeter = _.get(route, 'params.meter', {});
@@ -58,11 +60,7 @@ const SubmitMeterReadingScreen = ({ route }) => {
       `${readingNumber}`.length === 0 ||
       _.get(readingPhoto, 'uri', '').length === 0
     ) {
-      if (_.get(readingPhoto, 'uri', '').length === 0) {
-        setReadingPhotoError('Please ensure to take a photo of the meter reading as well.');
-        return null;
-      }
-      setReadingNumberError('reading value must be 6 digits long');
+      setReadingNumberError('No reading value entered!');
       return null;
     }
 
@@ -101,6 +99,8 @@ const SubmitMeterReadingScreen = ({ route }) => {
     return navigation.goBack();
   };
 
+  const handleDateChange = setReadingDate;
+
   const openActionSheet = () => {
     return actionSheetRef.current.setModalVisible(true);
   };
@@ -134,19 +134,22 @@ const SubmitMeterReadingScreen = ({ route }) => {
 
           <TextInput
             labelStyle={Layout.alignItemsCenter}
-            placeholder="276212"
+            placeholder="reading"
             style={[Common.textInput, styles.accountInput]}
             onChangeText={(value) => {
               setReadingNumber(value);
-              setReadingNumberError('');
+              if (`${readingNumber}`.length > 0) setReadingNumberError('');
+              else {
+                setReadingNumberError('No reading value entered!');
+              }
             }}
-            maxLength={6}
+            maxLength={10}
             value={readingNumber}
             multiline={false}
             error={`${readingNumberError}`.length > 0}
             onEndEditing={() => {
-              if (`${readingNumber}`.length !== 6) {
-                setReadingNumberError('reading value must be 6 digits long');
+              if (`${readingNumber}`.length === 0) {
+                setReadingNumberError('No reading value entered!');
               }
             }}
             textAlign="center"
@@ -161,7 +164,16 @@ const SubmitMeterReadingScreen = ({ route }) => {
           </HelperText>
           <Text
             style={styles.lastReadingInfo}
-          >{`Last reading ${lastReadingValue} on ${lastReadingDate}`}</Text>
+          >{`Last submitted reading ${lastReadingValue} on ${lastReadingDate}`}</Text>
+          <DateTimeInput
+            value={readingDate}
+            onChange={handleDateChange}
+            placeholder="Latest Date of Delivery"
+            errorMessage=""
+            label="Select Reading date"
+            mode="datetime"
+            format="YYYY-MM-DD HH:mm"
+          />
         </View>
       </>
     );
