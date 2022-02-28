@@ -79,9 +79,9 @@ const validateReading = async ({ readingValue, meterObjId }) => {
   }
 };
 
-const submitReading = async ({ channelRef, readingValue, meterObjId, photo }) => {
+const submitReading = async ({ channelRef, readingValue, meterObjId, photo, readingDate }) => {
   const url = metersUrls.submitMeterReadingsUrl();
-  const data = dataSubmitReading({ channelRef, readingValue, meterObjId });
+  const data = dataSubmitReading({ channelRef, readingValue, meterObjId, readingDate });
   try {
     const apiResponse = await authNetworkService.post(url, data);
     await uploadMeterReadingPhoto(_.get(apiResponse, 'data', ''), photo);

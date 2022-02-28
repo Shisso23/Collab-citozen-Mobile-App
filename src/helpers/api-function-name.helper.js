@@ -77,8 +77,8 @@ export const dataGetMeterReadings = ({ meterObjId }) => {
   };
 };
 
-export const dataSubmitReading = ({ channelRef, meterObjId, readingValue }) => {
-  return `<Objects><Meter_Reading><F1>${meterObjId}</F1><F2>${readingValue}</F2><F7>${channelRef}</F7></Meter_Reading></Objects>`;
+export const dataSubmitReading = ({ channelRef, meterObjId, readingValue, readingDate }) => {
+  return `<Objects><Meter_Reading><F1>${meterObjId}</F1><F2>${readingValue}</F2><F7>${channelRef}</F7><F4>${readingDate}</F4></Meter_Reading></Objects>`;
 };
 
 export const dataValidateReading = ({ meterObjId, readingValue }) => {

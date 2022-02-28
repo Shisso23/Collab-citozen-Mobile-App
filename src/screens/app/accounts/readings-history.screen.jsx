@@ -39,7 +39,11 @@ const ReadingsHistoryScreen = ({ route }) => {
   const _handleOpenreading = () => {};
 
   const addMeterReading = () => {
-    navigation.navigate('SubmitReading', { meter, channelRef, readingsDetails: meterReadings });
+    navigation.navigate('SubmitReading', {
+      meter,
+      channelRef,
+      readingsDetails: meterReadings,
+    });
   };
 
   const renderReadingItem = ({ item }) => {
