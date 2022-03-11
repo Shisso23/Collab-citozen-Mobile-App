@@ -41,10 +41,7 @@ export const openNotificationAction = (notificationId, dateTime, userId) => {
 };
 
 export const deleteNotificationAction = (notificationId, dateTime, userId) => {
-  return (dispatch) =>
-    notificationService
-      .deleteNotification(notificationId, dateTime, userId)
-      .then(() => dispatch(getNotificationsAction()));
+  return () => notificationService.deleteNotification(notificationId, dateTime, userId);
 };
 
 export const previewDeleNotificationAction = (shoudlPreview) => {
