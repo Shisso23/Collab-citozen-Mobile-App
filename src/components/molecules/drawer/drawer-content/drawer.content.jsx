@@ -14,6 +14,8 @@ import useTheme from '../../../../theme/hooks/useTheme';
 import { Colors } from '../../../../theme/Variables';
 import { permissionsService } from '../../../../services';
 import { openAppSetting } from '../../../../helpers/app-seettings.helper';
+import { myChannelsSelector } from '../../../../reducers/my-channels/my-channels.reducer';
+import { getMyChannelsAction } from '../../../../reducers/my-channels/my-channels.actions';
 
 const theme = {
   colors: {
@@ -24,13 +26,14 @@ const DrawerContent = (props) => {
   const { navigation } = props;
   const { user } = useSelector((reducers) => reducers.userReducer);
   const [codePushVersion, setCodePushVersion] = useState();
+  const [accountApplicableChannelsExist, setAccountApplicableChannelsExist] = useState(false);
   const avatarUrl = { uri: _.get(user, 'avatar', '') };
   const dispatch = useDispatch();
   const { Fonts, Gutters, Layout, Common } = useTheme();
+  const { myChannels } = useSelector(myChannelsSelector);
   const _signOut = () => {
     dispatch(signOutAction());
   };
-
   const getAppCenterCodeVersion = () => {
     codePush.getCurrentPackage().then((update) => {
       setCodePushVersion(_.get(update, 'label', 'v0'));
@@ -39,6 +42,17 @@ const DrawerContent = (props) => {
   useEffect(() => {
     getAppCenterCodeVersion();
   }, []);
+  useEffect(() => {
+    dispatch(getMyChannelsAction());
+    const accountApplicableChannels = myChannels.filter(
+      (channel) => _.get(channel, 'accountApplicable', null) === true,
+    );
+    if (accountApplicableChannels.length === 0) {
+      setAccountApplicableChannelsExist(false);
+    } else {
+      setAccountApplicableChannelsExist(true);
+    }
+  }, [myChannels.length]);
 
   return (
     <View style={[Layout.fill]}>
@@ -63,13 +77,14 @@ const DrawerContent = (props) => {
             onPress={() => navigation.navigate('ServiceRequests')}
             theme={theme}
           />
-          <Drawer.Item
-            icon="ticket-account"
-            label="Accounts"
-            onPress={() => navigation.navigate('Accounts')}
-            theme={theme}
-          />
-
+          {accountApplicableChannelsExist && (
+            <Drawer.Item
+              icon="ticket-account"
+              label="Accounts"
+              onPress={() => navigation.navigate('Accounts')}
+              theme={theme}
+            />
+          )}
           <Drawer.Item
             icon="file"
             label="Channels"
