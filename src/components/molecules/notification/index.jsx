@@ -24,7 +24,7 @@ const Notification = ({ notification, index }) => {
   const { deleteNotificationPreview } = useSelector((reducers) => reducers.notificationReducer);
   const notificationId = _.get(notification, 'obj_id');
   const datePublished = _.get(notification, 'date_published', new Date());
-  const title = _.get(notification, 'title', '');
+  let title = _.get(notification, 'title', '');
   const body = _.get(notification, 'body', '');
   const seen = _.get(notification, 'seen', false) === 'Yes';
 
@@ -32,6 +32,7 @@ const Notification = ({ notification, index }) => {
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isSeen, setIsSeen] = useState(seen);
   const [isDeleting, setDeleting] = useState(false);
+  const [isDeleted, setIsDeleted] = useState(false);
 
   const _handleCollapse = () => {
     if (!isSeen) {
@@ -49,6 +50,7 @@ const Notification = ({ notification, index }) => {
   const _handleDelete = () => {
     const deletedAt = Moment(new Date()).format('yyyy-mm-DD hh:mm:ss');
     promptConfirm('Are you sure?', 'Are you sure you want to delete this item?', 'Delete', () => {
+      setIsDeleted(true);
       setDeleting(true);
       dispatch(deleteNotificationAction(notificationId, deletedAt, _.get(user, 'user_id', '')));
     });
@@ -67,7 +69,7 @@ const Notification = ({ notification, index }) => {
       borderBottomColor: Colors.darkgray,
       borderBottomWidth: !isCollapsed ? 0 : 0.4,
     };
-    return (
+    return !isDeleted ? (
       <List.Accordion
         title={`${title}`}
         description={`${formatDate(datePublished)}`}
@@ -89,6 +91,8 @@ const Notification = ({ notification, index }) => {
       >
         <Text style={[Gutters.largeRPadding, styles.notificationBody]}>{body}</Text>
       </List.Accordion>
+    ) : (
+      <></>
     );
   };
 
