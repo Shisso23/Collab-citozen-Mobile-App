@@ -397,7 +397,7 @@ PODS:
     - React-Core
   - RNShare (7.2.0):
     - React-Core
-  - RNVectorIcons (9.1.0):
+  - RNVectorIcons (8.1.0):
     - React-Core
   - SSZipArchive (2.2.3)
   - TOCropViewController (2.6.0)
@@ -667,7 +667,7 @@ SPEC CHECKSUMS:
   RNReanimated: 514a11da3a2bcc6c3dfd9de32b38e2b9bf101926
   RNScreens: f7ad633b2e0190b77b6a7aab7f914fad6f198d8d
   RNShare: 70356a1bb406bc46ae03196a5d3048c702bb71a7
-  RNVectorIcons: 7923e585eaeb139b9f4531d25a125a1500162a0b
+  RNVectorIcons: 31cebfcf94e8cf8686eb5303ae0357da64d7a5a4
   SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9
   TOCropViewController: 3105367e808b7d3d886a74ff59bf4804e7d3ab38
   Yoga: 4bd86afe9883422a7c4028c00e34790f560923d6
