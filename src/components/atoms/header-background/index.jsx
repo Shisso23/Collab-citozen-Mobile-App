@@ -35,7 +35,7 @@ const HeaderBackGround = (props) => {
   const [currentImage, setCurrentImage] = useState();
   const [randomNumber, setRandomNumber] = useState(0);
   const [firstLoad, setFirstLoad] = useState(true);
-  let asyncStorageBannerImages = [];
+  const asyncStorageBannerImages = [];
 
   const getToken = async () => {
     return storageService.getAccessToken();
@@ -85,9 +85,7 @@ const HeaderBackGround = (props) => {
     return undefined;
   });
 
-  useLayoutEffect(() => {
-    dispatch(getServiceRequestsAction);
-
+  const loadBannerImages = () => {
     if (!loadedBannerImages) {
       getToken().then((token) => {
         myChannels.map((channel) => {
@@ -117,6 +115,11 @@ const HeaderBackGround = (props) => {
         });
       });
     }
+  };
+
+  useLayoutEffect(() => {
+    dispatch(getServiceRequestsAction());
+    loadBannerImages();
   }, []);
 
   const handleOnPress = () => {

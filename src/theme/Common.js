@@ -168,6 +168,13 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
       shadowOpacity: 0.16,
       shadowRadius: 16,
     },
+    textInputWithoutShadow: {
+      borderBottomLeftRadius: 10,
+      borderBottomRightRadius: 10,
+      borderTopLeftRadius: 10,
+      borderTopRightRadius: 10,
+      elevation: 2,
+    },
     whiteText: {
       color: Colors.white,
     },

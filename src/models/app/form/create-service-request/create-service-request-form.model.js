@@ -33,6 +33,6 @@ export const apiCreateServiceRequestModel = (_serviceRequestForm = {}, _userInfo
     { FieldID: 'F20', FieldValue: _.get(_serviceRequestForm, 'municipalityCode', '') }, // municipalityCode
     { FieldID: 'F24', FieldValue: _.get(_serviceRequestForm, 'address', '') }, // Address: Street Number + Street Name + suburb
     { FieldID: 'F27', FieldValue: _.get(_serviceRequestForm, 'channelRef', '') }, // Channel id
-    { FieldID: 'F32', FieldValue: _.get(_serviceRequestForm, 'serviceType.id', '') }, // Service Request Type ObjId
+    { FieldID: 'F29', FieldValue: _.get(_serviceRequestForm, 'serviceType.id', '') }, // Service Request Type ObjId
   ],
 });

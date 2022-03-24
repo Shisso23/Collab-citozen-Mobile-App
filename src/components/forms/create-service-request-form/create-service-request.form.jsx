@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { ViewPropTypes, View, Keyboard } from 'react-native';
+import { ViewPropTypes, View, Keyboard, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { Button, HelperText, TextInput } from 'react-native-paper';
+import { Button, HelperText, TextInput, List } from 'react-native-paper';
 import { ListItem, Text } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
@@ -20,6 +20,7 @@ import { getFormError } from '../form-utils';
 import useTheme from '../../../theme/hooks/useTheme';
 import { locationSelector } from '../../../reducers/location-reducer/location.reducer';
 import UploadDocumentButton from '../../molecules/upload-document-button';
+import { Colors } from '../../../theme/Variables';
 
 navigator.geolocation = require('react-native-geolocation-service');
 
@@ -32,7 +33,7 @@ const CreateServiceRequestForm = ({
   setThumbNailImages,
   thumbNailImages,
 }) => {
-  const { Common, Layout, Gutters, Colors, Fonts } = useTheme();
+  const { Common, Layout, Gutters, Fonts } = useTheme();
   const { selectedAddress, region } = useSelector(locationSelector);
   const [address, setAddress] = useState('');
   const [searchValue, setSearchValue] = useState('');
@@ -185,6 +186,17 @@ const CreateServiceRequestForm = ({
             handleSubmit();
           };
 
+          const passValuesForFields = (item) => {
+            const municipality = getChannelFromSelectedServiceType({
+              selectedServiceType: item,
+            });
+            endSearchFunction(municipalities[municipality].name, item.category, item.name);
+            setFormFields({
+              selectedChannel: municipalities[municipality],
+              selectedServiceType: item,
+            });
+          };
+
           const error = (name) => getFormError(name, { touched, status, errors });
           return (
             <>
@@ -195,6 +207,12 @@ const CreateServiceRequestForm = ({
                 onFocus={() => navigation.navigate('SelectLocationScreen')}
               />
               <HelperText />
+
+              <View style={[styles.viewTextContainer]}>
+                <Text style={[Fonts.textRegular, styles.textHeaderInstruction]}>
+                  Select a Service Type
+                </Text>
+              </View>
 
               {!typeSelected && (
                 <TextInput
@@ -212,64 +230,81 @@ const CreateServiceRequestForm = ({
               <HelperText />
 
               {!typeSelected && !isSearching && (
-                <>
+                <View style={styles.viewItemsChannelContainer}>
                   {Object.keys(municipalities)?.map((municipalityRef) => (
                     <ListItem.Accordion
                       key={municipalityRef}
                       noIcon={noIconState}
                       underlayColor={Colors.transparent}
                       content={
-                        <Text style={[Fonts.textRegular]}>
-                          {municipalities[`${municipalityRef}`].name}
-                        </Text>
+                        <View style={[styles.viewTextContainer]}>
+                          <Text style={[Fonts.textRegular, styles.textHeaderChannel]}>
+                            {municipalities[`${municipalityRef}`].name}
+                          </Text>
+                        </View>
                       }
                       containerStyle={{ backgroundColor: Colors.transparent }}
                       isExpanded={isExpandedState}
                     >
-                      {Object.keys(municipalities[`${municipalityRef}`].serviceTypes)?.map(
-                        (categoryName) => (
-                          <ListItem.Accordion
-                            key={categoryName}
-                            noIcon={noIconState}
-                            underlayColor={Colors.transparent}
-                            content={
-                              <Text style={[Fonts.textRegular]}>
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{categoryName}
-                              </Text>
-                            }
-                            containerStyle={{ backgroundColor: Colors.transparent }}
-                            isExpanded={isExpandedState}
-                          >
-                            {municipalities[`${municipalityRef}`].serviceTypes[
-                              `${categoryName}`
-                            ].map((serviceTypeObject) => {
-                              return (
-                                <Button
-                                  key={serviceTypeObject}
-                                  mode="contained"
-                                  style={[Layout.fill, Gutters.regularBMargin]}
-                                  onPress={() => {
-                                    typeChosen(
-                                      municipalities[`${municipalityRef}`].name,
-                                      categoryName,
-                                      serviceTypeObject.name,
-                                    );
-                                    setFormFields({
-                                      selectedChannel: municipalities[municipalityRef],
-                                      selectedServiceType: serviceTypeObject,
-                                    });
-                                  }}
-                                >
-                                  {serviceTypeObject.name}
-                                </Button>
-                              );
-                            })}
-                          </ListItem.Accordion>
-                        ),
-                      )}
+                      <View style={styles.viewItemsCategoryContainer}>
+                        {Object.keys(municipalities[`${municipalityRef}`].serviceTypes)?.map(
+                          (categoryName) => (
+                            <ListItem.Accordion
+                              key={categoryName}
+                              noIcon={noIconState}
+                              underlayColor={Colors.transparent}
+                              content={
+                                <View style={[styles.viewTextContainer]}>
+                                  <Text style={[Fonts.textRegular, styles.textHeaderCategory]}>
+                                    {categoryName}
+                                  </Text>
+                                </View>
+                              }
+                              containerStyle={{ backgroundColor: Colors.transparent }}
+                              isExpanded={isExpandedState}
+                            >
+                              <View style={styles.viewItemsTypesContainer}>
+                                {municipalities[`${municipalityRef}`].serviceTypes[
+                                  `${categoryName}`
+                                ].map((serviceTypeObject) => {
+                                  return (
+                                    <View
+                                      key={serviceTypeObject}
+                                      style={[
+                                        Common.textInputWithoutShadow,
+                                        Gutters.smallBMargin,
+                                        styles.listItem,
+                                        styles.viewButton,
+                                      ]}
+                                    >
+                                      <List.Item
+                                        key={serviceTypeObject}
+                                        style={Layout.fill}
+                                        title={serviceTypeObject.name}
+                                        onPress={() => {
+                                          typeChosen(
+                                            municipalities[`${municipalityRef}`].name,
+                                            categoryName,
+                                            serviceTypeObject.name,
+                                          );
+                                          setFormFields({
+                                            selectedChannel: municipalities[municipalityRef],
+                                            selectedServiceType: serviceTypeObject,
+                                          });
+                                        }}
+                                        titleStyle={(Common.cardTitle, styles.listItemTitleStyle)}
+                                      />
+                                    </View>
+                                  );
+                                })}
+                              </View>
+                            </ListItem.Accordion>
+                          ),
+                        )}
+                      </View>
                     </ListItem.Accordion>
                   ))}
-                </>
+                </View>
               )}
 
               {typeSelected && !isSearching && (
@@ -313,30 +348,25 @@ const CreateServiceRequestForm = ({
                     selectedServiceType: item,
                   });
                   return (
-                    <View key={item}>
-                      <Text style={[Fonts.textRegular, Gutters.smallBMargin]}>
+                    <View key={item} style={styles.viewButton}>
+                      <Text style={[Fonts.textRegular, Gutters.smallTMargin]}>
                         {municipalities[itemChannelGetter].name} | {item.category}
                       </Text>
-                      <Button
-                        mode="contained"
-                        style={[Layout.fill, Gutters.regularBMargin]}
-                        onPress={() => {
-                          const municipality = getChannelFromSelectedServiceType({
-                            selectedServiceType: item,
-                          });
-                          endSearchFunction(
-                            municipalities[municipality].name,
-                            item.category,
-                            item.name,
-                          );
-                          setFormFields({
-                            selectedChannel: municipalities[municipality],
-                            selectedServiceType: item,
-                          });
-                        }}
+                      <View
+                        style={[
+                          Common.textInputWithoutShadow,
+                          Gutters.smallVMargin,
+                          styles.listItem,
+                        ]}
                       >
-                        {item.name}
-                      </Button>
+                        <List.Item
+                          key={item}
+                          style={Layout.fill}
+                          title={item.name}
+                          onPress={passValuesForFields(item)}
+                          titleStyle={(Common.cardTitle, styles.listItemTitleStyle)}
+                        />
+                      </View>
                     </View>
                   );
                 })}
@@ -391,5 +421,64 @@ CreateServiceRequestForm.defaultProps = {
   containerStyle: {},
   thumbNailImages: [],
 };
+
+const styles = StyleSheet.create({
+  listItem: {
+    marginRight: 10,
+    marginLeft: 10,
+    backgroundColor: Colors.lightgray,
+    textAlign: 'center',
+  },
+  listItemTitleStyle: {
+    textAlign: 'center',
+  },
+  viewButton: {
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 0.16,
+  },
+  viewItemsChannelContainer: {
+    borderWidth: 1,
+    borderBottomWidth: 0,
+    borderColor: Colors.lightMediumGray,
+  },
+  viewItemsCategoryContainer: {
+    borderWidth: 1,
+    borderLeftWidth: 0,
+    borderRightWidth: 0,
+    borderBottomWidth: 0,
+    borderColor: Colors.lightMediumGray,
+  },
+  viewItemsTypesContainer: {
+    padding: 10,
+    borderWidth: 1,
+    borderTopWidth: 0,
+    borderLeftWidth: 0,
+    borderRightWidth: 0,
+    borderColor: Colors.lightMediumGray,
+  },
+  viewTextContainer: {
+    justifyContent: 'center',
+    flex: 1,
+  },
+  textHeaderChannel: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  textHeaderCategory: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  textHeaderInstruction: {
+    textAlign: 'center',
+    paddingBottom: 20,
+    fontSize: 16,
+    // fontWeight: 'bold',
+  },
+});
 
 export default CreateServiceRequestForm;
