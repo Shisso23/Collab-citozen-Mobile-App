@@ -22,6 +22,8 @@ export const Colors = {
   danger: '#C1666B',
   softBlue: '#3A609C',
   red: '#d01a1a',
+  lightMediumGray: '#d3d3d3',
+  lightgray: '#e0e0e0',
   gray: '#7e7e7e',
   darkgray: '#5d5d5d',
   shadow: '#e3e3e3',
