@@ -7,11 +7,13 @@ import {
   setIsServerOfflineAction,
 } from '../user-auth-reducer/user-auth.reducer';
 import { getUserAction } from '../user-reducer/user.actions';
+import { getMyChannelsAction } from '../my-channels/my-channels.actions';
 
 export const initAppAction = () => {
   return async (dispatch) => {
     const { doTokenExistInLocalStorage } = userAuthService;
     await dispatch(loadAppDataAction());
+    await dispatch(getMyChannelsAction());
     const tokensExist = await doTokenExistInLocalStorage();
     if (tokensExist) {
       dispatch(isAuthenticatedFlowAction()).catch(() => {

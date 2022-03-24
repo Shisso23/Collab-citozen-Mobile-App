@@ -9,6 +9,7 @@ export default ({ Colors, FontFamily }) => {
       cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
       // eslint-disable-next-line react/jsx-filename-extension
       header: (props) => <HeaderBackGround {...props} />,
+      headerShown: true,
       headerBackTitleVisible: false,
       headerStyle: {
         backgroundColor: Colors.secondary,
