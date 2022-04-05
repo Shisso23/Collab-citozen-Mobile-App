@@ -49,25 +49,17 @@ const MetersTabContent = ({ meters, accountNumber, channelRef }) => {
       });
     });
   };
-  const renderMeters = ({ item, index }) => {
+  const renderMeters = ({ item }) => {
     return (
-      <>
-        <View style={[Common.textInputWithShadow, Gutters.smallMargin, styles.meterItem]}>
-          <List.Item
-            title={_.get(item, 'type', '')}
-            description={() => renderDescription(item)}
-            onPress={() => showMeterHistory(item)}
-            titleStyle={Common.cardTitle}
-            right={renderLoadingIndicator}
-          />
-        </View>
-        {index === meters.length - 1 && (
-          <Text style={styles.instruction}>
-            Your balances are updated each time you get a bill, make a payment or submit a meter
-            reading
-          </Text>
-        )}
-      </>
+      <View style={[Common.textInputWithShadow, Gutters.smallMargin, styles.meterItem]}>
+        <List.Item
+          title={_.get(item, 'type', '')}
+          description={() => renderDescription(item)}
+          onPress={() => showMeterHistory(item)}
+          titleStyle={Common.cardTitle}
+          right={renderLoadingIndicator}
+        />
+      </View>
     );
   };
 
@@ -86,7 +78,6 @@ const MetersTabContent = ({ meters, accountNumber, channelRef }) => {
 };
 
 const styles = StyleSheet.create({
-  instruction: { color: Colors.darkgray, textAlign: 'center' },
   meterItem: {
     shadowOffset: {
       width: 0,

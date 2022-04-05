@@ -11,6 +11,14 @@ export default ({ Colors, FontFamily }) => {
       header: (props) => <HeaderBackGround {...props} />,
       headerShown: true,
       headerBackTitleVisible: false,
+      headerTransitionPreset: 'fade-in-place',
+      transitionConfig: () => {
+        return {
+          transitionSpec: {
+            duration: 50,
+          },
+        };
+      },
       headerStyle: {
         backgroundColor: Colors.secondary,
         shadowRadius: 0,

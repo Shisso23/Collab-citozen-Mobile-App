@@ -9,7 +9,9 @@ export const meterModel = (_apiMeterModel = {}) => ({
   averageReading: _.get(_apiMeterModel, 'averageReading', ''), // TODO Calculate , get it from endpoint
 });
 
-export const constructMeterModels = (_apiMeters) => _apiMeters.map((meter) => meterModel(meter));
+export const constructMeterModels = (_apiMeters) => {
+  return _apiMeters?.map((meter) => meterModel(meter));
+};
 
 export const meterReadingModel = (_apiMeterReadingModel = {}) => ({
   objId: _.get(_apiMeterReadingModel, 'obj_id', ''),

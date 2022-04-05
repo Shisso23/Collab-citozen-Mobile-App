@@ -9,7 +9,6 @@ import Moment from 'moment';
 import useTheme from '../../../theme/hooks/useTheme';
 import { constructStatementModels } from '../../../models/app/accounts/statement.model';
 import { flashService } from '../../../services';
-import { Colors } from '../../../theme/Variables';
 
 const StatementsTabContent = ({ account, statements }) => {
   const navigation = useNavigation();
@@ -17,21 +16,21 @@ const StatementsTabContent = ({ account, statements }) => {
   const [statementsWithPdfFiles, setStatementsWithPdfFiles] = useState([]);
   const { Gutters, Common, Layout } = useTheme();
 
-  const sortStatements = (unsortedStatements) => {
-    return unsortedStatements.sort((st1, st2) => {
-      if (_.get(st1, 'month', '') > _.get(st2, 'month', '')) {
-        return -1;
-      }
-      if (_.get(st1, 'month', '') < _.get(st2, 'month', '')) {
-        return 1;
-      }
-      return 0;
-    });
-  };
+  // const sortStatements = (unsortedStatements) => {
+  //   return unsortedStatements.sort((st1, st2) => {
+  //     if (_.get(st1, 'month', '') > _.get(st2, 'month', '')) {
+  //       return -1;
+  //     }
+  //     if (_.get(st1, 'month', '') < _.get(st2, 'month', '')) {
+  //       return 1;
+  //     }
+  //     return 0;
+  //   });
+  // };
 
   useEffect(() => {
     constructStatementModels(statements).then((newStatements) => {
-      setStatementsWithPdfFiles(sortStatements(newStatements));
+      setStatementsWithPdfFiles(newStatements);
     });
   }, []);
 
@@ -59,27 +58,19 @@ const StatementsTabContent = ({ account, statements }) => {
   const _handleOpenStatement = (item) => {
     onSelectStatement(item);
   };
-  const viewStatementItem = ({ item, index }) => {
+  const viewStatementItem = ({ item }) => {
     const year = _.get(item, 'year', '');
     const month = _.get(item, 'month', '');
     const dateString = `${year}/${month}`;
     return (
-      <>
-        <View style={[Common.textInputWithShadow, Gutters.smallVMargin, styles.statementItem]}>
-          <List.Item
-            title={Moment(dateString, 'YYYY/MM').format('MMMM YYYY')}
-            description={() => renderDescription(item)}
-            onPress={() => _handleOpenStatement(item)}
-            titleStyle={Common.cardTitle}
-          />
-        </View>
-        {index === statements.length - 1 && (
-          <Text style={styles.statementsInstruction}>
-            Your balances are updated each time you get a bill, make a payment or submit a meter
-            reading
-          </Text>
-        )}
-      </>
+      <View style={[Common.textInputWithShadow, Gutters.smallVMargin, styles.statementItem]}>
+        <List.Item
+          title={Moment(dateString, 'YYYY/MM').format('MMMM YYYY')}
+          description={() => renderDescription(item)}
+          onPress={() => _handleOpenStatement(item)}
+          titleStyle={Common.cardTitle}
+        />
+      </View>
     );
   };
 
@@ -112,7 +103,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 0.16,
   },
-  statementsInstruction: { color: Colors.darkgray, textAlign: 'center' },
   title: { fontSize: 16, fontWeight: '500' },
 });
 

@@ -13,9 +13,9 @@ export const initAppAction = () => {
   return async (dispatch) => {
     const { doTokenExistInLocalStorage } = userAuthService;
     await dispatch(loadAppDataAction());
-    await dispatch(getMyChannelsAction());
     const tokensExist = await doTokenExistInLocalStorage();
     if (tokensExist) {
+      await dispatch(getMyChannelsAction());
       dispatch(isAuthenticatedFlowAction()).catch(() => {
         dispatch(setIsServerOfflineAction(true));
         dispatch(setIsAuthenticatedAction(false));

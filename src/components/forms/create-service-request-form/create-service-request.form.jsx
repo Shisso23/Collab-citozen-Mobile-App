@@ -225,6 +225,7 @@ const CreateServiceRequestForm = ({
                   onChange={searchTypes}
                   onFocus={toggleisSearching}
                   onBlur={toggleisSearching}
+                  blurOnSubmit={false}
                 />
               )}
               <HelperText />
@@ -281,6 +282,7 @@ const CreateServiceRequestForm = ({
                                         key={serviceTypeObject}
                                         style={Layout.fill}
                                         title={serviceTypeObject.name}
+                                        titleNumberOfLines={3}
                                         onPress={() => {
                                           typeChosen(
                                             municipalities[`${municipalityRef}`].name,
@@ -348,24 +350,26 @@ const CreateServiceRequestForm = ({
                     selectedServiceType: item,
                   });
                   return (
-                    <View key={item} style={styles.viewButton}>
+                    <View key={item}>
                       <Text style={[Fonts.textRegular, Gutters.smallTMargin]}>
                         {municipalities[itemChannelGetter].name} | {item.category}
                       </Text>
-                      <View
-                        style={[
-                          Common.textInputWithoutShadow,
-                          Gutters.smallVMargin,
-                          styles.listItem,
-                        ]}
-                      >
-                        <List.Item
-                          key={item}
-                          style={Layout.fill}
-                          title={item.name}
-                          onPress={passValuesForFields(item)}
-                          titleStyle={(Common.cardTitle, styles.listItemTitleStyle)}
-                        />
+                      <View key={item} style={styles.viewButton}>
+                        <View
+                          style={[
+                            Common.textInputWithoutShadow,
+                            Gutters.smallVMargin,
+                            styles.listItem,
+                          ]}
+                        >
+                          <List.Item
+                            key={item}
+                            style={Layout.fill}
+                            title={item.name}
+                            onPress={() => passValuesForFields(item)}
+                            titleStyle={(Common.cardTitle, styles.listItemTitleStyle)}
+                          />
+                        </View>
                       </View>
                     </View>
                   );
@@ -477,7 +481,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingBottom: 20,
     fontSize: 16,
-    // fontWeight: 'bold',
   },
 });
 
