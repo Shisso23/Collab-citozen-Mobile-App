@@ -76,6 +76,50 @@ mockAdapter.onPost(`${apiUrl}/function/getMeterReadings/water`).reply((config) =
   return [responseStatus, data];
 });
 
+// mocking pin locations while backend is not returning data reliably
+mockAdapter.onPost(`${apiUrl}/function/execfunction`).reply((config) => {
+  const data = {
+    radius_service_requests: [
+      {
+        obj_id: 773171,
+        channel_ref: '685861',
+        channel_name: 'Demo Channel',
+        service_type: 'Pothole',
+        description: 'There is a massive pothole in front of my driveway',
+        gps_coordinates: 'POINT(18.374044205993414 -33.80176645233222)',
+        request_date: '2022-03-14 06:33',
+        status: 'Assigned',
+        service_type_ref: '',
+      },
+      {
+        obj_id: 773337,
+        channel_ref: '685861',
+        channel_name: 'Demo Channel',
+        service_type: 'Account Enquiry',
+        description: 'Test',
+        gps_coordinates: 'POINT(18.378870841115713 -33.811022228274766)',
+        request_date: '2022-03-14 08:07',
+        status: 'Initial',
+        service_type_ref: '',
+      },
+      {
+        obj_id: 774412,
+        channel_ref: '685861',
+        channel_name: 'Demo Channel',
+        service_type: 'Health Services',
+        description: 'Demo',
+        gps_coordinates: 'POINT(18.37123090000003 -33.80760730000001)',
+        request_date: '2022-03-15 14:30',
+        status: 'Initial',
+        service_type_ref: '',
+      },
+    ],
+  };
+  const responseStatus = 200;
+
+  return [responseStatus, data];
+});
+
 // mocking get account meters api
 mockAdapter.onPost(`${apiUrl}/function/getAccountMeters`).reply((config) => {
   const data = [

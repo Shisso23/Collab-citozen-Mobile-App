@@ -74,21 +74,29 @@ const DrawerContent = (props) => {
           <Drawer.Item
             icon="information"
             label="Service Requests"
-            onPress={() => navigation.navigate('ServiceRequests')}
+            onPress={async () => {
+              await permissionsService.checkLocationPermissions();
+              navigation.navigate('ServiceRequests');
+            }}
             theme={theme}
           />
           {accountApplicableChannelsExist && (
             <Drawer.Item
               icon="ticket-account"
               label="Accounts"
-              onPress={() => navigation.navigate('Accounts')}
+              onPress={() => {
+                return navigation.navigate('Accounts');
+              }}
               theme={theme}
             />
           )}
           <Drawer.Item
             icon="file"
             label="Channels"
-            onPress={() => navigation.navigate('ViewSubscribeToChannels')}
+            onPress={async () => {
+              await permissionsService.checkLocationPermissions();
+              return navigation.navigate('ViewSubscribeToChannels');
+            }}
             theme={theme}
           />
           <Drawer.Item

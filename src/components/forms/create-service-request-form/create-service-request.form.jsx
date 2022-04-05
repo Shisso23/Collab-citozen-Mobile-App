@@ -105,7 +105,7 @@ const CreateServiceRequestForm = ({
   };
 
   const toggleisSearching = () => {
-    setIsSearching(!isSearching);
+    setIsSearching(true);
   };
 
   const searchTypes = () => {
@@ -221,11 +221,12 @@ const CreateServiceRequestForm = ({
                   underlineColor={Colors.transparent}
                   onChangeText={(searchText) => {
                     setSearchValue(searchText);
+                    if (searchText.length === 0) {
+                      setIsSearching(false);
+                    }
                   }}
                   onChange={searchTypes}
                   onFocus={toggleisSearching}
-                  onBlur={toggleisSearching}
-                  blurOnSubmit={false}
                 />
               )}
               <HelperText />
@@ -366,7 +367,10 @@ const CreateServiceRequestForm = ({
                             key={item}
                             style={Layout.fill}
                             title={item.name}
-                            onPress={() => passValuesForFields(item)}
+                            onPress={() => {
+                              passValuesForFields(item);
+                              setIsSearching(false);
+                            }}
                             titleStyle={(Common.cardTitle, styles.listItemTitleStyle)}
                           />
                         </View>
@@ -428,12 +432,26 @@ CreateServiceRequestForm.defaultProps = {
 
 const styles = StyleSheet.create({
   listItem: {
-    marginRight: 10,
-    marginLeft: 10,
     backgroundColor: Colors.lightgray,
+    marginLeft: 10,
+    marginRight: 10,
     textAlign: 'center',
   },
   listItemTitleStyle: {
+    textAlign: 'center',
+  },
+  textHeaderCategory: {
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  textHeaderChannel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  textHeaderInstruction: {
+    fontSize: 16,
+    paddingBottom: 20,
     textAlign: 'center',
   },
   viewButton: {
@@ -444,43 +462,29 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 0.16,
   },
-  viewItemsChannelContainer: {
-    borderWidth: 1,
+  viewItemsCategoryContainer: {
     borderBottomWidth: 0,
     borderColor: Colors.lightMediumGray,
-  },
-  viewItemsCategoryContainer: {
-    borderWidth: 1,
     borderLeftWidth: 0,
     borderRightWidth: 0,
+    borderWidth: 1,
+  },
+  viewItemsChannelContainer: {
     borderBottomWidth: 0,
     borderColor: Colors.lightMediumGray,
+    borderWidth: 1,
   },
   viewItemsTypesContainer: {
-    padding: 10,
-    borderWidth: 1,
-    borderTopWidth: 0,
+    borderColor: Colors.lightMediumGray,
     borderLeftWidth: 0,
     borderRightWidth: 0,
-    borderColor: Colors.lightMediumGray,
+    borderTopWidth: 0,
+    borderWidth: 1,
+    padding: 10,
   },
   viewTextContainer: {
-    justifyContent: 'center',
     flex: 1,
-  },
-  textHeaderChannel: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  textHeaderCategory: {
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-  textHeaderInstruction: {
-    textAlign: 'center',
-    paddingBottom: 20,
-    fontSize: 16,
+    justifyContent: 'center',
   },
 });
 

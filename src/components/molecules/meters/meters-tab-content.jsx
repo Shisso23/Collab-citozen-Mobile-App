@@ -71,6 +71,8 @@ const MetersTabContent = ({ meters, accountNumber, channelRef }) => {
           data={meters}
           renderItem={renderMeters}
           keyExtractor={(item) => item.meterNumber}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
         />
       </View>
     </>

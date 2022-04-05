@@ -195,7 +195,6 @@ const DrawerNavigator = () => {
           title: 'Service Requests',
         }}
       />
-
       <Drawer.Screen
         name="Profile"
         component={ProfileScreen}
@@ -204,7 +203,6 @@ const DrawerNavigator = () => {
           title: 'Profile',
         }}
       />
-
       <Drawer.Screen
         name="ContactDetails"
         component={ContactDetails}
@@ -212,7 +210,6 @@ const DrawerNavigator = () => {
           headerShown: true,
         }}
       />
-
       <Drawer.Screen
         name="ViewSubscribeToChannels"
         component={ViewSubscribedToChannelsScreen}

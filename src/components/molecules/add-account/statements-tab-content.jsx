@@ -16,18 +16,6 @@ const StatementsTabContent = ({ account, statements }) => {
   const [statementsWithPdfFiles, setStatementsWithPdfFiles] = useState([]);
   const { Gutters, Common, Layout } = useTheme();
 
-  // const sortStatements = (unsortedStatements) => {
-  //   return unsortedStatements.sort((st1, st2) => {
-  //     if (_.get(st1, 'month', '') > _.get(st2, 'month', '')) {
-  //       return -1;
-  //     }
-  //     if (_.get(st1, 'month', '') < _.get(st2, 'month', '')) {
-  //       return 1;
-  //     }
-  //     return 0;
-  //   });
-  // };
-
   useEffect(() => {
     constructStatementModels(statements).then((newStatements) => {
       setStatementsWithPdfFiles(newStatements);
@@ -83,6 +71,8 @@ const StatementsTabContent = ({ account, statements }) => {
           data={statementsWithPdfFiles}
           renderItem={viewStatementItem}
           keyExtractor={(item, index) => `${_.get(item, 'objectId', index)}`}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
         />
       </View>
     </>

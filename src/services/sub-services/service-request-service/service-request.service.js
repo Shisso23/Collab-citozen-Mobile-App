@@ -1,10 +1,12 @@
 import _ from 'lodash';
-import { Platform } from 'react-native';
+import Platform from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
+
 import {
   constructServiceRequestModels,
   apiCreateServiceRequestModel,
   construcCommentModels,
+  constructNearbyPinLocationsModels,
 } from '../../../models';
 import globalUrl from '../global/global.service.urls';
 import {
@@ -12,6 +14,7 @@ import {
   dataDeleteServiceRequest,
   dataServiceRequestComments,
   dataNewComment,
+  dataNearbyPinLocations,
 } from '../../../helpers/api-function-name.helper';
 import authNetworkService from '../auth-network-service/auth-network.service';
 import srUrls from './service-request.urls';
@@ -94,6 +97,18 @@ const addNewComment = async (serviceRequestId, comment) => {
   return apiResponse;
 };
 
+const getServiceRequestPins = async (currentLatitude, currentLongitude) => {
+  const url = srUrls.execFunctionUrl();
+  const data = await dataNearbyPinLocations(currentLatitude, currentLongitude);
+  const apiResponse = await authNetworkService.post(url, data);
+
+  const pinLocations = await constructNearbyPinLocationsModels(
+    _.get(apiResponse, 'data.radius_service_requests', []),
+  );
+
+  return pinLocations;
+};
+
 export default {
   createServiceRequest,
   getServiceRequests,
@@ -101,4 +116,5 @@ export default {
   deleteServiceRequest,
   getServiceRequestComments,
   addNewComment,
+  getServiceRequestPins,
 };

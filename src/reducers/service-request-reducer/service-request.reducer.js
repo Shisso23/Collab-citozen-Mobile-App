@@ -14,6 +14,15 @@ export const prependServiceRequestAction = prependServiceRequest.action;
 const setImagesSources = CreateAction(reducerName, 'SET_IMAGES_SOURCES');
 export const setImagesSourcesAction = setImagesSources.action;
 
+const setIsLoadingNearbyPinLocations = CreateAction(
+  reducerName,
+  'SET_IS_LOADING_NEARBY_PIN_LOCATIONS',
+);
+export const setIsLoadingNearbyPinLocationsAction = setIsLoadingNearbyPinLocations.action;
+
+const setNearbyPinLocations = CreateAction(reducerName, 'SET_NEARBY_PIN_LOCATIONS');
+export const setNearbyPinLocationsAction = setNearbyPinLocations.action;
+
 const initialState = {
   serviceRequests: [],
   isLoadingServiceRequests: false,
@@ -22,6 +31,8 @@ const initialState = {
   deleteServiceRequestPreview: true,
   comments: [],
   isLoadingComments: false,
+  nearbyPinLocations: [],
+  isLoadingNearbyPinLocations: false,
 };
 
 export const serviceRequestSelector = (reducers) => reducers.serviceRequestReducer;
@@ -68,6 +79,16 @@ export default function serviceRequestReducer(state = initialState, action) {
       return {
         ...state,
         imagesSources: action.payload,
+      };
+    case setIsLoadingNearbyPinLocations.actionType:
+      return {
+        ...state,
+        isLoadingNearbyPinLocations: action.payload,
+      };
+    case setNearbyPinLocations.actionType:
+      return {
+        ...state,
+        nearbyPinLocations: action.payload,
       };
     case setDeleteServiceRequestPreview.actionType:
       return {

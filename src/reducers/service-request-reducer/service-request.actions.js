@@ -8,6 +8,8 @@ import {
   setIsLoadingDeleteServiceRequestAction,
   setServiceRequestCommentsAction,
   setIsLoadingCommentsAction,
+  setIsLoadingNearbyPinLocationsAction,
+  setNearbyPinLocationsAction,
 } from './service-request.reducer';
 
 export const getServiceRequestsAction = () => (dispatch) => {
@@ -22,6 +24,20 @@ export const getServiceRequestsAction = () => (dispatch) => {
       dispatch(setIsLoadingServiceRequestsAction(false));
     });
 };
+
+export const getNearbyPinLocationsAction =
+  async (currentLatitude, currentLongitude) => async (dispatch) => {
+    dispatch(setIsLoadingNearbyPinLocationsAction(true));
+    return serviceRequestService
+      .getServiceRequestPins(currentLatitude, currentLongitude)
+      .then(async (locations) => {
+        return dispatch(setNearbyPinLocationsAction(locations));
+      })
+      .catch((error) => flashService.error(error.message))
+      .finally(() => {
+        dispatch(setIsLoadingNearbyPinLocationsAction(false));
+      });
+  };
 
 export const createServiceRequestAction =
   (newServiceRequestForm) => async (_dispatch, getState) => {
