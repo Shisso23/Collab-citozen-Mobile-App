@@ -10,10 +10,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import useTheme from '../../../theme/hooks/useTheme';
 import { NotificationHeader } from '../../headers';
 import { getServiceRequestsAction } from '../../../reducers/service-request-reducer/service-request.actions';
-import { myChannelsSelector } from '../../../reducers/my-channels/my-channels.reducer';
 import appConfig from '../../../config';
 import storageService from '../../../services/sub-services/storage-service/storage.service';
 import {
+  myChannelsSelector,
   setLoadedBannerImagesAction,
   setImportedBannerImagesChannelsAction,
 } from '../../../reducers/my-channels/my-channels.reducer';
@@ -35,6 +35,7 @@ const HeaderBackGround = (props) => {
   const [currentImage, setCurrentImage] = useState();
   const [randomNumber, setRandomNumber] = useState(0);
   const [firstLoad, setFirstLoad] = useState(true);
+  const [useDefault, setUseDefault] = useState(false);
   const asyncStorageBannerImages = [];
 
   const getToken = async () => {
@@ -56,7 +57,7 @@ const HeaderBackGround = (props) => {
     await Promise.all(
       images.map(async (imgs, index) => {
         await AsyncStorage.setItem(`@importedBannerImage${index}`, JSON.stringify(imgs));
-        let hold = await AsyncStorage.getItem(`@importedBannerImage${index}`);
+        const hold = await AsyncStorage.getItem(`@importedBannerImage${index}`);
         asyncStorageBannerImages.push(hold);
         return asyncStorageBannerImages;
       }),
@@ -86,41 +87,46 @@ const HeaderBackGround = (props) => {
   });
 
   const loadBannerImages = () => {
-    if (!loadedBannerImages) {
-      getToken().then((token) => {
+    getToken().then((token) => {
+      if (myChannels.length === 0) {
+        setUseDefault(true);
+      } else {
         myChannels.map((channel) => {
-          const tempImages = [];
-          setBannerImageObjectAndFileIds([
-            ...bannerImageObjectAndFileIds,
-            ..._.get(channel, 'bannerImages', []),
-          ]);
-          const ObjectAndFileIds = [
-            ...bannerImageObjectAndFileIds,
-            ..._.get(channel, 'bannerImages', []),
-          ];
-          ObjectAndFileIds.map((objectAndFileId) => {
-            tempImages.push(
-              getBannerImages({
-                objId: _.get(objectAndFileId, 'obj_id', null),
-                fileId: _.get(objectAndFileId, 'file_id', null),
-                token,
-                channelId: channel.objId,
-              }),
-            );
+          if (channel.bannerImages !== null) {
+            const tempImages = [];
+            setBannerImageObjectAndFileIds([
+              ...bannerImageObjectAndFileIds,
+              ..._.get(channel, 'bannerImages', []),
+            ]);
+            const ObjectAndFileIds = [
+              ...bannerImageObjectAndFileIds,
+              ..._.get(channel, 'bannerImages', []),
+            ];
+            ObjectAndFileIds.map((objectAndFileId) => {
+              tempImages.push(
+                getBannerImages({
+                  objId: _.get(objectAndFileId, 'obj_id', null),
+                  fileId: _.get(objectAndFileId, 'file_id', null),
+                  token,
+                  channelId: channel.objId,
+                }),
+              );
+              return undefined;
+            });
+            storeImagesAndCycle(tempImages);
+            dispatch(setLoadedBannerImagesAction(true));
             return undefined;
-          });
-          storeImagesAndCycle(tempImages);
-          dispatch(setLoadedBannerImagesAction(true));
+          }
           return undefined;
         });
-      });
-    }
+      }
+    });
   };
 
   useLayoutEffect(() => {
     dispatch(getServiceRequestsAction());
     loadBannerImages();
-  }, []);
+  }, [myChannels.length]);
 
   const handleOnPress = () => {
     if (onBack && backButton) {
@@ -135,21 +141,38 @@ const HeaderBackGround = (props) => {
 
   return (
     <View>
-      <ImageBackground
-        source={currentImage}
-        defaultSource={defaultBannerImages[randomNumber]}
-        resizeMode="cover"
-        style={[Common.headerIcon, Layout.column]}
-      >
-        <IconButton
-          icon={backButton ? 'arrow-left' : 'menu'}
-          size={30}
-          color={Colors.white}
-          onPress={handleOnPress}
-          style={Gutters.largeTMargin}
-        />
-        <NotificationHeader style={styles.notificationHeader} />
-      </ImageBackground>
+      {useDefault ? (
+        <ImageBackground
+          source={defaultBannerImages[0]}
+          defaultSource={defaultBannerImages[0]}
+          resizeMode="cover"
+          style={[Common.headerIcon, Layout.column, styles.transitionIDK]}
+        >
+          <IconButton
+            icon={backButton ? 'arrow-left' : 'menu'}
+            size={30}
+            color={Colors.white}
+            onPress={handleOnPress}
+            style={Gutters.largeTMargin}
+          />
+          <NotificationHeader style={styles.notificationHeader} />
+        </ImageBackground>
+      ) : (
+        <ImageBackground
+          source={currentImage}
+          resizeMode="cover"
+          style={[Common.headerIcon, Layout.column, styles.transitionIDK]}
+        >
+          <IconButton
+            icon={backButton ? 'arrow-left' : 'menu'}
+            size={30}
+            color={Colors.white}
+            onPress={handleOnPress}
+            style={Gutters.largeTMargin}
+          />
+          <NotificationHeader style={styles.notificationHeader} />
+        </ImageBackground>
+      )}
     </View>
   );
 };

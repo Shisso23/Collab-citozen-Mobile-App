@@ -35,7 +35,7 @@ const AppStack = createStackNavigator();
 const AppNavigator = () => {
   const { Custom } = useTheme();
   return (
-    <AppStack.Navigator screenOptions={Custom.globalNavigatorScreenOptions}>
+    <AppStack.Navigator screenOptions={Custom.globalNavigatorScreenOptions} headerMode="screen">
       <AppStack.Screen
         name="App Home"
         component={DrawerNavigator}

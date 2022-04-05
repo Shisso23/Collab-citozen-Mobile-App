@@ -11,6 +11,7 @@ import { isAuthenticatedFlowAction } from '../../../reducers/app-reducer/app.act
 import useTheme from '../../../theme/hooks/useTheme';
 import { FormScreenContainer } from '../../../components';
 import LoginLogo from '../../../components/atoms/login-logo';
+import { getMyChannelsAction } from '../../../reducers/my-channels/my-channels.actions';
 
 const SignInScreen = () => {
   const dispatch = useDispatch();
@@ -19,6 +20,7 @@ const SignInScreen = () => {
 
   const _onSignInSuccess = async () => {
     RNBootSplash.show({ fade: true });
+    await dispatch(getMyChannelsAction());
     await dispatch(isAuthenticatedFlowAction());
     RNBootSplash.hide({ fade: true });
   };

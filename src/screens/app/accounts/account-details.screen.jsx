@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ImageBackground, StyleSheet, Text, View, TouchableOpacity, Platform } from 'react-native';
 import { Tab } from 'react-native-elements';
 import PropTypes from 'prop-types';
@@ -15,6 +15,7 @@ const AccountDetailsScreen = ({ route }) => {
   const channelRef = _.get(route, 'params.accountChannel.objectId', '');
   const statements = _.get(route, 'params.statements', []);
   const [tabIndex, setTabIndex] = useState(0);
+  const [disableIndicator, setDisableIndicator] = useState(false);
   const { Gutters, Fonts, Layout, Images } = useTheme();
   const meters = _.get(accountDetails, 'meters', '');
   const accountNumber = _.get(accountDetails, 'accountNumber', '');
@@ -36,6 +37,12 @@ const AccountDetailsScreen = ({ route }) => {
       </>
     );
   };
+
+  useEffect(() => {
+    if (meters.length === 0) {
+      setDisableIndicator(true);
+    }
+  });
 
   const onMakePaymentPress = () => {};
 
@@ -60,6 +67,7 @@ const AccountDetailsScreen = ({ route }) => {
             { backgroundColor: Colors.softBlue },
             Platform.select({ android: { borderWidth: 15 }, ios: {} }),
           ]}
+          disableIndicator={disableIndicator}
         >
           <Tab.Item
             titleStyle={[{ color: tabIndex === 0 ? Colors.black : Colors.gray }, styles.tabItem]}
@@ -71,7 +79,7 @@ const AccountDetailsScreen = ({ route }) => {
               title="Meters"
             />
           ) : (
-            <View />
+            <></>
           )}
         </Tab>
         {tabIndex === 0 ? (
