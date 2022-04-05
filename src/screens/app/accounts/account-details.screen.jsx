@@ -46,6 +46,12 @@ const AccountDetailsScreen = ({ route }) => {
 
   const onMakePaymentPress = () => {};
 
+  useEffect(() => {
+    if (meters.length === 0) {
+      setDisableIndicator(true);
+    }
+  }, [meters.length]);
+
   return (
     <>
       <ImageBackground

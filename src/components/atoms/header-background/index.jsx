@@ -33,7 +33,6 @@ const HeaderBackGround = (props) => {
   ];
   const [bannerImageObjectAndFileIds, setBannerImageObjectAndFileIds] = useState([]);
   const [currentImage, setCurrentImage] = useState();
-  const [randomNumber, setRandomNumber] = useState(0);
   const [firstLoad, setFirstLoad] = useState(true);
   const [useDefault, setUseDefault] = useState(false);
   const asyncStorageBannerImages = [];
@@ -62,22 +61,19 @@ const HeaderBackGround = (props) => {
         return asyncStorageBannerImages;
       }),
     );
-    setRandomNumber(Math.floor(Math.random() * (3 - 1 + 1) + 1) - 1);
-    setCurrentImage(JSON.parse(asyncStorageBannerImages[randomNumber]));
+    setCurrentImage(JSON.parse(asyncStorageBannerImages[0]));
     dispatch(setImportedBannerImagesChannelsAction(asyncStorageBannerImages));
   };
 
   useEffect(() => {
     if (loadedBannerImages && importedBannerImagesChannels.length !== 0) {
       if (firstLoad) {
-        setCurrentImage(JSON.parse(importedBannerImagesChannels[randomNumber]));
+        setCurrentImage(JSON.parse(importedBannerImagesChannels[0]));
         setFirstLoad(false);
       }
       const interval = setInterval(() => {
         const shuffledImages = _.shuffle(importedBannerImagesChannels);
         setCurrentImage(JSON.parse(shuffledImages[0]));
-        const i = Math.floor(Math.random() * (3 - 1 + 1) + 1) - 1;
-        setRandomNumber(i);
       }, 10000);
       return () => {
         clearInterval(interval);
@@ -91,9 +87,9 @@ const HeaderBackGround = (props) => {
       if (myChannels.length === 0) {
         setUseDefault(true);
       } else {
-        myChannels.map((channel) => {
+        const tempImages = [];
+        _.map(myChannels, function (channel, channelCounter) {
           if (channel.bannerImages !== null) {
-            const tempImages = [];
             setBannerImageObjectAndFileIds([
               ...bannerImageObjectAndFileIds,
               ..._.get(channel, 'bannerImages', []),
@@ -113,8 +109,10 @@ const HeaderBackGround = (props) => {
               );
               return undefined;
             });
-            storeImagesAndCycle(tempImages);
-            dispatch(setLoadedBannerImagesAction(true));
+            if (channelCounter >= myChannels.length - 1) {
+              storeImagesAndCycle(tempImages);
+              dispatch(setLoadedBannerImagesAction(true));
+            }
             return undefined;
           }
           return undefined;
@@ -124,6 +122,7 @@ const HeaderBackGround = (props) => {
   };
 
   useLayoutEffect(() => {
+    setUseDefault(!myChannels.length);
     dispatch(getServiceRequestsAction());
     loadBannerImages();
   }, [myChannels.length]);

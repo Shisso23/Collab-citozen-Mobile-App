@@ -55,6 +55,18 @@ export const serviceRequestModel = (_apiServiceRequestModel = {}, accessToken) =
   channelName: _.get(_apiServiceRequestModel, 'channel_name ', ''),
 });
 
+export const nearbyPinLocationModel = (_apiNearbyPinLocationsModel = {}) => ({
+  id: _.get(_apiNearbyPinLocationsModel, 'obj_id', ''),
+  channelId: _.get(_apiNearbyPinLocationsModel, 'channel_ref', ''),
+  channelName: _.get(_apiNearbyPinLocationsModel, 'channel_name', ''),
+  serviceType: _.get(_apiNearbyPinLocationsModel, 'service_type', ''),
+  serviceDescription: _.get(_apiNearbyPinLocationsModel, 'description', ''),
+  gpsCoordinates: _.get(_apiNearbyPinLocationsModel, 'gps_coordinates', ''),
+  requestDate: _.get(_apiNearbyPinLocationsModel, 'request_date', '').replace('.', ''),
+  status: _.get(_apiNearbyPinLocationsModel, 'status', ''),
+  serviceTypeRef: _.get(_apiNearbyPinLocationsModel, 'service_type_ref', ''),
+});
+
 export const construcCommentModels = async (apiComments) => {
   return async.map(apiComments, async (comment, done) => {
     const model = commentModel(comment);
@@ -67,6 +79,13 @@ export const constructServiceRequestModels = async (apiServiceRequests) => {
   return async.map(apiServiceRequests, async (serviceRequest, done) => {
     const model = serviceRequestModel(serviceRequest, token);
     model.gpsAddress = _.get(serviceRequest, 'sr_address', '');
+    done(null, model);
+  });
+};
+
+export const constructNearbyPinLocationsModels = async (apiPinLocations) => {
+  return async.map(apiPinLocations, async (pinLocation, done) => {
+    const model = nearbyPinLocationModel(pinLocation);
     done(null, model);
   });
 };

@@ -11,7 +11,6 @@ import { constructChannelModels } from '../../../models/app/accounts/account-cha
 
 const getChannelsWithValidAccounts = async (userData) => {
   const url = accountsUrls.execFunctionUrl();
-
   const data = await dataGetAccounts('get_accounts', userData);
   const apiResponse = await authNetworkService.post(url, data);
   const channelsModel = constructChannelModels(_.get(apiResponse, 'data.Channels', []));

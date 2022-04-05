@@ -88,3 +88,11 @@ export const dataValidateReading = ({ meterObjId, readingValue }) => {
     InputValues: `<valRoot><val>${meterObjId}</val><val>${readingValue}</val></valRoot>`,
   };
 };
+
+export const dataNearbyPinLocations = (currentLatitude, currentLongitude) => {
+  return {
+    taskID: 0,
+    uniqName: 'get_all_service_requests_by_location',
+    InputValues: `<valRoot> <val>POINT(${currentLongitude} ${currentLatitude})</val></valRoot>`,
+  };
+};

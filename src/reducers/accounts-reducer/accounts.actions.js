@@ -20,6 +20,7 @@ export const getChannelsWithValidAccountsAction = (userData) => (dispatch) => {
       dispatch(setAccountChannelsAction(channels));
       return channels;
     })
+    .catch((error) => console.log('ERROR', error))
     .finally(() => dispatch(setIsLoadingAccountChannelsAction(false)));
 };
 
