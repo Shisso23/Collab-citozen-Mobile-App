@@ -27,10 +27,11 @@ const DrawerContent = (props) => {
   const { user } = useSelector((reducers) => reducers.userReducer);
   const [codePushVersion, setCodePushVersion] = useState();
   const [accountApplicableChannelsExist, setAccountApplicableChannelsExist] = useState(false);
-  const avatarUrl = { uri: _.get(user, 'avatar', '') };
   const dispatch = useDispatch();
-  const { Fonts, Gutters, Layout, Common } = useTheme();
+  const { Fonts, Gutters, Layout, Common, Images } = useTheme();
   const { myChannels } = useSelector(myChannelsSelector);
+  const { avatarImage } = Images;
+
   const _signOut = () => {
     dispatch(signOutAction());
   };
@@ -59,7 +60,7 @@ const DrawerContent = (props) => {
       <DrawerContentScrollView {...props}>
         <Drawer.Section style={{ backgroundColor: Colors.softBlue }}>
           <View style={[Layout.rowHCenter, Gutters.smallPadding]}>
-            <Avatar rounded source={avatarUrl} size={65} />
+            <Avatar rounded source={avatarImage} size={65} />
             <Text style={[Fonts.textLarge, Gutters.smallHMargin, Common.drawerUserText]}>
               {user.fullName}
             </Text>
