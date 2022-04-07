@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Share } from 'react-native';
 import PropTypes from 'prop-types';
 import { Text, Drawer, Divider } from 'react-native-paper';
 import { DrawerContentScrollView } from '@react-navigation/drawer';
@@ -16,6 +16,7 @@ import { permissionsService } from '../../../../services';
 import { openAppSetting } from '../../../../helpers/app-seettings.helper';
 import { myChannelsSelector } from '../../../../reducers/my-channels/my-channels.reducer';
 import { getMyChannelsAction } from '../../../../reducers/my-channels/my-channels.actions';
+import appConfig from '../../../../config';
 
 const theme = {
   colors: {
@@ -31,18 +32,22 @@ const DrawerContent = (props) => {
   const { Fonts, Gutters, Layout, Common, Images } = useTheme();
   const { myChannels } = useSelector(myChannelsSelector);
   const { avatarImage } = Images;
+  const { combinedLink } = appConfig;
 
   const _signOut = () => {
     dispatch(signOutAction());
   };
+
   const getAppCenterCodeVersion = () => {
     codePush.getCurrentPackage().then((update) => {
       setCodePushVersion(_.get(update, 'label', 'v0'));
     });
   };
+
   useEffect(() => {
     getAppCenterCodeVersion();
   }, []);
+
   useEffect(() => {
     dispatch(getMyChannelsAction());
     const accountApplicableChannels = myChannels.filter(
@@ -54,6 +59,16 @@ const DrawerContent = (props) => {
       setAccountApplicableChannelsExist(true);
     }
   }, [myChannels.length]);
+
+  const onShare = async () => {
+    try {
+      await Share.share({
+        message: `You have been invited to download Collab Citizen!\n\nCollab Citizen allows consumers to stay in control and up to date with their municipal accounts.\n\nAvailable on Google Play Store and Apple App Store: ${combinedLink}`,
+      });
+    } catch (error) {
+      console.warn(error.message);
+    }
+  };
 
   return (
     <View style={[Layout.fill]}>
@@ -118,6 +133,7 @@ const DrawerContent = (props) => {
               label="Profile"
               onPress={() => navigation.navigate('Profile')}
             />
+            <Drawer.Item icon="card-account-mail" label="Invite a Friend" onPress={onShare} />
             <Drawer.Item icon="cog" label="Settings" onPress={openAppSetting} />
           </Drawer.Section>
           <Drawer.Item icon="exit-to-app" label="Sign Out" onPress={_signOut} />

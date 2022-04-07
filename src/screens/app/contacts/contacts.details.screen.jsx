@@ -78,6 +78,7 @@ const ContactDetailsScreen = () => {
             key={contact.name || index}
             title={contact.name}
             titleStyle={[Common.cardTitle]}
+            titleNumberOfLines={3}
             style={[
               Gutters.smallVMargin,
               // eslint-disable-next-line react-native/no-inline-styles
