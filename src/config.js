@@ -30,4 +30,7 @@ export default {
   appEnvironment: ENVIRONMENT,
   huaweiApiKey: HUAWEI_API_KEY,
   hmsSiteApiUrl: 'https://siteapi.cloud.huawei.com/mapApi/v1/siteService',
+  androidDownloadLink: 'https://play.google.com/store/apps/details?id=com.collaboratorapp',
+  iOSDownloadLink: 'https://apps.apple.com/us/app/collab-citizen/id1557197011',
+  combinedLink: 'http://onelink.to/5kwpyv',
 };
