@@ -223,6 +223,8 @@ const CreateServiceRequestForm = ({
                     setSearchValue(searchText);
                     if (searchText.length === 0) {
                       setIsSearching(false);
+                    } else {
+                      setIsSearching(true);
                     }
                   }}
                   onChange={searchTypes}

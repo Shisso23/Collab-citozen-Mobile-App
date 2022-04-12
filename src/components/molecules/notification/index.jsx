@@ -24,7 +24,7 @@ const Notification = ({ notification, index }) => {
   const { deleteNotificationPreview } = useSelector((reducers) => reducers.notificationReducer);
   const notificationId = _.get(notification, 'obj_id');
   const datePublished = _.get(notification, 'date_published', new Date());
-  let title = _.get(notification, 'title', '');
+  const title = _.get(notification, 'title', '');
   const body = _.get(notification, 'body', '');
   const seen = _.get(notification, 'seen', false) === 'Yes';
 

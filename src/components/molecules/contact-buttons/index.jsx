@@ -49,6 +49,9 @@ const ContactButtons = (props) => {
       case 'email':
         link = `mailto:${contact.email}?subject='Inquiry'&body=${defaultMessage}`;
         break;
+      case 'website':
+        link = `${contact.website}`;
+        break;
       default:
         link = `tel://${contact.number.replace(/\s/g, '')}`;
     }
@@ -109,6 +112,15 @@ const ContactButtons = (props) => {
           iconType="material"
           iconColor={Colors.black}
           onPress={handleContactAction('sms')}
+        />
+      )}
+      {contact.website !== '' && (
+        <ContactButton
+          contact={contact.website}
+          iconName="web"
+          iconType="material-community"
+          iconColor={Colors.black}
+          onPress={handleContactAction('website')}
         />
       )}
     </View>

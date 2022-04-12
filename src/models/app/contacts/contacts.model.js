@@ -10,6 +10,7 @@ export const contactsModel = (_apiContactsModel = {}) => ({
   twitter: _.get(_apiContactsModel, 'twitter_account', ''),
   whatsapp: _.get(_apiContactsModel, 'whatsapp_number', ''),
   sms: _.get(_apiContactsModel, 'sms_number', ''),
+  website: _.get(_apiContactsModel, 'contact_website', ''),
 });
 
 export const constructContactsModels = (apiContacts) =>
