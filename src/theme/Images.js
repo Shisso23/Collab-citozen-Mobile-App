@@ -14,4 +14,5 @@ export default () => ({
   serviceRequest: require('../assets/images/serviceRequest.png'),
   serverDown: require('../assets/images/serverDown.png'),
   avatarImage: require('../../ios/collaboratorapp/Images.xcassets/AppIcon.appiconset/1024.png'),
+  avatarSelected: require('../assets/images/avatarSelected.png'),
 });

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Badge, Text } from 'react-native-elements';
 import { Avatar, List } from 'react-native-paper';
@@ -18,7 +18,13 @@ import { promptConfirm } from '../../../helpers/prompt.helper';
 import useTheme from '../../../theme/hooks/useTheme';
 import SwipeRowContainer from '../../atoms/swipe-row/swipe-row';
 
-const Notification = ({ notification, index }) => {
+const Notification = ({
+  notification,
+  index,
+  selectedCounter,
+  setSelectedCounter,
+  multiDeleteConfirmed,
+}) => {
   const dispatch = useDispatch();
   const { user } = useSelector((reducers) => reducers.userReducer);
   const { deleteNotificationPreview } = useSelector((reducers) => reducers.notificationReducer);
@@ -33,6 +39,7 @@ const Notification = ({ notification, index }) => {
   const [isSeen, setIsSeen] = useState(seen);
   const [isDeleting, setDeleting] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
+  const [isSelected, setIsSelected] = useState(false);
 
   const _handleCollapse = () => {
     if (!isSeen) {
@@ -43,18 +50,31 @@ const Notification = ({ notification, index }) => {
     }
     setIsCollapsed(!isCollapsed);
   };
+
   const formatDate = (date) => {
     return Moment(date).fromNow();
   };
 
   const _handleDelete = () => {
     const deletedAt = Moment(new Date()).format('yyyy-mm-DD hh:mm:ss');
-    promptConfirm('Are you sure?', 'Are you sure you want to delete this item?', 'Delete', () => {
+    if (multiDeleteConfirmed) {
       setIsDeleted(true);
       setDeleting(true);
       dispatch(deleteNotificationAction(notificationId, deletedAt, _.get(user, 'user_id', '')));
-    });
+    } else {
+      promptConfirm('Are you sure?', 'Are you sure you want to delete this item?', 'Delete', () => {
+        setIsDeleted(true);
+        setDeleting(true);
+        dispatch(deleteNotificationAction(notificationId, deletedAt, _.get(user, 'user_id', '')));
+      });
+    }
   };
+
+  useEffect(() => {
+    if (multiDeleteConfirmed && isSelected) {
+      _handleDelete();
+    }
+  }, [multiDeleteConfirmed]);
 
   const _setImageUrl = (image) => {
     return !image ? null : image;
@@ -64,12 +84,22 @@ const Notification = ({ notification, index }) => {
     <TrashButton onPress={_handleDelete} iconSize={27} loading={isDeleting} />
   );
 
+  const notificationSelected = async () => {
+    setIsSelected(true);
+    setSelectedCounter(selectedCounter + 1);
+  };
+
+  const notificationUnselected = () => {
+    setIsSelected(false);
+    setSelectedCounter(selectedCounter - 1);
+  };
+
   const renderVisibleComponent = () => {
     const accordionStyle = {
       borderBottomColor: Colors.darkgray,
       borderBottomWidth: !isCollapsed ? 0 : 0.4,
     };
-    return !isDeleted ? (
+    return !isDeleted && !isSelected ? (
       <List.Accordion
         title={`${title}`}
         description={`${formatDate(datePublished)}`}
@@ -87,6 +117,30 @@ const Notification = ({ notification, index }) => {
           )
         }
         onPress={_handleCollapse}
+        onLongPress={notificationSelected}
+        style={[Gutters.smallBMargin, accordionStyle]}
+      >
+        <Text style={[Gutters.largeRPadding, styles.notificationBody]}>{body}</Text>
+      </List.Accordion>
+    ) : !isDeleted && isSelected ? (
+      <List.Accordion
+        title={`${title}`}
+        description={`${formatDate(datePublished)}`}
+        left={() => (
+          <View style={[Layout.justifyContentCenter]}>
+            <Avatar.Image rounded size={35} source={_setImageUrl(Images.avatarSelected)} />
+          </View>
+        )}
+        right={() =>
+          !isSeen && (
+            <Badge
+              status="error"
+              badgeStyle={[{ backgroundColor: Colors.primary }, styles.badge]}
+            />
+          )
+        }
+        onPress={_handleCollapse}
+        onLongPress={notificationUnselected}
         style={[Gutters.smallBMargin, accordionStyle]}
       >
         <Text style={[Gutters.largeRPadding, styles.notificationBody]}>{body}</Text>
@@ -122,10 +176,16 @@ const styles = StyleSheet.create({
 Notification.propTypes = {
   notification: PropTypes.object,
   index: PropTypes.number.isRequired,
+  selectedCounter: PropTypes.number,
+  setSelectedCounter: PropTypes.any,
+  multiDeleteConfirmed: PropTypes.bool,
 };
 
 Notification.defaultProps = {
   notification: {},
+  selectedCounter: {},
+  setSelectedCounter: {},
+  multiDeleteConfirmed: {},
 };
 
 export default Notification;
