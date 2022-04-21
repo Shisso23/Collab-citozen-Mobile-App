@@ -50,7 +50,7 @@ const ContactButtons = (props) => {
         link = `mailto:${contact.email}?subject='Inquiry'&body=${defaultMessage}`;
         break;
       case 'website':
-        link = `${contact.website}`;
+        link = `https://${contact.website}`;
         break;
       default:
         link = `tel://${contact.number.replace(/\s/g, '')}`;
