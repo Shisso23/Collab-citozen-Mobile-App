@@ -60,11 +60,17 @@ const Notification = ({
     if (multiDeleteConfirmed) {
       setIsDeleted(true);
       setDeleting(true);
+      const seenAt = Moment(new Date()).format('yyyy-mm-DD hh:mm:ss');
+      dispatch(openNotificationAction(notificationId, seenAt, _.get(user, 'user_id', '')));
+      dispatch(getUnOpenedNotificationsAction());
       dispatch(deleteNotificationAction(notificationId, deletedAt, _.get(user, 'user_id', '')));
     } else {
       promptConfirm('Are you sure?', 'Are you sure you want to delete this item?', 'Delete', () => {
         setIsDeleted(true);
         setDeleting(true);
+        const seenAt = Moment(new Date()).format('yyyy-mm-DD hh:mm:ss');
+        dispatch(openNotificationAction(notificationId, seenAt, _.get(user, 'user_id', '')));
+        dispatch(getUnOpenedNotificationsAction());
         dispatch(deleteNotificationAction(notificationId, deletedAt, _.get(user, 'user_id', '')));
       });
     }
