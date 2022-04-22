@@ -28,6 +28,7 @@ const ContactButtons = (props) => {
   const handleContactAction = (action) => () => {
     let link;
     const separator = Platform.OS === 'ios' ? '&' : '?';
+    const httpTest = contact.website.substring(0, 4);
     switch (action) {
       case 'call':
         link = `tel://${contact.number.replace(/\s/g, '')}`;
@@ -50,7 +51,11 @@ const ContactButtons = (props) => {
         link = `mailto:${contact.email}?subject='Inquiry'&body=${defaultMessage}`;
         break;
       case 'website':
-        link = `https://${contact.website}`;
+        if (httpTest === 'http') {
+          link = `${contact.website}`;
+        } else {
+          link = `https://${contact.website}`;
+        }
         break;
       default:
         link = `tel://${contact.number.replace(/\s/g, '')}`;
