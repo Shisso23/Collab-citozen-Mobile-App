@@ -7,10 +7,11 @@ import authNetworkService from '../auth-network-service/auth-network.service';
 import { flashService } from '../../index';
 import newsFeedUrls from './news-feed.urls';
 
-const getNewsFeed = async () => {
+const getNewsFeed = async (userId) => {
   const url = globalUrl.globalFunctionUrl();
   const data = await apiFunctionWithUniqName('get_user_feed');
   const apiResponse = await authNetworkService.post(url, data);
+
   const newsfeeds = _.get(apiResponse.data, 'Feed', []);
   if (!newsfeeds) {
     throw Error('Could not load news feeds.');
@@ -18,13 +19,23 @@ const getNewsFeed = async () => {
   if (newsfeeds.length === 0) {
     flashService.info('There is no news currently avaliable for you.');
   }
-  return constructNewsFeedModels(newsfeeds);
+  return constructNewsFeedModels(newsfeeds, userId);
 };
 
-const createUserActivityRecord = (newsFeedId, userID) => {
+const createUserActivityRecord = (newsFeedId, userID, action) => {
   const url = newsFeedUrls.newsFeedActivityUrl();
   let subscriptionModel = '<Objects> ';
-  subscriptionModel += `<User_News_Feed_Item_Activity> <F1>${userID}</F1> <F2>${newsFeedId}</F2> <F3>Opened</F3> </User_News_Feed_Item_Activity> `;
+  if (action === 'Liked') {
+    subscriptionModel += `<User_News_Feed_Item_Activity> <F1>${userID}</F1> <F2>${newsFeedId}</F2> <F3>Liked</F3> </User_News_Feed_Item_Activity> `;
+  } else if (action === 'Disliked') {
+    subscriptionModel += `<User_News_Feed_Item_Activity> <F1>${userID}</F1> <F2>${newsFeedId}</F2> <F3>Disliked</F3> </User_News_Feed_Item_Activity> `;
+  } else if (action === 'Unliked') {
+    subscriptionModel += `<User_News_Feed_Item_Activity> <F1>${userID}</F1> <F2>${newsFeedId}</F2> <F3>Unliked</F3> </User_News_Feed_Item_Activity> `;
+  } else if (action === 'Undisliked') {
+    subscriptionModel += `<User_News_Feed_Item_Activity> <F1>${userID}</F1> <F2>${newsFeedId}</F2> <F3>Undisliked</F3> </User_News_Feed_Item_Activity> `;
+  } else {
+    subscriptionModel += `<User_News_Feed_Item_Activity> <F1>${userID}</F1> <F2>${newsFeedId}</F2> <F3>Opened</F3> </User_News_Feed_Item_Activity> `;
+  }
   subscriptionModel += '</Objects>';
 
   try {

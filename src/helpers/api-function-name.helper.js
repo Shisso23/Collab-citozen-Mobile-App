@@ -96,3 +96,19 @@ export const dataNearbyPinLocations = (currentLatitude, currentLongitude) => {
     InputValues: `<valRoot> <val>POINT(${currentLongitude} ${currentLatitude})</val></valRoot>`,
   };
 };
+
+export const dataNewsfeedReactions = (newsfeedRefNr) => {
+  return {
+    taskID: 0,
+    uniqName: 'get_newsfeed_liked_disliked_totals',
+    InputValues: `<valRoot><val>${newsfeedRefNr}</val></valRoot>`,
+  };
+};
+
+export const dataUserReactionsToNewsfeeds = (newsfeedRefNr, userId) => {
+  return {
+    taskID: 0,
+    uniqName: 'get_user_last_reaction',
+    InputValues: `<valRoot><val>${newsfeedRefNr}</val><val>${userId}</val></valRoot>`,
+  };
+};
