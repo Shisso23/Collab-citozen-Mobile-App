@@ -193,7 +193,8 @@ const ServiceRequestScreen = () => {
           1,
           gpsCoordinatesSubString0.length - 1,
         );
-        const gpsCoordinatesSubString2 = gpsCoordinatesSubString1.replaceAll(',', '.');
+
+        const gpsCoordinatesSubString2 = gpsCoordinatesSubString1;
         const gpsCoordinatesSubString3 = gpsCoordinatesSubString2.split(' ');
 
         const lat = parseFloat(gpsCoordinatesSubString3[0]);
@@ -324,8 +325,6 @@ const ServiceRequestScreen = () => {
                 <RefreshControl
                   refreshing={isLoadingServiceRequests}
                   onRefresh={_loadServiceRequests}
-                  tintColor={Colors.primary}
-                  colors={Colors.primary}
                 />
               }
             />
@@ -336,67 +335,87 @@ const ServiceRequestScreen = () => {
             onPress={_handleOnServiceRequestCreatePress}
           />
         </>
-      ) : (
-        region &&
-        nearbyLocationsReceived && (
-          <>
-            <View style={Layout.fullSize}>
-              <MapView
-                style={Layout.fill}
-                initialRegion={regionChange}
-                showsUserLocation
-                onMapReady={() => setMapReady(true)}
-                onPress={Keyboard.dismiss}
-                onRegionChangeComplete={(newRegion) => {
-                  return _setRegion(newRegion);
-                }}
-                showsMyLocationButton={false}
-              >
-                {displayPins(nearbyPinLocations)}
-              </MapView>
-            </View>
-            <View style={Common.pinContainer}>
-              <Icon type="ionicon" name="pin-outline" size={30} color={Colors.primary} />
-            </View>
-            <FAB
-              style={Common.fabAlignment}
-              icon="plus"
-              onPress={_handleOnServiceRequestCreatePress}
-            />
-            <Modal visible={displayModal} onDismiss={() => {}} transparent>
-              <View
-                style={[styles.modal, { backgroundColor: Colors.transparent }, Fonts.textRegular]}
-              >
-                <TouchableOpacity onPress={displayModalToggle}>
-                  <Icon name="close" size={30} color={Colors.lightgray} />
-                </TouchableOpacity>
+      ) : region && nearbyLocationsReceived ? (
+        <>
+          <View style={Layout.fullSize}>
+            <MapView
+              style={Layout.fill}
+              initialRegion={regionChange}
+              showsUserLocation
+              onMapReady={() => setMapReady(true)}
+              onPress={Keyboard.dismiss}
+              onRegionChangeComplete={(newRegion) => {
+                return _setRegion(newRegion);
+              }}
+              showsMyLocationButton={false}
+            >
+              {displayPins(nearbyPinLocations)}
+            </MapView>
+          </View>
+          <View style={Common.pinContainer}>
+            <Icon type="ionicon" name="pin-outline" size={30} color={Colors.primary} />
+          </View>
+          <FAB
+            style={Common.fabAlignment}
+            icon="plus"
+            onPress={_handleOnServiceRequestCreatePress}
+          />
+          <Modal visible={displayModal} onDismiss={() => {}} transparent>
+            <View
+              style={[styles.modal, { backgroundColor: Colors.transparent }, Fonts.textRegular]}
+            >
+              <TouchableOpacity onPress={displayModalToggle}>
+                <Icon name="close" size={30} color={Colors.lightgray} />
+              </TouchableOpacity>
 
-                <View style={[styles.modalView, { backgroundColor: Colors.lightgray }]}>
-                  <Text style={[Gutters.smallVMargin, Fonts.textRegular, styles.headerFont]}>
-                    Type: {displayPinType}
-                  </Text>
-                  <View style={styles.textLine} />
-                  <Text style={[Gutters.smallVMargin, Fonts.textRegular, styles.descriptionFont]}>
-                    Description:
-                  </Text>
-                  <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>
-                    {displayPinDescription}
-                  </Text>
-                  <View style={styles.textLine} />
-                  <Text style={[Gutters.smallVMargin, Fonts.textRegular]}>
-                    Status: {displayPinStatus}
-                  </Text>
-                  <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>
-                    Date: {displayPinRequestDate}
-                  </Text>
-                  <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>
-                    Reference No: {displayPinReferenceNumber}
-                  </Text>
-                </View>
+              <View style={[styles.modalView, { backgroundColor: Colors.lightgray }]}>
+                <Text style={[Gutters.smallVMargin, Fonts.textRegular, styles.headerFont]}>
+                  Type: {displayPinType}
+                </Text>
+                <View style={styles.textLine} />
+                <Text style={[Gutters.smallVMargin, Fonts.textRegular, styles.descriptionFont]}>
+                  Description:
+                </Text>
+                <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>
+                  {displayPinDescription}
+                </Text>
+                <View style={styles.textLine} />
+                <Text style={[Gutters.smallVMargin, Fonts.textRegular]}>
+                  Status: {displayPinStatus}
+                </Text>
+                <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>
+                  Date: {displayPinRequestDate}
+                </Text>
+                <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>
+                  Reference No: {displayPinReferenceNumber}
+                </Text>
               </View>
-            </Modal>
-          </>
-        )
+            </View>
+          </Modal>
+        </>
+      ) : region ? (
+        <>
+          <View style={Layout.fullSize}>
+            <MapView
+              style={Layout.fill}
+              initialRegion={regionChange}
+              showsUserLocation
+              onMapReady={() => setMapReady(true)}
+              onPress={Keyboard.dismiss}
+              onRegionChangeComplete={(newRegion) => {
+                return _setRegion(newRegion);
+              }}
+              showsMyLocationButton={false}
+            />
+          </View>
+          <FAB
+            style={Common.fabAlignment}
+            icon="plus"
+            onPress={_handleOnServiceRequestCreatePress}
+          />
+        </>
+      ) : (
+        <></>
       )}
     </>
   );
