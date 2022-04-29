@@ -9,3 +9,4 @@ export * from './app/municipality/municipality.model';
 export * from './app/form/create-service-request/create-service-request-form.model';
 export * from './app/subscribe-to-channels/subscribe-to-channels.model';
 export * from './app/my-channels/my-channels.model';
+export * from './app/news-feed/news-feed.model';
