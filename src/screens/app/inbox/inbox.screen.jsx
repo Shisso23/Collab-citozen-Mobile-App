@@ -20,7 +20,7 @@ const InboxScreen = () => {
   const dispatch = useDispatch();
   const [atLeastOneSelected, setAtLeastOneSelected] = useState(false);
   const [selectedCounter, setSelectedCounter] = useState(0);
-  const [multiDeleteConfirmed, setMultiDeleteConfrimed] = useState(false);
+  const [multiDeleteConfirmed, setMultiDeleteConfirmed] = useState(false);
 
   useEffect(() => {
     dispatch(getNotificationsAction());
@@ -41,7 +41,8 @@ const InboxScreen = () => {
       'Delete',
       () => {
         setSelectedCounter(0);
-        setMultiDeleteConfrimed(true);
+        setMultiDeleteConfirmed(true);
+        setTimeout(setMultiDeleteConfirmed(false), 750);
       },
     );
   };

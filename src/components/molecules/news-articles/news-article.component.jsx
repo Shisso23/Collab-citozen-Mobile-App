@@ -82,7 +82,13 @@ const NewsArticle = (props) => {
       url: null,
     };
 
-    Share.open(shareContent);
+    Share.open(shareContent)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const likePressStartFunction = async () => {
