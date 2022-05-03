@@ -42,7 +42,7 @@ const InboxScreen = () => {
       () => {
         setSelectedCounter(0);
         setMultiDeleteConfirmed(true);
-        setTimeout(setMultiDeleteConfirmed(false), 750);
+        setTimeout(() => setMultiDeleteConfirmed(false), 2000);
       },
     );
   };
