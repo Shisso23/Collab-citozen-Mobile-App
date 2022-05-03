@@ -40,15 +40,22 @@ const Notification = ({
   const [isDeleting, setDeleting] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
   const [isSelected, setIsSelected] = useState(false);
+  const [shortPressSelectEnabled, setShortPressSelectedEnabled] = useState(false);
 
   const _handleCollapse = () => {
-    if (!isSeen) {
-      const seenAt = Moment(new Date()).format('yyyy-mm-DD hh:mm:ss');
-      dispatch(openNotificationAction(notificationId, seenAt, _.get(user, 'user_id', '')));
-      dispatch(getUnOpenedNotificationsAction());
-      setIsSeen(true);
+    if (shortPressSelectEnabled && !isSelected) {
+      notificationSelected();
+    } else if (shortPressSelectEnabled && isSelected) {
+      notificationUnselected();
+    } else {
+      if (!isSeen) {
+        const seenAt = Moment(new Date()).format('yyyy-mm-DD hh:mm:ss');
+        dispatch(openNotificationAction(notificationId, seenAt, _.get(user, 'user_id', '')));
+        dispatch(getUnOpenedNotificationsAction());
+        setIsSeen(true);
+      }
+      setIsCollapsed(!isCollapsed);
     }
-    setIsCollapsed(!isCollapsed);
   };
 
   const formatDate = (date) => {
@@ -82,6 +89,14 @@ const Notification = ({
     }
   }, [multiDeleteConfirmed]);
 
+  useEffect(() => {
+    if (selectedCounter > 0) {
+      setShortPressSelectedEnabled(true);
+    } else {
+      setShortPressSelectedEnabled(false);
+    }
+  }, [selectedCounter]);
+
   const _setImageUrl = (image) => {
     return !image ? null : image;
   };
@@ -90,7 +105,7 @@ const Notification = ({
     <TrashButton onPress={_handleDelete} iconSize={27} loading={isDeleting} />
   );
 
-  const notificationSelected = async () => {
+  const notificationSelected = () => {
     setIsSelected(true);
     setSelectedCounter(selectedCounter + 1);
   };
@@ -149,7 +164,9 @@ const Notification = ({
         onLongPress={notificationUnselected}
         style={[Gutters.smallBMargin, accordionStyle]}
       >
-        <Text style={[Gutters.largeRPadding, styles.notificationBody]}>{body}</Text>
+        {!shortPressSelectEnabled && (
+          <Text style={[Gutters.largeRPadding, styles.notificationBody]}>{body}</Text>
+        )}
       </List.Accordion>
     ) : (
       <></>
