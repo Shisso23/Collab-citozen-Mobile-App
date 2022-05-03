@@ -82,13 +82,7 @@ const NewsArticle = (props) => {
       url: null,
     };
 
-    Share.open(shareContent)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    Share.open(shareContent);
   };
 
   const likePressStartFunction = async () => {
@@ -382,13 +376,7 @@ const NewsArticle = (props) => {
                   size={30}
                   color="#3A609C"
                   onPress={() =>
-                    shareNewsArticle(
-                      item.title,
-                      item.channelName,
-                      item.date,
-                      item.newsFeedImage,
-                      item.body,
-                    )
+                    shareNewsArticle(item.title, item.channelName, item.date, item.body)
                   }
                   containerStyle={[Layout.justifyContentCenter, Gutters.smallTMarin]}
                   style={[Gutters.tinyRMargin, styles.clockIcon]}
