@@ -20,7 +20,7 @@ const { width: screenWidth } = Dimensions.get('window');
 const NewsArticle = (props) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { item, index } = props;
+  const { item, index, isLoadingNewsFeeds } = props;
   const { Common, Gutters, Layout, Colors } = useTheme();
   const notificationOpenedBackGround = handleNotificationOpenedBackGround();
   const { user } = useSelector((reducers) => reducers.userReducer);
@@ -32,6 +32,7 @@ const NewsArticle = (props) => {
   const [useLoadNewsFeeds, setUseLoadNewsFeeds] = useState(true);
   const [alreadyLiked, setAlreadyLiked] = useState(false);
   const [alreadyDisliked, setAlreadyDisliked] = useState(false);
+  const [preventPress, setPreventPress] = useState(true);
   let alreadyLikedUseLoadNewsFeedsVar = false;
   let alreadyDislikedUseLoadNewsFeedsVar = false;
   let temporarilyPreventClickingReaction = false;
@@ -46,6 +47,7 @@ const NewsArticle = (props) => {
       setVisualDislikeCounter(0);
       setAlreadyLiked(false);
       setAlreadyDisliked(false);
+      setPreventPress(true);
       PushNotification.setApplicationIconBadgeNumber(0);
       alreadyLikedUseLoadNewsFeedsVar = false;
       alreadyDislikedUseLoadNewsFeedsVar = false;
@@ -53,6 +55,12 @@ const NewsArticle = (props) => {
       _loadNewsFeeds();
     }, []),
   );
+
+  useEffect(() => {
+    if (!isLoadingNewsFeeds) {
+      setPreventPress(false);
+    }
+  }, [isLoadingNewsFeeds]);
 
   useEffect(() => {
     notificationOpenedBackGround();
@@ -146,6 +154,9 @@ const NewsArticle = (props) => {
   };
 
   const likePress = async () => {
+    if (preventPress) {
+      return;
+    }
     likePressStartFunction();
     if (
       (useLoadNewsFeeds &&
@@ -229,6 +240,9 @@ const NewsArticle = (props) => {
   };
 
   const dislikePress = () => {
+    if (preventPress) {
+      return;
+    }
     dislikePressStartFunction();
     if (
       (useLoadNewsFeeds &&
@@ -417,4 +431,5 @@ const styles = StyleSheet.create({
 NewsArticle.propTypes = {
   item: PropTypes.object.isRequired,
   index: PropTypes.number.isRequired,
+  isLoadingNewsFeeds: PropTypes.bool.isRequired,
 };

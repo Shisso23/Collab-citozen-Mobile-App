@@ -25,7 +25,9 @@ const NewsArticles = () => {
       <FlatList
         contentContainerStyle={Gutters.smallHMargin}
         data={newsFeeds}
-        renderItem={({ item, index }) => <NewsArticle item={item} index={index} />}
+        renderItem={({ item, index }) => (
+          <NewsArticle item={item} index={index} isLoadingNewsFeeds={isLoadingNewsFeeds} />
+        )}
         keyExtractor={(item) => String(item.newsFeedId)}
         refreshControl={
           <RefreshControl
