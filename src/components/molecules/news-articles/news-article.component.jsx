@@ -32,10 +32,10 @@ const NewsArticle = (props) => {
   const [useLoadNewsFeeds, setUseLoadNewsFeeds] = useState(true);
   const [alreadyLiked, setAlreadyLiked] = useState(false);
   const [alreadyDisliked, setAlreadyDisliked] = useState(false);
+  const [preventPress, setPreventPress] = useState(true);
   let alreadyLikedUseLoadNewsFeedsVar = false;
   let alreadyDislikedUseLoadNewsFeedsVar = false;
   let temporarilyPreventClickingReaction = false;
-  const [preventPress, setPreventPress] = useState(true);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -47,12 +47,12 @@ const NewsArticle = (props) => {
       setVisualDislikeCounter(0);
       setAlreadyLiked(false);
       setAlreadyDisliked(false);
+      setPreventPress(true);
       PushNotification.setApplicationIconBadgeNumber(0);
       alreadyLikedUseLoadNewsFeedsVar = false;
       alreadyDislikedUseLoadNewsFeedsVar = false;
       temporarilyPreventClickingReaction = false;
       _loadNewsFeeds();
-      setPreventPress(true);
     }, []),
   );
 
@@ -67,7 +67,7 @@ const NewsArticle = (props) => {
   });
 
   const _loadNewsFeeds = async () => {
-    dispatch(getNewsFeedAction(user.user_id));
+    return dispatch(getNewsFeedAction(user.user_id));
   };
   const formatDate = (date) => {
     return moment(date).fromNow();
