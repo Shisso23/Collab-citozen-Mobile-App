@@ -47,6 +47,8 @@ const CreateServiceRequestForm = ({
   const [typeChosenName, setTypeChosenName] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [allTypesStore, setAllTypesStore] = useState([]);
+  let searchItemCategory = '';
+  let searchSameCategory = false;
 
   useEffect(() => {
     _.map(Object.keys(municipalities), (municipalityRef) =>
@@ -348,14 +350,75 @@ const CreateServiceRequestForm = ({
               )}
 
               {isSearching &&
-                searchTypes().map((item) => {
+                searchTypes().map((item, index, array) => {
+                  if (searchItemCategory === item.category) {
+                    searchSameCategory = true;
+                  } else {
+                    searchSameCategory = false;
+                  }
+                  searchItemCategory = item.category;
                   const itemChannelGetter = getChannelFromSelectedServiceType({
                     selectedServiceType: item,
                   });
+                  if (searchSameCategory) {
+                    return (
+                      <View key={item} style={styles.searchStylingMiddleItem}>
+                        <View key={item} style={styles.viewButton}>
+                          <View
+                            style={[
+                              Common.textInputWithoutShadow,
+                              Gutters.tinyVMargin,
+                              styles.listItem,
+                            ]}
+                          >
+                            <List.Item
+                              key={item}
+                              style={Layout.fill}
+                              title={item.name}
+                              onPress={() => {
+                                passValuesForFields(item);
+                                setIsSearching(false);
+                              }}
+                              titleStyle={(Common.cardTitle, styles.listItemTitleStyle)}
+                              titleNumberOfLines={3}
+                            />
+                          </View>
+                        </View>
+                      </View>
+                    );
+                  }
+                  if (index + 1 === array.length) {
+                    return (
+                      <View key={item} style={styles.searchStylingLastItem}>
+                        <View key={item} style={styles.viewButton}>
+                          <View
+                            style={[
+                              Common.textInputWithoutShadow,
+                              Gutters.tinyVMargin,
+                              styles.listItem,
+                            ]}
+                          >
+                            <List.Item
+                              key={item}
+                              style={Layout.fill}
+                              title={item.name}
+                              onPress={() => {
+                                passValuesForFields(item);
+                                setIsSearching(false);
+                              }}
+                              titleStyle={(Common.cardTitle, styles.listItemTitleStyle)}
+                              titleNumberOfLines={3}
+                            />
+                          </View>
+                        </View>
+                      </View>
+                    );
+                  }
                   return (
-                    <View key={item}>
-                      <Text style={[Fonts.textRegular, Gutters.smallTMargin]}>
-                        {municipalities[itemChannelGetter].name} | {item.category}
+                    <View key={item} style={styles.searchStylingFirstItem}>
+                      <Text style={[Fonts.textRegular, Gutters.largeTMargin, styles.searchTitle]}>
+                        {municipalities[itemChannelGetter].name} |{`\n`}
+                        {item.category}
                       </Text>
                       <View key={item} style={styles.viewButton}>
                         <View
@@ -374,6 +437,7 @@ const CreateServiceRequestForm = ({
                               setIsSearching(false);
                             }}
                             titleStyle={(Common.cardTitle, styles.listItemTitleStyle)}
+                            titleNumberOfLines={3}
                           />
                         </View>
                       </View>
@@ -441,6 +505,36 @@ const styles = StyleSheet.create({
   },
   listItemTitleStyle: {
     textAlign: 'center',
+  },
+  searchStylingFirstItem: {
+    borderColor: Colors.lightMediumGray,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    borderTopWidth: 1,
+    paddingBottom: 2,
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+  searchStylingLastItem: {
+    borderBottomWidth: 1,
+    borderColor: Colors.lightMediumGray,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    paddingBottom: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+  searchStylingMiddleItem: {
+    borderColor: Colors.lightMediumGray,
+    borderLeftWidth: 1,
+    borderRightWidth: 1,
+    paddingBottom: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+  },
+  searchTitle: {
+    alignSelf: 'center',
+    paddingBottom: 10,
   },
   textHeaderCategory: {
     fontWeight: 'bold',
