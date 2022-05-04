@@ -417,7 +417,7 @@ const CreateServiceRequestForm = ({
                   return (
                     <View key={item} style={styles.searchStylingFirstItem}>
                       <Text style={[Fonts.textRegular, Gutters.largeTMargin, styles.searchTitle]}>
-                        {municipalities[itemChannelGetter].name} |{`\n`}
+                        {municipalities[itemChannelGetter].name} {`\n`}
                         {item.category}
                       </Text>
                       <View key={item} style={styles.viewButton}>
