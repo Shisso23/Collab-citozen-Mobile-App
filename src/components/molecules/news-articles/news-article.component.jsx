@@ -376,13 +376,7 @@ const NewsArticle = (props) => {
                   size={30}
                   color="#3A609C"
                   onPress={() =>
-                    shareNewsArticle(
-                      item.title,
-                      item.channelName,
-                      item.date,
-                      item.newsFeedImage,
-                      item.body,
-                    )
+                    shareNewsArticle(item.title, item.channelName, item.date, item.body)
                   }
                   containerStyle={[Layout.justifyContentCenter, Gutters.smallTMarin]}
                   style={[Gutters.tinyRMargin, styles.clockIcon]}
