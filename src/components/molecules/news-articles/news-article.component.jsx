@@ -20,7 +20,7 @@ const { width: screenWidth } = Dimensions.get('window');
 const NewsArticle = (props) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { item, index } = props;
+  const { item, index, isLoadingNewsFeeds } = props;
   const { Common, Gutters, Layout, Colors } = useTheme();
   const notificationOpenedBackGround = handleNotificationOpenedBackGround();
   const { user } = useSelector((reducers) => reducers.userReducer);
@@ -57,8 +57,10 @@ const NewsArticle = (props) => {
   );
 
   useEffect(() => {
-    setTimeout(() => setPreventPress(false), 2000);
-  }, [preventPress]);
+    if (!isLoadingNewsFeeds) {
+      setPreventPress(false);
+    }
+  }, [isLoadingNewsFeeds]);
 
   useEffect(() => {
     notificationOpenedBackGround();
@@ -429,4 +431,5 @@ const styles = StyleSheet.create({
 NewsArticle.propTypes = {
   item: PropTypes.object.isRequired,
   index: PropTypes.number.isRequired,
+  isLoadingNewsFeeds: PropTypes.bool.isRequired,
 };
