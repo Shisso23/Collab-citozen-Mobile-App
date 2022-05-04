@@ -35,6 +35,7 @@ const NewsArticle = (props) => {
   let alreadyLikedUseLoadNewsFeedsVar = false;
   let alreadyDislikedUseLoadNewsFeedsVar = false;
   let temporarilyPreventClickingReaction = false;
+  const [preventPress, setPreventPress] = useState(true);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -51,15 +52,20 @@ const NewsArticle = (props) => {
       alreadyDislikedUseLoadNewsFeedsVar = false;
       temporarilyPreventClickingReaction = false;
       _loadNewsFeeds();
+      setPreventPress(true);
     }, []),
   );
+
+  useEffect(() => {
+    setTimeout(() => setPreventPress(false), 2000);
+  }, [preventPress]);
 
   useEffect(() => {
     notificationOpenedBackGround();
   });
 
   const _loadNewsFeeds = async () => {
-    return dispatch(getNewsFeedAction(user.user_id));
+    dispatch(getNewsFeedAction(user.user_id));
   };
   const formatDate = (date) => {
     return moment(date).fromNow();
@@ -146,6 +152,9 @@ const NewsArticle = (props) => {
   };
 
   const likePress = async () => {
+    if (preventPress) {
+      return;
+    }
     likePressStartFunction();
     if (
       (useLoadNewsFeeds &&
@@ -229,6 +238,9 @@ const NewsArticle = (props) => {
   };
 
   const dislikePress = () => {
+    if (preventPress) {
+      return;
+    }
     dislikePressStartFunction();
     if (
       (useLoadNewsFeeds &&
