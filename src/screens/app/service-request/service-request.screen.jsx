@@ -100,11 +100,8 @@ const ServiceRequestScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
-      setRegionChange(region);
-      if (region !== null) {
-        getNearbyPinLocations(region.latitude, region.longitude);
-      }
-    }, [region]),
+      getNearbyPinLocations(regionChange.latitude, regionChange.longitude);
+    }, [regionChange]),
   );
 
   const _setRegion = async (newRegion) => {
@@ -187,7 +184,7 @@ const ServiceRequestScreen = () => {
         const pinRequestDate = pin.requestDate;
         const pinStatus = pin.status;
 
-        const gpsCoordinates = pin.gpsCoordinates;
+        const { gpsCoordinates } = pin;
         const gpsCoordinatesSubString0 = gpsCoordinates.substring(5);
         const gpsCoordinatesSubString1 = gpsCoordinatesSubString0.substring(
           1,
@@ -220,7 +217,8 @@ const ServiceRequestScreen = () => {
               </View>
             </Marker>
           );
-        } else if (pin.status === 'Registered') {
+        }
+        if (pin.status === 'Registered') {
           return (
             <Marker
               coordinate={{ latitude: lng, longitude: lat }}
@@ -240,27 +238,26 @@ const ServiceRequestScreen = () => {
               </View>
             </Marker>
           );
-        } else {
-          return (
-            <Marker
-              coordinate={{ latitude: lng, longitude: lat }}
-              onPress={() =>
-                displayModalToggle(
-                  pinReferenceNumber,
-                  pinType,
-                  pinDescription,
-                  pinRequestDate,
-                  pinStatus,
-                )
-              }
-              key={i}
-            >
-              <View style={styles.pin}>
-                <Icon name="location-pin" size={45} color={Colors.lightOrange} />
-              </View>
-            </Marker>
-          );
         }
+        return (
+          <Marker
+            coordinate={{ latitude: lng, longitude: lat }}
+            onPress={() =>
+              displayModalToggle(
+                pinReferenceNumber,
+                pinType,
+                pinDescription,
+                pinRequestDate,
+                pinStatus,
+              )
+            }
+            key={i}
+          >
+            <View style={styles.pin}>
+              <Icon name="location-pin" size={45} color={Colors.lightOrange} />
+            </View>
+          </Marker>
+        );
       });
     }
     return null;
@@ -340,7 +337,7 @@ const ServiceRequestScreen = () => {
           <View style={Layout.fullSize}>
             <MapView
               style={Layout.fill}
-              initialRegion={regionChange}
+              initialRegion={region}
               showsUserLocation
               onMapReady={() => setMapReady(true)}
               onPress={Keyboard.dismiss}
@@ -348,6 +345,7 @@ const ServiceRequestScreen = () => {
                 return _setRegion(newRegion);
               }}
               showsMyLocationButton={false}
+              zoomControlEnabled
             >
               {displayPins(nearbyPinLocations)}
             </MapView>
@@ -398,7 +396,7 @@ const ServiceRequestScreen = () => {
           <View style={Layout.fullSize}>
             <MapView
               style={Layout.fill}
-              initialRegion={regionChange}
+              initialRegion={region}
               showsUserLocation
               onMapReady={() => setMapReady(true)}
               onPress={Keyboard.dismiss}
@@ -406,6 +404,7 @@ const ServiceRequestScreen = () => {
                 return _setRegion(newRegion);
               }}
               showsMyLocationButton={false}
+              zoomControlEnabled
             />
           </View>
           <FAB

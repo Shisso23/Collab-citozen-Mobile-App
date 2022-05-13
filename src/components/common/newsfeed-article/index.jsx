@@ -1,11 +1,12 @@
 import _ from 'lodash';
 import React, { useEffect } from 'react';
-import { StyleSheet, Text, View, Dimensions, Image } from 'react-native';
+import { StyleSheet, Text, View, Dimensions, Image, useWindowDimensions } from 'react-native';
 import { Paragraph } from 'react-native-paper';
 import { Divider } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 
+import HTML from 'react-native-render-html';
 import { userHasOpenedNewsFeedAction } from '../../../reducers/news-feed-reducer/news-feed.actions';
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
@@ -16,6 +17,9 @@ const NewsFeedArticle = (newsFeedArticle) => {
   const dispatch = useDispatch();
   const newsFeedItem = _.get(newsFeedArticle, 'NewsFeedArticle.newsFeedItem');
   const { user } = useSelector((reducers) => reducers.userReducer);
+  const bodyText = newsFeedItem.body;
+  const { width } = useWindowDimensions();
+  const isHTML = RegExp.prototype.test.bind(/(<([^>]+)>)/i);
 
   useEffect(() => {
     _openNewsFeed();
@@ -25,12 +29,10 @@ const NewsFeedArticle = (newsFeedArticle) => {
     await dispatch(userHasOpenedNewsFeedAction(newsFeedItem.newsFeedId, user.user_id));
   };
 
-  const bodyText = newsFeedItem.body;
-
   return (
     <View style={Gutters.regularHMargin}>
       {newsFeedItem.newsFeedImage != null ? (
-        <Image source={newsFeedItem.newsFeedImage} style={styles.imageStyle} />
+        <Image source={{ uri: newsFeedItem.newsFeedImage }} style={styles.imageStyle} />
       ) : null}
       <Divider color={Colors.transparent} />
       <Text style={Gutters.regularTMargin}>
@@ -39,7 +41,11 @@ const NewsFeedArticle = (newsFeedArticle) => {
       <Divider color={Colors.transparent} />
       <Text style={Fonts.titleRegular}>{`${newsFeedItem.title}`}</Text>
       <Divider color={Colors.transparent} />
-      <Paragraph style={Fonts.textLarge}>{bodyText}</Paragraph>
+      <View style={Gutters.regularVMargin}>
+        {(isHTML && <HTML contentWidth={width} source={{ html: bodyText }} />) || (
+          <Paragraph style={Fonts.textLarge}>{bodyText}</Paragraph>
+        )}
+      </View>
     </View>
   );
 };
