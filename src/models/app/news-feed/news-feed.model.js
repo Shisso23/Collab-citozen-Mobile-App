@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import async from 'async';
-
+import RNFetchBlob from 'rn-fetch-blob';
 import srUrls from '../../../services/sub-services/service-request-service/service-request.urls';
 import storageService from '../../../services/sub-services/storage-service/storage.service';
 import newsFeedUrls from '../../../services/sub-services/news-feed-service/news-feed.urls';
@@ -10,29 +10,27 @@ import {
 } from '../../../helpers/api-function-name.helper';
 import { authNetworkService } from '../../../services';
 
-const getNewsFeedImageUrl = (_apiServiceRequestModel, token) => {
-  const fileId = _.get(_apiServiceRequestModel, 'file_id');
-  const objId = _.get(_apiServiceRequestModel, 'obj_id');
-  if (!fileId) {
-    return null;
-  }
-  const uri = srUrls.viewSrImageUrl(objId, fileId);
+const { config, fs } = RNFetchBlob;
+const dirToSave = fs.dirs.DocumentDir;
 
-  return {
-    uri,
-    timeout: 20000,
-    headers: {
+const getNewsFeedImageUri = async (objId, fileId) => {
+  const url = srUrls.viewSrImageUrl(objId, fileId);
+  const token = await storageService.getAccessToken();
+  return config({ path: `${dirToSave}/collab-${fileId}.png`, fileCache: true })
+    .fetch('GET', url, {
       Authorization: `Bearer ${token}`,
-    },
-  };
+    })
+    .then((response) => {
+      return `file:///${response.path()}`;
+    });
 };
 
-export const newsFeedModel = (_apiNewsFeedModel, accessToken, reactions, userReaction) => ({
+export const newsFeedModel = async (_apiNewsFeedModel, accessToken, reactions, userReaction) => ({
   newsFeedId: _.get(_apiNewsFeedModel, 'obj_id', ''),
   fileId: _.get(_apiNewsFeedModel, 'file_id', ''),
   title: _.get(_apiNewsFeedModel, 'title', ''),
   body: _.get(_apiNewsFeedModel, 'body', ''),
-  newsFeedImage: getNewsFeedImageUrl(_apiNewsFeedModel, accessToken),
+  newsFeedImage: await getNewsFeedImageUri(_apiNewsFeedModel.obj_id, _apiNewsFeedModel.file_id),
   seen: _.get(_apiNewsFeedModel, 'seen', ''),
   date: _.get(_apiNewsFeedModel, 'date_published', new Date()),
   channelName: _.get(_apiNewsFeedModel, 'channel_name', ''),
@@ -54,7 +52,7 @@ export const constructNewsFeedModels = async (apiNewsFeed, userId) => {
     if (userReaction.data !== null) {
       userReactionValues = userReaction.data.user_last_reaction;
     }
-    const model = newsFeedModel(newsArticle, token, reactionsValues, userReactionValues[0]);
+    const model = await newsFeedModel(newsArticle, token, reactionsValues, userReactionValues[0]);
     done(null, model);
   });
 };

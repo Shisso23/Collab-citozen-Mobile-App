@@ -10,10 +10,7 @@ import Share from 'react-native-share';
 
 import PropTypes from 'prop-types';
 import useTheme from '../../../theme/hooks/useTheme';
-import {
-  getNewsFeedAction,
-  userHasOpenedNewsFeedAction,
-} from '../../../reducers/news-feed-reducer/news-feed.actions';
+import { userHasOpenedNewsFeedAction } from '../../../reducers/news-feed-reducer/news-feed.actions';
 import { handleNotificationOpenedBackGround } from '../../../hooks/notification-background/notification-background';
 
 const { width: screenWidth } = Dimensions.get('window');
@@ -52,7 +49,6 @@ const NewsArticle = (props) => {
       alreadyLikedUseLoadNewsFeedsVar = false;
       alreadyDislikedUseLoadNewsFeedsVar = false;
       temporarilyPreventClickingReaction = false;
-      _loadNewsFeeds();
     }, []),
   );
 
@@ -66,9 +62,6 @@ const NewsArticle = (props) => {
     notificationOpenedBackGround();
   });
 
-  const _loadNewsFeeds = async () => {
-    return dispatch(getNewsFeedAction(user.user_id));
-  };
   const formatDate = (date) => {
     return moment(date).fromNow();
   };
@@ -273,7 +266,13 @@ const NewsArticle = (props) => {
             navigation.navigate('ViewNewsFeedArticle', { newsFeedItem: item });
           }}
         >
-          {() => <Image resizeMode="cover" source={item.newsFeedImage} style={styles.imageStyle} />}
+          {() => (
+            <Image
+              resizeMode="cover"
+              source={{ uri: item.newsFeedImage }}
+              style={styles.imageStyle}
+            />
+          )}
         </Pressable>
       ) : null}
       <List.Item
