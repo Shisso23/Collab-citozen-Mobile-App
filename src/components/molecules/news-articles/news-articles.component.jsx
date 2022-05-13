@@ -1,7 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { RefreshControl, FlatList } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { useFocusEffect } from '@react-navigation/native';
 import useTheme from '../../../theme/hooks/useTheme';
 import { getNewsFeedAction } from '../../../reducers/news-feed-reducer/news-feed.actions';
 import { newsFeedSelector } from '../../../reducers/news-feed-reducer/news-feed.reducer';
@@ -16,9 +17,11 @@ const NewsArticles = () => {
     return dispatch(getNewsFeedAction(user.user_id));
   };
 
-  useEffect(() => {
-    _loadNewsFeeds();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      _loadNewsFeeds();
+    }, []),
+  );
 
   return (
     <>
