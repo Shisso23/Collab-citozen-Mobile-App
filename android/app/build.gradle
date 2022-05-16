@@ -135,7 +135,7 @@ android {
         applicationId "com.collaboratorapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 263
+        versionCode 264
         versionName "1.4.7"
         vectorDrawables.useSupportLibrary = true
         try {
