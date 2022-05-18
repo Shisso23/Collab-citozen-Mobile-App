@@ -1,4 +1,5 @@
 rootProject.name = 'collaboratorapp'
+
 include ':react-native-intent-launcher'
 project(':react-native-intent-launcher').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-intent-launcher/android')
 
