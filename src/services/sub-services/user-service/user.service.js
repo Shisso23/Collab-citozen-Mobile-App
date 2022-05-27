@@ -34,7 +34,14 @@ const updateUser = async ({ formData }) => {
   }
 };
 
+const invitedUserRecord = async (userId) => {
+  const url = globalUrl.createUpdateRecordUrl();
+  const subscriptionModel = `<Objects><User_News_Feed_Item_Activity> <F1>${userId}</F1><F3>Invited</F3> </User_News_Feed_Item_Activity></Objects>`;
+  return authNetworkService.post(url, subscriptionModel);
+};
+
 export default {
   getUser,
   updateUser,
+  invitedUserRecord,
 };

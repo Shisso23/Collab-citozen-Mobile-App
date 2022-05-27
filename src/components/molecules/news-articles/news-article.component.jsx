@@ -83,7 +83,9 @@ const NewsArticle = (props) => {
       url: null,
     };
 
-    Share.open(shareContent);
+    Share.open(shareContent).then(() => {
+      dispatch(userHasOpenedNewsFeedAction(item.newsFeedId, user.user_id, 'Shared'));
+    });
   };
 
   const likePressStartFunction = async () => {
