@@ -7,11 +7,13 @@ import {
   ImageBackground,
   Dimensions,
   KeyboardAvoidingView,
+  View,
 } from 'react-native';
 
 import { GiftedChat, Bubble } from 'react-native-gifted-chat';
 import { TextInput } from 'react-native-paper';
 import { useSelector, useDispatch } from 'react-redux';
+import _ from 'lodash';
 
 import { useTheme } from '../../../theme';
 import { Colors } from '../../../theme/Variables';
@@ -81,29 +83,31 @@ const CommentsActionSheetContent = ({ onSend, serviceRequest }) => {
                 />
               );
             }}
-            renderInputToolbar={() => (
-              <CustomInput
-                value={comment}
-                placeholder="Type a comment"
-                onChangeText={(text) => setComment(text)}
-                style={styles.input}
-                multiline
-                right={
-                  <TextInput.Icon
-                    name="send-outline"
-                    type="ionicon"
-                    onPress={() => {
-                      onSend(comment).then(() => {
-                        setComment('');
-                        dispatch(getCommentsAction(serviceRequest.id));
-                      });
-                    }}
-                    disabled={comment.length === 0}
-                    color={comment.length > 0 ? Colors.primary : Colors.darkgray}
-                  />
-                }
-              />
-            )}
+            renderInputToolbar={() =>
+              (_.get(serviceRequest, 'status', false) !== 'Completed' && (
+                <CustomInput
+                  value={comment}
+                  placeholder="Type a comment"
+                  onChangeText={(text) => setComment(text)}
+                  style={styles.input}
+                  multiline
+                  right={
+                    <TextInput.Icon
+                      name="send-outline"
+                      type="ionicon"
+                      onPress={() => {
+                        onSend(comment).then(() => {
+                          setComment('');
+                          dispatch(getCommentsAction(serviceRequest.id));
+                        });
+                      }}
+                      disabled={comment.length === 0}
+                      color={comment.length > 0 ? Colors.primary : Colors.darkgray}
+                    />
+                  }
+                />
+              )) || <View />
+            }
             user={{
               _id: 1,
             }}

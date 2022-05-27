@@ -25,14 +25,8 @@ const getNewsFeed = async (userId) => {
 const createUserActivityRecord = (newsFeedId, userID, action) => {
   const url = newsFeedUrls.newsFeedActivityUrl();
   let subscriptionModel = '<Objects> ';
-  if (action === 'Liked') {
-    subscriptionModel += `<User_News_Feed_Item_Activity> <F1>${userID}</F1> <F2>${newsFeedId}</F2> <F3>Liked</F3> </User_News_Feed_Item_Activity> `;
-  } else if (action === 'Disliked') {
-    subscriptionModel += `<User_News_Feed_Item_Activity> <F1>${userID}</F1> <F2>${newsFeedId}</F2> <F3>Disliked</F3> </User_News_Feed_Item_Activity> `;
-  } else if (action === 'Unliked') {
-    subscriptionModel += `<User_News_Feed_Item_Activity> <F1>${userID}</F1> <F2>${newsFeedId}</F2> <F3>Unliked</F3> </User_News_Feed_Item_Activity> `;
-  } else if (action === 'Undisliked') {
-    subscriptionModel += `<User_News_Feed_Item_Activity> <F1>${userID}</F1> <F2>${newsFeedId}</F2> <F3>Undisliked</F3> </User_News_Feed_Item_Activity> `;
+  if (action) {
+    subscriptionModel += `<User_News_Feed_Item_Activity> <F1>${userID}</F1> <F2>${newsFeedId}</F2> <F3>${action}</F3> </User_News_Feed_Item_Activity> `;
   } else {
     subscriptionModel += `<User_News_Feed_Item_Activity> <F1>${userID}</F1> <F2>${newsFeedId}</F2> <F3>Opened</F3> </User_News_Feed_Item_Activity> `;
   }

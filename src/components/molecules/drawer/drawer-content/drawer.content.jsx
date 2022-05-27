@@ -12,7 +12,7 @@ import codePush from 'react-native-code-push';
 import { signOutAction } from '../../../../reducers/user-auth-reducer/user-auth.actions';
 import useTheme from '../../../../theme/hooks/useTheme';
 import { Colors } from '../../../../theme/Variables';
-import { permissionsService } from '../../../../services';
+import { permissionsService, userService } from '../../../../services';
 import { openAppSetting } from '../../../../helpers/app-seettings.helper';
 import { myChannelsSelector } from '../../../../reducers/my-channels/my-channels.reducer';
 import { getMyChannelsAction } from '../../../../reducers/my-channels/my-channels.actions';
@@ -64,6 +64,8 @@ const DrawerContent = (props) => {
     try {
       await Share.share({
         message: `You have been invited to download Collab Citizen!\n\nCollab Citizen allows consumers to stay in control and up to date with their municipal accounts.\n\nAvailable on Google Play Store and Apple App Store: ${combinedLink}`,
+      }).then(() => {
+        userService.invitedUserRecord(user.user_id);
       });
     } catch (error) {
       console.warn(error.message);
