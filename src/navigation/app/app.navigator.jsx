@@ -28,6 +28,7 @@ import ContactDetails from '../../screens/app/contacts/contacts.details.screen';
 import AccountDetailsScreen from '../../screens/app/accounts/account-details.screen';
 import ReadingsHistoryScreen from '../../screens/app/accounts/readings-history.screen';
 import SubmitMeterReadingScreen from '../../screens/app/accounts/submit-readings.screen';
+import CreateNotificationScreen from '../../screens/app/channels/create-notification/create-notification.screen';
 
 const Drawer = createDrawerNavigator();
 const AppStack = createStackNavigator();
@@ -103,6 +104,13 @@ const AppNavigator = () => {
         options={{
           headerShown: false,
           title: 'Subscribed To Channel',
+        }}
+      />
+      <AppStack.Screen
+        name="CreateNotification"
+        component={CreateNotificationScreen}
+        options={{
+          headerShown: false,
         }}
       />
       <AppStack.Screen
