@@ -4,9 +4,12 @@ import notificationUrls from './notification.urls';
 import authNetworkService from '../auth-network-service/auth-network.service';
 import {
   apiFunctionWithUniqName,
+  createNotificationActivityData,
   notificationActivityData,
 } from '../../../helpers/api-function-name.helper';
 import { flashService } from '../../index';
+import globalServiceUrls from '../global/global.service.urls';
+import { mockApi } from '../../../dummy-data/mock-api';
 
 export const getNotifications = async () => {
   const data = await apiFunctionWithUniqName('get_user_notifications');
@@ -56,9 +59,20 @@ const deleteNotification = async (notificationId, dateTime, userId) => {
   return response;
 };
 
+const createNotification = async (formData, userId) => {
+  const data = createNotificationActivityData({
+    ...formData,
+    userId,
+  });
+  const createNotificationUrl = globalServiceUrls.createUpdateRecordUrl();
+  const response = await mockApi.post(createNotificationUrl, data); // TODO remove mock api usage when  endpoint is ready
+  return response;
+};
+
 export default {
   getNotifications,
   openNotification,
   getUnOpenedNotifications,
   deleteNotification,
+  createNotification,
 };

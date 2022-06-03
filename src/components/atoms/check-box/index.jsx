@@ -12,7 +12,14 @@ const CheckBoxTick = (props) => {
     setItem({ selectedItem, present: !checked });
   };
 
-  return <CheckBox onPress={_updateBox} checked={checked} containerStyle={styles.containerStyle} />;
+  return (
+    <CheckBox
+      onPress={_updateBox}
+      checked={checked}
+      containerStyle={styles.containerStyle}
+      {...props}
+    />
+  );
 };
 
 const styles = StyleSheet.create({

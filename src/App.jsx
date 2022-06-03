@@ -11,6 +11,7 @@ import NavigationContainer from './navigation/root.navigator';
 import { initAppAction } from './reducers/app-reducer/app.actions';
 import { firebaseService, firebaseNotificationService, pushKitService } from './services';
 import config from './config';
+import { checkAppVersion } from './helpers/appstore-version-check.helper';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -113,6 +114,7 @@ const App = () => {
       'Non-serializable values were found in the navigation state',
     ]);
     loadAppCenter();
+    checkAppVersion();
     DeviceInfo.hasHms().then((hasHms) => {
       if (hasHms) {
         checkPermission()
