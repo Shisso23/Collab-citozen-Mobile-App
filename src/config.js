@@ -12,6 +12,7 @@ const {
   APPCENTER_IOS_STAGING,
   ENVIRONMENT,
   HUAWEI_API_KEY,
+  APP_STORE_APP_ID,
 } = Config;
 export default {
   accessTokenKey: 'access_token',
@@ -33,4 +34,6 @@ export default {
   androidDownloadLink: 'https://play.google.com/store/apps/details?id=com.collaboratorapp',
   iOSDownloadLink: 'https://apps.apple.com/us/app/collab-citizen/id1557197011',
   combinedLink: 'http://onelink.to/5kwpyv',
+  appStoreAppId: APP_STORE_APP_ID,
+  androidPackageId: 'com.collaboratorapp',
 };
