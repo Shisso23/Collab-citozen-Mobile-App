@@ -15,7 +15,7 @@ export const checkAppVersion = async () => {
       });
 
       if (check.result === 'new') {
-        return flashService.info('New version is Available on the store. Please Update');
+        return flashService.info('New version is Available on the store. Please Update the App');
       }
       return null;
     } catch (e) {
@@ -37,7 +37,9 @@ export const checkAppVersion = async () => {
             parseInt(`${latestVersion}`.split('.').join(''), 10) >
             parseInt(getVersion().split('.').join(''), 10)
           ) {
-            return flashService.info('New version is Available on the store. Please Update');
+            return flashService.info(
+              'New version is Available on the store. Please Update The App',
+            );
           }
           return Promise.resolve({ version: latestVersion, storeUrl });
         }
