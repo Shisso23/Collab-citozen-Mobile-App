@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Dimensions, Text, Image, Pressable } from 'react-native';
+import { View, StyleSheet, Dimensions, Text, Pressable } from 'react-native';
 import { List } from 'react-native-paper';
 import { Icon } from 'react-native-elements';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
@@ -9,6 +9,7 @@ import moment from 'moment';
 import Share from 'react-native-share';
 
 import PropTypes from 'prop-types';
+import FastImage from 'react-native-fast-image';
 import useTheme from '../../../theme/hooks/useTheme';
 import { userHasOpenedNewsFeedAction } from '../../../reducers/news-feed-reducer/news-feed.actions';
 import { handleNotificationOpenedBackGround } from '../../../hooks/notification-background/notification-background';
@@ -260,146 +261,146 @@ const NewsArticle = (props) => {
     dislikePressEndFunction();
   };
 
+  const onArticleClick = () => {
+    navigation.navigate('ViewNewsFeedArticle', { newsFeedItem: item });
+  };
+
+  const renderNewsFeedDescription = () => {
+    return (
+      <>
+        <Text style={Common.cardTitle}>{item.title}</Text>
+        <Text style={[Gutters.tinyTMargin, { color: Colors.primary }]}>{item.channelName}</Text>
+        <View style={[Layout.rowBetween, Layout.alignItemsCenter]}>
+          <View style={[Layout.row, Gutters.tinyTMargin]}>
+            <Icon
+              name="clock-o"
+              type="font-awesome"
+              size={15}
+              containerStyle={[Layout.justifyContentCenter, Gutters.smallTMarin]}
+              style={[Gutters.tinyRMargin, styles.clockIcon]}
+            />
+            <Text style={{ color: Colors.black }}>{formatDate(item.date)}</Text>
+          </View>
+          <View
+            style={[Common.statusIndicator, { backgroundColor: _getStatusIndicator(item.seen) }]}
+          />
+        </View>
+        <View style={[styles.newsButtons, Gutters.tinyTMargin, Layout.row]}>
+          {(useLoadNewsFeeds &&
+            item.userReaction.lastReaction === 'Liked' &&
+            currentNewsfeedIndex === index) ||
+          (!useLoadNewsFeeds && increaseLikeVisually && currentNewsfeedIndex === index) ? (
+            <Icon
+              name="thumb-up"
+              type="material-community"
+              size={30}
+              color="#3A609C"
+              onPress={() => {
+                if (!temporarilyPreventClickingReaction) {
+                  temporarilyPreventClickingReaction = true;
+                  setTimeout(() => likePress(item, index), 250);
+                }
+              }}
+              containerStyle={[Layout.justifyContentCenter, Gutters.smallTMarin]}
+              style={[Gutters.tinyRMargin, styles.clockIcon]}
+            />
+          ) : (
+            <Icon
+              name="thumb-up-outline"
+              type="material-community"
+              size={30}
+              color="#3A609C"
+              onPress={() => {
+                if (!temporarilyPreventClickingReaction) {
+                  temporarilyPreventClickingReaction = true;
+                  setTimeout(() => likePress(item, index), 250);
+                }
+              }}
+              containerStyle={[Layout.justifyContentCenter, Gutters.smallTMarin]}
+              style={[Gutters.tinyRMargin, styles.clockIcon]}
+            />
+          )}
+          {currentNewsfeedIndex === index ? (
+            <Text style={[Gutters.tinyTMargin, Gutters.tinyHMargin]}>
+              {item.reactions.likes + visualLikeCounter}
+            </Text>
+          ) : (
+            <Text style={Gutters.tinyTMargin}> {item.reactions.likes} </Text>
+          )}
+          {(useLoadNewsFeeds &&
+            item.userReaction.lastReaction === 'Disliked' &&
+            currentNewsfeedIndex === index) ||
+          (!useLoadNewsFeeds && increaseDislikeVisually && currentNewsfeedIndex === index) ? (
+            <Icon
+              name="thumb-down"
+              type="material-community"
+              size={30}
+              color="#3A609C"
+              onPress={() => {
+                if (!temporarilyPreventClickingReaction) {
+                  temporarilyPreventClickingReaction = true;
+                  setTimeout(() => dislikePress(item, index), 250);
+                }
+              }}
+              containerStyle={[Layout.justifyContentCenter, Gutters.smallTMarin]}
+              style={[Gutters.tinyRMargin, styles.clockIcon, styles.dislikeButton]}
+            />
+          ) : (
+            <Icon
+              name="thumb-down-outline"
+              type="material-community"
+              size={30}
+              color="#3A609C"
+              onPress={() => {
+                if (!temporarilyPreventClickingReaction) {
+                  temporarilyPreventClickingReaction = true;
+                  setTimeout(() => dislikePress(item, index), 250);
+                }
+              }}
+              containerStyle={[Layout.justifyContentCenter, Gutters.smallTMarin]}
+              style={[Gutters.tinyRMargin, styles.clockIcon, styles.dislikeButton]}
+            />
+          )}
+          {currentNewsfeedIndex === index ? (
+            <Text style={[Gutters.tinyTMargin, Gutters.tinyHMargin]}>
+              {item.reactions.dislikes + visualDislikeCounter}
+            </Text>
+          ) : (
+            <Text style={Gutters.tinyTMargin}> {item.reactions.dislikes}</Text>
+          )}
+          <View style={[styles.shareButtonView, Layout.end]}>
+            <Icon
+              name="share-outline"
+              type="material-community"
+              size={30}
+              color="#3A609C"
+              onPress={() => shareNewsArticle(item.title, item.channelName, item.date, item.body)}
+              containerStyle={[Layout.justifyContentCenter, Gutters.smallTMarin]}
+              style={[Gutters.tinyRMargin, styles.clockIcon]}
+            />
+          </View>
+        </View>
+      </>
+    );
+  };
+
   return (
     <View style={[Common.textInputWithShadow, Gutters.tinyMargin]}>
       {item.newsFeedImage != null ? (
-        <Pressable
-          onPress={() => {
-            navigation.navigate('ViewNewsFeedArticle', { newsFeedItem: item });
-          }}
-        >
+        <Pressable onPress={onArticleClick}>
           {() => (
-            <Image
-              resizeMode="cover"
-              source={{ uri: item.newsFeedImage }}
+            <FastImage
               style={styles.imageStyle}
+              source={{
+                uri: item.newsFeedImage,
+              }}
             />
           )}
         </Pressable>
       ) : null}
       <List.Item
         titleStyle={Common.cardTitle}
-        description={() => (
-          <>
-            <Text style={Common.cardTitle}>{item.title}</Text>
-            <Text style={[Gutters.tinyTMargin, { color: Colors.primary }]}>{item.channelName}</Text>
-            <View style={[Layout.rowBetween, Layout.alignItemsCenter]}>
-              <View style={[Layout.row, Gutters.tinyTMargin]}>
-                <Icon
-                  name="clock-o"
-                  type="font-awesome"
-                  size={15}
-                  containerStyle={[Layout.justifyContentCenter, Gutters.smallTMarin]}
-                  style={[Gutters.tinyRMargin, styles.clockIcon]}
-                />
-                <Text style={{ color: Colors.black }}>{formatDate(item.date)}</Text>
-              </View>
-              <View
-                style={[
-                  Common.statusIndicator,
-                  { backgroundColor: _getStatusIndicator(item.seen) },
-                ]}
-              />
-            </View>
-            <View style={[styles.newsButtons, Gutters.tinyTMargin, Layout.row]}>
-              {(useLoadNewsFeeds &&
-                item.userReaction.lastReaction === 'Liked' &&
-                currentNewsfeedIndex === index) ||
-              (!useLoadNewsFeeds && increaseLikeVisually && currentNewsfeedIndex === index) ? (
-                <Icon
-                  name="thumb-up"
-                  type="material-community"
-                  size={30}
-                  color="#3A609C"
-                  onPress={() => {
-                    if (!temporarilyPreventClickingReaction) {
-                      temporarilyPreventClickingReaction = true;
-                      setTimeout(() => likePress(item, index), 250);
-                    }
-                  }}
-                  containerStyle={[Layout.justifyContentCenter, Gutters.smallTMarin]}
-                  style={[Gutters.tinyRMargin, styles.clockIcon]}
-                />
-              ) : (
-                <Icon
-                  name="thumb-up-outline"
-                  type="material-community"
-                  size={30}
-                  color="#3A609C"
-                  onPress={() => {
-                    if (!temporarilyPreventClickingReaction) {
-                      temporarilyPreventClickingReaction = true;
-                      setTimeout(() => likePress(item, index), 250);
-                    }
-                  }}
-                  containerStyle={[Layout.justifyContentCenter, Gutters.smallTMarin]}
-                  style={[Gutters.tinyRMargin, styles.clockIcon]}
-                />
-              )}
-              {currentNewsfeedIndex === index ? (
-                <Text style={[Gutters.tinyTMargin, Gutters.tinyHMargin]}>
-                  {item.reactions.likes + visualLikeCounter}
-                </Text>
-              ) : (
-                <Text style={Gutters.tinyTMargin}> {item.reactions.likes} </Text>
-              )}
-              {(useLoadNewsFeeds &&
-                item.userReaction.lastReaction === 'Disliked' &&
-                currentNewsfeedIndex === index) ||
-              (!useLoadNewsFeeds && increaseDislikeVisually && currentNewsfeedIndex === index) ? (
-                <Icon
-                  name="thumb-down"
-                  type="material-community"
-                  size={30}
-                  color="#3A609C"
-                  onPress={() => {
-                    if (!temporarilyPreventClickingReaction) {
-                      temporarilyPreventClickingReaction = true;
-                      setTimeout(() => dislikePress(item, index), 250);
-                    }
-                  }}
-                  containerStyle={[Layout.justifyContentCenter, Gutters.smallTMarin]}
-                  style={[Gutters.tinyRMargin, styles.clockIcon, styles.dislikeButton]}
-                />
-              ) : (
-                <Icon
-                  name="thumb-down-outline"
-                  type="material-community"
-                  size={30}
-                  color="#3A609C"
-                  onPress={() => {
-                    if (!temporarilyPreventClickingReaction) {
-                      temporarilyPreventClickingReaction = true;
-                      setTimeout(() => dislikePress(item, index), 250);
-                    }
-                  }}
-                  containerStyle={[Layout.justifyContentCenter, Gutters.smallTMarin]}
-                  style={[Gutters.tinyRMargin, styles.clockIcon, styles.dislikeButton]}
-                />
-              )}
-              {currentNewsfeedIndex === index ? (
-                <Text style={[Gutters.tinyTMargin, Gutters.tinyHMargin]}>
-                  {item.reactions.dislikes + visualDislikeCounter}
-                </Text>
-              ) : (
-                <Text style={Gutters.tinyTMargin}> {item.reactions.dislikes}</Text>
-              )}
-              <View style={[styles.shareButtonView, Layout.end]}>
-                <Icon
-                  name="share-outline"
-                  type="material-community"
-                  size={30}
-                  color="#3A609C"
-                  onPress={() =>
-                    shareNewsArticle(item.title, item.channelName, item.date, item.body)
-                  }
-                  containerStyle={[Layout.justifyContentCenter, Gutters.smallTMarin]}
-                  style={[Gutters.tinyRMargin, styles.clockIcon]}
-                />
-              </View>
-            </View>
-          </>
-        )}
+        description={renderNewsFeedDescription}
         onPress={() => navigation.navigate('ViewNewsFeedArticle', { newsFeedItem: item })}
         titleNumberOfLines={3}
       />
