@@ -6,7 +6,7 @@ import { Text, Drawer, Divider } from 'react-native-paper';
 import { DrawerContentScrollView } from '@react-navigation/drawer';
 import { useSelector, useDispatch } from 'react-redux';
 import { Avatar } from 'react-native-elements';
-import DeviceInfo from 'react-native-device-info';
+import DeviceInfo, { hasHmsSync } from 'react-native-device-info';
 import codePush from 'react-native-code-push';
 
 import { signOutAction } from '../../../../reducers/user-auth-reducer/user-auth.actions';
@@ -17,6 +17,7 @@ import { openAppSetting } from '../../../../helpers/app-seettings.helper';
 import { myChannelsSelector } from '../../../../reducers/my-channels/my-channels.reducer';
 import { getMyChannelsAction } from '../../../../reducers/my-channels/my-channels.actions';
 import appConfig from '../../../../config';
+import { getCurrentPositionAction } from '../../../../reducers/location-reducer/location.actions';
 
 const theme = {
   colors: {
@@ -93,7 +94,11 @@ const DrawerContent = (props) => {
             icon="information"
             label="Service Requests"
             onPress={async () => {
+              await dispatch(getCurrentPositionAction());
               await permissionsService.checkLocationPermissions();
+              if (hasHmsSync()) {
+                await permissionsService.requestHmsLocationPermissions();
+              }
               navigation.navigate('ServiceRequests');
             }}
             theme={theme}
@@ -113,6 +118,9 @@ const DrawerContent = (props) => {
             label="Channels"
             onPress={async () => {
               await permissionsService.checkLocationPermissions();
+              if (hasHmsSync()) {
+                await permissionsService.requestHmsLocationPermissions();
+              }
               return navigation.navigate('ViewSubscribeToChannels');
             }}
             theme={theme}
@@ -122,6 +130,9 @@ const DrawerContent = (props) => {
             label="Contacts"
             onPress={async () => {
               await permissionsService.checkLocationPermissions();
+              if (hasHmsSync()) {
+                await permissionsService.requestHmsLocationPermissions();
+              }
               return navigation.navigate('ContactDetails');
             }}
             theme={theme}

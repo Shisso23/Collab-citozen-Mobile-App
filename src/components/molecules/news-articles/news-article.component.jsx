@@ -30,9 +30,6 @@ const NewsArticle = (props) => {
   const [liked, setLiked] = useState(lastUserReaction === 'Liked');
   const [disliked, setDisLiked] = useState(lastUserReaction === 'Disliked');
 
-  useEffect(() => {
-    console.log({ lastUserReaction });
-  }, [lastUserReaction]);
   useFocusEffect(
     React.useCallback(() => {
       PushNotification.setApplicationIconBadgeNumber(0);

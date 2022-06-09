@@ -83,13 +83,13 @@ const SelectLocationScreen = () => {
     setAddress(selectedAddress);
   }, [selectedAddress]);
 
-  const _handleBackPress = () => {
+  const _handleBackPress = async () => {
     if (fromSubscribedChannels) {
       navigation.navigate('ViewSubscribeToChannels');
-      dispatch(getCurrentPositionAction());
+      await dispatch(getCurrentPositionAction());
     } else {
       navigation.navigate('ServiceRequests');
-      dispatch(getCurrentPositionAction());
+      await dispatch(getCurrentPositionAction());
     }
   };
 

@@ -1,5 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import MapView, { Marker } from 'react-native-maps';
+import HmsMapView, {
+  HMSMarker,
+  MapTypes,
+  MarkerAnimation,
+  Hue,
+} from '@hmscore/react-native-hms-map';
 import HMSLocation from '@hmscore/react-native-hms-location';
 import { FAB, Modal } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
@@ -34,13 +40,17 @@ import ServiceRequestItem from '../../../components/molecules/service-request-it
 import SwipeRowContainer from '../../../components/atoms/swipe-row/swipe-row';
 import { promptConfirm } from '../../../helpers/prompt.helper';
 import { TrashButton } from '../../../components/atoms';
-import { locationSelector } from '../../../reducers/location-reducer/location.reducer';
+import {
+  locationSelector,
+  setRegionAction,
+} from '../../../reducers/location-reducer/location.reducer';
 
 const { Colors } = useTheme();
 
 const ServiceRequestScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const [hmsMapRef, setHmsMapRef] = useState(undefined);
   const {
     serviceRequests,
     isLoadingServiceRequests,
@@ -48,13 +58,9 @@ const ServiceRequestScreen = () => {
     deleteServiceRequestPreview,
   } = useSelector(serviceRequestSelector);
   const { Common, Gutters, Fonts, Layout, Images } = useTheme();
-  const [mapNotSelected, setMapNotSelected] = useState(0);
+  const [tabIndex, setTabIndex] = useState(0);
   const { region } = useSelector(locationSelector);
-  const [regionChange, setRegionChange] = useState({
-    ...region,
-    latitudeDelta: 0.011,
-    longitudeDelta: 0.011,
-  });
+
   const [mapReady, setMapReady] = useState(false);
   const [displayModal, setDisplayModal] = useState(false);
   const [nearbyLocationsReceived, setNearbyLocationsReceived] = useState(false);
@@ -64,7 +70,33 @@ const ServiceRequestScreen = () => {
   const [displayPinDescription, setDisplayPinDescription] = useState('');
   const [displayPinRequestDate, setDisplayPinRequestDate] = useState('');
   const [displayPinStatus, setDisplayPinStatus] = useState('');
-  let nearbyPinLocationsResponse = [];
+  const [shouldCameraUpdate, setShouldCameraUpdate] = useState(true);
+  // let [nearbyPinLocationsResponse, setNearByPinLocations] = useState([]);
+  const [zoomLevel, setZoomLevel] = useState(9);
+  const debounceSetRegion = useMemo(
+    () =>
+      _.throttle(
+        (event, region_) => {
+          return _setRegion(event.nativeEvent.target, region_);
+        },
+        2000,
+        undefined,
+      ),
+    [],
+  );
+
+  const stopAnimationDevouce = useMemo(
+    () =>
+      _.throttle(
+        (event) => {
+          hmsMapRef.stopAnimation();
+          setShouldCameraUpdate(false);
+        },
+        2000,
+        undefined,
+      ),
+    [],
+  );
 
   const removeLocationAndListener = (code) => {
     HMSLocation.FusedLocation.Native.removeLocationUpdates(code)
@@ -76,9 +108,10 @@ const ServiceRequestScreen = () => {
   };
 
   const getNearbyPinLocations = async (currentLatitude, currentLongitude) => {
-    nearbyPinLocationsResponse = await dispatch(
+    const nearbyPinLocationsResponse = await dispatch(
       getNearbyPinLocationsAction(currentLatitude, currentLongitude),
     );
+    console.log({ nearbyPinLocationsResponse: nearbyPinLocationsResponse.payload[0] });
     setNearbyPinLocations(nearbyPinLocationsResponse);
     if (nearbyPinLocationsResponse.payload.length > 0) {
       setNearbyLocationsReceived(true);
@@ -86,10 +119,12 @@ const ServiceRequestScreen = () => {
   };
 
   useEffect(() => {
+    _loadServiceRequests();
+    // dispatch(getCurrentPositionAction()).then(()=>{});
     if (hasHmsSync()) {
       HMSLocation.LocationKit.Native.init()
         .then((resp) => resp)
-        .catch((err) => console.log(err.message));
+        .catch((err) => console.warn(err.message));
     }
     return () => {
       if (hasHmsSync()) {
@@ -100,27 +135,27 @@ const ServiceRequestScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
-      getNearbyPinLocations(regionChange.latitude, regionChange.longitude);
-    }, [regionChange]),
+      getNearbyPinLocations(region?.latitude, region?.longitude);
+    }, [JSON.stringify(region)]),
   );
 
-  const _setRegion = async (newRegion) => {
-    if (
-      newRegion.latitude.toFixed(5) !== region.latitude.toFixed(5) &&
-      newRegion.longitude.toFixed(5) !== region.latitude.toFixed(5)
-    ) {
-      setRegionChange(newRegion);
-    }
-  };
+  const _setRegion = useCallback(
+    (newRegion, region_) => {
+      if (
+        region_ &&
+        newRegion.latitude.toFixed(5) !== region_.latitude.toFixed(5) &&
+        newRegion.longitude.toFixed(5) !== region_.longitude.toFixed(5)
+      ) {
+        console.log('Updating');
+        dispatch(setRegionAction({ ...newRegion, latitudeDelta: 0.011, longitudeDelta: 0.011 }));
+      }
+    },
+    [JSON.stringify(region)],
+  );
 
   const _loadServiceRequests = () => {
     dispatch(getServiceRequestsAction());
   };
-
-  useEffect(() => {
-    _loadServiceRequests();
-    dispatch(getCurrentPositionAction());
-  }, []);
 
   const _sortServiceRequestDescending = (serviceRequest) => {
     return serviceRequest.sort((a, b) => moment(b.requestedDate) - moment(a.requestedDate));
@@ -129,7 +164,7 @@ const ServiceRequestScreen = () => {
   const _handleOnServiceRequestCreatePress = async () => {
     if (Platform.OS === 'ios' || hasGmsSync()) await permissionsService.checkLocationPermissions();
     if (hasHmsSync()) {
-      permissionsService.requestHmsLocationPermissions();
+      await permissionsService.requestHmsLocationPermissions();
     }
     navigation.navigate('SelectLocationScreen', { fromSubscribedChannels: false });
   };
@@ -172,89 +207,78 @@ const ServiceRequestScreen = () => {
     );
   };
 
+  const renderTabs = () => {
+    return (
+      <Tab
+        value={tabIndex}
+        onChange={(index) => {
+          setTabIndex(index);
+        }}
+        indicatorStyle={[
+          { backgroundColor: Colors.softBlue },
+          Platform.select({ android: { borderWidth: 15 }, ios: {} }),
+        ]}
+      >
+        <Tab.Item
+          active={tabIndex === 0}
+          titleStyle={[{ color: tabIndex === 0 ? Colors.black : Colors.gray }, styles.tabItem]}
+          title="Map"
+          icon={<Icon name="pin-drop" />}
+        />
+
+        <Tab.Item
+          active={tabIndex === 0}
+          titleStyle={[{ color: tabIndex === 1 ? Colors.black : Colors.gray }, styles.tabItem]}
+          title="My List"
+          icon={<Icon name="format-list-bulleted" />}
+        />
+      </Tab>
+    );
+  };
+
+  const returnMarkerColour = (serviceRequestStatus) => {
+    switch (serviceRequestStatus) {
+      case 'Initial':
+        return hasHmsSync() ? Hue.ORANGE : Colors.lightOrange;
+      case 'Registered':
+        return hasHmsSync() ? Hue.CYAN : Colors.lightBlue;
+      case 'Completed':
+        return hasHmsSync() ? Hue.BLUE : Colors.primary;
+      case 'Assigned':
+        return hasHmsSync() ? Hue.GREEN : Colors.lightGreen;
+      default:
+        return hasHmsSync() ? Hue.VIOLET : Colors.gray;
+    }
+  };
+
   const displayPins = (pinData) => {
-    if (mapReady && nearbyLocationsReceived) {
+    if (nearbyLocationsReceived) {
       let i = 0;
       return pinData.payload.map((pin) => {
         i += 1;
-
-        const pinReferenceNumber = pin.id;
-        const pinType = pin.serviceType;
-        const pinDescription = pin.serviceDescription;
-        const pinRequestDate = pin.requestDate;
-        const pinStatus = pin.status;
-
         const { gpsCoordinates } = pin;
-        const gpsCoordinatesSubString0 = gpsCoordinates.substring(5);
-        const gpsCoordinatesSubString1 = gpsCoordinatesSubString0.substring(
-          1,
-          gpsCoordinatesSubString0.length - 1,
-        );
+        const cordinates = gpsCoordinates
+          .substring(gpsCoordinates.indexOf('(') + 1, gpsCoordinates.indexOf(')'))
+          .split(' ');
+        const lat = parseFloat(cordinates[0]);
+        const lng = parseFloat(cordinates[1]);
 
-        const gpsCoordinatesSubString2 = gpsCoordinatesSubString1;
-        const gpsCoordinatesSubString3 = gpsCoordinatesSubString2.split(' ');
-
-        const lat = parseFloat(gpsCoordinatesSubString3[0]);
-        const lng = parseFloat(gpsCoordinatesSubString3[1]);
-
-        if (pin.status === 'Assigned') {
-          return (
-            <Marker
-              coordinate={{ latitude: lng, longitude: lat }}
-              onPress={() =>
-                displayModalToggle(
-                  pinReferenceNumber,
-                  pinType,
-                  pinDescription,
-                  pinRequestDate,
-                  pinStatus,
-                )
-              }
-              key={i}
-            >
-              <View style={styles.pin}>
-                <Icon name="location-pin" size={45} color={Colors.lightGreen} />
-              </View>
-            </Marker>
-          );
-        }
-        if (pin.status === 'Registered') {
-          return (
-            <Marker
-              coordinate={{ latitude: lng, longitude: lat }}
-              onPress={() =>
-                displayModalToggle(
-                  pinReferenceNumber,
-                  pinType,
-                  pinDescription,
-                  pinRequestDate,
-                  pinStatus,
-                )
-              }
-              key={i}
-            >
-              <View style={styles.pin}>
-                <Icon name="location-pin" size={45} color={Colors.lightBlue} />
-              </View>
-            </Marker>
-          );
-        }
-        return (
+        return hasHmsSync() ? (
+          <HMSMarker
+            key={pin.id}
+            icon={{ hue: returnMarkerColour(pin.status) }}
+            title={pin.serviceDescription}
+            clusterable
+            coordinate={{ latitude: lng, longitude: lat }}
+          />
+        ) : (
           <Marker
             coordinate={{ latitude: lng, longitude: lat }}
-            onPress={() =>
-              displayModalToggle(
-                pinReferenceNumber,
-                pinType,
-                pinDescription,
-                pinRequestDate,
-                pinStatus,
-              )
-            }
+            onPress={() => displayModalToggle(pin)}
             key={i}
           >
             <View style={styles.pin}>
-              <Icon name="location-pin" size={45} color={Colors.lightOrange} />
+              <Icon name="location-pin" size={45} color={returnMarkerColour(pin.status)} />
             </View>
           </Marker>
         );
@@ -263,92 +287,150 @@ const ServiceRequestScreen = () => {
     return null;
   };
 
-  const displayModalToggle = (refNum, type, desc, date, status) => {
+  const renderHmsMapPins = (region_) => {
+    return (
+      <View style={[Layout.fill, ...[{ marginBottom: 200 }]]}>
+        <HmsMapView
+          ref={(e) => {
+            setHmsMapRef(e);
+          }}
+          style={[Layout.fullWidth, ...[{ height: '100%' }]]}
+          mapType={MapTypes.NORMAL}
+          camera={{
+            target: { ...region, latitudeDelta: 0.011, longitudeDelta: 0.011 },
+            zoom: zoomLevel,
+          }}
+          onTouchEnd={() => {
+            setTimeout(() => {
+              setShouldCameraUpdate(false);
+              console.log('touch end');
+              hmsMapRef.stopAnimation();
+            }, 2000);
+          }}
+          onTouchStart={() => {
+            console.log('Touch start');
+            setShouldCameraUpdate(true);
+          }}
+          zoomControlsEnabled
+          onCameraIdle={(event) => {
+            if (shouldCameraUpdate) {
+              console.log('should update');
+              setZoomLevel(event.nativeEvent.zoom);
+              event.persist();
+              debounceSetRegion(event, region_);
+            }
+          }}
+          zoomGesturesEnabled
+          myLocationButtonEnabled
+          myLocationEnabled
+          useAnimation
+        >
+          {nearbyLocationsReceived ? displayPins(nearbyPinLocations) : <></>}
+        </HmsMapView>
+      </View>
+    );
+  };
+
+  const renderMapViewPins = (region_) => {
+    return (
+      <MapView
+        style={Layout.fill}
+        initialRegion={region}
+        showsUserLocation
+        onMapReady={() => setMapReady(true)}
+        onPress={Keyboard.dismiss}
+        onRegionChangeComplete={(newRegion) => {
+          return _setRegion(newRegion, region_);
+        }}
+        showsMyLocationButton={false}
+        zoomControlEnabled
+      >
+        {nearbyLocationsReceived ? displayPins(nearbyPinLocations) : <></>}
+      </MapView>
+    );
+  };
+
+  const renderServiceRequestList = () => {
+    return (
+      <>
+        <ImageBackground
+          source={Images.serviceRequest}
+          style={[Layout.fullSize, Layout.fill]}
+          resizeMode="cover"
+        >
+          <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>Service Requests</Text>
+          <FlatList
+            contentContainerStyle={Gutters.smallHMargin}
+            data={_sortServiceRequestDescending(serviceRequests)}
+            renderItem={renderServiceRequest}
+            keyExtractor={(item) => String(item.id)}
+            refreshControl={
+              <RefreshControl
+                refreshing={isLoadingServiceRequests}
+                onRefresh={_loadServiceRequests}
+              />
+            }
+          />
+        </ImageBackground>
+        <FAB style={Common.fabAlignment} icon="plus" onPress={_handleOnServiceRequestCreatePress} />
+      </>
+    );
+  };
+
+  const pinDetailsModal = () => {
+    return (
+      <Modal visible={displayModal} onDismiss={() => {}} transparent>
+        <View style={[styles.modal, { backgroundColor: Colors.transparent }, Fonts.textRegular]}>
+          <TouchableOpacity onPress={displayModalToggle}>
+            <Icon name="close" size={30} color={Colors.lightgray} />
+          </TouchableOpacity>
+
+          <View style={[styles.modalView, { backgroundColor: Colors.lightgray }]}>
+            <Text style={[Gutters.smallVMargin, Fonts.textRegular, styles.headerFont]}>
+              Type: {displayPinType}
+            </Text>
+            <View style={styles.textLine} />
+            <Text style={[Gutters.smallVMargin, Fonts.textRegular, styles.descriptionFont]}>
+              Description:
+            </Text>
+            <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>{displayPinDescription}</Text>
+            <View style={styles.textLine} />
+            <Text style={[Gutters.smallVMargin, Fonts.textRegular]}>
+              Status: {displayPinStatus}
+            </Text>
+            <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>
+              Date: {displayPinRequestDate}
+            </Text>
+            <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>
+              Reference No: {displayPinReferenceNumber}
+            </Text>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
+  const displayModalToggle = (pin) => {
+    const { id, serviceType, serviceDescription, requestDate, status } = pin;
     setDisplayModal(!displayModal);
     if (!displayModal) {
-      setDisplayPinReferenceNumber(refNum);
-      setDisplayPinType(type);
-      setDisplayPinDescription(desc);
-      setDisplayPinRequestDate(date);
+      setDisplayPinReferenceNumber(id);
+      setDisplayPinType(serviceType);
+      setDisplayPinDescription(serviceDescription);
+      setDisplayPinRequestDate(requestDate);
       setDisplayPinStatus(status);
     }
   };
 
   return (
     <>
-      <Tab
-        value={mapNotSelected}
-        onChange={(index) => {
-          setMapNotSelected(index);
-        }}
-        indicatorStyle={[
-          { backgroundColor: Colors.softBlue },
-          Platform.select({ android: { borderWidth: 15 }, ios: {} }),
-        ]}
-      >
-        <Tab.Item
-          titleStyle={[
-            { color: mapNotSelected === 0 ? Colors.black : Colors.gray },
-            styles.tabItem,
-          ]}
-          title="Map"
-          icon={<Icon name="pin-drop" />}
-        />
-
-        <Tab.Item
-          titleStyle={[
-            { color: mapNotSelected === 1 ? Colors.black : Colors.gray },
-            styles.tabItem,
-          ]}
-          title="My List"
-          icon={<Icon name="format-list-bulleted" />}
-        />
-      </Tab>
-
-      {mapNotSelected ? (
-        <>
-          <ImageBackground
-            source={Images.serviceRequest}
-            style={[Layout.fullSize, Layout.fill]}
-            resizeMode="cover"
-          >
-            <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>Service Requests</Text>
-            <FlatList
-              contentContainerStyle={Gutters.smallHMargin}
-              data={_sortServiceRequestDescending(serviceRequests)}
-              renderItem={renderServiceRequest}
-              keyExtractor={(item) => String(item.id)}
-              refreshControl={
-                <RefreshControl
-                  refreshing={isLoadingServiceRequests}
-                  onRefresh={_loadServiceRequests}
-                />
-              }
-            />
-          </ImageBackground>
-          <FAB
-            style={Common.fabAlignment}
-            icon="plus"
-            onPress={_handleOnServiceRequestCreatePress}
-          />
-        </>
-      ) : region && nearbyLocationsReceived ? (
+      {renderTabs()}
+      {tabIndex === 1 ? (
+        renderServiceRequestList()
+      ) : (
         <>
           <View style={Layout.fullSize}>
-            <MapView
-              style={Layout.fill}
-              initialRegion={region}
-              showsUserLocation
-              onMapReady={() => setMapReady(true)}
-              onPress={Keyboard.dismiss}
-              onRegionChangeComplete={(newRegion) => {
-                return _setRegion(newRegion);
-              }}
-              showsMyLocationButton={false}
-              zoomControlEnabled
-            >
-              {displayPins(nearbyPinLocations)}
-            </MapView>
+            {hasHmsSync() ? renderHmsMapPins(region) : renderMapViewPins(region)}
           </View>
           <View style={Common.pinContainer}>
             <Icon type="ionicon" name="pin-outline" size={30} color={Colors.primary} />
@@ -358,63 +440,8 @@ const ServiceRequestScreen = () => {
             icon="plus"
             onPress={_handleOnServiceRequestCreatePress}
           />
-          <Modal visible={displayModal} onDismiss={() => {}} transparent>
-            <View
-              style={[styles.modal, { backgroundColor: Colors.transparent }, Fonts.textRegular]}
-            >
-              <TouchableOpacity onPress={displayModalToggle}>
-                <Icon name="close" size={30} color={Colors.lightgray} />
-              </TouchableOpacity>
-
-              <View style={[styles.modalView, { backgroundColor: Colors.lightgray }]}>
-                <Text style={[Gutters.smallVMargin, Fonts.textRegular, styles.headerFont]}>
-                  Type: {displayPinType}
-                </Text>
-                <View style={styles.textLine} />
-                <Text style={[Gutters.smallVMargin, Fonts.textRegular, styles.descriptionFont]}>
-                  Description:
-                </Text>
-                <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>
-                  {displayPinDescription}
-                </Text>
-                <View style={styles.textLine} />
-                <Text style={[Gutters.smallVMargin, Fonts.textRegular]}>
-                  Status: {displayPinStatus}
-                </Text>
-                <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>
-                  Date: {displayPinRequestDate}
-                </Text>
-                <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>
-                  Reference No: {displayPinReferenceNumber}
-                </Text>
-              </View>
-            </View>
-          </Modal>
+          {pinDetailsModal()}
         </>
-      ) : region ? (
-        <>
-          <View style={Layout.fullSize}>
-            <MapView
-              style={Layout.fill}
-              initialRegion={region}
-              showsUserLocation
-              onMapReady={() => setMapReady(true)}
-              onPress={Keyboard.dismiss}
-              onRegionChangeComplete={(newRegion) => {
-                return _setRegion(newRegion);
-              }}
-              showsMyLocationButton={false}
-              zoomControlEnabled
-            />
-          </View>
-          <FAB
-            style={Common.fabAlignment}
-            icon="plus"
-            onPress={_handleOnServiceRequestCreatePress}
-          />
-        </>
-      ) : (
-        <></>
       )}
     </>
   );
