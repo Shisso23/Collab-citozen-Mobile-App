@@ -30,8 +30,8 @@ const NewsArticles = () => {
     }, []),
   );
 
-  const renderItem = ({ item, index }) => {
-    return <NewsArticle item={item} index={index} isLoadingNewsFeeds={isLoadingNewsFeeds} />;
+  const renderItem = ({ item }) => {
+    return <NewsArticle item={item} />;
   };
 
   const extractListKey = (item) => {
