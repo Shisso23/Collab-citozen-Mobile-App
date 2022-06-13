@@ -25,7 +25,7 @@ if (hasHmsSync()) {
 }
 
 export const getCurrentPosition = () => {
-  if (!hasHmsSync) {
+  if (!hasHmsSync()) {
     return new Promise((resolve, reject) => {
       Geolocation.getCurrentPosition(
         (position) => {

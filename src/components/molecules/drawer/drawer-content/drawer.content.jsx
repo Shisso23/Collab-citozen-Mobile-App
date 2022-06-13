@@ -12,12 +12,11 @@ import codePush from 'react-native-code-push';
 import { signOutAction } from '../../../../reducers/user-auth-reducer/user-auth.actions';
 import useTheme from '../../../../theme/hooks/useTheme';
 import { Colors } from '../../../../theme/Variables';
-import { permissionsService, userService } from '../../../../services';
+import { flashService, permissionsService, userService } from '../../../../services';
 import { openAppSetting } from '../../../../helpers/app-seettings.helper';
 import { myChannelsSelector } from '../../../../reducers/my-channels/my-channels.reducer';
 import { getMyChannelsAction } from '../../../../reducers/my-channels/my-channels.actions';
 import appConfig from '../../../../config';
-import { getCurrentPositionAction } from '../../../../reducers/location-reducer/location.actions';
 
 const theme = {
   colors: {
@@ -94,12 +93,17 @@ const DrawerContent = (props) => {
             icon="information"
             label="Service Requests"
             onPress={async () => {
-              await dispatch(getCurrentPositionAction());
-              await permissionsService.checkLocationPermissions();
+              let permission;
               if (hasHmsSync()) {
-                await permissionsService.requestHmsLocationPermissions();
+                permission = await permissionsService.requestHmsLocationPermissions();
+              } else {
+                permission = await permissionsService.checkLocationPermissions();
               }
-              navigation.navigate('ServiceRequests');
+              if (permission) {
+                navigation.navigate('ServiceRequests');
+              } else {
+                flashService.error('Please grant permissions to select a location.');
+              }
             }}
             theme={theme}
           />
