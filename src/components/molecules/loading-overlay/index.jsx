@@ -25,7 +25,7 @@ const LoadingOverlay = ({ source, visible, onBackDropPress, transparent }) => {
         ]}
       >
         <View style={[styles.modalView, Layout.alignItemsCenter, Gutters.largeMargin]}>
-          <Text style={[styles.modalText, Gutters.regularBMargin]}>Lading...</Text>
+          <Text style={[styles.modalText, Gutters.regularBMargin]}>Loading...</Text>
           {renderLoadingIndicator()}
         </View>
       </TouchableOpacity>
