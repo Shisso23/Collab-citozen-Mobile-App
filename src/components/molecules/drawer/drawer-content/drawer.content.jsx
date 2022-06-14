@@ -93,17 +93,7 @@ const DrawerContent = (props) => {
             icon="information"
             label="Service Requests"
             onPress={async () => {
-              let permission;
-              if (hasHmsSync()) {
-                permission = await permissionsService.requestHmsLocationPermissions();
-              } else {
-                permission = await permissionsService.checkLocationPermissions();
-              }
-              if (permission) {
-                navigation.navigate('ServiceRequests');
-              } else {
-                flashService.error('Please grant permissions to select a location.');
-              }
+              navigation.navigate('ServiceRequests');
             }}
             theme={theme}
           />

@@ -1,6 +1,11 @@
 import flashService from '../../services/sub-services/flash-service/flash.service';
 import locationService from '../../services/sub-services/location-service/location.service';
-import { setIsLoadingAction, setRegionAction, setSelectedAddressAction } from './location.reducer';
+import {
+  setIsLoadingAction,
+  setRegionAction,
+  setSelectedAddressAction,
+  setIsLoadingAddressAction,
+} from './location.reducer';
 import { getCurrentPosition } from './location.utils';
 
 export const clearLocationAction = () => (dispatch) => {
@@ -18,13 +23,14 @@ export const getCurrentPositionAction = async () => async (dispatch) => {
     return region;
   } catch (err) {
     flashService.error(err.message);
+    return null;
   } finally {
     setIsLoadingAction(false);
   }
 };
 
-export const getAddressFromRegionAction = (newRegion) => async (dispatch) => {
-  dispatch(setRegionAction(newRegion));
+export const getAddressFromRegionAction = async (newRegion) => async (dispatch) => {
+  dispatch(setIsLoadingAddressAction(true));
   try {
     const address = await locationService.getAddressFromCoordinates(newRegion);
     dispatch(setSelectedAddressAction(address));
@@ -32,5 +38,7 @@ export const getAddressFromRegionAction = (newRegion) => async (dispatch) => {
   } catch (err) {
     flashService.error(err.message);
     return null;
+  } finally {
+    dispatch(setIsLoadingAddressAction(false));
   }
 };

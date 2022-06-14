@@ -7,6 +7,7 @@ import codePush from 'react-native-code-push';
 import { HmsPushEvent } from '@hmscore/react-native-hms-push';
 
 import { useDispatch, useSelector } from 'react-redux';
+import HMSLocation from '@hmscore/react-native-hms-location';
 import NavigationContainer from './navigation/root.navigator';
 import { initAppAction } from './reducers/app-reducer/app.actions';
 import { firebaseService, firebaseNotificationService, pushKitService } from './services';
@@ -26,6 +27,15 @@ const App = () => {
     const token = await firebaseService.getAndSetToken();
     setFcmToken(token);
     return token;
+  };
+
+  const removeLocationAndListener = (code) => {
+    HMSLocation.FusedLocation.Native.removeLocationUpdates(code)
+      .then((res) => res)
+      .catch((err) => console.log(err.message));
+    HMSLocation.FusedLocation.Events.removeFusedLocationEventListener((removedResponse) => {
+      return removedResponse;
+    });
   };
 
   const checkPermission = async () => {
@@ -141,6 +151,9 @@ const App = () => {
           });
       }
     });
+    return () => {
+      removeLocationAndListener(1);
+    };
   }, []);
 
   return <NavigationContainer />;

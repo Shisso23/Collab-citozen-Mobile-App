@@ -1,50 +1,68 @@
 import * as React from 'react';
-import { Modal, View, StyleSheet } from 'react-native';
+import { Modal, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Text } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import LottieView from 'lottie-react-native';
 import { Colors } from '../../../theme/Variables';
+import useTheme from '../../../theme/hooks/useTheme';
 
-const LoadingOverlay = ({ source }) => {
+const LoadingOverlay = ({ source, visible, onBackDropPress, transparent }) => {
+  const { Gutters, Layout } = useTheme();
   const renderLoadingIndicator = () => {
-    return <LottieView source={source} autoPlay loop />;
+    return <LottieView source={source} autoPlay style={styles.loader} loop />;
   };
 
   return (
-    <View style={styles.centeredView}>
-      <Modal animationType="slide" transparent visible>
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Text style={styles.modalText}>Lading Map...</Text>
-            {renderLoadingIndicator()}
-          </View>
+    <Modal animationType="slide" transparent visible={visible}>
+      <TouchableOpacity
+        activeOpacity={1}
+        onPress={() => onBackDropPress(false)}
+        style={[
+          styles.centeredView,
+          Layout.alignItemsCenter,
+          Layout.justifyContentCenter,
+          ...[{ backgroundColor: transparent ? Colors.transparent : Colors.shadow }],
+        ]}
+      >
+        <View style={[styles.modalView, Layout.alignItemsCenter, Gutters.largeMargin]}>
+          <Text style={[styles.modalText, Gutters.regularBMargin]}>Lading Map...</Text>
+          {renderLoadingIndicator()}
         </View>
-      </Modal>
-    </View>
+      </TouchableOpacity>
+    </Modal>
   );
 };
 
 LoadingOverlay.propTypes = {
-  source: PropTypes.number.isRequired,
+  source: PropTypes.object.isRequired,
+  visible: PropTypes.bool.isRequired,
+  onBackDropPress: PropTypes.func.isRequired,
+  transparent: PropTypes.bool,
+};
+LoadingOverlay.defaultProps = {
+  transparent: false,
 };
 
 const styles = StyleSheet.create({
   centeredView: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'center',
-    marginTop: 22,
+    flexGrow: 1,
+    marginTop: '25%',
+  },
+  loader: {
+    height: 200,
+    overflow: 'visible',
+    shadowColor: Colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    width: 300,
   },
   modalText: {
-    marginBottom: 15,
     textAlign: 'center',
   },
   modalView: {
-    alignItems: 'center',
     backgroundColor: Colors.white,
     borderRadius: 20,
     elevation: 5,
-    margin: 20,
     padding: 35,
     shadowColor: Colors.black,
     shadowOffset: {

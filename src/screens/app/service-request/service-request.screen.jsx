@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import MapView, { Marker } from 'react-native-maps';
 import HmsMapView, { HMSMarker, MapTypes, Hue } from '@hmscore/react-native-hms-map';
-import HMSLocation from '@hmscore/react-native-hms-location';
 import { FAB, Modal } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import {
@@ -30,7 +29,7 @@ import {
   previewDeleteServiceRequestAction,
   getNearbyPinLocationsAction,
 } from '../../../reducers/service-request-reducer/service-request.actions';
-import { permissionsService } from '../../../services';
+import { flashService, permissionsService } from '../../../services';
 import ServiceRequestItem from '../../../components/molecules/service-request-item';
 import SwipeRowContainer from '../../../components/atoms/swipe-row/swipe-row';
 import { promptConfirm } from '../../../helpers/prompt.helper';
@@ -56,27 +55,21 @@ const ServiceRequestScreen = () => {
   const { region } = useSelector(locationSelector);
 
   const [pinsModalVisible, setPinsModalVisible] = useState(false);
-
   const [nearbyPinLocations, setNearbyPinLocations] = useState([]);
+  const [locationPermission, setLocationPermission] = useState(false);
 
   const [selectedSRPin, setSelectedSRPin] = useState({});
   const [userLocation, setUserLocation] = useState(region);
-  // const [mapReady, setMapReady] = useState(false);
+  const [mapReady, setMapReady] = useState(false);
   const [mapPosition, setMapPosition] = useState(userLocation);
+  const [loadingModalVisible, setLoadingModalVisible] = useState(
+    !mapReady || !locationPermission || !userLocation,
+  );
   const initialTarget = userLocation || {
     latitude: 38.68551,
     longitude: -101.07332,
     latitudeDelta: 0.011,
     longitudeDelta: 0.011,
-  };
-
-  const removeLocationAndListener = (code) => {
-    HMSLocation.FusedLocation.Native.removeLocationUpdates(code)
-      .then((res) => res)
-      .catch((err) => console.log(err.message));
-    HMSLocation.FusedLocation.Events.removeFusedLocationEventListener((removedResponse) => {
-      return removedResponse;
-    });
   };
 
   const getNearbyPinLocations = async (currentLatitude, currentLongitude) => {
@@ -96,11 +89,35 @@ const ServiceRequestScreen = () => {
   );
 
   useEffect(() => {
-    _loadServiceRequests();
-    if (hasHmsSync()) {
-      removeLocationAndListener(1);
+    if (region && mapReady && locationPermission) {
+      setLoadingModalVisible(false);
     }
-  }, []);
+  }, [JSON.stringify(region), mapReady, locationPermission]);
+
+  useFocusEffect(
+    useCallback(() => {
+      _loadServiceRequests();
+      if (hasHmsSync()) {
+        permissionsService
+          .requestHmsLocationPermissions()
+          .then((result) => {
+            setLocationPermission(result);
+          })
+          .catch(() => {
+            flashService.error('Please grant permissions to select a location.');
+          });
+      } else {
+        permissionsService
+          .checkLocationPermissions()
+          .then((result) => {
+            setLocationPermission(result);
+          })
+          .catch(() => {
+            flashService.error('Please grant permissions to select a location.');
+          });
+      }
+    }, []),
+  );
 
   useFocusEffect(
     useCallback(() => {
@@ -259,7 +276,7 @@ const ServiceRequestScreen = () => {
             mapType={MapTypes.NORMAL}
             camera={{
               target: userLocation || initialTarget,
-              zoom: 11,
+              zoom: 15,
             }}
             minZoomPreference={3}
             maxZoomPreference={20}
@@ -275,7 +292,7 @@ const ServiceRequestScreen = () => {
             markerClustering={false}
             scrollGesturesEnabledDuringRotateOrZoom
             useAnimation
-            // onMapReady={() => setMapReady(true)}
+            onMapReady={() => setMapReady(true)}
             onCameraIdle={(event) => {
               _setMapPosition(event.nativeEvent.target);
             }}
@@ -290,17 +307,17 @@ const ServiceRequestScreen = () => {
   const renderMapViewPins = () => {
     return (
       <MapView
-        style={[Layout.fill, ...[{ marginBottom: 200 }]]}
+        style={[Layout.fill]}
         initialRegion={userLocation}
         showsUserLocation
         onPress={Keyboard.dismiss}
         onRegionChangeComplete={(newPosition) => {
           return _setMapPosition(newPosition);
         }}
-        // onMapReady={() => setMapReady(true)}
-        showsMyLocationButton={false}
+        onMapReady={() => setMapReady(true)}
         zoomControlEnabled
         zoomEnabled
+        showsMyLocationButton
       >
         {nearbyPinLocations.length > 0 ? displayPins(nearbyPinLocations) : <></>}
       </MapView>
@@ -375,13 +392,7 @@ const ServiceRequestScreen = () => {
       ) : (
         <>
           <View style={Layout.fullSize}>
-            {!region ? (
-              <LoadingOverlay source={loadingImageSource} />
-            ) : hasHmsSync() ? (
-              renderHmsMapPins()
-            ) : (
-              renderMapViewPins()
-            )}
+            {hasHmsSync() ? renderHmsMapPins() : renderMapViewPins()}
           </View>
           <View style={Common.pinContainer}>
             <Icon type="ionicon" name="pin-outline" size={30} color={Colors.primary} />
@@ -392,6 +403,11 @@ const ServiceRequestScreen = () => {
             onPress={_handleOnServiceRequestCreatePress}
           />
           {pinDetailsModal()}
+          <LoadingOverlay
+            source={loadingImageSource}
+            visible={loadingModalVisible}
+            onBackDropPress={() => setLoadingModalVisible(false)}
+          />
         </>
       )}
     </>
