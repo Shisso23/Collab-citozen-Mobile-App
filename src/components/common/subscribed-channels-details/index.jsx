@@ -25,8 +25,8 @@ const SubscribedToChannelsDetails = (props) => {
     }
   }, []);
 
-  const onCreateNotificationPressed = (_interestTypes) => () => {
-    navigation.navigate('CreateNotification', { _interestTypes });
+  const onCreateNotificationPressed = (_interestTypes, channelRef) => () => {
+    navigation.navigate('CreateNotification', { _interestTypes, channelRef });
   };
 
   const subscribeToItem = ({ item }) => {
@@ -66,7 +66,7 @@ const SubscribedToChannelsDetails = (props) => {
         titleStyle={Gutters.smallMarginHorizontal}
         buttonStyle={[...[{ borderBottomWidth: 0 }]]}
         containerStyle={[Gutters.smallVMargin, Gutters.tinyHMargin, styles.buttonContainer]}
-        onPress={onCreateNotificationPressed(interestTypes)}
+        onPress={onCreateNotificationPressed(interestTypes, channelId)}
       />
     </View>
   );

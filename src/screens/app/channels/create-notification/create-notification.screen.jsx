@@ -1,8 +1,7 @@
 import React from 'react';
 import { ImageBackground } from 'react-native';
-import { useRoute } from '@react-navigation/native';
+import { useRoute, useNavigation } from '@react-navigation/native';
 
-import { useSelector } from 'react-redux';
 import OnBackPressHeader from '../../../../components/atoms/on-back-press-header/index';
 import { useTheme } from '../../../../theme';
 import CreateNotificationForm from '../../../../components/forms/create-notification-form/create-notification.form';
@@ -13,14 +12,15 @@ import FormScreenContainer from '../../../../components/containers/form-screen-c
 const CreateNotificationScreen = () => {
   const { Images, Layout, Gutters } = useTheme();
   const route = useRoute();
-  const { user } = useSelector((reducers) => reducers.userReducer);
-  const { _interestTypes } = route.params;
+  const { _interestTypes, channelRef } = route.params;
+  const navigation = useNavigation();
   const onNotificationCreateSuccess = () => {
     flashService.success('Success', 'Successfully created notification!');
+    navigation.goBack();
   };
 
   const onFormSubmit = async (values) => {
-    return notificationService.createNotification(values, user.user_id);
+    return notificationService.createNotification(values, channelRef);
   };
 
   return (
