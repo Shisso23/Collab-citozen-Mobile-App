@@ -1,11 +1,12 @@
 import React from 'react';
 import RNBootSplash from 'react-native-bootsplash';
 import { useDispatch } from 'react-redux';
-import { ImageBackground, Text, View } from 'react-native';
+import { ImageBackground, Platform, Text, View } from 'react-native';
+import { hasGmsSync, hasHmsSync } from 'react-native-device-info';
 import { RegisterLink, ForgotPasswordLink } from '../../../components/atoms';
 import { SignInForm } from '../../../components/forms';
 
-import { userAuthService } from '../../../services';
+import { permissionsService, userAuthService } from '../../../services';
 import { signInModel } from '../../../models';
 import { isAuthenticatedFlowAction } from '../../../reducers/app-reducer/app.actions';
 import useTheme from '../../../theme/hooks/useTheme';
@@ -23,6 +24,10 @@ const SignInScreen = () => {
     await dispatch(getMyChannelsAction());
     await dispatch(isAuthenticatedFlowAction());
     RNBootSplash.hide({ fade: true });
+    if (Platform.OS === 'ios' || hasGmsSync()) await permissionsService.checkLocationPermissions();
+    if (hasHmsSync()) {
+      await permissionsService.requestHmsLocationPermissions();
+    }
   };
 
   return (

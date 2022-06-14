@@ -2,7 +2,7 @@ import myChannelsService from '../../services/sub-services/my-channels/my-channe
 import { setUnsubscribedChannelsAction } from './unsubscribed-channels.reducer';
 
 export const getUnsubscribedChannelsByLocationAction =
-  (longitude, latitude) => async (dispatch) => {
+  async (longitude, latitude) => async (dispatch) => {
     const unsubscribedChannles = await myChannelsService.getUnsubscribedChannels(
       longitude,
       latitude,

@@ -1,12 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import MapView from 'react-native-maps';
 import HmsMapView, { MapTypes } from '@hmscore/react-native-hms-map';
-import HMSLocation from '@hmscore/react-native-hms-location';
 import { Icon } from 'react-native-elements';
 import {
   StyleSheet,
   View,
-  ActivityIndicator,
   TouchableOpacity,
   Text,
   Keyboard,
@@ -31,9 +29,11 @@ import {
 import appConfig from '../../../../config';
 import { getMunicipalitiesAction } from '../../../../reducers/municipalities-reducer/municipalities.actions';
 import { getUnsubscribedChannelsByLocationAction } from '../../../../reducers/unsubscribed-channels/unsubscribed-channels.actions';
-import { flashService } from '../../../../services';
+import { flashService, permissionsService } from '../../../../services';
+import LoadingOverlay from '../../../../components/molecules/loading-overlay';
 
 const { width } = Dimensions.get('window');
+const loadingImageSource = require('../../../../assets/lottie-files/rings-loading.json');
 
 const SelectLocationScreen = () => {
   const { params } = useRoute();
@@ -41,106 +41,132 @@ const SelectLocationScreen = () => {
   const { Colors, Layout, Common, Gutters } = useTheme();
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const { region, selectedAddress } = useSelector(locationSelector);
+  const { region, selectedAddress, isLoadingAddress } = useSelector(locationSelector);
+  const [userLocation, setUserLocation] = useState(region);
+  const [mapPosition, setMapPosition] = useState(userLocation);
   const [address, setAddress] = useState('');
+  const [mapReady, setMapReady] = useState(false);
+  const [locationPermission, setLocationPermission] = useState(false);
+  const [loadingModalVisible, setLoadingModalVisible] = useState(
+    !mapReady || !locationPermission || !userLocation,
+  );
+  const [loadingModalTransparent, setLoadingModalTransparent] = useState(false);
   const [mapRef, setMapRef] = useState(undefined);
   const [hmsMapRef, setHmsMapRef] = useState(undefined);
-  const [regionChange, setRegionChange] = useState({
-    ...region,
-    latitudeDelta: 0.011,
-    longitudeDelta: 0.011,
-  });
-
-  const removeLocationAndListener = (code) => {
-    HMSLocation.FusedLocation.Native.removeLocationUpdates(code)
-      .then((res) => res)
-      .catch((err) => alert(err.message));
-    HMSLocation.FusedLocation.Events.removeFusedLocationEventListener((removedResponse) => {
-      return removedResponse;
-    });
-  };
 
   useEffect(() => {
-    if (hasHmsSync()) {
-      HMSLocation.LocationKit.Native.init()
-        .then((resp) => resp)
-        .catch((err) => alert(err.message));
+    if (region && mapReady && locationPermission && !isLoadingAddress) {
+      setLoadingModalVisible(false);
     }
-    return () => {
-      if (hasHmsSync()) {
-        removeLocationAndListener(1);
-      }
-    };
-  }, []);
+  }, [JSON.stringify(region), mapReady, locationPermission, isLoadingAddress]);
 
   useFocusEffect(
     useCallback(() => {
-      setRegionChange(region);
-    }, [region]),
+      dispatch(getCurrentPositionAction()).then((position) => {
+        setUserLocation(position);
+        setMapPosition(position);
+        dispatch(getAddressFromRegionAction(position)).then((addressSelected) => {
+          setAddress(addressSelected);
+        });
+      });
+      if (hasHmsSync()) {
+        permissionsService
+          .requestHmsLocationPermissions()
+          .then((result) => {
+            setLocationPermission(result);
+          })
+          .catch(() => {
+            flashService.error('Please grant permissions to select a location.');
+          });
+      } else {
+        permissionsService
+          .checkLocationPermissions()
+          .then((result) => {
+            setLocationPermission(result);
+          })
+          .catch(() => {
+            flashService.error('Please grant permissions to select a location.');
+          });
+      }
+    }, []),
   );
 
   useEffect(() => {
     setAddress(selectedAddress);
   }, [selectedAddress]);
 
-  const _handleBackPress = () => {
+  const _handleBackPress = async () => {
     if (fromSubscribedChannels) {
       navigation.navigate('ViewSubscribeToChannels');
-      dispatch(getCurrentPositionAction());
     } else {
       navigation.navigate('ServiceRequests');
-      dispatch(getCurrentPositionAction());
     }
   };
 
   const _handlePickLocation = () => {
+    setLoadingModalTransparent(true);
+    setLoadingModalVisible(true);
     if (fromSubscribedChannels) {
-      dispatch(
-        getUnsubscribedChannelsByLocationAction(regionChange.longitude, regionChange.latitude),
-      );
-      return navigation.navigate('SubscribeToChannels');
+      return dispatch(
+        getUnsubscribedChannelsByLocationAction(mapPosition.longitude, mapPosition.latitude),
+      )
+        .then(() => {
+          return navigation.navigate('SubscribeToChannels');
+        })
+        .finally(() => {
+          setLoadingModalVisible(false);
+          setLoadingModalTransparent(false);
+        });
     }
-    return dispatch(getMunicipalitiesAction(regionChange.longitude, regionChange.latitude)).then(
-      (channels) => {
+    return dispatch(getMunicipalitiesAction(mapPosition.longitude, mapPosition.latitude))
+      .then((channels) => {
         if (channels.length === 0 || Object.keys(channels).length === 0) {
           return flashService.info('There are no available channels that allow service requests.');
         }
         return navigation.navigate('CreateServiceRequest');
-      },
-    );
+      })
+      .finally(() => {
+        setLoadingModalVisible(false);
+        setLoadingModalTransparent(false);
+      });
   };
 
-  const _setRegion = async (newRegion) => {
+  const _setMapPosition = async (newMapPositionCordinates) => {
     if (
-      newRegion.latitude.toFixed(5) !== region.latitude.toFixed(5) &&
-      newRegion.longitude.toFixed(5) !== region.latitude.toFixed(5)
+      userLocation &&
+      newMapPositionCordinates.latitude.toFixed(5) !== userLocation.latitude.toFixed(5) &&
+      newMapPositionCordinates.longitude.toFixed(5) !== userLocation.latitude.toFixed(5)
     ) {
-      const addressSelected = await dispatch(getAddressFromRegionAction(newRegion));
-      setAddress(addressSelected);
-      setRegionChange(newRegion);
+      setMapPosition(newMapPositionCordinates);
     }
   };
 
   const hitSlop = { top: 20, bottom: 20, left: 20, right: 20 };
 
-  const _handleNewRegion = (details) => {
+  const _handleNewRegionFromSearch = async (details) => {
+    setLoadingModalVisible(true);
     const location = _.get(details, 'geometry.location');
-    const newRegion = {
+    const newRegionCoordinates = {
       latitude: location.lat,
       longitude: location.lng,
       longitudeDelta: 0.011,
       latitudeDelta: 0.011,
     };
-    setRegionChange(newRegion);
+    setAddress(_.getdetails, 'name', '');
+    setLoadingModalTransparent(true);
+    await dispatch(getAddressFromRegionAction(newRegionCoordinates)).then((adressSelected) => {
+      setAddress(adressSelected);
+      setLoadingModalTransparent(false);
+    });
+    setMapPosition(newRegionCoordinates);
     if (!hasHmsSync()) {
-      mapRef.animateToRegion(newRegion);
+      mapRef.animateToRegion(newRegionCoordinates);
     } else {
-      hmsMapRef.setCameraPosition({ target: newRegion, zoom: 15, tilt: 40 });
-      hmsMapRef.stopAnimation();
+      hmsMapRef.setCameraPosition({ target: newRegionCoordinates, zoom: 15, tilt: 40 });
     }
   };
 
-  return region ? (
+  return (
     <View style={[Layout.fullSize]}>
       <View style={[Common.headerSelectLocation]}>
         <View style={[Layout.rowBetween]}>
@@ -173,8 +199,8 @@ const SelectLocationScreen = () => {
         fetchDetails
         enableHighAccuracyLocation
         minLength={3}
-        onPress={(data, details = null) => {
-          _handleNewRegion(details);
+        onPress={async (data, details = null) => {
+          await _handleNewRegionFromSearch(details);
         }}
         query={{
           key: appConfig.googleMapsApiKey,
@@ -225,30 +251,44 @@ const SelectLocationScreen = () => {
           style={Layout.fill}
           mapType={MapTypes.NORMAL}
           camera={{
-            target: regionChange,
+            target: userLocation,
             zoom: 15,
           }}
+          onMapReady={() => setMapReady(true)}
           onCameraIdle={(event) => {
             event.persist();
-            _setRegion(event.nativeEvent.target);
+            _setMapPosition(event.nativeEvent.target);
             hmsMapRef.stopAnimation();
           }}
-          zoomGesturesEnabled={false}
-          myLocationButtonEnabled
-          myLocationEnabled
+          minZoomPreference={3}
+          maxZoomPreference={20}
+          animationDuration={2000}
+          zoomControlsEnabled
+          rotateGesturesEnabled
+          scrollGesturesEnabled
+          tiltGesturesEnabled
+          zOrderOnTop={false}
+          zoomGesturesEnabled
+          myLocationEnabled={false}
+          myLocationButtonEnabled={false}
+          markerClustering={false}
+          scrollGesturesEnabledDuringRotateOrZoom
           useAnimation
         />
       ) : (
         <MapView
           style={[Layout.fill]}
-          initialRegion={regionChange}
+          initialRegion={userLocation}
           showsUserLocation
           onPress={Keyboard.dismiss}
           ref={setMapRef}
+          onMapReady={() => setMapReady(true)}
           onRegionChangeComplete={(newRegion) => {
-            return _setRegion(newRegion);
+            return _setMapPosition(newRegion);
           }}
           showsMyLocationButton={false}
+          zoomControlEnabled
+          zoomEnabled
         />
       )}
 
@@ -258,17 +298,21 @@ const SelectLocationScreen = () => {
 
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'position' : ''}>
         <View style={Layout.fullWidth}>
-          <TouchableHighlight onPress={handlePickLocation || _handlePickLocation}>
+          <TouchableHighlight
+            onPress={handlePickLocation ? handlePickLocation(mapPosition) : _handlePickLocation}
+          >
             <Button style={Common.buttonPickLocation} mode="contained">
               Pick this location
             </Button>
           </TouchableHighlight>
         </View>
       </KeyboardAvoidingView>
-    </View>
-  ) : (
-    <View style={[Layout.center, Layout.fill]}>
-      <ActivityIndicator size="large" animating color={Colors.primary} />
+      <LoadingOverlay
+        source={loadingImageSource}
+        visible={loadingModalVisible}
+        onBackDropPress={() => setLoadingModalVisible(false)}
+        transparent={loadingModalTransparent}
+      />
     </View>
   );
 };

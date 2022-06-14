@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import MapView, { Marker } from 'react-native-maps';
-import HMSLocation from '@hmscore/react-native-hms-location';
+import HmsMapView, { HMSMarker, MapTypes, Hue } from '@hmscore/react-native-hms-map';
 import { FAB, Modal } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import {
@@ -13,6 +13,7 @@ import {
   View,
   Keyboard,
   TouchableOpacity,
+  SafeAreaView,
 } from 'react-native';
 import { Tab, Icon } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
@@ -28,15 +29,17 @@ import {
   previewDeleteServiceRequestAction,
   getNearbyPinLocationsAction,
 } from '../../../reducers/service-request-reducer/service-request.actions';
-import { permissionsService } from '../../../services';
-import { getCurrentPositionAction } from '../../../reducers/location-reducer/location.actions';
+import { flashService, permissionsService } from '../../../services';
 import ServiceRequestItem from '../../../components/molecules/service-request-item';
 import SwipeRowContainer from '../../../components/atoms/swipe-row/swipe-row';
 import { promptConfirm } from '../../../helpers/prompt.helper';
 import { TrashButton } from '../../../components/atoms';
 import { locationSelector } from '../../../reducers/location-reducer/location.reducer';
+import { getCurrentPositionAction } from '../../../reducers/location-reducer/location.actions';
+import LoadingOverlay from '../../../components/molecules/loading-overlay/index';
 
 const { Colors } = useTheme();
+const loadingImageSource = require('../../../assets/lottie-files/rings-loading.json');
 
 const ServiceRequestScreen = () => {
   const navigation = useNavigation();
@@ -48,79 +51,93 @@ const ServiceRequestScreen = () => {
     deleteServiceRequestPreview,
   } = useSelector(serviceRequestSelector);
   const { Common, Gutters, Fonts, Layout, Images } = useTheme();
-  const [mapNotSelected, setMapNotSelected] = useState(0);
+  const [tabIndex, setTabIndex] = useState(0);
   const { region } = useSelector(locationSelector);
-  const [regionChange, setRegionChange] = useState({
-    ...region,
+
+  const [pinsModalVisible, setPinsModalVisible] = useState(false);
+  const [nearbyPinLocations, setNearbyPinLocations] = useState([]);
+  const [locationPermission, setLocationPermission] = useState(false);
+
+  const [selectedSRPin, setSelectedSRPin] = useState({});
+  const [userLocation, setUserLocation] = useState(region);
+  const [mapReady, setMapReady] = useState(false);
+  const [mapPosition, setMapPosition] = useState(userLocation);
+  const [loadingModalVisible, setLoadingModalVisible] = useState(
+    !mapReady || !locationPermission || !userLocation,
+  );
+  const initialTarget = userLocation || {
+    latitude: 38.68551,
+    longitude: -101.07332,
     latitudeDelta: 0.011,
     longitudeDelta: 0.011,
-  });
-  const [mapReady, setMapReady] = useState(false);
-  const [displayModal, setDisplayModal] = useState(false);
-  const [nearbyLocationsReceived, setNearbyLocationsReceived] = useState(false);
-  const [nearbyPinLocations, setNearbyPinLocations] = useState([]);
-  const [displayPinReferenceNumber, setDisplayPinReferenceNumber] = useState('');
-  const [displayPinType, setDisplayPinType] = useState('');
-  const [displayPinDescription, setDisplayPinDescription] = useState('');
-  const [displayPinRequestDate, setDisplayPinRequestDate] = useState('');
-  const [displayPinStatus, setDisplayPinStatus] = useState('');
-  let nearbyPinLocationsResponse = [];
-
-  const removeLocationAndListener = (code) => {
-    HMSLocation.FusedLocation.Native.removeLocationUpdates(code)
-      .then((res) => res)
-      .catch((err) => console.log(err.message));
-    HMSLocation.FusedLocation.Events.removeFusedLocationEventListener((removedResponse) => {
-      return removedResponse;
-    });
   };
 
   const getNearbyPinLocations = async (currentLatitude, currentLongitude) => {
-    nearbyPinLocationsResponse = await dispatch(
+    const nearbyPinLocationsResponse = await dispatch(
       getNearbyPinLocationsAction(currentLatitude, currentLongitude),
     );
-    setNearbyPinLocations(nearbyPinLocationsResponse);
-    if (nearbyPinLocationsResponse.payload.length > 0) {
-      setNearbyLocationsReceived(true);
-    }
+    setNearbyPinLocations(nearbyPinLocationsResponse.payload);
   };
-
-  useEffect(() => {
-    if (hasHmsSync()) {
-      HMSLocation.LocationKit.Native.init()
-        .then((resp) => resp)
-        .catch((err) => console.log(err.message));
-    }
-    return () => {
-      if (hasHmsSync()) {
-        removeLocationAndListener(1);
-      }
-    };
-  }, []);
 
   useFocusEffect(
     useCallback(() => {
-      getNearbyPinLocations(regionChange.latitude, regionChange.longitude);
-    }, [regionChange]),
+      dispatch(getCurrentPositionAction()).then((position) => {
+        setUserLocation(position);
+        setMapPosition(position);
+      });
+    }, []),
   );
 
-  const _setRegion = async (newRegion) => {
+  useEffect(() => {
+    if (region && mapReady && locationPermission) {
+      setLoadingModalVisible(false);
+    }
+  }, [JSON.stringify(region), mapReady, locationPermission]);
+
+  useFocusEffect(
+    useCallback(() => {
+      _loadServiceRequests();
+      if (hasHmsSync()) {
+        permissionsService
+          .requestHmsLocationPermissions()
+          .then((result) => {
+            setLocationPermission(result);
+          })
+          .catch(() => {
+            flashService.error('Please grant permissions to select a location.');
+          });
+      } else {
+        permissionsService
+          .checkLocationPermissions()
+          .then((result) => {
+            setLocationPermission(result);
+          })
+          .catch(() => {
+            flashService.error('Please grant permissions to select a location.');
+          });
+      }
+    }, []),
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      getNearbyPinLocations(mapPosition?.latitude, mapPosition?.longitude);
+    }, [JSON.stringify(mapPosition)]),
+  );
+
+  const _setMapPosition = (newPositionCordinates) => {
     if (
-      newRegion.latitude.toFixed(5) !== region.latitude.toFixed(5) &&
-      newRegion.longitude.toFixed(5) !== region.latitude.toFixed(5)
+      userLocation &&
+      newPositionCordinates.latitude.toFixed(5) !== userLocation.latitude.toFixed(5) &&
+      newPositionCordinates.longitude.toFixed(5) !== userLocation.longitude.toFixed(5)
     ) {
-      setRegionChange(newRegion);
+      setMapPosition({ ...newPositionCordinates, latitudeDelta: 0.011, longitudeDelta: 0.011 });
     }
   };
 
   const _loadServiceRequests = () => {
     dispatch(getServiceRequestsAction());
   };
-
-  useEffect(() => {
-    _loadServiceRequests();
-    dispatch(getCurrentPositionAction());
-  }, []);
 
   const _sortServiceRequestDescending = (serviceRequest) => {
     return serviceRequest.sort((a, b) => moment(b.requestedDate) - moment(a.requestedDate));
@@ -129,7 +146,7 @@ const ServiceRequestScreen = () => {
   const _handleOnServiceRequestCreatePress = async () => {
     if (Platform.OS === 'ios' || hasGmsSync()) await permissionsService.checkLocationPermissions();
     if (hasHmsSync()) {
-      permissionsService.requestHmsLocationPermissions();
+      await permissionsService.requestHmsLocationPermissions();
     }
     navigation.navigate('SelectLocationScreen', { fromSubscribedChannels: false });
   };
@@ -172,89 +189,76 @@ const ServiceRequestScreen = () => {
     );
   };
 
+  const renderTabs = () => {
+    return (
+      <Tab
+        value={tabIndex}
+        onChange={(index) => {
+          setTabIndex(index);
+        }}
+        indicatorStyle={[
+          { backgroundColor: Colors.softBlue },
+          Platform.select({ android: { borderWidth: 15 }, ios: {} }),
+        ]}
+      >
+        <Tab.Item
+          active={tabIndex === 0}
+          titleStyle={[{ color: tabIndex === 0 ? Colors.black : Colors.gray }, styles.tabItem]}
+          title="Map"
+          icon={<Icon name="pin-drop" />}
+        />
+
+        <Tab.Item
+          active={tabIndex === 0}
+          titleStyle={[{ color: tabIndex === 1 ? Colors.black : Colors.gray }, styles.tabItem]}
+          title="My List"
+          icon={<Icon name="format-list-bulleted" />}
+        />
+      </Tab>
+    );
+  };
+
+  const returnMarkerColour = (serviceRequestStatus) => {
+    switch (serviceRequestStatus) {
+      case 'Initial':
+        return hasHmsSync() ? Hue.ORANGE : Colors.lightOrange;
+      case 'Registered':
+        return hasHmsSync() ? Hue.CYAN : Colors.lightBlue;
+      case 'Completed':
+        return hasHmsSync() ? Hue.BLUE : Colors.primary;
+      case 'Assigned':
+        return hasHmsSync() ? Hue.GREEN : Colors.lightGreen;
+      default:
+        return hasHmsSync() ? Hue.VIOLET : Colors.gray;
+    }
+  };
+
   const displayPins = (pinData) => {
-    if (mapReady && nearbyLocationsReceived) {
-      let i = 0;
-      return pinData.payload.map((pin) => {
-        i += 1;
-
-        const pinReferenceNumber = pin.id;
-        const pinType = pin.serviceType;
-        const pinDescription = pin.serviceDescription;
-        const pinRequestDate = pin.requestDate;
-        const pinStatus = pin.status;
-
+    if (nearbyPinLocations.length > 0) {
+      return pinData.map((pin) => {
         const { gpsCoordinates } = pin;
-        const gpsCoordinatesSubString0 = gpsCoordinates.substring(5);
-        const gpsCoordinatesSubString1 = gpsCoordinatesSubString0.substring(
-          1,
-          gpsCoordinatesSubString0.length - 1,
-        );
+        const cordinates = gpsCoordinates
+          .substring(gpsCoordinates.indexOf('(') + 1, gpsCoordinates.indexOf(')'))
+          .split(' ');
+        const lat = parseFloat(cordinates[0]);
+        const lng = parseFloat(cordinates[1]);
 
-        const gpsCoordinatesSubString2 = gpsCoordinatesSubString1;
-        const gpsCoordinatesSubString3 = gpsCoordinatesSubString2.split(' ');
-
-        const lat = parseFloat(gpsCoordinatesSubString3[0]);
-        const lng = parseFloat(gpsCoordinatesSubString3[1]);
-
-        if (pin.status === 'Assigned') {
-          return (
-            <Marker
-              coordinate={{ latitude: lng, longitude: lat }}
-              onPress={() =>
-                displayModalToggle(
-                  pinReferenceNumber,
-                  pinType,
-                  pinDescription,
-                  pinRequestDate,
-                  pinStatus,
-                )
-              }
-              key={i}
-            >
-              <View style={styles.pin}>
-                <Icon name="location-pin" size={45} color={Colors.lightGreen} />
-              </View>
-            </Marker>
-          );
-        }
-        if (pin.status === 'Registered') {
-          return (
-            <Marker
-              coordinate={{ latitude: lng, longitude: lat }}
-              onPress={() =>
-                displayModalToggle(
-                  pinReferenceNumber,
-                  pinType,
-                  pinDescription,
-                  pinRequestDate,
-                  pinStatus,
-                )
-              }
-              key={i}
-            >
-              <View style={styles.pin}>
-                <Icon name="location-pin" size={45} color={Colors.lightBlue} />
-              </View>
-            </Marker>
-          );
-        }
-        return (
+        return hasHmsSync() ? (
+          <HMSMarker
+            key={pin.id}
+            icon={{ hue: returnMarkerColour(pin.status) }}
+            title={pin.serviceDescription}
+            clusterable
+            coordinate={{ latitude: lng, longitude: lat }}
+          />
+        ) : (
           <Marker
             coordinate={{ latitude: lng, longitude: lat }}
-            onPress={() =>
-              displayModalToggle(
-                pinReferenceNumber,
-                pinType,
-                pinDescription,
-                pinRequestDate,
-                pinStatus,
-              )
-            }
-            key={i}
+            onPress={displayModalToggle(pin)}
+            key={pin.id}
           >
             <View style={styles.pin}>
-              <Icon name="location-pin" size={45} color={Colors.lightOrange} />
+              <Icon name="location-pin" size={45} color={returnMarkerColour(pin.status)} />
             </View>
           </Marker>
         );
@@ -263,92 +267,132 @@ const ServiceRequestScreen = () => {
     return null;
   };
 
-  const displayModalToggle = (refNum, type, desc, date, status) => {
-    setDisplayModal(!displayModal);
-    if (!displayModal) {
-      setDisplayPinReferenceNumber(refNum);
-      setDisplayPinType(type);
-      setDisplayPinDescription(desc);
-      setDisplayPinRequestDate(date);
-      setDisplayPinStatus(status);
-    }
+  const renderHmsMapPins = () => {
+    return (
+      <SafeAreaView style={[Layout.fill, ...[{ marginBottom: 200 }]]}>
+        <View contentInsetAdjustmentBehavior="automatic">
+          <HmsMapView
+            style={[Layout.fullWidth, ...[{ height: '100%' }]]}
+            mapType={MapTypes.NORMAL}
+            camera={{
+              target: userLocation || initialTarget,
+              zoom: 15,
+            }}
+            minZoomPreference={3}
+            maxZoomPreference={20}
+            animationDuration={2000}
+            zoomControlsEnabled
+            rotateGesturesEnabled
+            scrollGesturesEnabled
+            tiltGesturesEnabled
+            zOrderOnTop={false}
+            zoomGesturesEnabled
+            myLocationEnabled={false}
+            myLocationButtonEnabled={false}
+            markerClustering={false}
+            scrollGesturesEnabledDuringRotateOrZoom
+            useAnimation
+            onMapReady={() => setMapReady(true)}
+            onCameraIdle={(event) => {
+              _setMapPosition(event.nativeEvent.target);
+            }}
+          >
+            {nearbyPinLocations.length > 0 ? displayPins(nearbyPinLocations) : <></>}
+          </HmsMapView>
+        </View>
+      </SafeAreaView>
+    );
+  };
+
+  const renderMapViewPins = () => {
+    return (
+      <MapView
+        style={[Layout.fill]}
+        initialRegion={userLocation}
+        showsUserLocation
+        onPress={Keyboard.dismiss}
+        onRegionChangeComplete={(newPosition) => {
+          return _setMapPosition(newPosition);
+        }}
+        onMapReady={() => setMapReady(true)}
+        zoomControlEnabled
+        zoomEnabled
+        showsMyLocationButton
+      >
+        {nearbyPinLocations.length > 0 ? displayPins(nearbyPinLocations) : <></>}
+      </MapView>
+    );
+  };
+
+  const renderServiceRequestList = () => {
+    return (
+      <>
+        <ImageBackground
+          source={Images.serviceRequest}
+          style={[Layout.fullSize, Layout.fill]}
+          resizeMode="cover"
+        >
+          <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>Service Requests</Text>
+          <FlatList
+            contentContainerStyle={Gutters.smallHMargin}
+            data={_sortServiceRequestDescending(serviceRequests)}
+            renderItem={renderServiceRequest}
+            keyExtractor={(item) => String(item.id)}
+            refreshControl={
+              <RefreshControl
+                refreshing={isLoadingServiceRequests}
+                onRefresh={_loadServiceRequests}
+              />
+            }
+          />
+        </ImageBackground>
+        <FAB style={Common.fabAlignment} icon="plus" onPress={_handleOnServiceRequestCreatePress} />
+      </>
+    );
+  };
+
+  const pinDetailsModal = () => {
+    const { id, serviceType, serviceDescription, requestDate, status } = selectedSRPin;
+    return (
+      <Modal visible={pinsModalVisible} onDismiss={() => {}} transparent>
+        <View style={[styles.modal, { backgroundColor: Colors.transparent }, Fonts.textRegular]}>
+          <TouchableOpacity onPress={displayModalToggle}>
+            <Icon name="close" size={30} color={Colors.lightgray} />
+          </TouchableOpacity>
+
+          <View style={[styles.modalView, { backgroundColor: Colors.lightgray }]}>
+            <Text style={[Gutters.smallVMargin, Fonts.textRegular, styles.headerFont]}>
+              Type: {serviceType}
+            </Text>
+            <View style={styles.textLine} />
+            <Text style={[Gutters.smallVMargin, Fonts.textRegular, styles.descriptionFont]}>
+              Description:
+            </Text>
+            <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>{serviceDescription}</Text>
+            <View style={styles.textLine} />
+            <Text style={[Gutters.smallVMargin, Fonts.textRegular]}>Status: {status}</Text>
+            <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>Date: {requestDate}</Text>
+            <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>Reference No: {id}</Text>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
+
+  const displayModalToggle = (pin) => () => {
+    setPinsModalVisible(!pinsModalVisible);
+    setSelectedSRPin(pin);
   };
 
   return (
     <>
-      <Tab
-        value={mapNotSelected}
-        onChange={(index) => {
-          setMapNotSelected(index);
-        }}
-        indicatorStyle={[
-          { backgroundColor: Colors.softBlue },
-          Platform.select({ android: { borderWidth: 15 }, ios: {} }),
-        ]}
-      >
-        <Tab.Item
-          titleStyle={[
-            { color: mapNotSelected === 0 ? Colors.black : Colors.gray },
-            styles.tabItem,
-          ]}
-          title="Map"
-          icon={<Icon name="pin-drop" />}
-        />
-
-        <Tab.Item
-          titleStyle={[
-            { color: mapNotSelected === 1 ? Colors.black : Colors.gray },
-            styles.tabItem,
-          ]}
-          title="My List"
-          icon={<Icon name="format-list-bulleted" />}
-        />
-      </Tab>
-
-      {mapNotSelected ? (
-        <>
-          <ImageBackground
-            source={Images.serviceRequest}
-            style={[Layout.fullSize, Layout.fill]}
-            resizeMode="cover"
-          >
-            <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>Service Requests</Text>
-            <FlatList
-              contentContainerStyle={Gutters.smallHMargin}
-              data={_sortServiceRequestDescending(serviceRequests)}
-              renderItem={renderServiceRequest}
-              keyExtractor={(item) => String(item.id)}
-              refreshControl={
-                <RefreshControl
-                  refreshing={isLoadingServiceRequests}
-                  onRefresh={_loadServiceRequests}
-                />
-              }
-            />
-          </ImageBackground>
-          <FAB
-            style={Common.fabAlignment}
-            icon="plus"
-            onPress={_handleOnServiceRequestCreatePress}
-          />
-        </>
-      ) : region && nearbyLocationsReceived ? (
+      {renderTabs()}
+      {tabIndex === 1 ? (
+        renderServiceRequestList()
+      ) : (
         <>
           <View style={Layout.fullSize}>
-            <MapView
-              style={Layout.fill}
-              initialRegion={region}
-              showsUserLocation
-              onMapReady={() => setMapReady(true)}
-              onPress={Keyboard.dismiss}
-              onRegionChangeComplete={(newRegion) => {
-                return _setRegion(newRegion);
-              }}
-              showsMyLocationButton={false}
-              zoomControlEnabled
-            >
-              {displayPins(nearbyPinLocations)}
-            </MapView>
+            {hasHmsSync() ? renderHmsMapPins() : renderMapViewPins()}
           </View>
           <View style={Common.pinContainer}>
             <Icon type="ionicon" name="pin-outline" size={30} color={Colors.primary} />
@@ -358,63 +402,13 @@ const ServiceRequestScreen = () => {
             icon="plus"
             onPress={_handleOnServiceRequestCreatePress}
           />
-          <Modal visible={displayModal} onDismiss={() => {}} transparent>
-            <View
-              style={[styles.modal, { backgroundColor: Colors.transparent }, Fonts.textRegular]}
-            >
-              <TouchableOpacity onPress={displayModalToggle}>
-                <Icon name="close" size={30} color={Colors.lightgray} />
-              </TouchableOpacity>
-
-              <View style={[styles.modalView, { backgroundColor: Colors.lightgray }]}>
-                <Text style={[Gutters.smallVMargin, Fonts.textRegular, styles.headerFont]}>
-                  Type: {displayPinType}
-                </Text>
-                <View style={styles.textLine} />
-                <Text style={[Gutters.smallVMargin, Fonts.textRegular, styles.descriptionFont]}>
-                  Description:
-                </Text>
-                <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>
-                  {displayPinDescription}
-                </Text>
-                <View style={styles.textLine} />
-                <Text style={[Gutters.smallVMargin, Fonts.textRegular]}>
-                  Status: {displayPinStatus}
-                </Text>
-                <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>
-                  Date: {displayPinRequestDate}
-                </Text>
-                <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>
-                  Reference No: {displayPinReferenceNumber}
-                </Text>
-              </View>
-            </View>
-          </Modal>
-        </>
-      ) : region ? (
-        <>
-          <View style={Layout.fullSize}>
-            <MapView
-              style={Layout.fill}
-              initialRegion={region}
-              showsUserLocation
-              onMapReady={() => setMapReady(true)}
-              onPress={Keyboard.dismiss}
-              onRegionChangeComplete={(newRegion) => {
-                return _setRegion(newRegion);
-              }}
-              showsMyLocationButton={false}
-              zoomControlEnabled
-            />
-          </View>
-          <FAB
-            style={Common.fabAlignment}
-            icon="plus"
-            onPress={_handleOnServiceRequestCreatePress}
+          {pinDetailsModal()}
+          <LoadingOverlay
+            source={loadingImageSource}
+            visible={loadingModalVisible}
+            onBackDropPress={() => setLoadingModalVisible(false)}
           />
         </>
-      ) : (
-        <></>
       )}
     </>
   );

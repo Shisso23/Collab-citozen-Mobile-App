@@ -1,6 +1,7 @@
 import { Platform } from 'react-native';
 import HMSLocation from '@hmscore/react-native-hms-location';
 import { check, PERMISSIONS, RESULTS, request, openSettings } from 'react-native-permissions';
+import _ from 'lodash';
 
 import alertService from '../alert-service/alert.service';
 import flashService from '../flash-service/flash.service';
@@ -14,7 +15,7 @@ export const checkLocationPermissions = async () => {
   } else {
     permission = PERMISSIONS.IOS.LOCATION_WHEN_IN_USE;
   }
-  await checkPlatformLocationPermissions(permission);
+  return checkPlatformLocationPermissions(permission);
 };
 
 const checkPlatformLocationPermissions = async (permission) => {
@@ -22,6 +23,7 @@ const checkPlatformLocationPermissions = async (permission) => {
   if (!_hasPermissions(permissionStatus)) {
     await requestLocationPermissions(permission);
   }
+  return _hasPermissions(permissionStatus);
 };
 
 const requestLocationPermissions = (platform) => {
@@ -57,14 +59,18 @@ const requestLocationPermissions = (platform) => {
 };
 
 const requestHmsLocationPermissions = async () => {
-  const hasPermission = await HMSLocation.FusedLocation.Native.hasPermission();
+  let hasPermission = await HMSLocation.FusedLocation.Native.hasPermission();
   if (!hasPermission) {
     try {
       await HMSLocation.FusedLocation.Native.requestPermission();
+      hasPermission = await HMSLocation.FusedLocation.Native.hasPermission();
+      return hasPermission;
     } catch (error) {
       flashService.error('Location permission not granted');
+      return false;
     }
   }
+  return _.get(hasPermission, 'hasPermission', false);
 };
 
 export default {

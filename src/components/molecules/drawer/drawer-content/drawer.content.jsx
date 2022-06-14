@@ -12,7 +12,7 @@ import codePush from 'react-native-code-push';
 import { signOutAction } from '../../../../reducers/user-auth-reducer/user-auth.actions';
 import useTheme from '../../../../theme/hooks/useTheme';
 import { Colors } from '../../../../theme/Variables';
-import { permissionsService, userService } from '../../../../services';
+import { userService } from '../../../../services';
 import { openAppSetting } from '../../../../helpers/app-seettings.helper';
 import { myChannelsSelector } from '../../../../reducers/my-channels/my-channels.reducer';
 import { getMyChannelsAction } from '../../../../reducers/my-channels/my-channels.actions';
@@ -93,7 +93,6 @@ const DrawerContent = (props) => {
             icon="information"
             label="Service Requests"
             onPress={async () => {
-              await permissionsService.checkLocationPermissions();
               navigation.navigate('ServiceRequests');
             }}
             theme={theme}
@@ -112,7 +111,6 @@ const DrawerContent = (props) => {
             icon="file"
             label="Channels"
             onPress={async () => {
-              await permissionsService.checkLocationPermissions();
               return navigation.navigate('ViewSubscribeToChannels');
             }}
             theme={theme}
@@ -121,7 +119,6 @@ const DrawerContent = (props) => {
             icon="phone"
             label="Contacts"
             onPress={async () => {
-              await permissionsService.checkLocationPermissions();
               return navigation.navigate('ContactDetails');
             }}
             theme={theme}

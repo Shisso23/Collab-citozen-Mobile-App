@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { List } from 'react-native-paper';
 import {
   FlatList,
@@ -10,7 +10,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
@@ -33,23 +33,19 @@ const ContactDetailsScreen = () => {
   const { selectedAddress, region } = useSelector(locationSelector);
 
   useEffect(() => {
-    dispatch(getCurrentPositionAction());
+    dispatch(getCurrentPositionAction()).then((position) => {
+      getAddress(position);
+      getContacts(position);
+    });
   }, []);
-
-  useFocusEffect(
-    useCallback(() => {
-      if (region) {
-        getAddress(region);
-        getContacts(region);
-      }
-    }, [region]),
-  );
 
   const onBack = () => {
     navigation.navigate('ContactDetails');
   };
 
-  const handlePickLocation = () => {
+  const handlePickLocation = (coords) => () => {
+    getAddress(coords);
+    getContacts(coords);
     return navigation.navigate('ContactDetails');
   };
 
