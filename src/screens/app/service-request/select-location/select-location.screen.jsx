@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import MapView from 'react-native-maps';
 import HmsMapView, { MapTypes } from '@hmscore/react-native-hms-map';
-import HMSLocation from '@hmscore/react-native-hms-location';
 import { Icon } from 'react-native-elements';
 import {
   StyleSheet,
