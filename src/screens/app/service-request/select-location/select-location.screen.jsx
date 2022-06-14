@@ -56,14 +56,6 @@ const SelectLocationScreen = () => {
   const [hmsMapRef, setHmsMapRef] = useState(undefined);
 
   useEffect(() => {
-    if (hasHmsSync()) {
-      HMSLocation.LocationKit.Native.init()
-        .then((resp) => resp)
-        .catch((err) => alert(err.message));
-    }
-  }, []);
-
-  useEffect(() => {
     if (region && mapReady && locationPermission && !isLoadingAddress) {
       setLoadingModalVisible(false);
     }
