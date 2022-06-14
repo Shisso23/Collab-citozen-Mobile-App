@@ -33,6 +33,6 @@ export const getNewsfeedReactions = (newsfeedRefNr) => async (dispatch) => {
     });
 };
 
-export const userHasOpenedNewsFeedAction = (newsfeedId, userID, action) => async () => {
-  await newsFeedService.createUserActivityRecord(newsfeedId, userID, action);
+export const userHasOpenedNewsFeedAction = async (newsfeedId, userID, action) => () => {
+  return newsFeedService.createUserActivityRecord(newsfeedId, userID, action);
 };
