@@ -104,20 +104,31 @@ const SelectLocationScreen = () => {
   };
 
   const _handlePickLocation = () => {
+    setLoadingModalTransparent(true);
+    setLoadingModalVisible(true);
     if (fromSubscribedChannels) {
-      dispatch(
+      return dispatch(
         getUnsubscribedChannelsByLocationAction(mapPosition.longitude, mapPosition.latitude),
-      );
-      return navigation.navigate('SubscribeToChannels');
+      )
+        .then(() => {
+          return navigation.navigate('SubscribeToChannels');
+        })
+        .finally(() => {
+          setLoadingModalVisible(false);
+          setLoadingModalTransparent(false);
+        });
     }
-    return dispatch(getMunicipalitiesAction(mapPosition.longitude, mapPosition.latitude)).then(
-      (channels) => {
+    return dispatch(getMunicipalitiesAction(mapPosition.longitude, mapPosition.latitude))
+      .then((channels) => {
         if (channels.length === 0 || Object.keys(channels).length === 0) {
           return flashService.info('There are no available channels that allow service requests.');
         }
         return navigation.navigate('CreateServiceRequest');
-      },
-    );
+      })
+      .finally(() => {
+        setLoadingModalVisible(false);
+        setLoadingModalTransparent(false);
+      });
   };
 
   const _setMapPosition = async (newMapPositionCordinates) => {
