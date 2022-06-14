@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import React, { useEffect, useState, useRef } from 'react';
 import { ViewPropTypes, View, Keyboard, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
@@ -237,9 +238,9 @@ const CreateServiceRequestForm = ({
 
               {!typeSelected && !isSearching && (
                 <View style={styles.viewItemsChannelContainer}>
-                  {Object.keys(municipalities)?.map((municipalityRef) => (
+                  {Object.keys(municipalities)?.map((municipalityRef, index) => (
                     <ListItem.Accordion
-                      key={municipalityRef}
+                      key={`${municipalityRef}-${index}`}
                       noIcon={noIconState}
                       underlayColor={Colors.transparent}
                       content={
@@ -254,9 +255,9 @@ const CreateServiceRequestForm = ({
                     >
                       <View style={styles.viewItemsCategoryContainer}>
                         {Object.keys(municipalities[`${municipalityRef}`].serviceTypes)?.map(
-                          (categoryName) => (
+                          (categoryName, catIndex) => (
                             <ListItem.Accordion
-                              key={categoryName}
+                              key={`${categoryName}-${catIndex}`}
                               noIcon={noIconState}
                               underlayColor={Colors.transparent}
                               content={
@@ -272,10 +273,10 @@ const CreateServiceRequestForm = ({
                               <View style={styles.viewItemsTypesContainer}>
                                 {municipalities[`${municipalityRef}`].serviceTypes[
                                   `${categoryName}`
-                                ].map((serviceTypeObject) => {
+                                ].map((serviceTypeObject, serviceTypeIndex) => {
                                   return (
                                     <View
-                                      key={serviceTypeObject}
+                                      key={`${serviceTypeObject}-${serviceTypeIndex}`}
                                       style={[
                                         Common.textInputWithoutShadow,
                                         Gutters.smallBMargin,
@@ -362,7 +363,7 @@ const CreateServiceRequestForm = ({
                   });
                   if (searchSameCategory) {
                     return (
-                      <View key={item} style={styles.searchStylingMiddleItem}>
+                      <View key={index} style={styles.searchStylingMiddleItem}>
                         <View key={item} style={styles.viewButton}>
                           <View
                             style={[

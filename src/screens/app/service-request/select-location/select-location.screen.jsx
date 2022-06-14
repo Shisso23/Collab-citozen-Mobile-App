@@ -66,8 +66,6 @@ const SelectLocationScreen = () => {
   useEffect(() => {
     if (region && mapReady && locationPermission && !isLoadingAddress) {
       setLoadingModalVisible(false);
-    } else {
-      setLoadingModalVisible(true);
     }
   }, [JSON.stringify(region), mapReady, locationPermission, isLoadingAddress]);
 
@@ -144,6 +142,7 @@ const SelectLocationScreen = () => {
   const hitSlop = { top: 20, bottom: 20, left: 20, right: 20 };
 
   const _handleNewRegionFromSearch = async (details) => {
+    setLoadingModalVisible(true);
     const location = _.get(details, 'geometry.location');
     const newRegionCoordinates = {
       latitude: location.lat,
@@ -297,7 +296,9 @@ const SelectLocationScreen = () => {
 
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'position' : ''}>
         <View style={Layout.fullWidth}>
-          <TouchableHighlight onPress={handlePickLocation || _handlePickLocation}>
+          <TouchableHighlight
+            onPress={handlePickLocation ? handlePickLocation(mapPosition) : _handlePickLocation}
+          >
             <Button style={Common.buttonPickLocation} mode="contained">
               Pick this location
             </Button>

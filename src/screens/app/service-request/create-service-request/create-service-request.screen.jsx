@@ -50,9 +50,9 @@ const CreateServiceRequestScreen = () => {
       return remainingImages;
     });
   };
-  const renderThumbNails = ({ item }) => {
+  const renderThumbNails = ({ item, index }) => {
     return (
-      <View style={[Gutters.largeTMargin, Gutters.smallHMargin]}>
+      <View key={`${item.uri}-${index}`} style={[Gutters.largeTMargin, Gutters.smallHMargin]}>
         <ImageBackground
           source={{ uri: item.uri } || null}
           style={[styles.thumbnail, Layout.alignItemsEnd]}
