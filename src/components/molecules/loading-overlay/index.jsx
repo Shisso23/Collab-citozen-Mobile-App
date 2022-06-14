@@ -49,12 +49,12 @@ const styles = StyleSheet.create({
     marginTop: '25%',
   },
   loader: {
-    height: 200,
+    height: 150,
     overflow: 'visible',
     shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
-    width: 300,
+    width: 150,
   },
   modalText: {
     textAlign: 'center',
