@@ -1,12 +1,14 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { HelperText, TextInput } from 'react-native-paper';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 import useTheme from '../../../theme/hooks/useTheme';
 
 const CustomInput = (props) => {
   const { Common } = useTheme();
+  const { warningText } = props;
 
   return (
     <>
@@ -22,11 +24,11 @@ const CustomInput = (props) => {
         {...props}
       />
       <HelperText
-        style={[Common.errorStyle]}
+        style={warningText ? Common.warningStyle : Common.errorStyle}
         type="error"
-        visible={_.get(props, 'errorMessage', '')}
+        visible={_.get(props, 'errorMessage', false) || warningText}
       >
-        {_.get(props, 'errorMessage', '')}
+        {warningText || _.get(props, 'errorMessage', '')}
       </HelperText>
     </>
   );
@@ -39,4 +41,10 @@ const styles = StyleSheet.create({
   },
 });
 
+CustomInput.propTypes = {
+  warningText: PropTypes.any,
+};
+CustomInput.defaultProps = {
+  warningText: null,
+};
 export default CustomInput;
