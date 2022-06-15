@@ -212,7 +212,7 @@ const CreateServiceRequestForm = ({
               <HelperText />
 
               <View style={[styles.viewTextContainer]}>
-                <Text style={[Fonts.textRegular, styles.textHeaderInstruction]}>
+                <Text style={[Fonts.textRegular, styles.textHeaderInstruction, Fonts.titleTiny]}>
                   Select a Service Type
                 </Text>
               </View>
@@ -326,11 +326,22 @@ const CreateServiceRequestForm = ({
               )}
 
               {typeSelected && !isSearching && (
-                <Text style={[Fonts.textRegular]}>
-                  Channel: {channelChosenName} {'\n'}
-                  Channel Category: {categoryChosenName} {'\n'}
-                  Selected Type: {typeChosenName} {'\n'}
-                </Text>
+                <View>
+                  <Text style={[Fonts.textRegular, Gutters.smallBMargin]}>
+                    Channel: {channelChosenName}
+                  </Text>
+                  <Text style={[Fonts.textRegular, Gutters.smallBMargin]}>
+                    Channel Category: {categoryChosenName}
+                  </Text>
+
+                  <Text style={[Fonts.textRegular, Gutters.smallBMargin]}>
+                    Selected Type: {typeChosenName}{' '}
+                  </Text>
+
+                  <Text style={[Fonts.textRegular, Gutters.smallBMargin]}>
+                    Requirements: {values.serviceType.requirements}
+                  </Text>
+                </View>
               )}
 
               {typeSelected && !isSearching && (
