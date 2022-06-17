@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
@@ -9,7 +9,6 @@ import {
   registerPasswordSchema,
   confirmPasswordSchema,
   termsAndConditionsSchema,
-  saIdNumberSchema,
 } from '../form-validaton-schemas';
 import CustomInput from '../../molecules/custom-input';
 import { getFormError } from '../form-utils';
@@ -17,19 +16,29 @@ import { TermsAndConditions } from '../../atoms';
 import { flashService } from '../../../services';
 import useTheme from '../../../theme/hooks/useTheme';
 
+const idNumberRegex = /[1-9]\d(([0][1-9])|([1][0-2]))(([0-2]\d)|([3][0-1]))\d{4}[0-2]\d{2}/;
+
 const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
   const { Gutters, Layout } = useTheme();
+  const formikRef = useRef(null);
+  const [idNumberWarning, setIdNumberWarning] = useState(undefined);
   const validationSchema = Yup.object().shape({
     email: emailSchema,
     firstName: Yup.string().required('First Name is required'),
     lastName: Yup.string().required('Surname is required'),
     mobileNumber: Yup.string().required('Mobile number is required'),
     telNumber: Yup.string(),
-    idNumber: saIdNumberSchema,
+    idNumber: Yup.string().required(),
     password: registerPasswordSchema(edit),
     confirmPassword: confirmPasswordSchema(edit),
     termsAndConditions: termsAndConditionsSchema(edit),
   });
+
+  useEffect(() => {
+    if (!`${formikRef.current.values.idNumber}`.match(idNumberRegex)) {
+      setIdNumberWarning('Not a valid RSA ID Number!');
+    }
+  }, [JSON.stringify(formikRef)]);
   const _handleSubmission = (formData, actions) => {
     submitForm({ formData })
       .then(() => {
@@ -47,10 +56,19 @@ const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
       });
   };
 
+  const handleIdNumberBlur = (idNumber) => {
+    if (!`${idNumber}`.match(idNumberRegex)) {
+      setIdNumberWarning('Not a valid RSA ID Number!');
+    } else {
+      setIdNumberWarning(undefined);
+    }
+  };
+
   return (
     <Formik
       initialValues={initialValues}
       initialStatus={{ apiErrors: {} }}
+      innerRef={formikRef}
       onSubmit={_handleSubmission}
       validationSchema={validationSchema}
       enableReinitialize
@@ -67,7 +85,6 @@ const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
         setFieldValue,
       }) => {
         const error = (name) => getFormError(name, { touched, status, errors });
-
         return (
           <>
             <CustomInput
@@ -103,9 +120,9 @@ const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
             <CustomInput
               value={values.idNumber}
               onChangeText={handleChange('idNumber')}
-              onBlur={handleBlur('idNumber')}
-              label="ID Number"
-              errorMessage={error('idNumber')}
+              onBlur={handleIdNumberBlur}
+              label="ID/Passport Number"
+              warningText={idNumberWarning}
             />
             <CustomInput
               value={values.email}
