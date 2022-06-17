@@ -4,6 +4,7 @@ import globalUrl from '../global/global.service.urls';
 import {
   apiFunctionWithUniqName,
   dataUpdateUserProfile,
+  userSharedAppData,
 } from '../../../helpers/api-function-name.helper';
 
 const getUser = async () => {
@@ -36,8 +37,8 @@ const updateUser = async ({ formData }) => {
 
 const invitedUserRecord = async (userId) => {
   const url = globalUrl.createUpdateRecordUrl();
-  const subscriptionModel = `<Objects><User_News_Feed_Item_Activity> <F1>${userId}</F1><F3>Invited</F3> </User_News_Feed_Item_Activity></Objects>`;
-  return authNetworkService.post(url, subscriptionModel);
+  const data = userSharedAppData({ userId });
+  return authNetworkService.post(url, data);
 };
 
 export default {

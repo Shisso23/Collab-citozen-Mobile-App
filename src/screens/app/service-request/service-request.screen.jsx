@@ -356,7 +356,7 @@ const ServiceRequestScreen = () => {
     return (
       <Modal visible={pinsModalVisible} onDismiss={() => {}} transparent>
         <View style={[styles.modal, { backgroundColor: Colors.transparent }, Fonts.textRegular]}>
-          <TouchableOpacity onPress={displayModalToggle}>
+          <TouchableOpacity onPress={() => setPinsModalVisible(false)}>
             <Icon name="close" size={30} color={Colors.lightgray} />
           </TouchableOpacity>
 

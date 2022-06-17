@@ -10,7 +10,7 @@ import newsFeedUrls from './news-feed.urls';
 const getNewsFeed = async (userId) => {
   const url = globalUrl.globalFunctionUrl();
   const data = await apiFunctionWithUniqName('get_user_feed');
-  const apiResponse = await authNetworkService.post(url, data, { timeout: 5000 });
+  const apiResponse = await authNetworkService.post(url, data);
 
   const newsfeeds = _.get(apiResponse.data, 'Feed', []);
   if (!newsfeeds) {

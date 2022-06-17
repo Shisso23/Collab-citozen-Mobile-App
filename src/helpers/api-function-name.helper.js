@@ -14,6 +14,10 @@ export const dataGetAccounts = async (functionName, data) => {
   };
 };
 
+export const userSharedAppData = ({ userId }) => {
+  return `<User_Activity><F1>${userId}</F1><F2>Shared App</F2><F3>${new Date()}</F3></User_Activity>`;
+};
+
 export const dataUpdateNotificationToken = async (token, deviceID) => {
   return {
     taskID: 0,
