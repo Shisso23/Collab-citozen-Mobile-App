@@ -17,7 +17,7 @@ export const Colors = {
   primary: '#609C3A',
   secondary: '#0D2B83',
   success: '#95F9E3',
-  warning: '#D4B483',
+  warning: '#f2a50a',
   error: '#C1666B',
   danger: '#C1666B',
   softBlue: '#3A609C',

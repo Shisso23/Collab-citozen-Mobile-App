@@ -175,6 +175,11 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
       borderTopRightRadius: 10,
       elevation: 2,
     },
+    warningStyle: {
+      color: Colors.warning,
+      fontFamily: FontFamily.primary,
+      fontSize: FontSize.small,
+    },
     whiteText: {
       color: Colors.white,
     },
