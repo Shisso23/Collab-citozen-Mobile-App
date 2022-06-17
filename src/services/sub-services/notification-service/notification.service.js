@@ -9,7 +9,6 @@ import {
 } from '../../../helpers/api-function-name.helper';
 import { flashService } from '../../index';
 import globalServiceUrls from '../global/global.service.urls';
-import { mockApi } from '../../../dummy-data/mock-api';
 
 export const getNotifications = async () => {
   const data = await apiFunctionWithUniqName('get_user_notifications');
@@ -59,14 +58,22 @@ const deleteNotification = async (notificationId, dateTime, userId) => {
   return response;
 };
 
-const createNotification = async (formData, userId) => {
-  const data = createNotificationActivityData({
-    ...formData,
-    userId,
-  });
+const createNotification = async (formData, channelRef) => {
+  const data = formData.interestTypes.map((interestType) =>
+    createNotificationActivityData({
+      title: formData.title,
+      description: formData.description,
+      interestTypeRef: interestType.obj_id,
+      channelRef,
+    }),
+  );
   const createNotificationUrl = globalServiceUrls.createUpdateRecordUrl();
-  const response = await mockApi.post(createNotificationUrl, data); // TODO remove mock api usage when  endpoint is ready
-  return response;
+  return Promise.all(
+    data.map(async (notificationData) => {
+      const response = await authNetworkService.post(createNotificationUrl, notificationData);
+      return response;
+    }),
+  );
 };
 
 export default {

@@ -41,8 +41,13 @@ export const dataUpdateUserProfile = async (functionName, data) => {
 export const notificationActivityData = ({ notificationId, userId, action, dateTime }) =>
   `<Objects><User_Notification_Activity><F1>${notificationId}</F1><F2>${userId}</F2><F3>${action}</F3><F4>${dateTime}</F4></User_Notification_Activity></Objects>`;
 
-export const createNotificationActivityData = ({ title, description, interestTypes, userId }) =>
-  `<Objects><User_Notification_Activity><F1>${title}</F1><F2>${description}</F2><F3>${interestTypes}</F3><F4>${userId}</F4></User_Notification_Activity></Objects>`;
+export const createNotificationActivityData = ({
+  title,
+  description,
+  interestTypeRef,
+  channelRef,
+}) =>
+  `<Notifications><F2>${title}</F2><F3>${description}</F3><F5>${channelRef}</F5><F6>${interestTypeRef}</F6></Notifications>`;
 
 export const apiFunctionWithUniqNameChannels = async (functionName, longitude, latitude) => {
   return {
