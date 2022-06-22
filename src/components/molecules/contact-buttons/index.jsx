@@ -42,7 +42,7 @@ const ContactButtons = (props) => {
         link = `sms:${contact.sms.replace(/\s/g, '')}${separator}body=${defaultMessage}`;
         break;
       case 'twitter':
-        link = `https://twitter.com/${contact.twitter.toLowerCase()}`;
+        link = `twitter://user?screen_name=${contact.twitter.toLowerCase()}`;
         break;
       case 'facebook':
         link = `https://www.facebook.com/${contact.facebook}`;
