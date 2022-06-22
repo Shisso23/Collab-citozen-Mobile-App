@@ -13,6 +13,7 @@ import FastImage from 'react-native-fast-image';
 import useTheme from '../../../theme/hooks/useTheme';
 import { userHasOpenedNewsFeedAction } from '../../../reducers/news-feed-reducer/news-feed.actions';
 import { handleNotificationOpenedBackGround } from '../../../hooks/notification-background/notification-background';
+import { convertHtmlToString } from '../../../helpers/html-to-string.helper';
 
 const { width: screenWidth } = Dimensions.get('window');
 const NewsArticle = (props) => {
@@ -111,16 +112,22 @@ const NewsArticle = (props) => {
     }
   };
   const shareNewsArticle = async (newsFeedTitle, newsFeedChannel, newsFeedDate, newsFeedBody) => {
-    const messageBody = `The following news article has been shared to you through the Citizen Collab app!\n\n${newsFeedTitle}\n\n${newsFeedChannel}\n\n${newsFeedDate}\n\n${newsFeedBody}`;
+    const messageBody = `The following news article has been shared to you through the Citizen Collab app!\n\n${newsFeedTitle}\n\n${newsFeedChannel}\n\n${newsFeedDate}\n\n${convertHtmlToString(
+      newsFeedBody,
+    )}`;
 
     const shareContent = {
       message: messageBody,
       url: null,
     };
 
-    Share.open(shareContent).then(() => {
-      dispatch(userHasOpenedNewsFeedAction(item.newsFeedId, user.user_id, 'Shared'));
-    });
+    Share.open(shareContent)
+      .then(() => {
+        dispatch(userHasOpenedNewsFeedAction(item.newsFeedId, user.user_id, 'Shared'));
+      })
+      .catch(() => {
+        return null;
+      });
   };
 
   const renderUserReactions = () => {
@@ -166,7 +173,7 @@ const NewsArticle = (props) => {
   };
 
   const onArticleClick = () => {
-    navigation.navigate('ViewNewsFeedArticle', { newsFeedItem: item });
+    navigation.navigate('ViewNewsFeedArticleDetails', { newsFeedItem: item });
   };
 
   const renderNewsFeedDescription = () => {
