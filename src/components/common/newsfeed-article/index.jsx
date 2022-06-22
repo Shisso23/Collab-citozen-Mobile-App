@@ -12,7 +12,7 @@ import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
 
 const { width: screenWidth } = Dimensions.get('window');
-const NewsFeedArticle = (newsFeedArticle) => {
+const NewsFeedArticleDetail = (newsFeedArticle) => {
   const { Gutters, Fonts } = useTheme();
   const dispatch = useDispatch();
   const newsFeedItem = _.get(newsFeedArticle, 'NewsFeedArticle.newsFeedItem');
@@ -60,4 +60,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NewsFeedArticle;
+export default NewsFeedArticleDetail;
