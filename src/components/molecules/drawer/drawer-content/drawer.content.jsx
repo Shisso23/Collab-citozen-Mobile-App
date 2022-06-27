@@ -123,14 +123,6 @@ const DrawerContent = (props) => {
             icon="file"
             label="Channels"
             onPress={async () => {
-              return navigation.navigate('ViewSubscribeToChannels');
-            }}
-            theme={theme}
-          />
-          <Drawer.Item
-            icon="phone"
-            label="Contacts"
-            onPress={async () => {
               if (hasHmsSync()) {
                 permissionsService
                   .requestHmsLocationPermissions()
@@ -143,6 +135,14 @@ const DrawerContent = (props) => {
                   flashService.error('Please grant permissions to select a location.');
                 });
               }
+              return navigation.navigate('ViewSubscribeToChannels');
+            }}
+            theme={theme}
+          />
+          <Drawer.Item
+            icon="phone"
+            label="Contacts"
+            onPress={async () => {
               if (hasHmsSync()) {
                 permissionsService
                   .requestHmsLocationPermissions()
