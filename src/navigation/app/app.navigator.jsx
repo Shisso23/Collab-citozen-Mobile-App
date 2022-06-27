@@ -18,7 +18,7 @@ import { DrawerContent } from '../../components/molecules';
 import HeaderBackGround from '../../components/atoms/header-background';
 
 import ViewServiceRequestScreen from '../../screens/app/service-request/view-service-request/view-service-request.screen';
-import ViewNewsFeedArticleScreen from '../../screens/app/newsfeed/view-newsfeed-article.screen';
+import NewsFeedArticleDetailsScreen from '../../screens/app/newsfeed/view-newsfeed-article-details.screen';
 import InboxScreen from '../../screens/app/inbox/inbox.screen';
 import AccountsScreen from '../../screens/app/accounts/accounts.screen';
 import StatementViewScreen from '../../screens/app/accounts/statementView.screen';
@@ -72,8 +72,8 @@ const AppNavigator = () => {
       />
 
       <AppStack.Screen
-        name="ViewNewsFeedArticle"
-        component={ViewNewsFeedArticleScreen}
+        name="ViewNewsFeedArticleDetails"
+        component={NewsFeedArticleDetailsScreen}
         options={{
           headerShown: false,
           title: 'Select Location',
