@@ -143,6 +143,18 @@ const DrawerContent = (props) => {
                   flashService.error('Please grant permissions to select a location.');
                 });
               }
+              if (hasHmsSync()) {
+                permissionsService
+                  .requestHmsLocationPermissions()
+
+                  .catch(() => {
+                    flashService.error('Please grant permissions to select a location.');
+                  });
+              } else {
+                permissionsService.checkLocationPermissions().catch(() => {
+                  flashService.error('Please grant permissions to select a location.');
+                });
+              }
               return navigation.navigate('ContactDetails');
             }}
             theme={theme}
