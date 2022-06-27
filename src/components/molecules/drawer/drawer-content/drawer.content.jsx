@@ -6,13 +6,13 @@ import { Text, Drawer, Divider } from 'react-native-paper';
 import { DrawerContentScrollView } from '@react-navigation/drawer';
 import { useSelector, useDispatch } from 'react-redux';
 import { Avatar } from 'react-native-elements';
-import DeviceInfo from 'react-native-device-info';
+import DeviceInfo, { hasHmsSync } from 'react-native-device-info';
 import codePush from 'react-native-code-push';
 
 import { signOutAction } from '../../../../reducers/user-auth-reducer/user-auth.actions';
 import useTheme from '../../../../theme/hooks/useTheme';
 import { Colors } from '../../../../theme/Variables';
-import { userService } from '../../../../services';
+import { flashService, permissionsService, userService } from '../../../../services';
 import { openAppSetting } from '../../../../helpers/app-seettings.helper';
 import { myChannelsSelector } from '../../../../reducers/my-channels/my-channels.reducer';
 import { getMyChannelsAction } from '../../../../reducers/my-channels/my-channels.actions';
@@ -93,6 +93,18 @@ const DrawerContent = (props) => {
             icon="information"
             label="Service Requests"
             onPress={async () => {
+              if (hasHmsSync()) {
+                permissionsService
+                  .requestHmsLocationPermissions()
+
+                  .catch(() => {
+                    flashService.error('Please grant permissions to select a location.');
+                  });
+              } else {
+                permissionsService.checkLocationPermissions().catch(() => {
+                  flashService.error('Please grant permissions to select a location.');
+                });
+              }
               navigation.navigate('ServiceRequests');
             }}
             theme={theme}
@@ -119,6 +131,18 @@ const DrawerContent = (props) => {
             icon="phone"
             label="Contacts"
             onPress={async () => {
+              if (hasHmsSync()) {
+                permissionsService
+                  .requestHmsLocationPermissions()
+
+                  .catch(() => {
+                    flashService.error('Please grant permissions to select a location.');
+                  });
+              } else {
+                permissionsService.checkLocationPermissions().catch(() => {
+                  flashService.error('Please grant permissions to select a location.');
+                });
+              }
               return navigation.navigate('ContactDetails');
             }}
             theme={theme}

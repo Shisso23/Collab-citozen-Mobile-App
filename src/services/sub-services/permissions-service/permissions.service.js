@@ -60,7 +60,7 @@ const requestLocationPermissions = (platform) => {
 
 const requestHmsLocationPermissions = async () => {
   let hasPermission = await HMSLocation.FusedLocation.Native.hasPermission();
-  if (!hasPermission) {
+  if (!hasPermission.hasPermission) {
     try {
       await HMSLocation.FusedLocation.Native.requestPermission();
       hasPermission = await HMSLocation.FusedLocation.Native.hasPermission();
