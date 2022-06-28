@@ -7,7 +7,7 @@ import useTheme from '../../../theme/hooks/useTheme';
 import NewsArticle from './news-article.component';
 import newsFeedService from '../../../services/sub-services/news-feed-service/news-feed.service';
 
-const NewsArticles = () => {
+const NewsArticlesList = () => {
   const { user } = useSelector((reducers) => reducers.userReducer);
   const [newsFeeds, setNewsFeeds] = useState([]);
   const { Gutters, Colors } = useTheme();
@@ -58,4 +58,4 @@ const NewsArticles = () => {
   );
 };
 
-export default NewsArticles;
+export default NewsArticlesList;

@@ -4,9 +4,9 @@ import { useRoute } from '@react-navigation/native';
 
 import useTheme from '../../../theme/hooks/useTheme';
 import OnBackPressHeader from '../../../components/atoms/on-back-press-header/index';
-import NewsFeedArticle from '../../../components/common/newsfeed-article/index';
+import NewsFeedArticleDetail from '../../../components/common/newsfeed-article/index';
 
-const ViewNewsFeedArticleScreen = () => {
+const NewsFeedArticleDetailsScreen = () => {
   const { params } = useRoute();
   const { Images, Layout } = useTheme();
 
@@ -14,14 +14,14 @@ const ViewNewsFeedArticleScreen = () => {
     <ImageBackground source={Images.serviceRequest} style={Layout.fullSize} resizeMode="cover">
       <OnBackPressHeader arrowColor="#000000" />
       <ScrollView>
-        <NewsFeedArticle NewsFeedArticle={params} />
+        <NewsFeedArticleDetail NewsFeedArticle={params} />
       </ScrollView>
     </ImageBackground>
   );
 };
 
-ViewNewsFeedArticleScreen.propTypes = {};
+NewsFeedArticleDetailsScreen.propTypes = {};
 
-ViewNewsFeedArticleScreen.defaultProps = {};
+NewsFeedArticleDetailsScreen.defaultProps = {};
 
-export default ViewNewsFeedArticleScreen;
+export default NewsFeedArticleDetailsScreen;

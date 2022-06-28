@@ -4,7 +4,7 @@ import { ImageBackground, Text } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import PushNotification from 'react-native-push-notification';
 
-import NewsArticles from '../../../components/molecules/news-articles/news-articles.component';
+import NewsArticlesList from '../../../components/molecules/news-articles/news-articles-list.component';
 import useTheme from '../../../theme/hooks/useTheme';
 import { exitAppOnHardwarePressListener } from '../../../helpers';
 import { handleNotificationOpenedBackGround } from '../../../hooks/notification-background/notification-background';
@@ -30,7 +30,7 @@ const HomeScreen = () => {
         resizeMode="cover"
       >
         <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>News</Text>
-        <NewsArticles />
+        <NewsArticlesList />
       </ImageBackground>
     </>
   );
