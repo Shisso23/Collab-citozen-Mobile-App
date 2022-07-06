@@ -338,9 +338,12 @@ const CreateServiceRequestForm = ({
                     Selected Type: {typeChosenName}{' '}
                   </Text>
 
-                  <Text style={[Fonts.textRegular, Gutters.smallBMargin]}>
-                    Requirements: {values.serviceType.requirements}
-                  </Text>
+                  {(values.serviceType.requirements &&
+                    values.serviceType.requirements.length !== 0 && (
+                      <Text style={[Fonts.textRegular, Gutters.smallBMargin]}>
+                        Requirements: {values.serviceType.requirements}
+                      </Text>
+                    )) || <View />}
                 </View>
               )}
 

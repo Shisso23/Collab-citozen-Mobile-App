@@ -137,6 +137,9 @@ const SelectLocationScreen = () => {
       newMapPositionCordinates.latitude.toFixed(5) !== userLocation.latitude.toFixed(5) &&
       newMapPositionCordinates.longitude.toFixed(5) !== userLocation.latitude.toFixed(5)
     ) {
+      dispatch(getAddressFromRegionAction(newMapPositionCordinates)).then((addressSelected) => {
+        setAddress(addressSelected);
+      });
       setMapPosition(newMapPositionCordinates);
     }
   };
