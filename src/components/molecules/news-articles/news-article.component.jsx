@@ -113,13 +113,13 @@ const NewsArticle = (props) => {
   };
 
   const handleShareNewstAction = () => {
-    const { title, channelName, date } = item;
+    const { title, channelName, date, newsFeedImage } = item;
     const content = `To read more about the news please download the App and subscribe to the ${channelName}`;
     const messageBody = `The following news article has been shared to you through the Citizen Collab app!\n\n${title}\n\n${channelName}\n\n${date}\n\n${content}`;
 
     const shareContent = {
       message: messageBody,
-      url: null,
+      url: newsFeedImage,
     };
 
     Share.open(shareContent)
