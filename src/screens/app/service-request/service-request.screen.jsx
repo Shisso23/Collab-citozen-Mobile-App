@@ -97,7 +97,7 @@ const ServiceRequestScreen = () => {
   useFocusEffect(
     useCallback(() => {
       _loadServiceRequests();
-      if (hasGmsSync()) {
+      if (hasGmsSync() || Platform.OS === 'ios') {
         permissionsService
           .checkLocationPermissions()
           .then((result) => {
@@ -221,15 +221,35 @@ const ServiceRequestScreen = () => {
   const returnMarkerColour = (serviceRequestStatus) => {
     switch (serviceRequestStatus) {
       case 'Initial':
-        return hasGmsSync() ? Colors.lightOrange : hasHmsSync() ? Hue.ORANGE : null;
+        return hasGmsSync() || Platform.OS === 'ios'
+          ? Colors.lightOrange
+          : hasHmsSync()
+          ? Hue.ORANGE
+          : null;
       case 'Registered':
-        return hasGmsSync() ? Colors.lightBlue : hasHmsSync() ? Hue.CYAN : null;
+        return hasGmsSync() || Platform.OS === 'ios'
+          ? Colors.lightBlue
+          : hasHmsSync()
+          ? Hue.CYAN
+          : null;
       case 'Completed':
-        return hasGmsSync() ? Colors.primary : hasHmsSync() ? Hue.BLUE : null;
+        return hasGmsSync() || Platform.OS === 'ios'
+          ? Colors.primary
+          : hasHmsSync()
+          ? Hue.BLUE
+          : null;
       case 'Assigned':
-        return hasGmsSync() ? Colors.lightGreen : hasHmsSync() ? Hue.GREEN : null;
+        return hasGmsSync() || Platform.OS === 'ios'
+          ? Colors.lightGreen
+          : hasHmsSync()
+          ? Hue.GREEN
+          : null;
       default:
-        return hasGmsSync() ? Colors.gray : hasHmsSync() ? Hue.VIOLET : null;
+        return hasGmsSync() || Platform.OS === 'ios'
+          ? Colors.gray
+          : hasHmsSync()
+          ? Hue.VIOLET
+          : null;
     }
   };
 
@@ -243,7 +263,7 @@ const ServiceRequestScreen = () => {
         const lat = parseFloat(cordinates[0]);
         const lng = parseFloat(cordinates[1]);
 
-        return hasGmsSync() ? (
+        return hasGmsSync() || Platform.OS === 'ios' ? (
           <Marker
             coordinate={{ latitude: lng, longitude: lat }}
             onPress={displayModalToggle(pin)}
@@ -394,7 +414,13 @@ const ServiceRequestScreen = () => {
       ) : (
         <>
           <View style={Layout.fullSize}>
-            {hasGmsSync() ? renderMapViewPins() : hasHmsSync() ? renderHmsMapPins() : <View />}
+            {hasGmsSync() || Platform.OS === 'ios' ? (
+              renderMapViewPins()
+            ) : hasHmsSync() ? (
+              renderHmsMapPins()
+            ) : (
+              <View />
+            )}
           </View>
           <View style={Common.pinContainer}>
             <Icon type="ionicon" name="pin-outline" size={30} color={Colors.primary} />

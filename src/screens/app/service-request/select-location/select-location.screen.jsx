@@ -69,7 +69,7 @@ const SelectLocationScreen = () => {
           setAddress(addressSelected);
         });
       });
-      if (hasGmsSync()) {
+      if (hasGmsSync() || Platform.OS === 'ios') {
         permissionsService
           .checkLocationPermissions()
           .then((result) => {
@@ -162,7 +162,7 @@ const SelectLocationScreen = () => {
       setLoadingModalTransparent(false);
     });
     setMapPosition(newRegionCoordinates);
-    if (hasGmsSync()) {
+    if (hasGmsSync() || Platform.OS === 'ios') {
       mapRef.animateToRegion(newRegionCoordinates);
     } else if (hasHmsSync()) {
       hmsMapRef.setCameraPosition({ target: newRegionCoordinates, zoom: 15, tilt: 40 });
@@ -246,7 +246,7 @@ const SelectLocationScreen = () => {
           </TouchableOpacity>
         )}
       />
-      {hasGmsSync() ? (
+      {hasGmsSync() || Platform.OS === 'ios' ? (
         <MapView
           style={[Layout.fill]}
           initialRegion={userLocation}

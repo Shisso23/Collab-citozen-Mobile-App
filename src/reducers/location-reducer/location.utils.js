@@ -1,6 +1,7 @@
 import Geolocation from 'react-native-geolocation-service';
 import { hasGmsSync, hasHmsSync } from 'react-native-device-info';
 import HMSLocation from '@hmscore/react-native-hms-location';
+import { Platform } from 'react-native';
 
 const LATITUDE_DELTA = 0.011;
 const LONGITUDE_DELTA = 0.011;
@@ -25,7 +26,7 @@ if (hasHmsSync()) {
 }
 
 export const getCurrentPosition = () => {
-  if (hasGmsSync()) {
+  if (hasGmsSync() || Platform.OS === 'ios') {
     return new Promise((resolve, reject) => {
       Geolocation.getCurrentPosition(
         (position) => {

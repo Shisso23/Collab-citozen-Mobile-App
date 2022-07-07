@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Share } from 'react-native';
+import { View, StyleSheet, Share, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import { Text, Drawer, Divider } from 'react-native-paper';
 import { DrawerContentScrollView } from '@react-navigation/drawer';
@@ -93,7 +93,7 @@ const DrawerContent = (props) => {
             icon="information"
             label="Service Requests"
             onPress={async () => {
-              if (hasGmsSync()) {
+              if (hasGmsSync() || Platform.OS === 'ios') {
                 permissionsService.checkLocationPermissions().catch(() => {
                   flashService.error('Please grant permissions to select a location.');
                 });
@@ -123,7 +123,7 @@ const DrawerContent = (props) => {
             icon="file"
             label="Channels"
             onPress={async () => {
-              if (hasGmsSync()) {
+              if (hasGmsSync() || Platform.OS === 'ios') {
                 permissionsService.checkLocationPermissions().catch(() => {
                   flashService.error('Please grant permissions to select a location.');
                 });
@@ -143,7 +143,7 @@ const DrawerContent = (props) => {
             icon="phone"
             label="Contacts"
             onPress={async () => {
-              if (hasGmsSync()) {
+              if (hasGmsSync() || Platform.OS === 'ios') {
                 permissionsService.checkLocationPermissions().catch(() => {
                   flashService.error('Please grant permissions to select a location.');
                 });
