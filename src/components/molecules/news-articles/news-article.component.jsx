@@ -13,10 +13,11 @@ import FastImage from 'react-native-fast-image';
 import useTheme from '../../../theme/hooks/useTheme';
 import { userHasOpenedNewsFeedAction } from '../../../reducers/news-feed-reducer/news-feed.actions';
 import { handleNotificationOpenedBackGround } from '../../../hooks/notification-background/notification-background';
-import { flashService } from '../../../services';
+import config from '../../../config';
 
 const { width: screenWidth } = Dimensions.get('window');
 const NewsArticle = (props) => {
+  const { combinedLink } = config;
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const { item } = props;
@@ -115,11 +116,14 @@ const NewsArticle = (props) => {
   const handleShareNewstAction = () => {
     const { title, channelName, date, newsFeedImage } = item;
     const content = `To read more about the news please download the App and subscribe to the ${channelName}`;
-    const messageBody = `The following news article has been shared to you through the Citizen Collab app!\n\n${title}\n\n${channelName}\n\n${date}\n\n${content}`;
-
+    const messageBody = `The following news article has been shared to you through the Citizen Collab app!\n\n${title}\n\n${channelName}\n\n${date}\n\n${content}\n\n${combinedLink}`;
     const shareContent = {
+      title: 'Collab citizen News Article',
       message: messageBody,
-      url: newsFeedImage,
+      url: `${newsFeedImage}`,
+      subject: 'Collab citizen News Article',
+      failOnCancel: false,
+      showAppsToView: true,
     };
 
     Share.open(shareContent)
