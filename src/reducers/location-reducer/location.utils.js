@@ -1,6 +1,7 @@
 import Geolocation from 'react-native-geolocation-service';
-import { hasHmsSync } from 'react-native-device-info';
+import { hasGmsSync, hasHmsSync } from 'react-native-device-info';
 import HMSLocation from '@hmscore/react-native-hms-location';
+import { Platform } from 'react-native';
 
 const LATITUDE_DELTA = 0.011;
 const LONGITUDE_DELTA = 0.011;
@@ -25,7 +26,7 @@ if (hasHmsSync()) {
 }
 
 export const getCurrentPosition = () => {
-  if (!hasHmsSync()) {
+  if (hasGmsSync() || Platform.OS === 'ios') {
     return new Promise((resolve, reject) => {
       Geolocation.getCurrentPosition(
         (position) => {
@@ -46,24 +47,25 @@ export const getCurrentPosition = () => {
       );
     });
   }
-
-  return new Promise((resolve, reject) => {
-    HMSLocation.FusedLocation.Native.requestLocationUpdates(1, locationRequest).then(
-      () => {
-        HMSLocation.FusedLocation.Events.addFusedLocationEventListener((locationResult) => {
-          const { latitude, longitude } = locationResult.lastLocation;
-          const region = {
-            latitude: parseFloat(latitude),
-            longitude: parseFloat(longitude),
-            latitudeDelta: LATITUDE_DELTA,
-            longitudeDelta: LONGITUDE_DELTA,
-          };
-          resolve(region);
-        });
-      },
-      (error) => {
-        reject(error);
-      },
-    );
-  });
+  if (hasHmsSync()) {
+    return new Promise((resolve, reject) => {
+      HMSLocation.FusedLocation.Native.requestLocationUpdates(1, locationRequest).then(
+        () => {
+          HMSLocation.FusedLocation.Events.addFusedLocationEventListener((locationResult) => {
+            const { latitude, longitude } = locationResult.lastLocation;
+            const region = {
+              latitude: parseFloat(latitude),
+              longitude: parseFloat(longitude),
+              latitudeDelta: LATITUDE_DELTA,
+              longitudeDelta: LONGITUDE_DELTA,
+            };
+            resolve(region);
+          });
+        },
+        (error) => {
+          reject(error);
+        },
+      );
+    });
+  }
 };

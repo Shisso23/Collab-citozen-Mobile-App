@@ -1,12 +1,12 @@
 import _ from 'lodash';
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Share } from 'react-native';
+import { View, StyleSheet, Share, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import { Text, Drawer, Divider } from 'react-native-paper';
 import { DrawerContentScrollView } from '@react-navigation/drawer';
 import { useSelector, useDispatch } from 'react-redux';
 import { Avatar } from 'react-native-elements';
-import DeviceInfo, { hasHmsSync } from 'react-native-device-info';
+import DeviceInfo, { hasGmsSync, hasHmsSync } from 'react-native-device-info';
 import codePush from 'react-native-code-push';
 
 import { signOutAction } from '../../../../reducers/user-auth-reducer/user-auth.actions';
@@ -93,17 +93,17 @@ const DrawerContent = (props) => {
             icon="information"
             label="Service Requests"
             onPress={async () => {
-              if (hasHmsSync()) {
+              if (hasGmsSync() || Platform.OS === 'ios') {
+                permissionsService.checkLocationPermissions().catch(() => {
+                  flashService.error('Please grant permissions to select a location.');
+                });
+              } else if (hasHmsSync()) {
                 permissionsService
                   .requestHmsLocationPermissions()
 
                   .catch(() => {
                     flashService.error('Please grant permissions to select a location.');
                   });
-              } else {
-                permissionsService.checkLocationPermissions().catch(() => {
-                  flashService.error('Please grant permissions to select a location.');
-                });
               }
               navigation.navigate('ServiceRequests');
             }}
@@ -123,17 +123,17 @@ const DrawerContent = (props) => {
             icon="file"
             label="Channels"
             onPress={async () => {
-              if (hasHmsSync()) {
+              if (hasGmsSync() || Platform.OS === 'ios') {
+                permissionsService.checkLocationPermissions().catch(() => {
+                  flashService.error('Please grant permissions to select a location.');
+                });
+              } else if (hasHmsSync()) {
                 permissionsService
                   .requestHmsLocationPermissions()
 
                   .catch(() => {
                     flashService.error('Please grant permissions to select a location.');
                   });
-              } else {
-                permissionsService.checkLocationPermissions().catch(() => {
-                  flashService.error('Please grant permissions to select a location.');
-                });
               }
               return navigation.navigate('ViewSubscribeToChannels');
             }}
@@ -143,17 +143,17 @@ const DrawerContent = (props) => {
             icon="phone"
             label="Contacts"
             onPress={async () => {
-              if (hasHmsSync()) {
+              if (hasGmsSync() || Platform.OS === 'ios') {
+                permissionsService.checkLocationPermissions().catch(() => {
+                  flashService.error('Please grant permissions to select a location.');
+                });
+              } else if (hasHmsSync()) {
                 permissionsService
                   .requestHmsLocationPermissions()
 
                   .catch(() => {
                     flashService.error('Please grant permissions to select a location.');
                   });
-              } else {
-                permissionsService.checkLocationPermissions().catch(() => {
-                  flashService.error('Please grant permissions to select a location.');
-                });
               }
               return navigation.navigate('ContactDetails');
             }}

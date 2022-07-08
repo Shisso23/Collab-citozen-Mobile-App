@@ -152,7 +152,9 @@ const App = () => {
       }
     });
     return () => {
-      removeLocationAndListener(1);
+      if (DeviceInfo.hasHmsSync()) {
+        removeLocationAndListener(1);
+      }
     };
   }, []);
 

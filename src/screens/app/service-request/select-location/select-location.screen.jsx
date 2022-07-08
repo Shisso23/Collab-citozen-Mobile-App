@@ -18,7 +18,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation, useFocusEffect, DefaultTheme, useRoute } from '@react-navigation/native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import _ from 'lodash';
-import { hasHmsSync } from 'react-native-device-info';
+import { hasGmsSync, hasHmsSync } from 'react-native-device-info';
 
 import useTheme from '../../../../theme/hooks/useTheme';
 import { locationSelector } from '../../../../reducers/location-reducer/location.reducer';
@@ -69,18 +69,18 @@ const SelectLocationScreen = () => {
           setAddress(addressSelected);
         });
       });
-      if (hasHmsSync()) {
+      if (hasGmsSync() || Platform.OS === 'ios') {
         permissionsService
-          .requestHmsLocationPermissions()
+          .checkLocationPermissions()
           .then((result) => {
             setLocationPermission(result);
           })
           .catch(() => {
             flashService.error('Please grant permissions to select a location.');
           });
-      } else {
+      } else if (hasHmsSync()) {
         permissionsService
-          .checkLocationPermissions()
+          .requestHmsLocationPermissions()
           .then((result) => {
             setLocationPermission(result);
           })
@@ -162,9 +162,9 @@ const SelectLocationScreen = () => {
       setLoadingModalTransparent(false);
     });
     setMapPosition(newRegionCoordinates);
-    if (!hasHmsSync()) {
+    if (hasGmsSync() || Platform.OS === 'ios') {
       mapRef.animateToRegion(newRegionCoordinates);
-    } else {
+    } else if (hasHmsSync()) {
       hmsMapRef.setCameraPosition({ target: newRegionCoordinates, zoom: 15, tilt: 40 });
     }
   };
@@ -246,7 +246,22 @@ const SelectLocationScreen = () => {
           </TouchableOpacity>
         )}
       />
-      {hasHmsSync() ? (
+      {hasGmsSync() || Platform.OS === 'ios' ? (
+        <MapView
+          style={[Layout.fill]}
+          initialRegion={userLocation}
+          showsUserLocation
+          onPress={Keyboard.dismiss}
+          ref={setMapRef}
+          onMapReady={() => setMapReady(true)}
+          onRegionChangeComplete={(newRegion) => {
+            return _setMapPosition(newRegion);
+          }}
+          showsMyLocationButton={false}
+          zoomControlEnabled
+          zoomEnabled
+        />
+      ) : hasHmsSync() ? (
         <HmsMapView
           ref={(e) => {
             setHmsMapRef(e);
@@ -279,20 +294,7 @@ const SelectLocationScreen = () => {
           useAnimation
         />
       ) : (
-        <MapView
-          style={[Layout.fill]}
-          initialRegion={userLocation}
-          showsUserLocation
-          onPress={Keyboard.dismiss}
-          ref={setMapRef}
-          onMapReady={() => setMapReady(true)}
-          onRegionChangeComplete={(newRegion) => {
-            return _setMapPosition(newRegion);
-          }}
-          showsMyLocationButton={false}
-          zoomControlEnabled
-          zoomEnabled
-        />
+        <View />
       )}
 
       <View style={[Common.pinContainer]}>

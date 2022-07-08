@@ -33,7 +33,8 @@ export default {
   hmsSiteApiUrl: 'https://siteapi.cloud.huawei.com/mapApi/v1/siteService',
   androidDownloadLink: 'https://play.google.com/store/apps/details?id=com.collaboratorapp',
   iOSDownloadLink: 'https://apps.apple.com/us/app/collab-citizen/id1557197011',
-  combinedLink: 'http://onelink.to/5kwpyv',
+  huaweiDownloadAppLink: 'https://appgallery.huawei.com/app/C104847131',
+  combinedLink: 'https://onelink.to/jjzt2k',
   appStoreAppId: APP_STORE_APP_ID,
   androidPackageId: 'com.collaboratorapp',
 };

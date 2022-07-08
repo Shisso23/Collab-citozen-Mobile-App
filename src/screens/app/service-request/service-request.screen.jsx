@@ -97,18 +97,18 @@ const ServiceRequestScreen = () => {
   useFocusEffect(
     useCallback(() => {
       _loadServiceRequests();
-      if (hasHmsSync()) {
+      if (hasGmsSync() || Platform.OS === 'ios') {
         permissionsService
-          .requestHmsLocationPermissions()
+          .checkLocationPermissions()
           .then((result) => {
             setLocationPermission(result);
           })
           .catch(() => {
             flashService.error('Please grant permissions to select a location.');
           });
-      } else {
+      } else if (hasHmsSync()) {
         permissionsService
-          .checkLocationPermissions()
+          .requestHmsLocationPermissions()
           .then((result) => {
             setLocationPermission(result);
           })
@@ -221,15 +221,35 @@ const ServiceRequestScreen = () => {
   const returnMarkerColour = (serviceRequestStatus) => {
     switch (serviceRequestStatus) {
       case 'Initial':
-        return hasHmsSync() ? Hue.ORANGE : Colors.lightOrange;
+        return hasGmsSync() || Platform.OS === 'ios'
+          ? Colors.lightOrange
+          : hasHmsSync()
+          ? Hue.ORANGE
+          : null;
       case 'Registered':
-        return hasHmsSync() ? Hue.CYAN : Colors.lightBlue;
+        return hasGmsSync() || Platform.OS === 'ios'
+          ? Colors.lightBlue
+          : hasHmsSync()
+          ? Hue.CYAN
+          : null;
       case 'Completed':
-        return hasHmsSync() ? Hue.BLUE : Colors.primary;
+        return hasGmsSync() || Platform.OS === 'ios'
+          ? Colors.primary
+          : hasHmsSync()
+          ? Hue.BLUE
+          : null;
       case 'Assigned':
-        return hasHmsSync() ? Hue.GREEN : Colors.lightGreen;
+        return hasGmsSync() || Platform.OS === 'ios'
+          ? Colors.lightGreen
+          : hasHmsSync()
+          ? Hue.GREEN
+          : null;
       default:
-        return hasHmsSync() ? Hue.VIOLET : Colors.gray;
+        return hasGmsSync() || Platform.OS === 'ios'
+          ? Colors.gray
+          : hasHmsSync()
+          ? Hue.VIOLET
+          : null;
     }
   };
 
@@ -243,15 +263,7 @@ const ServiceRequestScreen = () => {
         const lat = parseFloat(cordinates[0]);
         const lng = parseFloat(cordinates[1]);
 
-        return hasHmsSync() ? (
-          <HMSMarker
-            key={pin.id}
-            icon={{ hue: returnMarkerColour(pin.status) }}
-            title={pin.serviceDescription}
-            clusterable
-            coordinate={{ latitude: lng, longitude: lat }}
-          />
-        ) : (
+        return hasGmsSync() || Platform.OS === 'ios' ? (
           <Marker
             coordinate={{ latitude: lng, longitude: lat }}
             onPress={displayModalToggle(pin)}
@@ -261,6 +273,16 @@ const ServiceRequestScreen = () => {
               <Icon name="location-pin" size={45} color={returnMarkerColour(pin.status)} />
             </View>
           </Marker>
+        ) : hasHmsSync() ? (
+          <HMSMarker
+            key={pin.id}
+            icon={{ hue: returnMarkerColour(pin.status) }}
+            title={pin.serviceDescription}
+            clusterable
+            coordinate={{ latitude: lng, longitude: lat }}
+          />
+        ) : (
+          <View />
         );
       });
     }
@@ -392,7 +414,13 @@ const ServiceRequestScreen = () => {
       ) : (
         <>
           <View style={Layout.fullSize}>
-            {hasHmsSync() ? renderHmsMapPins() : renderMapViewPins()}
+            {hasGmsSync() || Platform.OS === 'ios' ? (
+              renderMapViewPins()
+            ) : hasHmsSync() ? (
+              renderHmsMapPins()
+            ) : (
+              <View />
+            )}
           </View>
           <View style={Common.pinContainer}>
             <Icon type="ionicon" name="pin-outline" size={30} color={Colors.primary} />

@@ -25,7 +25,7 @@ const SignInScreen = () => {
     await dispatch(isAuthenticatedFlowAction());
     RNBootSplash.hide({ fade: true });
     if (Platform.OS === 'ios' || hasGmsSync()) await permissionsService.checkLocationPermissions();
-    if (hasHmsSync()) {
+    else if (hasHmsSync()) {
       await permissionsService.requestHmsLocationPermissions();
     }
   };

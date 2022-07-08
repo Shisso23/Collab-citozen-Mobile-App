@@ -13,10 +13,11 @@ import FastImage from 'react-native-fast-image';
 import useTheme from '../../../theme/hooks/useTheme';
 import { userHasOpenedNewsFeedAction } from '../../../reducers/news-feed-reducer/news-feed.actions';
 import { handleNotificationOpenedBackGround } from '../../../hooks/notification-background/notification-background';
-import { convertHtmlToString } from '../../../helpers/html-to-string.helper';
+import config from '../../../config';
 
 const { width: screenWidth } = Dimensions.get('window');
 const NewsArticle = (props) => {
+  const { combinedLink } = config;
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const { item } = props;
@@ -111,23 +112,23 @@ const NewsArticle = (props) => {
         return Colors.error;
     }
   };
-  const shareNewsArticle = async (newsFeedTitle, newsFeedChannel, newsFeedDate, newsFeedBody) => {
-    const messageBody = `The following news article has been shared to you through the Citizen Collab app!\n\n${newsFeedTitle}\n\n${newsFeedChannel}\n\n${newsFeedDate}\n\n${convertHtmlToString(
-      newsFeedBody,
-    )}`;
 
+  const handleShareNewstAction = () => {
+    const { title, channelName, date, newsFeedImage } = item;
+    const content = `To read more about the news please download the App and subscribe to the ${channelName}`;
+    const messageBody = `The following news article has been shared to you through the Citizen Collab app!\n\n${title}\n\n${channelName}\n\n${date}\n\n${content}\n\n${combinedLink}`;
     const shareContent = {
+      title: 'Collab citizen News Article',
       message: messageBody,
-      url: null,
+      url: `${newsFeedImage}`,
+      subject: 'Collab citizen News Article',
+      failOnCancel: false,
+      showAppsToView: true,
     };
 
     Share.open(shareContent)
-      .then(() => {
-        dispatch(userHasOpenedNewsFeedAction(item.newsFeedId, user.user_id, 'Shared'));
-      })
-      .catch(() => {
-        return null;
-      });
+      .then(() => {})
+      .catch(() => null);
   };
 
   const renderUserReactions = () => {
@@ -163,7 +164,7 @@ const NewsArticle = (props) => {
             type="material-community"
             size={30}
             color="#3A609C"
-            onPress={() => shareNewsArticle(item.title, item.channelName, item.date, item.body)}
+            onPress={handleShareNewstAction}
             containerStyle={[Layout.justifyContentCenter, Gutters.smallTMarin]}
             style={[Gutters.tinyRMargin, styles.clockIcon]}
           />
@@ -218,9 +219,14 @@ const NewsArticle = (props) => {
       <List.Item
         titleStyle={Common.cardTitle}
         description={renderNewsFeedDescription}
-        onPress={() => navigation.navigate('ViewNewsFeedArticle', { newsFeedItem: item })}
+        onPress={onArticleClick}
         titleNumberOfLines={3}
       />
+      {/* <ActionSheet ref={actionSheetRef} gestureEnabled>
+        <View style={safeArea}>
+          <NewsFeedShareActionSheetContent handleShareNewstAction={handleShareNewstAction} />
+        </View>
+      </ActionSheet> */}
     </View>
   );
 };

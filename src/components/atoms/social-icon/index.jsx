@@ -5,11 +5,10 @@ import PropTypes from 'prop-types';
 
 import _ from 'lodash';
 import { useTheme } from '../../../theme';
-import { Colors } from '../../../theme/Variables';
 
 const SocialIcon = (props) => {
   const { Gutters, Layout, Images } = useTheme();
-  const { onPress, iconName, iconType } = props;
+  const { onPress, iconName, iconType, iconColor } = props;
 
   return (
     <SafeAreaView
@@ -21,11 +20,13 @@ const SocialIcon = (props) => {
         name={iconName}
         size={40}
         type={iconType}
-        color={Colors.primary}
+        color={iconColor}
         style={Gutters.regularHMargin}
         {...props}
       />
-      <Text style={Gutters.tinyTMargin}>{_.get(props, 'label', 'phone')}</Text>
+      <Text style={[Gutters.tinyTMargin, Gutters.largeBMargin]}>
+        {_.get(props, 'label', 'phone')}
+      </Text>
     </SafeAreaView>
   );
 };
@@ -34,6 +35,7 @@ export default SocialIcon;
 SocialIcon.propTypes = {
   onPress: PropTypes.func,
   iconName: PropTypes.string,
+  iconColor: PropTypes.string.isRequired,
   iconType: PropTypes.string,
 };
 
