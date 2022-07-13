@@ -22,7 +22,7 @@ export async function getItem(key) {
 }
 
 export function removeItem(key) {
-  return AsyncStorage.removeItem(key).catch((error) => {
-    return error;
+  return AsyncStorage.removeItem(key).catch(() => {
+    return null;
   });
 }

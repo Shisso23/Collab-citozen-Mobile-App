@@ -50,7 +50,7 @@ const InboxScreen = () => {
                   Common.textInputWithShadow,
                   Gutters.tinyMargin,
                   Gutters.smallVMargin,
-                  ...[{ height: 120 }],
+                  ...[{ height: 90 }],
                 ]}
               >
                 <Placeholder Animation={Fade} Left={PlaceholderMedia} Right={PlaceholderMedia}>
