@@ -50,8 +50,7 @@ const requestLocationPermissions = (platform) => {
           });
           break;
         default: {
-          // eslint-disable-next-line no-console
-          console.warn(`Error getting location permissions`);
+          break;
         }
       }
     });

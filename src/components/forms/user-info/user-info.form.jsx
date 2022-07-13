@@ -34,10 +34,19 @@ const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
     termsAndConditions: termsAndConditionsSchema(edit),
   });
 
-  useEffect(() => {
-    if (!`${formikRef.current.values.idNumber}`.match(idNumberRegex)) {
+  const updateWarningText = () => {
+    if (
+      !`${formikRef.current.values.idNumber}`.match(idNumberRegex) &&
+      formikRef?.current?.values.idNumber.length === 13
+    ) {
       setIdNumberWarning('Not a valid RSA ID Number!');
+    } else {
+      setIdNumberWarning(undefined);
     }
+  };
+
+  useEffect(() => {
+    updateWarningText();
   }, [JSON.stringify(formikRef)]);
   const _handleSubmission = (formData, actions) => {
     submitForm({ formData })
@@ -56,12 +65,8 @@ const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
       });
   };
 
-  const handleIdNumberBlur = (idNumber) => {
-    if (!`${idNumber}`.match(idNumberRegex)) {
-      setIdNumberWarning('Not a valid RSA ID Number!');
-    } else {
-      setIdNumberWarning(undefined);
-    }
+  const handleIdNumberBlur = () => {
+    updateWarningText();
   };
 
   return (

@@ -9,7 +9,6 @@ import useTheme from '../../../theme/hooks/useTheme';
 const CustomInput = (props) => {
   const { Common } = useTheme();
   const { warningText } = props;
-
   return (
     <>
       <TextInput

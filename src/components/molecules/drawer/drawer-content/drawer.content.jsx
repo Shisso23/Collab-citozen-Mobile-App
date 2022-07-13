@@ -68,7 +68,7 @@ const DrawerContent = (props) => {
         userService.invitedUserRecord(user.user_id);
       });
     } catch (error) {
-      console.warn(error.message);
+      return error;
     }
   };
 

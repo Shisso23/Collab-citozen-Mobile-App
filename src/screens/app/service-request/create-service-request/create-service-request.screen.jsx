@@ -17,7 +17,6 @@ import {
 import { flashService } from '../../../../services';
 import { createServiceRequestModel } from '../../../../models';
 import { municipalitiesSelector } from '../../../../reducers/municipalities-reducer/municipalities.reducer';
-import HeaderBackGround from '../../../../components/atoms/header-background/index';
 import { promptConfirm } from '../../../../helpers/prompt.helper';
 import { Colors } from '../../../../theme/Variables';
 
@@ -77,7 +76,6 @@ const CreateServiceRequestScreen = () => {
       extraHeight={150}
       enableOnAndroid
     >
-      <HeaderBackGround backButton />
       {!_.isEmpty(municipalities) ? (
         <>
           <CreateServiceRequestForm

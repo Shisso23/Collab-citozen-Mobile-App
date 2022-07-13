@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import stcUrls from './subscribe-to-channels.urls';
 import authNetworkService from '../auth-network-service/auth-network.service';
 
@@ -18,7 +19,6 @@ const subscribeToChannels = (municipalitiyId, subscriptionList, user) => {
     return authNetworkService.post(url, subscriptionModel);
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.warn(JSON.stringify(err, null, 2));
     throw err;
   }
 };
@@ -33,7 +33,6 @@ const unSubscribeFromInterestType = (user, interestTypeId, channelId, subscripti
     return authNetworkService.post(url, subscriptionModel);
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.warn(JSON.stringify(err, null, 2));
     throw err;
   }
 };

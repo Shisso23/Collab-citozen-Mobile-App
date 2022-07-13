@@ -5,18 +5,21 @@ import { useDispatch, useSelector } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import _ from 'lodash';
 
+import { Fade, Placeholder, PlaceholderLine, PlaceholderMedia } from 'rn-placeholder';
 import useTheme from '../../../theme/hooks/useTheme';
 import ScreenContainer from '../../../components/containers/screen-container/screen.container';
 import PaddedContainer from '../../../components/containers/padded-container/padded.container';
 import Notification from '../../../components/molecules/notification';
-import { LoadingComponent } from '../../../components';
 import { getNotificationsAction } from '../../../reducers/notification-reducer/notification.actions';
 import { promptConfirm } from '../../../helpers/prompt.helper';
+import { setUnOpenedNotificationsAction } from '../../../reducers/notification-reducer/notification.reducer';
 
 const InboxScreen = () => {
   const { Colors } = useTheme();
-  const { notifications, isLoading } = useSelector((reducers) => reducers.notificationReducer);
-  const { Fonts, Layout, Images } = useTheme();
+  const { notifications, isLoading, unOpenedNotifications } = useSelector(
+    (reducers) => reducers.notificationReducer,
+  );
+  const { Fonts, Layout, Images, Common, Gutters } = useTheme();
   const dispatch = useDispatch();
   const [atLeastOneSelected, setAtLeastOneSelected] = useState(false);
   const [selectedCounter, setSelectedCounter] = useState(0);
@@ -34,6 +37,39 @@ const InboxScreen = () => {
     }
   }, [selectedCounter]);
 
+  const renderPlaceHolders = () => {
+    const dummyArray = [1, 2, 3, 4, 5, 6, 7];
+    return (
+      <View>
+        {isLoading ? (
+          dummyArray.map((i) => {
+            return (
+              <View
+                key={`${i}`}
+                style={[
+                  Common.textInputWithShadow,
+                  Gutters.tinyMargin,
+                  Gutters.smallVMargin,
+                  ...[{ height: 90 }],
+                ]}
+              >
+                <Placeholder Animation={Fade} Left={PlaceholderMedia} Right={PlaceholderMedia}>
+                  <PlaceholderLine width={80} />
+                  <PlaceholderLine />
+                  <PlaceholderLine width={30} />
+                </Placeholder>
+              </View>
+            );
+          })
+        ) : (
+          <Text style={Fonts.titleRegular}>
+            There are no Notifications here. Please subscribe to a channel to receive notifications.
+          </Text>
+        )}
+      </View>
+    );
+  };
+
   const deleteNotificationsSelected = () => {
     promptConfirm(
       'Are you sure?',
@@ -42,53 +78,53 @@ const InboxScreen = () => {
       () => {
         setSelectedCounter(0);
         setMultiDeleteConfirmed(true);
-        setTimeout(() => setMultiDeleteConfirmed(false), 2000);
+        setTimeout(() => setMultiDeleteConfirmed(false), 100);
+        setUnOpenedNotificationsAction(unOpenedNotifications - selectedCounter);
       },
     );
   };
 
-  return !isLoading ? (
+  return (
     <ImageBackground
       source={Images.serviceRequest}
       style={[Layout.fullSize, Layout.fill]}
       resizeMode="cover"
     >
-      <ScreenContainer>
-        {atLeastOneSelected && (
-          <PaddedContainer>
-            <Text style={[Layout.alignSelfCenter, Fonts.titleTiny]}>Notifications</Text>
-            <View style={Layout.alignSelfEnd}>
-              <Icon
-                name="trash"
-                size={27}
-                backgroundColor="transparent"
-                color={Colors.gray}
-                onPress={deleteNotificationsSelected}
+      <Text style={[Layout.alignSelfCenter, Fonts.titleTiny, Gutters.regularTMargin]}>
+        Notifications
+      </Text>
+      {!isLoading ? (
+        <ScreenContainer>
+          {atLeastOneSelected && (
+            <PaddedContainer>
+              <View style={Layout.alignSelfEnd}>
+                <Icon
+                  name="trash"
+                  size={27}
+                  backgroundColor="transparent"
+                  color={Colors.gray}
+                  onPress={deleteNotificationsSelected}
+                />
+              </View>
+            </PaddedContainer>
+          )}
+          {_.get(notifications, 'Feed', []).map((notification, index) => {
+            return (
+              <Notification
+                notification={notification}
+                key={_.get(notification, 'obj_id', index)}
+                index={index}
+                selectedCounter={selectedCounter}
+                setSelectedCounter={setSelectedCounter}
+                multiDeleteConfirmed={multiDeleteConfirmed}
               />
-            </View>
-          </PaddedContainer>
-        )}
-        {!atLeastOneSelected && (
-          <PaddedContainer>
-            <Text style={[Layout.alignSelfCenter, Fonts.titleTiny]}>Notifications</Text>
-          </PaddedContainer>
-        )}
-        {_.get(notifications, 'Feed', []).map((notification, index) => {
-          return (
-            <Notification
-              notification={notification}
-              key={_.get(notification, 'obj_id', index)}
-              index={index}
-              selectedCounter={selectedCounter}
-              setSelectedCounter={setSelectedCounter}
-              multiDeleteConfirmed={multiDeleteConfirmed}
-            />
-          );
-        })}
-      </ScreenContainer>
+            );
+          })}
+        </ScreenContainer>
+      ) : (
+        renderPlaceHolders()
+      )}
     </ImageBackground>
-  ) : (
-    <LoadingComponent />
   );
 };
 

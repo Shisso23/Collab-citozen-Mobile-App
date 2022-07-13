@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import _ from 'lodash';
 import { Platform } from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
@@ -52,7 +53,6 @@ const uploadMeterReadingPhoto = async (objId, photo) => {
     );
     return response;
   } catch (err) {
-    console.warn(JSON.stringify(err, null, 2));
     throw err;
   }
 };

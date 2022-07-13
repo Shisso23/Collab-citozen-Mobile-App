@@ -55,7 +55,7 @@ const AppNavigator = () => {
         name="CreateServiceRequest"
         component={CreateServiceRequestScreen}
         options={{
-          headerShown: false,
+          headerShown: true,
           title: 'New Service Request',
           header: (props) => <HeaderBackGround {...props} backButton />,
         }}

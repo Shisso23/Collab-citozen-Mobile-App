@@ -135,8 +135,8 @@ android {
         applicationId "com.collaboratorapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 269
-        versionName "1.5.2"
+        versionCode 270
+        versionName "1.5.3"
         vectorDrawables.useSupportLibrary = true
         try {
             resValue "string", "google_maps_api_key", project.env.get("GOOGLE_MAPS_API_KEY")
