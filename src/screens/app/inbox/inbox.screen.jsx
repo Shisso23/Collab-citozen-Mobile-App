@@ -78,7 +78,7 @@ const InboxScreen = () => {
       () => {
         setSelectedCounter(0);
         setMultiDeleteConfirmed(true);
-        setTimeout(() => setMultiDeleteConfirmed(false), 2000);
+        setTimeout(() => setMultiDeleteConfirmed(false), 100);
         setUnOpenedNotificationsAction(unOpenedNotifications - selectedCounter);
       },
     );
