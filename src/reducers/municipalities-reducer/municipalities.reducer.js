@@ -14,7 +14,6 @@ export const municipalitiesSelector = (reducers) => reducers.municipalitiesReduc
 export default function municipalitiesReducer(state = initialState, action) {
   switch (action.type) {
     case setMunicipalities.actionType:
-      console.log({ payLoad: action.payload });
       return {
         ...state,
         municipalities: action.payload,

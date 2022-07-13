@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import _ from 'lodash';
 import Platform from 'react-native';
 import RNFetchBlob from 'rn-fetch-blob';
@@ -27,8 +28,6 @@ const createServiceRequest = async (createServiceRequestForm, userInfo) => {
   try {
     return authNetworkService.post(url, apiModel);
   } catch (err) {
-    // eslint-disable-next-line no-console
-    console.warn(JSON.stringify(err, null, 2));
     throw err;
   }
 };
@@ -56,7 +55,6 @@ const uploadServiceRequestPhoto = async (objId, photo) => {
     );
     return response;
   } catch (err) {
-    console.warn(JSON.stringify(err, null, 2));
     throw err;
   }
 };

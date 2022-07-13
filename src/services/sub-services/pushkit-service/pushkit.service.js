@@ -19,8 +19,7 @@ const getAndSetToken = async () => {
         .then((token) => {
           pushKitToken = token.result;
         })
-        .catch((error) => {
-          console.warn({ error });
+        .catch(() => {
           pushKitToken = null;
         });
       if (pushKitToken) {

@@ -10,7 +10,7 @@ let locationRequest;
 if (hasHmsSync()) {
   HMSLocation.LocationKit.Native.init()
     .then((resp) => resp)
-    .catch((err) => console.warn(err.message));
+    .catch((err) => err);
   locationRequest = {
     priority: HMSLocation.FusedLocation.Native.PriorityConstants.PRIORITY_HIGH_ACCURACY,
     interval: 60000,
@@ -41,7 +41,6 @@ export const getCurrentPosition = () => {
         (error) => {
           reject(error);
           // eslint-disable-next-line no-console
-          console.warn(error.code, error.message);
         },
         { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 },
       );

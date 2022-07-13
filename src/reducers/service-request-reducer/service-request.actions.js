@@ -73,7 +73,7 @@ export const setImagesSources = (images) => async (dispatch) => {
   try {
     dispatch(setImagesSourcesAction(images));
   } catch (error) {
-    console.warn('Could not set images');
+    return error;
   }
 };
 

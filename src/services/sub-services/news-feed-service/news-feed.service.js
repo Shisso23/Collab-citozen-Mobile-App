@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 import _ from 'lodash';
 
 import { constructNewsFeedModels } from '../../../models/app/news-feed/news-feed.model';
@@ -36,7 +37,6 @@ const createUserActivityRecord = (newsFeedId, userID, action) => {
     return authNetworkService.post(url, subscriptionModel);
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.warn(JSON.stringify(err, null, 2));
     throw err;
   }
 };

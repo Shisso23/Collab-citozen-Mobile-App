@@ -32,7 +32,7 @@ const App = () => {
   const removeLocationAndListener = (code) => {
     HMSLocation.FusedLocation.Native.removeLocationUpdates(code)
       .then((res) => res)
-      .catch((err) => console.log(err.message));
+      .catch((err) => err);
     HMSLocation.FusedLocation.Events.removeFusedLocationEventListener((removedResponse) => {
       return removedResponse;
     });

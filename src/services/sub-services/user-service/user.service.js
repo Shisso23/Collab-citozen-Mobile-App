@@ -30,7 +30,6 @@ const updateUser = async ({ formData }) => {
   } catch (error) {
     error.errors = userModel(error.errors);
     // eslint-disable-next-line no-console
-    console.warn(error);
     return Promise.reject(error);
   }
 };
