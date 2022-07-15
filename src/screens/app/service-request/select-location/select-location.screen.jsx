@@ -63,13 +63,11 @@ const SelectLocationScreen = () => {
   useFocusEffect(
     useCallback(() => {
       dispatch(getCurrentPositionAction()).then(async (position) => {
-        console.log({ 'Setting map position tö': position });
         setUserLocation(position);
         setMapPosition(position);
         await _setMapPosition(position);
         dispatch(getAddressFromRegionAction(position)).then((addressSelected) => {
           setAddress(addressSelected);
-          console.log({ addressSelected });
         });
       });
       if (hasGmsSync() || Platform.OS === 'ios') {
