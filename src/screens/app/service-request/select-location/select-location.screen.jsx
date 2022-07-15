@@ -62,9 +62,10 @@ const SelectLocationScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
-      dispatch(getCurrentPositionAction()).then((position) => {
+      dispatch(getCurrentPositionAction()).then(async (position) => {
         setUserLocation(position);
         setMapPosition(position);
+        await _setMapPosition(position);
         dispatch(getAddressFromRegionAction(position)).then((addressSelected) => {
           setAddress(addressSelected);
         });
@@ -89,6 +90,16 @@ const SelectLocationScreen = () => {
           });
       }
     }, []),
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      if ((hasGmsSync() || Platform.OS === 'ios') && mapRef) {
+        mapRef.animateToRegion(mapPosition);
+      } else if (hasHmsSync() && hmsMapRef) {
+        hmsMapRef.setCameraPosition({ target: mapPosition, zoom: 15, tilt: 40 });
+      }
+    }, [JSON.stringify(`${mapRef}`), JSON.stringify(`${hmsMapRef}`)]),
   );
 
   useEffect(() => {
