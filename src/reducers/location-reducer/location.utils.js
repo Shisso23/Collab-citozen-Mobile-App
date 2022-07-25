@@ -13,7 +13,7 @@ if (hasHmsSync()) {
     .catch((err) => err);
   locationRequest = {
     priority: HMSLocation.FusedLocation.Native.PriorityConstants.PRIORITY_HIGH_ACCURACY,
-    interval: 60000,
+    interval: 2000,
     numUpdates: 2147483647,
     fastestInterval: 30000.0,
     expirationTime: 3372036854775807.0,

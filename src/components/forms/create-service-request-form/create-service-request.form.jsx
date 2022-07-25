@@ -121,7 +121,7 @@ const CreateServiceRequestForm = ({
     if (searchValue && searchValue.length > 0) {
       handleServiceTypesSearch(searchValue);
     } else if (searchValue !== null && searchValue.length === 0) {
-      reformMunicipalitiesData();
+      setMunicipalitiesData(reformMunicipalitiesData());
     }
   }, [JSON.stringify(searchValue)]);
 

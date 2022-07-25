@@ -55,21 +55,19 @@ const SelectLocationScreen = () => {
   const [hmsMapRef, setHmsMapRef] = useState(undefined);
 
   useEffect(() => {
-    if (region && mapReady && locationPermission && !isLoadingAddress) {
+    if (region && mapReady && locationPermission && userLocation && !isLoadingAddress) {
       setLoadingModalVisible(false);
     }
-  }, [JSON.stringify(region), mapReady, locationPermission, isLoadingAddress]);
+  }, [
+    JSON.stringify(region),
+    mapReady,
+    locationPermission,
+    JSON.stringify(userLocation),
+    isLoadingAddress,
+  ]);
 
   useFocusEffect(
     useCallback(() => {
-      dispatch(getCurrentPositionAction()).then(async (position) => {
-        setUserLocation(position);
-        setMapPosition(position);
-        await _setMapPosition(position);
-        dispatch(getAddressFromRegionAction(position)).then((addressSelected) => {
-          setAddress(addressSelected);
-        });
-      });
       if (hasGmsSync() || Platform.OS === 'ios') {
         permissionsService
           .checkLocationPermissions()
@@ -92,15 +90,24 @@ const SelectLocationScreen = () => {
     }, []),
   );
 
-  useFocusEffect(
-    useCallback(() => {
-      if ((hasGmsSync() || Platform.OS === 'ios') && mapRef) {
-        mapRef.animateToRegion(mapPosition);
-      } else if (hasHmsSync() && hmsMapRef) {
-        hmsMapRef.setCameraPosition({ target: mapPosition, zoom: 15, tilt: 40 });
-      }
-    }, [JSON.stringify(`${mapRef}`), JSON.stringify(`${hmsMapRef}`)]),
-  );
+  useEffect(() => {
+    if ((hasGmsSync() || Platform.OS === 'ios') && mapRef) {
+      mapRef.animateToRegion(mapPosition);
+    } else if (hasHmsSync() && hmsMapRef) {
+      hmsMapRef.setCameraPosition({ target: mapPosition, zoom: 15, tilt: 40 });
+    }
+  }, [JSON.stringify(`${mapRef}`), JSON.stringify(`${hmsMapRef}`)]);
+
+  useEffect(() => {
+    dispatch(getCurrentPositionAction()).then(async (position) => {
+      setUserLocation(position);
+      setMapPosition(position);
+      await _setMapPosition(position);
+      dispatch(getAddressFromRegionAction(position)).then((addressSelected) => {
+        setAddress(addressSelected);
+      });
+    });
+  }, []);
 
   useEffect(() => {
     setAddress(selectedAddress);
@@ -166,7 +173,7 @@ const SelectLocationScreen = () => {
       longitudeDelta: 0.011,
       latitudeDelta: 0.011,
     };
-    setAddress(_.getdetails, 'name', '');
+    setAddress(_.get(details, 'formatted_address', ''));
     setLoadingModalTransparent(true);
     await dispatch(getAddressFromRegionAction(newRegionCoordinates)).then((adressSelected) => {
       setAddress(adressSelected);
@@ -257,7 +264,7 @@ const SelectLocationScreen = () => {
           </TouchableOpacity>
         )}
       />
-      {hasGmsSync() || Platform.OS === 'ios' ? (
+      {(hasGmsSync() || Platform.OS === 'ios') && locationPermission && userLocation ? (
         <MapView
           style={[Layout.fill]}
           initialRegion={userLocation}
@@ -272,7 +279,7 @@ const SelectLocationScreen = () => {
           zoomControlEnabled
           zoomEnabled
         />
-      ) : hasHmsSync() ? (
+      ) : hasHmsSync() && locationPermission && userLocation ? (
         <HmsMapView
           ref={(e) => {
             setHmsMapRef(e);
@@ -290,7 +297,7 @@ const SelectLocationScreen = () => {
             hmsMapRef.stopAnimation();
           }}
           minZoomPreference={3}
-          maxZoomPreference={20}
+          // maxZoomPreference={50}
           animationDuration={2000}
           zoomControlsEnabled
           rotateGesturesEnabled
