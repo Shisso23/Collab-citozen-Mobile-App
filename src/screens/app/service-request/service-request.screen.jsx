@@ -77,7 +77,7 @@ const ServiceRequestScreen = () => {
       _.throttle(
         (currentLatitude, currentLongitude) =>
           getNearbyPinLocations(currentLatitude, currentLongitude),
-        1500,
+        500,
         undefined,
       ),
     [],
@@ -388,10 +388,6 @@ const ServiceRequestScreen = () => {
       <HMSInfoWindow>
         <TouchableHighlight>
           <View style={Fonts.textRegular}>
-            <TouchableOpacity onPress={() => setPinsModalVisible(false)}>
-              <Icon name="close" size={30} color={Colors.lightgray} />
-            </TouchableOpacity>
-
             <View style={[...[{ backgroundColor: Colors.lightgray, borderRadius: 10 }]]}>
               <Text style={[Gutters.smallVMargin, Fonts.textRegular, styles.headerFont]}>
                 Type: {serviceType}
