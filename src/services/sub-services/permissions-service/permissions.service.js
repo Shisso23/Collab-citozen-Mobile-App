@@ -1,4 +1,5 @@
-import { Platform } from 'react-native';
+// eslint-disable-next-line react-native/split-platform-components
+import { PermissionsAndroid, Platform } from 'react-native';
 import HMSLocation from '@hmscore/react-native-hms-location';
 import { check, PERMISSIONS, RESULTS, request, openSettings } from 'react-native-permissions';
 import _ from 'lodash';
@@ -61,7 +62,10 @@ const requestHmsLocationPermissions = async () => {
   let hasPermission = await HMSLocation.FusedLocation.Native.hasPermission();
   if (!hasPermission.hasPermission) {
     try {
-      await HMSLocation.FusedLocation.Native.requestPermission();
+      await PermissionsAndroid.requestMultiple([
+        PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      ]);
       hasPermission = await HMSLocation.FusedLocation.Native.hasPermission();
       return hasPermission;
     } catch (error) {
