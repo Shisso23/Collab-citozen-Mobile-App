@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import MapView, { Marker } from 'react-native-maps';
-import HmsMapView, { HMSMarker, MapTypes, Hue } from '@hmscore/react-native-hms-map';
+import HmsMapView, { HMSMarker, MapTypes, Hue, HMSInfoWindow } from '@hmscore/react-native-hms-map';
 import { FAB, Modal } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import {
@@ -13,6 +13,7 @@ import {
   View,
   Keyboard,
   TouchableOpacity,
+  TouchableHighlight,
   SafeAreaView,
 } from 'react-native';
 import { Tab, Icon } from 'react-native-elements';
@@ -57,7 +58,6 @@ const ServiceRequestScreen = () => {
   const [pinsModalVisible, setPinsModalVisible] = useState(false);
   const [nearbyPinLocations, setNearbyPinLocations] = useState([]);
   const [locationPermission, setLocationPermission] = useState(false);
-
   const [selectedSRPin, setSelectedSRPin] = useState({});
   const [userLocation, setUserLocation] = useState(region);
   const [mapReady, setMapReady] = useState(false);
@@ -71,6 +71,17 @@ const ServiceRequestScreen = () => {
     latitudeDelta: 0.011,
     longitudeDelta: 0.011,
   };
+
+  const throttleGetPinLocations = useMemo(
+    () =>
+      _.throttle(
+        (currentLatitude, currentLongitude) =>
+          getNearbyPinLocations(currentLatitude, currentLongitude),
+        500,
+        undefined,
+      ),
+    [],
+  );
 
   const getNearbyPinLocations = async (currentLatitude, currentLongitude) => {
     const nearbyPinLocationsResponse = await dispatch(
@@ -121,7 +132,7 @@ const ServiceRequestScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
-      getNearbyPinLocations(mapPosition?.latitude, mapPosition?.longitude);
+      throttleGetPinLocations(mapPosition?.latitude, mapPosition?.longitude);
     }, [JSON.stringify(mapPosition)]),
   );
 
@@ -253,40 +264,38 @@ const ServiceRequestScreen = () => {
     }
   };
 
-  const displayPins = (pinData) => {
-    if (nearbyPinLocations.length > 0) {
-      return pinData.map((pin) => {
-        const { gpsCoordinates } = pin;
-        const cordinates = gpsCoordinates
-          .substring(gpsCoordinates.indexOf('(') + 1, gpsCoordinates.indexOf(')'))
-          .split(' ');
-        const lat = parseFloat(cordinates[0]);
-        const lng = parseFloat(cordinates[1]);
+  const displayPins = () => {
+    return nearbyPinLocations?.map((pin) => {
+      const { gpsCoordinates } = pin;
+      const cordinates = gpsCoordinates
+        .substring(gpsCoordinates.indexOf('(') + 1, gpsCoordinates.indexOf(')'))
+        .split(' ');
+      const lat = parseFloat(cordinates[0]);
+      const lng = parseFloat(cordinates[1]);
 
-        return hasGmsSync() || Platform.OS === 'ios' ? (
-          <Marker
-            coordinate={{ latitude: lng, longitude: lat }}
-            onPress={displayModalToggle(pin)}
-            key={pin.id}
-          >
-            <View style={styles.pin}>
-              <Icon name="location-pin" size={45} color={returnMarkerColour(pin.status)} />
-            </View>
-          </Marker>
-        ) : hasHmsSync() ? (
-          <HMSMarker
-            key={pin.id}
-            icon={{ hue: returnMarkerColour(pin.status) }}
-            title={pin.serviceDescription}
-            clusterable
-            coordinate={{ latitude: lng, longitude: lat }}
-          />
-        ) : (
-          <View />
-        );
-      });
-    }
-    return null;
+      return hasGmsSync() || Platform.OS === 'ios' ? (
+        <Marker
+          coordinate={{ latitude: lng, longitude: lat }}
+          onPress={displayModalToggle(pin, true)}
+          key={pin.id}
+        >
+          <View style={styles.pin}>
+            <Icon name="location-pin" size={45} color={returnMarkerColour(pin.status)} />
+          </View>
+        </Marker>
+      ) : hasHmsSync() ? (
+        <HMSMarker
+          key={pin.id}
+          icon={{ hue: returnMarkerColour(pin.status) }}
+          clusterable
+          coordinate={{ latitude: lng, longitude: lat }}
+        >
+          {renderHmsMarkerInfoWindow(pin)}
+        </HMSMarker>
+      ) : (
+        <View />
+      );
+    });
   };
 
   const renderHmsMapPins = () => {
@@ -319,7 +328,7 @@ const ServiceRequestScreen = () => {
               _setMapPosition(event.nativeEvent.target);
             }}
           >
-            {nearbyPinLocations.length > 0 ? displayPins(nearbyPinLocations) : <></>}
+            {nearbyPinLocations?.length > 0 ? displayPins() : <></>}
           </HmsMapView>
         </View>
       </SafeAreaView>
@@ -341,7 +350,7 @@ const ServiceRequestScreen = () => {
         zoomEnabled
         showsMyLocationButton
       >
-        {nearbyPinLocations.length > 0 ? displayPins(nearbyPinLocations) : <></>}
+        {nearbyPinLocations.length > 0 ? displayPins() : <></>}
       </MapView>
     );
   };
@@ -373,36 +382,99 @@ const ServiceRequestScreen = () => {
     );
   };
 
+  const renderHmsMarkerInfoWindow = (pin) => {
+    const { id, serviceType, serviceDescription, requestDate, status } = pin;
+    return (
+      <HMSInfoWindow>
+        <TouchableHighlight>
+          <View style={Fonts.textRegular}>
+            <View style={[...[{ backgroundColor: Colors.lightgray, borderRadius: 10 }]]}>
+              <Text style={[Gutters.smallVMargin, Fonts.textRegular, styles.headerFont]}>
+                Type: {serviceType}
+              </Text>
+              <View style={styles.textLine} />
+              <Text style={[Gutters.smallVMargin, Fonts.textRegular, styles.descriptionFont]}>
+                Description:
+              </Text>
+              <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>{serviceDescription}</Text>
+              <View style={styles.textLine} />
+              <Text style={[Gutters.smallVMargin, Fonts.textRegular]}>Status: {status}</Text>
+              <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>Date: {requestDate}</Text>
+              <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>Reference No: {id}</Text>
+            </View>
+          </View>
+        </TouchableHighlight>
+      </HMSInfoWindow>
+    );
+  };
+
   const pinDetailsModal = () => {
     const { id, serviceType, serviceDescription, requestDate, status } = selectedSRPin;
     return (
-      <Modal visible={pinsModalVisible} onDismiss={() => {}} transparent>
-        <View style={[styles.modal, { backgroundColor: Colors.transparent }, Fonts.textRegular]}>
-          <TouchableOpacity onPress={() => setPinsModalVisible(false)}>
-            <Icon name="close" size={30} color={Colors.lightgray} />
-          </TouchableOpacity>
+      <Modal visible={pinsModalVisible} transparent>
+        <TouchableOpacity
+          style={[
+            Layout.alignItemsCenter,
+            Layout.justifyContentCenter,
+            ...[{ width: '100%', height: '100%', backgroundColor: Colors.transparent }],
+          ]}
+          activeOpacity={1}
+          onPress={() => setPinsModalVisible(false)}
+        >
+          <View
+            style={[
+              Layout.itemsEnd,
+              Layout.justifyCenter,
+              Gutters.largeHMargin,
+              ...[
+                {
+                  maxHeight: '50%',
+                },
+              ],
+              Fonts.textRegular,
+            ]}
+          >
+            <TouchableOpacity
+              style={[
+                ...[{ backgroundColor: Colors.gray, width: 40, height: 40 }],
+                Layout.alignSelfEnd,
+                Gutters.regularMargin,
+              ]}
+              onPress={() => setPinsModalVisible(false)}
+            >
+              <Icon name="close" size={30} color={Colors.lightgray} />
+            </TouchableOpacity>
 
-          <View style={[styles.modalView, { backgroundColor: Colors.lightgray }]}>
-            <Text style={[Gutters.smallVMargin, Fonts.textRegular, styles.headerFont]}>
-              Type: {serviceType}
-            </Text>
-            <View style={styles.textLine} />
-            <Text style={[Gutters.smallVMargin, Fonts.textRegular, styles.descriptionFont]}>
-              Description:
-            </Text>
-            <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>{serviceDescription}</Text>
-            <View style={styles.textLine} />
-            <Text style={[Gutters.smallVMargin, Fonts.textRegular]}>Status: {status}</Text>
-            <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>Date: {requestDate}</Text>
-            <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>Reference No: {id}</Text>
+            <View
+              style={[
+                styles.modalView,
+                Gutters.smallPadding,
+                { backgroundColor: Colors.lightgray },
+              ]}
+            >
+              <Text style={[Gutters.smallVMargin, Fonts.textRegular, styles.headerFont]}>
+                Type: {serviceType}
+              </Text>
+              <View style={styles.textLine} />
+              <Text style={[Gutters.smallVMargin, Fonts.textRegular, styles.descriptionFont]}>
+                Description:
+              </Text>
+              <Text numberOfLines={4} style={[Gutters.smallBMargin, Fonts.textRegular]}>
+                {serviceDescription}
+              </Text>
+              <View style={styles.textLine} />
+              <Text style={[Gutters.smallVMargin, Fonts.textRegular]}>Status: {status}</Text>
+              <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>Date: {requestDate}</Text>
+              <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>Reference No: {id}</Text>
+            </View>
           </View>
-        </View>
+        </TouchableOpacity>
       </Modal>
     );
   };
 
-  const displayModalToggle = (pin) => () => {
-    setPinsModalVisible(!pinsModalVisible);
+  const displayModalToggle = (pin, modalVisible) => () => {
+    setPinsModalVisible(modalVisible);
     setSelectedSRPin(pin);
   };
 
@@ -453,22 +525,10 @@ const styles = StyleSheet.create({
   headerFont: {
     fontSize: 19,
   },
-  modal: {
-    alignItems: 'flex-end',
-    borderRadius: 20,
-    flex: 0,
-    justifyContent: 'center',
-    marginRight: 40,
-  },
   modalView: {
-    alignItems: 'flex-start',
     backgroundColor: Colors.black,
     borderRadius: 15,
-    flex: 0,
-    height: '70%',
-    justifyContent: 'center',
     paddingLeft: 10,
-    width: '90%',
   },
   pin: {
     alignItems: 'center',

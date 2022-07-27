@@ -6,8 +6,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { Button, HelperText, TextInput, List } from 'react-native-paper';
 import { ListItem, Text } from 'react-native-elements';
-import { useNavigation } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import _ from 'lodash';
 
 import {
@@ -19,7 +18,6 @@ import {
 } from '../form-validaton-schemas';
 import { getFormError } from '../form-utils';
 import useTheme from '../../../theme/hooks/useTheme';
-import { locationSelector } from '../../../reducers/location-reducer/location.reducer';
 import UploadDocumentButton from '../../molecules/upload-document-button';
 import { Colors } from '../../../theme/Variables';
 
@@ -35,8 +33,9 @@ const CreateServiceRequestForm = ({
   thumbNailImages,
 }) => {
   const { Common, Layout, Gutters, Fonts } = useTheme();
-  const { selectedAddress, region } = useSelector(locationSelector);
-  const [address, setAddress] = useState('');
+  const { params } = useRoute();
+  const selectedCoordinates = params?.mapPosition;
+  const addressSelected = params?.selectedAddress;
   const [searchValue, setSearchValue] = useState('');
   const navigation = useNavigation();
   const formikRef = useRef(null);
@@ -74,10 +73,6 @@ const CreateServiceRequestForm = ({
   useEffect(() => {
     formikRef.current.setFieldValue('images', thumbNailImages);
   }, [JSON.stringify(thumbNailImages)]);
-
-  useEffect(() => {
-    setAddress(selectedAddress);
-  }, [selectedAddress]);
 
   const validationSchema = Yup.object().shape({
     channel: selectChannelSchema,
@@ -121,7 +116,7 @@ const CreateServiceRequestForm = ({
     if (searchValue && searchValue.length > 0) {
       handleServiceTypesSearch(searchValue);
     } else if (searchValue !== null && searchValue.length === 0) {
-      reformMunicipalitiesData();
+      setMunicipalitiesData(reformMunicipalitiesData());
     }
   }, [JSON.stringify(searchValue)]);
 
@@ -166,10 +161,10 @@ const CreateServiceRequestForm = ({
           setFieldValue,
         }) => {
           const handleSubmissionFormik = (vals) => {
-            setFieldValue('location', region);
-            vals.location = region;
-            setFieldValue('address', selectedAddress);
-            vals.address = selectedAddress;
+            setFieldValue('location', selectedCoordinates);
+            vals.location = selectedCoordinates;
+            setFieldValue('address', addressSelected);
+            vals.address = addressSelected;
             handleSubmit();
           };
 
@@ -177,7 +172,7 @@ const CreateServiceRequestForm = ({
           return (
             <>
               <TextInput
-                value={address}
+                value={addressSelected}
                 label="Location Selected"
                 underlineColor={Colors.transparent}
                 onFocus={() => navigation.navigate('SelectLocationScreen')}
