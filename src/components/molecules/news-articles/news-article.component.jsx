@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Dimensions, Text, Pressable, Platform } from 'react-native';
+import { View, StyleSheet, Dimensions, Text, Pressable } from 'react-native';
 import { List } from 'react-native-paper';
 import { Icon } from 'react-native-elements';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
@@ -116,8 +116,8 @@ const NewsArticle = (props) => {
   const handleShareNewstAction = () => {
     const { title, channelName, date, newsFeedImage } = item;
     const content = `To read more about the news please download the App and subscribe to the ${channelName}`;
-    const messageBody = `The following news article has been shared to you through the Citizen Collab app!\n\n${title}\n\n${channelName}\n\n${date}\n\n${content}\n\n${combinedLink}`;
-    const shareContentAnroid = {
+    const messageBody = `The following news article has been shared to you through the Collab citizen app!\n\n${title}\n${channelName}\n${date}\n\n${content}\n${combinedLink}`;
+    const shareContent = {
       title: 'Collab citizen News Article',
       message: messageBody,
       url: `${newsFeedImage}`,
@@ -126,21 +126,8 @@ const NewsArticle = (props) => {
       showAppsToView: true,
     };
 
-    const shareContentIos = {
-      url: `${newsFeedImage}`,
-      message: `Collab citizen News Article\n\n${messageBody}`,
-      subject: 'Collab citizen News Article',
-      // failOnCancel: false,
-      showAppsToView: true,
-    };
-
-    Share.open(Platform.OS === 'android' ? shareContentAnroid : shareContentIos)
-      .then((resp) => {
-        console.log({ resp });
-        if (Platform.OS === 'ios') {
-          Share.open({ url: `${newsFeedImage}` });
-        }
-      })
+    Share.open(shareContent)
+      .then(() => {})
       .catch(() => null);
   };
 
