@@ -62,10 +62,10 @@ const DrawerContent = (props) => {
 
   const onShare = async () => {
     try {
-      await Share.share({
+      return Share.share({
         message: `You have been invited to download Collab Citizen!\n\nCollab Citizen allows consumers to stay in control and up to date with their municipal accounts.\n\nAvailable on Google Play Store and Apple App Store: ${combinedLink}`,
       }).then(() => {
-        userService.invitedUserRecord(user.user_id);
+        return userService.invitedUserRecord(user.user_id);
       });
     } catch (error) {
       return error;
@@ -94,18 +94,25 @@ const DrawerContent = (props) => {
             label="Service Requests"
             onPress={async () => {
               if (hasGmsSync() || Platform.OS === 'ios') {
-                permissionsService.checkLocationPermissions().catch(() => {
-                  flashService.error('Please grant permissions to select a location.');
-                });
+                permissionsService
+                  .checkLocationPermissions()
+                  .then(() => {
+                    navigation.navigate('ServiceRequests');
+                  })
+                  .catch(() => {
+                    flashService.error('Please grant permissions to select a location.');
+                  });
               } else if (hasHmsSync()) {
                 permissionsService
                   .requestHmsLocationPermissions()
+                  .then(() => {
+                    navigation.navigate('ServiceRequests');
+                  })
 
                   .catch(() => {
                     flashService.error('Please grant permissions to select a location.');
                   });
               }
-              navigation.navigate('ServiceRequests');
             }}
             theme={theme}
           />
@@ -124,18 +131,24 @@ const DrawerContent = (props) => {
             label="Channels"
             onPress={async () => {
               if (hasGmsSync() || Platform.OS === 'ios') {
-                permissionsService.checkLocationPermissions().catch(() => {
-                  flashService.error('Please grant permissions to select a location.');
-                });
+                permissionsService
+                  .checkLocationPermissions()
+                  .then(() => {
+                    return navigation.navigate('ViewSubscribeToChannels');
+                  })
+                  .catch(() => {
+                    flashService.error('Please grant permissions to select a location.');
+                  });
               } else if (hasHmsSync()) {
                 permissionsService
                   .requestHmsLocationPermissions()
-
+                  .then(() => {
+                    return navigation.navigate('ViewSubscribeToChannels');
+                  })
                   .catch(() => {
                     flashService.error('Please grant permissions to select a location.');
                   });
               }
-              return navigation.navigate('ViewSubscribeToChannels');
             }}
             theme={theme}
           />
@@ -144,18 +157,25 @@ const DrawerContent = (props) => {
             label="Contacts"
             onPress={async () => {
               if (hasGmsSync() || Platform.OS === 'ios') {
-                permissionsService.checkLocationPermissions().catch(() => {
-                  flashService.error('Please grant permissions to select a location.');
-                });
+                permissionsService
+                  .checkLocationPermissions()
+                  .then(() => {
+                    return navigation.navigate('ContactDetails');
+                  })
+                  .catch(() => {
+                    flashService.error('Please grant permissions to select a location.');
+                  });
               } else if (hasHmsSync()) {
                 permissionsService
                   .requestHmsLocationPermissions()
+                  .then(() => {
+                    return navigation.navigate('ContactDetails');
+                  })
 
                   .catch(() => {
                     flashService.error('Please grant permissions to select a location.');
                   });
               }
-              return navigation.navigate('ContactDetails');
             }}
             theme={theme}
           />

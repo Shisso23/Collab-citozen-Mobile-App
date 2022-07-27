@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { LogBox, Alert, Platform } from 'react-native';
 import messaging from '@react-native-firebase/messaging';
 import PushNotification from 'react-native-push-notification';
-import DeviceInfo from 'react-native-device-info';
+import DeviceInfo, { hasGmsSync, hasHmsSync } from 'react-native-device-info';
 import codePush from 'react-native-code-push';
 import { HmsPushEvent } from '@hmscore/react-native-hms-push';
 
@@ -10,7 +10,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import HMSLocation from '@hmscore/react-native-hms-location';
 import NavigationContainer from './navigation/root.navigator';
 import { initAppAction } from './reducers/app-reducer/app.actions';
-import { firebaseService, firebaseNotificationService, pushKitService } from './services';
+import {
+  firebaseService,
+  firebaseNotificationService,
+  pushKitService,
+  permissionsService,
+} from './services';
 import config from './config';
 import { checkAppVersion } from './helpers/appstore-version-check.helper';
 
@@ -116,6 +121,11 @@ const App = () => {
   }, [isAuthenticated]);
 
   useEffect(() => {
+    if (Platform.OS === 'ios' || hasGmsSync())
+      permissionsService.checkLocationPermissions().then(() => {});
+    else if (hasHmsSync()) {
+      permissionsService.requestHmsLocationPermissions().then(() => {});
+    }
     PushNotification.setApplicationIconBadgeNumber(0);
     LogBox.ignoreLogs([
       'Require cycle',
