@@ -141,7 +141,10 @@ const SelectLocationScreen = () => {
         if (channels.length === 0 || Object.keys(channels).length === 0) {
           return flashService.info('There are no available channels that allow service requests.');
         }
-        return navigation.navigate('CreateServiceRequest');
+        return navigation.navigate('CreateServiceRequest', {
+          selectedAddress,
+          mapPosition,
+        });
       })
       .finally(() => {
         setLoadingModalVisible(false);
