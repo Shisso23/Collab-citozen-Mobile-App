@@ -22,21 +22,19 @@ export const handleNotificationOpenedBackGround = () => {
           }
         });
       } else {
-        DeviceInfo.hasHms().then(() => {
-          messaging().onNotificationOpenedApp((remoteMessage) => {
+        messaging().onNotificationOpenedApp((remoteMessage) => {
+          if (!_.isEmpty(remoteMessage)) {
+            navigation.navigate('Inbox');
+          }
+        });
+
+        messaging()
+          .getInitialNotification()
+          .then((remoteMessage) => {
             if (!_.isEmpty(remoteMessage)) {
               navigation.navigate('Inbox');
             }
           });
-
-          messaging()
-            .getInitialNotification()
-            .then((remoteMessage) => {
-              if (!_.isEmpty(remoteMessage)) {
-                navigation.navigate('Inbox');
-              }
-            });
-        });
       }
     });
   };

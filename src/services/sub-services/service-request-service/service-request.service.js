@@ -16,6 +16,7 @@ import {
   dataServiceRequestComments,
   dataNewComment,
   dataNearbyPinLocations,
+  dataConfirmAttachementsUploaded,
 } from '../../../helpers/api-function-name.helper';
 import authNetworkService from '../auth-network-service/auth-network.service';
 import srUrls from './service-request.urls';
@@ -57,6 +58,14 @@ const uploadServiceRequestPhoto = async (objId, photo) => {
   } catch (err) {
     throw err;
   }
+};
+
+const confirmCreateServiceRequest = async ({ uploadCompleted, serviceRequestId }) => {
+  const url = globalUrl.createUpdateRecordUrl();
+  const requestData = dataConfirmAttachementsUploaded({ uploadCompleted, serviceRequestId });
+  return authNetworkService.post(url, requestData).then((response) => {
+    return response;
+  });
 };
 
 const getServiceRequests = async () => {
@@ -111,6 +120,7 @@ export default {
   createServiceRequest,
   getServiceRequests,
   uploadServiceRequestPhoto,
+  confirmCreateServiceRequest,
   deleteServiceRequest,
   getServiceRequestComments,
   addNewComment,
