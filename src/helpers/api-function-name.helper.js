@@ -81,6 +81,10 @@ export const dataNewComment = (serviceRequestId, comment) => {
   return `<Objects><Service_Request_Comment><F1>${serviceRequestId}</F1><F2>User</F2><F3>${comment}</F3></Service_Request_Comment></Objects>`;
 };
 
+export const dataConfirmAttachementsUploaded = ({ uploadCompleted, serviceRequestId }) => {
+  return `<Objects><ServiceRequest><ObjectId>${serviceRequestId}</ObjectId><F37>${uploadCompleted}</F37></ServiceRequest></Objects>`;
+};
+
 export const dataGetMeterReadings = ({ meterObjId }) => {
   return {
     taskID: 0,

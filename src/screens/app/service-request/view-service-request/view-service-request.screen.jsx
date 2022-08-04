@@ -73,13 +73,13 @@ const ViewServiceRequestScreen = () => {
             View Image{serviceRequestImages.length > 1 ? 's' : ''}
           </Button>
         )}
-        {!_.isEmpty(serviceRequest.serviceRequestImage) ? null : (
+        {_.get(serviceRequest, 'serviceRequestImage', null) ? null : (
           <UploadDocumentButton
             title="Take Photo"
             style={[Gutters.regularMargin, styles.button]}
             disabled={
               _.get(serviceRequest, 'status', '') === 'Completed' ||
-              _.get(serviceRequest, 'status', '' === 'Submitted')
+              _.get(serviceRequest, 'status', '') === 'Submitted'
             }
             onImageSelect={(images) => _uploadPhotos(images)}
           />

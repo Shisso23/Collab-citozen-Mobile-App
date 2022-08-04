@@ -47,8 +47,13 @@ export const createServiceRequestAction =
       .then(async (response) => {
         const objID = _.get(response.data.Data, 'ObjID');
         const fileAttachments = _.get(newServiceRequestForm, 'images');
-        if (fileAttachments) {
+        if (fileAttachments && fileAttachments?.length > 0) {
           await _dispatch(uploadServiceRequestImages(objID, fileAttachments));
+        } else {
+          await serviceRequestService.confirmCreateServiceRequest({
+            uploadCompleted: 'Yes',
+            serviceRequestId: objID,
+          });
         }
       });
   };
@@ -56,10 +61,16 @@ export const createServiceRequestAction =
 export const uploadServiceRequestImages = (objId, fileAttachments) => async (dispatch) => {
   try {
     dispatch(setIsLoadingServiceRequestsAction(true));
-    await fileAttachments.forEach(async (attachment) => {
-      await serviceRequestService
-        .uploadServiceRequestPhoto(objId, attachment)
-        .then(() => dispatch(getServiceRequestsAction()));
+    Promise.all(
+      fileAttachments.map((attachment) => {
+        return serviceRequestService.uploadServiceRequestPhoto(objId, attachment);
+      }),
+    ).then(async () => {
+      await serviceRequestService.confirmCreateServiceRequest({
+        uploadCompleted: 'Yes',
+        serviceRequestId: objId,
+      });
+      dispatch(getServiceRequestsAction());
     });
     flashService.success('Upload completed successfully');
   } catch (error) {
@@ -71,7 +82,7 @@ export const uploadServiceRequestImages = (objId, fileAttachments) => async (dis
 
 export const setImagesSources = (images) => async (dispatch) => {
   try {
-    dispatch(setImagesSourcesAction(images));
+    return dispatch(setImagesSourcesAction(images));
   } catch (error) {
     return error;
   }
