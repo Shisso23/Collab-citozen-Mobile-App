@@ -123,6 +123,7 @@ const Notification = ({
     return !isDeleted && !isSelected ? (
       <List.Accordion
         title={`${title}`}
+        titleNumberOfLines={3}
         description={`${formatDate(datePublished)}`}
         left={() => (
           <View style={[Layout.justifyContentCenter]}>
@@ -146,6 +147,7 @@ const Notification = ({
     ) : !isDeleted && isSelected ? (
       <List.Accordion
         title={`${title}`}
+        titleNumberOfLines={3}
         description={`${formatDate(datePublished)}`}
         left={() => (
           <View style={[Layout.justifyContentCenter]}>
