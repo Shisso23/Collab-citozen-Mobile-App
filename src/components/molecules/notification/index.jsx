@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Badge, Text } from 'react-native-elements';
 import { Avatar, List } from 'react-native-paper';
@@ -41,6 +41,8 @@ const Notification = ({
   const [isDeleted, setIsDeleted] = useState(false);
   const [isSelected, setIsSelected] = useState(false);
   const [shortPressSelectEnabled, setShortPressSelectedEnabled] = useState(false);
+
+  // TODO use real channel name List.accordions descriptios. Currently have *Channel Name*
 
   const _handleCollapse = () => {
     if (shortPressSelectEnabled && !isSelected) {
@@ -124,7 +126,12 @@ const Notification = ({
       <List.Accordion
         title={`${title}`}
         titleNumberOfLines={3}
-        description={`${formatDate(datePublished)}`}
+        description={
+          <View>
+            <Text style={[Gutters.tinyTMargin, { color: Colors.primary }]}>Channel Name</Text>
+            <Text>{formatDate(datePublished)}</Text>
+          </View>
+        }
         left={() => (
           <View style={[Layout.justifyContentCenter]}>
             <Avatar.Image rounded size={35} source={_setImageUrl(Images.avatarImage)} />
@@ -148,7 +155,12 @@ const Notification = ({
       <List.Accordion
         title={`${title}`}
         titleNumberOfLines={3}
-        description={`${formatDate(datePublished)}`}
+        description={
+          <View>
+            <Text style={[Gutters.tinyTMargin, { color: Colors.primary }]}>Channel Name</Text>
+            <Text>{formatDate(datePublished)}</Text>
+          </View>
+        }
         left={() => (
           <View style={[Layout.justifyContentCenter]}>
             <Avatar.Image rounded size={35} source={_setImageUrl(Images.avatarSelected)} />
