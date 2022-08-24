@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import MapView from 'react-native-maps';
-import HmsMapView, { MapTypes } from '@hmscore/react-native-hms-map';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
+import MapView, { Marker } from 'react-native-maps';
+import HmsMapView, { MapTypes, HMSMarker, Hue, HMSInfoWindow } from '@hmscore/react-native-hms-map';
 import { Icon } from 'react-native-elements';
 import {
   StyleSheet,
@@ -13,7 +13,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
-import { Button, TextInput, IconButton } from 'react-native-paper';
+import { Button, TextInput, IconButton, Modal } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation, useFocusEffect, DefaultTheme, useRoute } from '@react-navigation/native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
@@ -26,22 +26,29 @@ import {
   getAddressFromRegionAction,
   getCurrentPositionAction,
 } from '../../../../reducers/location-reducer/location.actions';
+import { getNearbyPinLocationsAction } from '../../../../reducers/service-request-reducer/service-request.actions';
 import appConfig from '../../../../config';
 import { getMunicipalitiesAction } from '../../../../reducers/municipalities-reducer/municipalities.actions';
 import { getUnsubscribedChannelsByLocationAction } from '../../../../reducers/unsubscribed-channels/unsubscribed-channels.actions';
-import { flashService, permissionsService } from '../../../../services';
+import { flashService, permissionsService, serviceRequestService } from '../../../../services';
 import LoadingOverlay from '../../../../components/molecules/loading-overlay';
+import { Colors } from '../../../../theme/Variables';
 
 const { width } = Dimensions.get('window');
 const loadingImageSource = require('../../../../assets/lottie-files/rings-loading.json');
 
 const SelectLocationScreen = () => {
   const { params } = useRoute();
-  const { fromSubscribedChannels, onBack, handlePickLocation } = params;
-  const { Colors, Layout, Common, Gutters } = useTheme();
+  const { fromSubscribedChannels, onBack, handlePickLocation, showSRPins } = params;
+  const { Layout, Common, Gutters, Fonts } = useTheme();
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { region, selectedAddress, isLoadingAddress } = useSelector(locationSelector);
+  const { user } = useSelector((reducers) => reducers.userReducer);
+  const [nearbyPinLocations, setNearbyPinLocations] = useState([]);
+  const [pinsModalVisible, setPinsModalVisible] = useState(false);
+  const [selectedSRPin, setSelectedSRPin] = useState({});
+  const [isLoadingFollowSR, setIsLoadingFollowSR] = useState(false);
   const [userLocation, setUserLocation] = useState(region);
   const [mapPosition, setMapPosition] = useState(userLocation);
   const [address, setAddress] = useState('');
@@ -89,6 +96,227 @@ const SelectLocationScreen = () => {
       }
     }, []),
   );
+
+  useFocusEffect(
+    useCallback(() => {
+      throttleGetPinLocations(mapPosition?.latitude, mapPosition?.longitude);
+    }, [JSON.stringify(mapPosition)]),
+  );
+
+  const throttleGetPinLocations = useMemo(
+    () =>
+      _.throttle(
+        (currentLatitude, currentLongitude) =>
+          getNearbyPinLocations(currentLatitude, currentLongitude),
+        500,
+        undefined,
+      ),
+    [],
+  );
+
+  const handleFollowSR = (serviceRequestObjId) => () => {
+    setIsLoadingFollowSR(true);
+    serviceRequestService
+      .followServiceRequest({
+        userId: user.user_id,
+        serviceRequestId: serviceRequestObjId,
+      })
+      .finally(() => {
+        setIsLoadingFollowSR(false);
+      });
+  };
+
+  const getNearbyPinLocations = async (currentLatitude, currentLongitude) => {
+    const nearbyPinLocationsResponse = await dispatch(
+      getNearbyPinLocationsAction(currentLatitude, currentLongitude),
+    );
+    setNearbyPinLocations(nearbyPinLocationsResponse.payload);
+  };
+
+  const returnMarkerColour = (serviceRequestStatus) => {
+    switch (serviceRequestStatus) {
+      case 'Initial':
+        return hasGmsSync() || Platform.OS === 'ios'
+          ? Colors.lightOrange
+          : hasHmsSync()
+          ? Hue.ORANGE
+          : null;
+      case 'Registered':
+        return hasGmsSync() || Platform.OS === 'ios'
+          ? Colors.lightBlue
+          : hasHmsSync()
+          ? Hue.CYAN
+          : null;
+      case 'Completed':
+        return hasGmsSync() || Platform.OS === 'ios'
+          ? Colors.primary
+          : hasHmsSync()
+          ? Hue.BLUE
+          : null;
+      case 'Assigned':
+        return hasGmsSync() || Platform.OS === 'ios'
+          ? Colors.lightGreen
+          : hasHmsSync()
+          ? Hue.GREEN
+          : null;
+      default:
+        return hasGmsSync() || Platform.OS === 'ios'
+          ? Colors.gray
+          : hasHmsSync()
+          ? Hue.VIOLET
+          : null;
+    }
+  };
+
+  // Only if showSRPins is True
+  const displayPins = () => {
+    return nearbyPinLocations?.map((pin) => {
+      const { gpsCoordinates } = pin;
+      const cordinates = gpsCoordinates
+        .substring(gpsCoordinates.indexOf('(') + 1, gpsCoordinates.indexOf(')'))
+        .split(' ');
+      const lat = parseFloat(cordinates[0]);
+      const lng = parseFloat(cordinates[1]);
+
+      return hasGmsSync() || Platform.OS === 'ios' ? (
+        <Marker
+          coordinate={{ latitude: lng, longitude: lat }}
+          onPress={displayModalToggle(pin, true)}
+          key={pin.id}
+        >
+          <View style={styles.pin}>
+            <Icon name="location-pin" size={45} color={returnMarkerColour(pin.status)} />
+          </View>
+        </Marker>
+      ) : hasHmsSync() ? (
+        <HMSMarker
+          key={pin.id}
+          icon={{ hue: returnMarkerColour(pin.status) }}
+          clusterable
+          coordinate={{ latitude: lng, longitude: lat }}
+        >
+          {renderHmsMarkerInfoWindow(pin)}
+        </HMSMarker>
+      ) : (
+        <View />
+      );
+    });
+  };
+
+  const renderFollowSRButoon = (serviceRequestOwnerid, serviceRequestId) => {
+    return (
+      (user.user_id.trim() !== serviceRequestOwnerid && (
+        <Button
+          mode="contained"
+          style={[Gutters.tinyLMargin, { width: '32%' }, Layout.alignSelfEnd]}
+          color={Colors.primary}
+          onPress={handleFollowSR(serviceRequestId)}
+          loading={isLoadingFollowSR}
+          disabled={isLoadingFollowSR} // TODO or maybe if a S.R is already followed
+        >
+          Follow
+        </Button>
+      )) || <></>
+    );
+  };
+
+  const renderHmsMarkerInfoWindow = (pin) => {
+    const { id, serviceType, serviceDescription, requestDate, status, ownerId } = pin;
+    return (
+      <HMSInfoWindow>
+        <TouchableHighlight>
+          <View style={Fonts.textRegular}>
+            <View style={[...[{ backgroundColor: Colors.lightgray, borderRadius: 10 }]]}>
+              <Text style={[Gutters.smallVMargin, Fonts.textRegular, styles.headerFont]}>
+                Type: {serviceType}
+              </Text>
+              <View style={styles.textLine} />
+              <Text style={[Gutters.smallVMargin, Fonts.textRegular, styles.descriptionFont]}>
+                Description:
+              </Text>
+              <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>{serviceDescription}</Text>
+              <View style={styles.textLine} />
+              <Text style={[Gutters.smallVMargin, Fonts.textRegular]}>Status: {status}</Text>
+              <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>Date: {requestDate}</Text>
+              <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>Reference No: {id}</Text>
+              {renderFollowSRButoon(ownerId)}
+            </View>
+          </View>
+        </TouchableHighlight>
+      </HMSInfoWindow>
+    );
+  };
+
+  const pinDetailsModal = () => {
+    const { id, serviceType, serviceDescription, requestDate, status, ownerId } = selectedSRPin;
+    return (
+      <Modal visible={pinsModalVisible} transparent>
+        <TouchableOpacity
+          style={[
+            Layout.alignItemsCenter,
+            Layout.justifyContentCenter,
+            ...[{ width: '100%', height: '100%', backgroundColor: Colors.transparent }],
+          ]}
+          activeOpacity={1}
+          onPress={() => setPinsModalVisible(false)}
+        >
+          <View
+            style={[
+              Layout.itemsEnd,
+              Layout.justifyCenter,
+              Gutters.largeHMargin,
+              ...[
+                {
+                  maxHeight: '50%',
+                },
+              ],
+              Fonts.textRegular,
+            ]}
+          >
+            <TouchableOpacity
+              style={[
+                ...[{ backgroundColor: Colors.gray, width: 40, height: 40 }],
+                Layout.alignSelfEnd,
+                Gutters.regularMargin,
+              ]}
+              onPress={() => setPinsModalVisible(false)}
+            >
+              <Icon name="close" size={30} color={Colors.lightgray} />
+            </TouchableOpacity>
+
+            <View
+              style={[
+                styles.modalView,
+                Gutters.smallPadding,
+                { backgroundColor: Colors.lightgray },
+              ]}
+            >
+              <Text style={[Gutters.smallVMargin, Fonts.textRegular, styles.headerFont]}>
+                Type: {serviceType}
+              </Text>
+              <View style={styles.textLine} />
+              <Text style={[Gutters.smallVMargin, Fonts.textRegular, styles.descriptionFont]}>
+                Description:
+              </Text>
+              <Text numberOfLines={4} style={[Gutters.smallBMargin, Fonts.textRegular]}>
+                {serviceDescription}
+              </Text>
+              <View style={styles.textLine} />
+              <Text style={[Gutters.smallVMargin, Fonts.textRegular]}>Status: {status}</Text>
+              <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>Date: {requestDate}</Text>
+              <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>Reference No: {id}</Text>
+              {renderFollowSRButoon(ownerId)}
+            </View>
+          </View>
+        </TouchableOpacity>
+      </Modal>
+    );
+  };
+
+  const displayModalToggle = (pin, modalVisible) => () => {
+    setPinsModalVisible(modalVisible);
+    setSelectedSRPin(pin);
+  };
 
   useEffect(() => {
     if ((hasGmsSync() || Platform.OS === 'ios') && mapRef) {
@@ -278,10 +506,12 @@ const SelectLocationScreen = () => {
           onRegionChangeComplete={(newRegion) => {
             return _setMapPosition(newRegion);
           }}
-          showsMyLocationButton={false}
+          showsMyLocationButton
           zoomControlEnabled
           zoomEnabled
-        />
+        >
+          {showSRPins && nearbyPinLocations.length > 0 ? displayPins() : <></>}
+        </MapView>
       ) : hasHmsSync() && locationPermission && userLocation ? (
         <HmsMapView
           ref={(e) => {
@@ -313,7 +543,9 @@ const SelectLocationScreen = () => {
           markerClustering={false}
           scrollGesturesEnabledDuringRotateOrZoom
           useAnimation
-        />
+        >
+          {showSRPins && nearbyPinLocations?.length > 0 ? displayPins() : <></>}
+        </HmsMapView>
       ) : (
         <View />
       )}
@@ -333,6 +565,7 @@ const SelectLocationScreen = () => {
           </TouchableHighlight>
         </View>
       </KeyboardAvoidingView>
+      {pinDetailsModal()}
       <LoadingOverlay
         source={loadingImageSource}
         visible={loadingModalVisible}
@@ -352,6 +585,26 @@ const styles = StyleSheet.create({
     left: width - 35,
     position: 'absolute',
     width: 40,
+  },
+  descriptionFont: {
+    fontSize: 16,
+  },
+  headerFont: {
+    fontSize: 19,
+  },
+  modalView: {
+    backgroundColor: Colors.black,
+    borderRadius: 15,
+    paddingLeft: 10,
+  },
+  pin: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  textLine: {
+    borderBottomColor: Colors.gray,
+    borderBottomWidth: 1,
+    width: 315,
   },
 });
 

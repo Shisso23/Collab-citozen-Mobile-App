@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import MapView, { Marker } from 'react-native-maps';
 import HmsMapView, { HMSMarker, MapTypes, Hue, HMSInfoWindow } from '@hmscore/react-native-hms-map';
-import { FAB, Modal } from 'react-native-paper';
+import { FAB, Modal, Button } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import {
   FlatList,
@@ -30,7 +30,7 @@ import {
   previewDeleteServiceRequestAction,
   getNearbyPinLocationsAction,
 } from '../../../reducers/service-request-reducer/service-request.actions';
-import { flashService, permissionsService } from '../../../services';
+import { flashService, permissionsService, serviceRequestService } from '../../../services';
 import ServiceRequestItem from '../../../components/molecules/service-request-item';
 import SwipeRowContainer from '../../../components/atoms/swipe-row/swipe-row';
 import { promptConfirm } from '../../../helpers/prompt.helper';
@@ -54,12 +54,14 @@ const ServiceRequestScreen = () => {
   const { Common, Gutters, Fonts, Layout, Images } = useTheme();
   const [tabIndex, setTabIndex] = useState(0);
   const { region } = useSelector(locationSelector);
+  const { user } = useSelector((reducers) => reducers.userReducer);
 
   const [pinsModalVisible, setPinsModalVisible] = useState(false);
   const [nearbyPinLocations, setNearbyPinLocations] = useState([]);
   const [locationPermission, setLocationPermission] = useState(false);
   const [selectedSRPin, setSelectedSRPin] = useState({});
   const [userLocation, setUserLocation] = useState(region);
+  const [isLoadingFollowSR, setIsLoadingFollowSR] = useState(false);
   const [mapReady, setMapReady] = useState(false);
   const [mapPosition, setMapPosition] = useState(userLocation);
   const [loadingModalVisible, setLoadingModalVisible] = useState(
@@ -159,7 +161,10 @@ const ServiceRequestScreen = () => {
     if (hasHmsSync()) {
       await permissionsService.requestHmsLocationPermissions();
     }
-    navigation.navigate('SelectLocationScreen', { fromSubscribedChannels: false });
+    navigation.navigate('SelectLocationScreen', {
+      fromSubscribedChannels: false,
+      showSRPins: true,
+    });
   };
 
   const renderHiddenComponent = (account, channel) => (
@@ -176,6 +181,18 @@ const ServiceRequestScreen = () => {
     promptConfirm('Are you sure?', 'Are you sure you want to delete this item?', 'Delete', () => {
       dispatch(deleteServiceRequestAction(channelId, serviceRequestId));
     });
+  };
+
+  const handleFollowSR = (serviceRequestObjId) => () => {
+    setIsLoadingFollowSR(true);
+    serviceRequestService
+      .followServiceRequest({
+        userId: user.user_id,
+        serviceRequestId: serviceRequestObjId,
+      })
+      .finally(() => {
+        setIsLoadingFollowSR(false);
+      });
   };
 
   const renderServiceRequest = ({ item }) => {
@@ -409,7 +426,8 @@ const ServiceRequestScreen = () => {
   };
 
   const pinDetailsModal = () => {
-    const { id, serviceType, serviceDescription, requestDate, status } = selectedSRPin;
+    const { id, serviceType, serviceDescription, requestDate, status, ownerId } = selectedSRPin;
+    console.log({ ownerId, USERiD: user.user_id.trim() });
     return (
       <Modal visible={pinsModalVisible} transparent>
         <TouchableOpacity
@@ -466,6 +484,18 @@ const ServiceRequestScreen = () => {
               <Text style={[Gutters.smallVMargin, Fonts.textRegular]}>Status: {status}</Text>
               <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>Date: {requestDate}</Text>
               <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>Reference No: {id}</Text>
+              {user.user_id.trim() !== ownerId && (
+                <Button
+                  mode="contained"
+                  style={[Gutters.tinyLMargin, { width: '32%' }, Layout.alignSelfEnd]}
+                  color={Colors.primary}
+                  onPress={handleFollowSR(id)}
+                  loading={isLoadingFollowSR}
+                  disabled={isLoadingFollowSR} // TODO or maybe if a S.R is already followed
+                >
+                  Follow
+                </Button>
+              )}
             </View>
           </View>
         </TouchableOpacity>
@@ -474,6 +504,7 @@ const ServiceRequestScreen = () => {
   };
 
   const displayModalToggle = (pin, modalVisible) => () => {
+    console.log({ pin });
     setPinsModalVisible(modalVisible);
     setSelectedSRPin(pin);
   };
