@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Badge, Text } from 'react-native-elements';
 import { Avatar, List } from 'react-native-paper';
@@ -33,6 +33,7 @@ const Notification = ({
   const title = _.get(notification, 'title', '');
   const body = _.get(notification, 'body', '');
   const seen = _.get(notification, 'seen', false) === 'Yes';
+  const channelName = _.get(notification, 'channel_name', '');
 
   const { Layout, Images, Colors, Gutters } = useTheme();
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -41,8 +42,6 @@ const Notification = ({
   const [isDeleted, setIsDeleted] = useState(false);
   const [isSelected, setIsSelected] = useState(false);
   const [shortPressSelectEnabled, setShortPressSelectedEnabled] = useState(false);
-
-  // TODO use real channel name List.accordions descriptios. Currently have *Channel Name*
 
   const _handleCollapse = () => {
     if (shortPressSelectEnabled && !isSelected) {
@@ -128,7 +127,7 @@ const Notification = ({
         titleNumberOfLines={3}
         description={
           <View>
-            <Text style={[Gutters.tinyTMargin, { color: Colors.primary }]}>Channel Name</Text>
+            <Text style={[Gutters.tinyTMargin, { color: Colors.primary }]}>{channelName}</Text>
             <Text>{formatDate(datePublished)}</Text>
           </View>
         }
@@ -157,7 +156,7 @@ const Notification = ({
         titleNumberOfLines={3}
         description={
           <View>
-            <Text style={[Gutters.tinyTMargin, { color: Colors.primary }]}>Channel Name</Text>
+            <Text style={[Gutters.tinyTMargin, { color: Colors.primary }]}>{channelName}</Text>
             <Text>{formatDate(datePublished)}</Text>
           </View>
         }
