@@ -69,9 +69,9 @@ const confirmCreateServiceRequest = async ({ uploadCompleted, serviceRequestId }
   });
 };
 
-const followServiceRequest = async ({ userId, serviceRequestId }) => {
+const followServiceRequest = async ({ userId, serviceRequestId, followed }) => {
   const url = globalUrl.createUpdateRecordUrl();
-  const requestData = dataFollowServiceRequest({ userId, serviceRequestId });
+  const requestData = dataFollowServiceRequest({ userId, serviceRequestId, followed });
   return authNetworkService.post(url, requestData).then((response) => {
     return response;
   });
@@ -82,7 +82,6 @@ const getServiceRequests = async () => {
   const data = await apiFunctionWithUniqName('get_service_requests');
   const apiResponse = await authNetworkService.post(url, data);
   const serviceRequests = _.get(apiResponse.data, 'service_requests', []);
-  console.log({ serviceRequests });
   if (!serviceRequests) {
     throw Error('Could not load service requests.');
   }
@@ -118,7 +117,6 @@ const getServiceRequestPins = async (currentLatitude, currentLongitude) => {
   const url = srUrls.execFunctionUrl();
   const data = await dataNearbyPinLocations(currentLatitude, currentLongitude);
   const apiResponse = await authNetworkService.post(url, data);
-  console.log({ apiResponse });
   const pinLocations = await constructNearbyPinLocationsModels(
     _.get(apiResponse, 'data.radius_service_requests', []),
   );

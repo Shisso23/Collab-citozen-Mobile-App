@@ -54,6 +54,7 @@ export const serviceRequestModel = (_apiServiceRequestModel = {}, accessToken) =
   channelId: _.get(_apiServiceRequestModel, 'channel_ref ', ''),
   channelName: _.get(_apiServiceRequestModel, 'channel_name ', ''),
   ownerId: _.get(_apiServiceRequestModel, 'created_by_user_id', null),
+  following: _.get(_apiServiceRequestModel, 'following', false), // TODO CHnge this to real data
 });
 
 export const nearbyPinLocationModel = (_apiNearbyPinLocationsModel = {}) => ({
@@ -67,6 +68,7 @@ export const nearbyPinLocationModel = (_apiNearbyPinLocationsModel = {}) => ({
   status: _.get(_apiNearbyPinLocationsModel, 'status', ''),
   serviceTypeRef: _.get(_apiNearbyPinLocationsModel, 'service_type_ref', ''),
   ownerId: _.get(_apiNearbyPinLocationsModel, 'created_by_user_id', null),
+  following: _.get(_apiNearbyPinLocationsModel, 'following', false), // TODO CHnge this to real data
 });
 
 export const construcCommentModels = async (apiComments) => {

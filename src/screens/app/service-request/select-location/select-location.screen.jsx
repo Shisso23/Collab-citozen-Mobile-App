@@ -40,7 +40,7 @@ const loadingImageSource = require('../../../../assets/lottie-files/rings-loadin
 const SelectLocationScreen = () => {
   const { params } = useRoute();
   const { fromSubscribedChannels, onBack, handlePickLocation, showSRPins } = params;
-  const { Layout, Common, Gutters, Fonts } = useTheme();
+  const { Layout, Common, Gutters, Fonts, FontSize } = useTheme();
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { region, selectedAddress, isLoadingAddress } = useSelector(locationSelector);
@@ -114,12 +114,13 @@ const SelectLocationScreen = () => {
     [],
   );
 
-  const handleFollowSR = (serviceRequestObjId) => () => {
+  const handleFollowSR = (serviceRequestObjId, following) => () => {
     setIsLoadingFollowSR(true);
     serviceRequestService
       .followServiceRequest({
         userId: user.user_id,
         serviceRequestId: serviceRequestObjId,
+        followed: following,
       })
       .finally(() => {
         setIsLoadingFollowSR(false);
@@ -203,25 +204,25 @@ const SelectLocationScreen = () => {
     });
   };
 
-  const renderFollowSRButoon = (serviceRequestOwnerid, serviceRequestId) => {
+  const renderFollowSRButon = (serviceRequestOwnerid, serviceRequestId, following) => {
     return (
-      (user.user_id.trim() !== serviceRequestOwnerid && (
+      (user.user_id?.trim() !== serviceRequestOwnerid?.trim() && (
         <Button
           mode="contained"
-          style={[Gutters.tinyLMargin, { width: '32%' }, Layout.alignSelfEnd]}
+          style={[Gutters.tinyLMargin, ...[{ width: '40%' }], FontSize.small, Layout.alignSelfEnd]}
           color={Colors.primary}
-          onPress={handleFollowSR(serviceRequestId)}
+          onPress={handleFollowSR(serviceRequestId, !following)}
           loading={isLoadingFollowSR}
           disabled={isLoadingFollowSR} // TODO or maybe if a S.R is already followed
         >
-          Follow
+          {following ? 'UnFollow' : 'Follow'}
         </Button>
       )) || <></>
     );
   };
 
   const renderHmsMarkerInfoWindow = (pin) => {
-    const { id, serviceType, serviceDescription, requestDate, status, ownerId } = pin;
+    const { id, serviceType, serviceDescription, requestDate, status, ownerId, following } = pin;
     return (
       <HMSInfoWindow>
         <TouchableHighlight>
@@ -239,7 +240,7 @@ const SelectLocationScreen = () => {
               <Text style={[Gutters.smallVMargin, Fonts.textRegular]}>Status: {status}</Text>
               <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>Date: {requestDate}</Text>
               <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>Reference No: {id}</Text>
-              {renderFollowSRButoon(ownerId)}
+              {renderFollowSRButon(ownerId, id, following)}
             </View>
           </View>
         </TouchableHighlight>
@@ -248,7 +249,8 @@ const SelectLocationScreen = () => {
   };
 
   const pinDetailsModal = () => {
-    const { id, serviceType, serviceDescription, requestDate, status, ownerId } = selectedSRPin;
+    const { id, serviceType, serviceDescription, requestDate, status, ownerId, following } =
+      selectedSRPin;
     return (
       <Modal visible={pinsModalVisible} transparent>
         <TouchableOpacity
@@ -305,7 +307,7 @@ const SelectLocationScreen = () => {
               <Text style={[Gutters.smallVMargin, Fonts.textRegular]}>Status: {status}</Text>
               <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>Date: {requestDate}</Text>
               <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>Reference No: {id}</Text>
-              {renderFollowSRButoon(ownerId)}
+              {renderFollowSRButon(ownerId, id, following)}
             </View>
           </View>
         </TouchableOpacity>

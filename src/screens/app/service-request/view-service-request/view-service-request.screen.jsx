@@ -4,7 +4,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Modal, Button, Portal } from 'react-native-paper';
 import _ from 'lodash';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import useTheme from '../../../../theme/hooks/useTheme';
 import ServiceRequestDetails from '../../../../components/common/service-request-details';
 import { Colors } from '../../../../theme/Variables';
@@ -24,6 +24,7 @@ const ViewServiceRequestScreen = () => {
   const keyBoardAwareRef = createRef(null);
   const { serviceRequest } = params;
   const [visible, setVisible] = React.useState(false);
+  const { user } = useSelector((reducers) => reducers.userReducer);
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
   const [scrollEnabled, setScrollEnabled] = useState(true);
@@ -64,6 +65,7 @@ const ViewServiceRequestScreen = () => {
             mode="outlined"
             icon="eye"
             color={Colors.white}
+            disabled={user.user_id?.trim() !== serviceRequest.ownerId?.trim()}
             style={[Gutters.regularMargin, styles.button]}
             labelStyle={[Fonts.textRegular, Common.whiteText]}
             onPress={() => {
@@ -79,7 +81,8 @@ const ViewServiceRequestScreen = () => {
             style={[Gutters.regularMargin, styles.button]}
             disabled={
               _.get(serviceRequest, 'status', '') === 'Completed' ||
-              _.get(serviceRequest, 'status', '') === 'Submitted'
+              _.get(serviceRequest, 'status', '') === 'Submitted' ||
+              user.user_id?.trim() !== serviceRequest.ownerId?.trim()
             }
             onImageSelect={(images) => _uploadPhotos(images)}
           />
@@ -91,16 +94,21 @@ const ViewServiceRequestScreen = () => {
           <UploadDocumentButton
             title="Add Images"
             style={[Gutters.regularMargin, styles.button]}
-            disabled={_.get(serviceRequest, 'status', '') === 'Submitted'}
+            disabled={
+              _.get(serviceRequest, 'status', '') === 'Submitted' ||
+              user.user_id?.trim() !== serviceRequest.ownerId?.trim()
+            }
             onImageSelect={(images) => _uploadPhotos(images)}
           />
         ) : null}
-        <Comments
-          parentScrollViewRef={keyBoardAwareRef}
-          setScrollEnabled={setScrollEnabled}
-          onSend={onSendComment}
-          serviceRequest={serviceRequest}
-        />
+        {(user.user_id?.trim() === serviceRequest.ownerId?.trim() && (
+          <Comments
+            parentScrollViewRef={keyBoardAwareRef}
+            setScrollEnabled={setScrollEnabled}
+            onSend={onSendComment}
+            serviceRequest={serviceRequest}
+          />
+        )) || <></>}
 
         <Portal>
           <Modal
