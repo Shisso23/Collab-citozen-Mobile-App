@@ -169,7 +169,6 @@ const SelectLocationScreen = () => {
     }
   };
 
-  // Only if showSRPins is True
   const displayPins = () => {
     return nearbyPinLocations?.map((pin) => {
       const { gpsCoordinates } = pin;
@@ -204,16 +203,22 @@ const SelectLocationScreen = () => {
     });
   };
 
-  const renderFollowSRButon = (serviceRequestOwnerid, serviceRequestId, following) => {
+  const renderFollowSRButon = () => {
+    const { id, following, ownerId } = selectedSRPin;
     return (
-      (user.user_id?.trim() !== serviceRequestOwnerid?.trim() && (
+      (user.user_id?.trim() !== ownerId?.trim() && (
         <Button
           mode="contained"
-          style={[Gutters.tinyLMargin, ...[{ width: '40%' }], FontSize.small, Layout.alignSelfEnd]}
+          style={[
+            Gutters.regularBMargin,
+            ...[{ width: '40%' }],
+            FontSize.small,
+            Layout.alignSelfEnd,
+          ]}
           color={Colors.primary}
-          onPress={handleFollowSR(serviceRequestId, !following)}
+          onPress={handleFollowSR(id, !following)}
           loading={isLoadingFollowSR}
-          disabled={isLoadingFollowSR} // TODO or maybe if a S.R is already followed
+          disabled={isLoadingFollowSR}
         >
           {following ? 'UnFollow' : 'Follow'}
         </Button>
@@ -222,12 +227,16 @@ const SelectLocationScreen = () => {
   };
 
   const renderHmsMarkerInfoWindow = (pin) => {
-    const { id, serviceType, serviceDescription, requestDate, status, ownerId, following } = pin;
+    const { id, serviceType, serviceDescription, requestDate, status } = pin;
     return (
       <HMSInfoWindow>
         <TouchableHighlight>
           <View style={Fonts.textRegular}>
-            <View style={[...[{ backgroundColor: Colors.lightgray, borderRadius: 10 }]]}>
+            <View
+              style={[
+                ...[{ backgroundColor: Colors.lightgray, borderRadius: 10 }, Gutters.smallPadding],
+              ]}
+            >
               <Text style={[Gutters.smallVMargin, Fonts.textRegular, styles.headerFont]}>
                 Type: {serviceType}
               </Text>
@@ -240,7 +249,7 @@ const SelectLocationScreen = () => {
               <Text style={[Gutters.smallVMargin, Fonts.textRegular]}>Status: {status}</Text>
               <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>Date: {requestDate}</Text>
               <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>Reference No: {id}</Text>
-              {renderFollowSRButon(ownerId, id, following)}
+              {renderFollowSRButon()}
             </View>
           </View>
         </TouchableHighlight>
@@ -249,8 +258,7 @@ const SelectLocationScreen = () => {
   };
 
   const pinDetailsModal = () => {
-    const { id, serviceType, serviceDescription, requestDate, status, ownerId, following } =
-      selectedSRPin;
+    const { id, serviceType, serviceDescription, requestDate, status } = selectedSRPin;
     return (
       <Modal visible={pinsModalVisible} transparent>
         <TouchableOpacity
@@ -307,7 +315,7 @@ const SelectLocationScreen = () => {
               <Text style={[Gutters.smallVMargin, Fonts.textRegular]}>Status: {status}</Text>
               <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>Date: {requestDate}</Text>
               <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>Reference No: {id}</Text>
-              {renderFollowSRButon(ownerId, id, following)}
+              {renderFollowSRButon()}
             </View>
           </View>
         </TouchableOpacity>
