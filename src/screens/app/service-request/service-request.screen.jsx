@@ -191,6 +191,9 @@ const ServiceRequestScreen = () => {
         serviceRequestId: serviceRequestObjId,
         followed: following,
       })
+      .then(() => {
+        setSelectedSRPin({ ...selectedSRPin, following });
+      })
       .finally(() => {
         setIsLoadingFollowSR(false);
       });
@@ -420,6 +423,9 @@ const ServiceRequestScreen = () => {
 
   const renderHmsMarkerInfoWindow = (pin) => {
     const { id, serviceType, serviceDescription, requestDate, status } = pin;
+    if (pin) {
+      setSelectedSRPin(pin);
+    }
     return (
       <HMSInfoWindow>
         <TouchableHighlight>

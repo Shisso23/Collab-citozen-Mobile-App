@@ -122,6 +122,9 @@ const SelectLocationScreen = () => {
         serviceRequestId: serviceRequestObjId,
         followed: following,
       })
+      .then(() => {
+        setSelectedSRPin({ ...selectedSRPin, following });
+      })
       .finally(() => {
         setIsLoadingFollowSR(false);
       });
@@ -228,6 +231,9 @@ const SelectLocationScreen = () => {
 
   const renderHmsMarkerInfoWindow = (pin) => {
     const { id, serviceType, serviceDescription, requestDate, status } = pin;
+    if (pin) {
+      setSelectedSRPin(pin);
+    }
     return (
       <HMSInfoWindow>
         <TouchableHighlight>
@@ -249,10 +255,10 @@ const SelectLocationScreen = () => {
               <Text style={[Gutters.smallVMargin, Fonts.textRegular]}>Status: {status}</Text>
               <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>Date: {requestDate}</Text>
               <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>Reference No: {id}</Text>
-              {renderFollowSRButon()}
             </View>
           </View>
         </TouchableHighlight>
+        {renderFollowSRButon()}
       </HMSInfoWindow>
     );
   };
