@@ -191,8 +191,9 @@ const ServiceRequestScreen = () => {
         serviceRequestId: serviceRequestObjId,
         followed: following,
       })
-      .then(() => {
+      .then(async () => {
         setSelectedSRPin({ ...selectedSRPin, following });
+        await getNearbyPinLocations(mapPosition?.latitude, mapPosition?.longitude);
       })
       .finally(() => {
         setIsLoadingFollowSR(false);
