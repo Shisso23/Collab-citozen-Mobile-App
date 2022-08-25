@@ -115,7 +115,7 @@ const addNewComment = async (serviceRequestId, comment) => {
 
 const getServiceRequestPins = async (currentLatitude, currentLongitude) => {
   const url = srUrls.execFunctionUrl();
-  const data = await dataNearbyPinLocations(currentLatitude, currentLongitude);
+  const data = dataNearbyPinLocations(currentLatitude, currentLongitude);
   const apiResponse = await authNetworkService.post(url, data);
   const pinLocations = await constructNearbyPinLocationsModels(
     _.get(apiResponse, 'data.radius_service_requests', []),
