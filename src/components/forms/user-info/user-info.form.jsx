@@ -26,8 +26,10 @@ const UserInfoForm = ({ edit, submitForm, onSuccess, initialValues }) => {
     email: emailSchema,
     firstName: Yup.string().required('First Name is required'),
     lastName: Yup.string().required('Surname is required'),
-    mobileNumber: Yup.string().required('Mobile number is required'),
-    telNumber: Yup.string(),
+    mobileNumber: Yup.string()
+      .required('Mobile number is required')
+      .max(15, 'Mobile Number must be at most 15 characters'),
+    telNumber: Yup.string().max(15, 'Telephone Number must be at most 15 characters'),
     idNumber: Yup.string().required(),
     password: registerPasswordSchema(edit),
     confirmPassword: confirmPasswordSchema(edit),
