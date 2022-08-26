@@ -63,7 +63,8 @@ const DrawerContent = (props) => {
   const onShare = async () => {
     try {
       return Share.share({
-        message: `You have been invited to download Collab Citizen!\n\nCollab Citizen allows consumers to stay in control and up to date with their municipal accounts.\n\nAvailable on Google Play Store and Apple App Store: ${combinedLink}`,
+        message: `You have been invited to download Collab Citizen!\n\nThe CollabCitizen Application facilitates a quicker, more responsive service delivery, content sharing, and broadcasting platform for municipalities.\n\n
+        This application enables specific features for your organization such as Service Requests, News, Broadcasts, Contacts, and Utility Accounts throughout Africa and soon Europe and the Americas..\n\nAvailable on Google Play Store and Apple App Store: ${combinedLink}`,
       }).then(() => {
         return userService.invitedUserRecord(user.user_id);
       });
