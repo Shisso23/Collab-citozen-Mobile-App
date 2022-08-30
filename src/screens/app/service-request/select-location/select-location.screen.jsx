@@ -269,11 +269,7 @@ const SelectLocationScreen = () => {
     return (
       <Modal visible={pinsModalVisible} transparent>
         <TouchableOpacity
-          style={[
-            Layout.alignItemsCenter,
-            Layout.justifyContentCenter,
-            ...[{ width: '100%', height: '100%', backgroundColor: Colors.transparent }],
-          ]}
+          style={[Layout.alignItemsCenter, Layout.justifyContentCenter, styles.modal]}
           activeOpacity={1}
           onPress={() => setPinsModalVisible(false)}
         >
@@ -609,6 +605,7 @@ const styles = StyleSheet.create({
   headerFont: {
     fontSize: 19,
   },
+  modal: { backgroundColor: Colors.transparent, height: '100%', width: '100%' },
   modalView: {
     backgroundColor: Colors.black,
     borderRadius: 15,

@@ -410,7 +410,7 @@ const ServiceRequestScreen = () => {
       (user.user_id?.trim() !== ownerId?.trim() && (
         <Button
           mode="contained"
-          style={[Gutters.tinyLMargin, ...[{ width: '40%' }], FontSize.small, Layout.alignSelfEnd]}
+          style={[Gutters.tinyLMargin, styles.followButton, FontSize.small, Layout.alignSelfEnd]}
           color={Colors.primary}
           onPress={handleFollowSR(id, !following)}
           loading={isLoadingFollowSR}
@@ -572,6 +572,7 @@ const styles = StyleSheet.create({
   descriptionFont: {
     fontSize: 16,
   },
+  followButton: { width: '40%' },
   headerFont: {
     fontSize: 19,
   },
