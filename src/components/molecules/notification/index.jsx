@@ -17,6 +17,7 @@ import { TrashButton } from '../../atoms';
 import { promptConfirm } from '../../../helpers/prompt.helper';
 import useTheme from '../../../theme/hooks/useTheme';
 import SwipeRowContainer from '../../atoms/swipe-row/swipe-row';
+import { Colors } from '../../../theme/Variables';
 
 const Notification = ({
   notification,
@@ -33,8 +34,9 @@ const Notification = ({
   const title = _.get(notification, 'title', '');
   const body = _.get(notification, 'body', '');
   const seen = _.get(notification, 'seen', false) === 'Yes';
+  const channelName = _.get(notification, 'channel_name', '');
 
-  const { Layout, Images, Colors, Gutters } = useTheme();
+  const { Layout, Images, Gutters } = useTheme();
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [isSeen, setIsSeen] = useState(seen);
   const [isDeleting, setDeleting] = useState(false);
@@ -123,7 +125,13 @@ const Notification = ({
     return !isDeleted && !isSelected ? (
       <List.Accordion
         title={`${title}`}
-        description={`${formatDate(datePublished)}`}
+        titleNumberOfLines={3}
+        description={
+          <View>
+            <Text style={[Gutters.tinyTMargin, styles.channelName]}>{channelName}</Text>
+            <Text>{formatDate(datePublished)}</Text>
+          </View>
+        }
         left={() => (
           <View style={[Layout.justifyContentCenter]}>
             <Avatar.Image rounded size={35} source={_setImageUrl(Images.avatarImage)} />
@@ -146,7 +154,13 @@ const Notification = ({
     ) : !isDeleted && isSelected ? (
       <List.Accordion
         title={`${title}`}
-        description={`${formatDate(datePublished)}`}
+        titleNumberOfLines={3}
+        description={
+          <View>
+            <Text style={[Gutters.tinyTMargin, { color: Colors.primary }]}>{channelName}</Text>
+            <Text>{formatDate(datePublished)}</Text>
+          </View>
+        }
         left={() => (
           <View style={[Layout.justifyContentCenter]}>
             <Avatar.Image rounded size={35} source={_setImageUrl(Images.avatarSelected)} />
@@ -193,6 +207,7 @@ const styles = StyleSheet.create({
     height: 14,
     width: 14,
   },
+  channelName: { color: Colors.primary },
   notificationBody: { lineHeight: 23, textAlign: 'left' },
 });
 
