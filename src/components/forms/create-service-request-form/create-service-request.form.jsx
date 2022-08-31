@@ -175,7 +175,11 @@ const CreateServiceRequestForm = ({
                 value={addressSelected}
                 label="Location Selected"
                 underlineColor={Colors.transparent}
-                onFocus={() => navigation.navigate('SelectLocationScreen')}
+                onFocus={() =>
+                  navigation.navigate('SelectLocationScreen', {
+                    showSRPins: true,
+                  })
+                }
               />
               <HelperText />
               <View style={[styles.viewTextContainer]}>
