@@ -86,9 +86,9 @@ export const dataConfirmAttachementsUploaded = ({ uploadCompleted, serviceReques
 };
 
 export const dataFollowServiceRequest = ({ userId, serviceRequestId, followed }) => {
-  return `<Objects><ServiceRequestFollow><ObjectId>${serviceRequestId}</ObjectId><F1>${userId}</F1><F2>${serviceRequestId}</F2><F3>${
+  return `<Objects><Service_Request_Follow><ObjectId>${serviceRequestId}</ObjectId><F1>${userId}</F1><F2>${serviceRequestId}</F2><F3>${
     followed ? 'T' : 'F'
-  }</F3></ServiceRequestFollow></Objects>`;
+  }</F3></Service_Request_Follow></Objects>`;
 };
 
 export const dataGetMeterReadings = ({ meterObjId }) => {

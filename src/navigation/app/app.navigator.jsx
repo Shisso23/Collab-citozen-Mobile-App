@@ -1,6 +1,7 @@
 import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../../screens/app/home/home.screen';
 import ProfileScreen from '../../screens/app/profile/profile.screen';
 import useTheme from '../../theme/hooks/useTheme';
@@ -29,19 +30,19 @@ import AccountDetailsScreen from '../../screens/app/accounts/account-details.scr
 import ReadingsHistoryScreen from '../../screens/app/accounts/readings-history.screen';
 import SubmitMeterReadingScreen from '../../screens/app/accounts/submit-readings.screen';
 import CreateNotificationScreen from '../../screens/app/channels/create-notification/create-notification.screen';
+import TabBar from '../../components/molecules/tab-bar/tab-bar';
+import NewsScreen from '../../screens/news-screen/news.screen';
 
 const Drawer = createDrawerNavigator();
 const AppStack = createStackNavigator();
+const Tab = createBottomTabNavigator();
+const CategoriesStack = createStackNavigator();
 
 const AppNavigator = () => {
   const { Custom } = useTheme();
   return (
     <AppStack.Navigator screenOptions={Custom.globalNavigatorScreenOptions} headerMode="screen">
-      <AppStack.Screen
-        name="App Home"
-        component={DrawerNavigator}
-        options={{ headerShown: false }}
-      />
+      <AppStack.Screen name="Drawer" component={DrawerNavigator} options={{ header: () => null }} />
       <AppStack.Screen
         name="SelectLocationScreen"
         component={SelectLocationScreen}
@@ -180,11 +181,15 @@ const DrawerNavigator = () => {
       screenOptions={Custom.globalNavigatorScreenOptions}
       drawerContent={(props) => <DrawerContent {...props} />}
       drawerStyle={Common.drawerStyle}
-      initialRouteName="Home"
     >
       <Drawer.Screen
-        name="Home"
-        component={HomeScreen}
+        name="HomeTabs"
+        component={TabNavigator}
+        options={{ headerShown: true, title: 'Home' }}
+      />
+      <Drawer.Screen
+        name="News"
+        component={NewsScreen}
         options={{ headerShown: true, title: 'Home' }}
       />
       <Drawer.Screen
@@ -229,5 +234,20 @@ const DrawerNavigator = () => {
     </Drawer.Navigator>
   );
 };
+
+const TabNavigator = () => (
+  <Tab.Navigator
+    initialRouteName="Home"
+    tabBar={(props) => <TabBar {...props} />}
+    lazy={false}
+    tabBarOptions={{
+      keyboardHidesTabBar: true,
+    }}
+  >
+    <Tab.Screen name="Home" component={HomeScreen} />
+    <Tab.Screen name="ServiceRequests" component={ServiceRequestScreen} />
+    <Tab.Screen name="Profile" component={ProfileScreen} />
+  </Tab.Navigator>
+);
 
 export default AppNavigator;

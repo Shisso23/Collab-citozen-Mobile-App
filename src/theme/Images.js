@@ -15,4 +15,7 @@ export default () => ({
   serverDown: require('../assets/images/serverDown.png'),
   avatarImage: require('../../ios/collaboratorapp/Images.xcassets/AppIcon.appiconset/1024.png'),
   avatarSelected: require('../assets/images/avatarSelected.png'),
+  dummy1: require('../assets/images/dummy1.jpeg'),
+  dummy2: require('../assets/images/dummy2.jpeg'),
+  dummy3: require('../assets/images/dummy3.jpeg'),
 });

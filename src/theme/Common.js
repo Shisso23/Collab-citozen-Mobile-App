@@ -175,6 +175,18 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
       borderTopRightRadius: 10,
       elevation: 2,
     },
+    viewWithShadow: {
+      backgroundColor: Colors.cardBackground,
+      borderRadius: 14,
+      elevation: 15,
+      shadowColor: Colors.shadow,
+      shadowOffset: {
+        width: 0,
+        height: 20,
+      },
+      shadowOpacity: 0.3,
+      shadowRadius: 20,
+    },
     warningStyle: {
       color: Colors.warning,
       fontFamily: FontFamily.primary,

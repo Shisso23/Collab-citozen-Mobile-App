@@ -12,7 +12,7 @@ const ProfileScreen = () => {
   const { user } = useSelector((reducers) => reducers.userReducer);
   const navigation = useNavigation();
   const _onFormSuccess = () => {
-    navigation.navigate('Home');
+    navigation.navigate('News');
   };
   const { Gutters, Fonts } = useTheme();
 
