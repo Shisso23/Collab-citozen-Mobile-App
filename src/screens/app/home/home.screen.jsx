@@ -1,16 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { ImageBackground, Text } from 'react-native';
 
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import PushNotification from 'react-native-push-notification';
-import { useDispatch, useSelector } from 'react-redux';
-import _ from 'lodash';
+import { useDispatch } from 'react-redux';
 
 import useTheme from '../../../theme/hooks/useTheme';
 import { handleNotificationOpenedBackGround } from '../../../hooks/notification-background/notification-background';
 import FeatureTilesContainer from '../../../components/molecules/feature-tiles';
-import { myChannelsSelector } from '../../../reducers/my-channels/my-channels.reducer';
-import { getMyChannelsAction } from '../../../reducers/my-channels/my-channels.actions';
+
 import {
   getCurrentPositionAction,
   getAddressFromRegionAction,
@@ -20,22 +18,11 @@ const HomeScreen = () => {
   const { Gutters, Layout, Images, Colors } = useTheme();
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { myChannels } = useSelector(myChannelsSelector);
-  const [accountApplicableChannels, setAccountApplicableChannels] = useState([]);
   const notificationOpenedBackGround = handleNotificationOpenedBackGround();
-
-  const _loadMyChannels = () => {
-    dispatch(getMyChannelsAction()).then(() => {
-      setAccountApplicableChannels(
-        myChannels.filter((channel) => _.get(channel, 'accountApplicable', null) === true),
-      );
-    });
-  };
 
   useFocusEffect(
     React.useCallback(() => {
       PushNotification.setApplicationIconBadgeNumber(0);
-      _loadMyChannels();
     }, []),
   );
 
@@ -82,7 +69,6 @@ const HomeScreen = () => {
           onContactsTilePress={navigateToContacts}
           onNewsTilePress={navigateTonews}
           onServiceRequestTilePress={navigateToServiceRequests}
-          accountsTileVisible={accountApplicableChannels.length > 0}
         />
       </ImageBackground>
     </>

@@ -7,35 +7,33 @@ import { Colors } from '../../../theme/Variables';
 
 const { width } = Dimensions.get('window');
 
-const FeatureTile = ({ backgroundImage, description, onPress, visible }) => {
+const FeatureTile = ({ backgroundImage, description, onPress }) => {
   const { Layout, Gutters, Common, Fonts } = useTheme();
 
   return (
-    visible && (
-      <TouchableOpacity
-        onPress={onPress}
+    <TouchableOpacity
+      onPress={onPress}
+      style={[
+        styles.container,
+        Layout.alignItemsStart,
+        Gutters.tinyMargin,
+        Gutters.regularBMargin,
+        Common.viewWithShadow,
+      ]}
+    >
+      <ImageBackground
+        source={backgroundImage}
         style={[
-          styles.container,
-          Layout.alignItemsStart,
-          Gutters.tinyMargin,
-          Gutters.regularBMargin,
-          Common.viewWithShadow,
+          styles.imageBackground,
+          Layout.alignitemsCenter,
+          Layout.justifyContentFlexEnd,
+          Gutters.regularBPadding,
         ]}
+        resizeMode="cover"
       >
-        <ImageBackground
-          source={backgroundImage}
-          style={[
-            styles.imageBackground,
-            Layout.alignitemsCenter,
-            Layout.justifyContentFlexEnd,
-            Gutters.regularBPadding,
-          ]}
-          resizeMode="cover"
-        >
-          <Text style={[Fonts.titleTiny, styles.description]}>{description}</Text>
-        </ImageBackground>
-      </TouchableOpacity>
-    )
+        <Text style={[Fonts.titleTiny, styles.description]}>{description}</Text>
+      </ImageBackground>
+    </TouchableOpacity>
   );
 };
 
@@ -62,7 +60,6 @@ FeatureTile.propTypes = {
   backgroundImage: PropTypes.any.isRequired,
   description: PropTypes.string.isRequired,
   onPress: PropTypes.any.isRequired,
-  visible: PropTypes.bool,
 };
 
 FeatureTile.defaultProps = {

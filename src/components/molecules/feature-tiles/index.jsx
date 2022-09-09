@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { useFocusEffect } from '@react-navigation/native';
+import _ from 'lodash';
 
 import useTheme from '../../../theme/hooks/useTheme';
+import { myChannelsSelector } from '../../../reducers/my-channels/my-channels.reducer';
+import { getMyChannelsAction } from '../../../reducers/my-channels/my-channels.actions';
 import FeatureTile from '../../atoms/feature-tile';
 
 const FeatureTilesContainer = ({
@@ -11,9 +16,25 @@ const FeatureTilesContainer = ({
   onNewsTilePress,
   onContactsTilePress,
   onAccountsTilePress,
-  accountsTileVisible,
 }) => {
   const { Gutters, Layout, Images } = useTheme();
+  const dispatch = useDispatch();
+  const [accountApplicableChannels, setAccountApplicableChannels] = useState([]);
+  const { myChannels } = useSelector(myChannelsSelector);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      _loadMyChannels();
+    }, []),
+  );
+
+  const _loadMyChannels = () => {
+    dispatch(getMyChannelsAction()).then(() => {
+      setAccountApplicableChannels(
+        myChannels.filter((channel) => _.get(channel, 'accountApplicable', null) === true),
+      );
+    });
+  };
 
   const renderfeatureTiles = () => {
     return (
@@ -45,12 +66,13 @@ const FeatureTilesContainer = ({
           backgroundImage={Images.contactsImage}
           onPress={onContactsTilePress}
         />
-        <FeatureTile
-          description=""
-          backgroundImage={Images.accountsImage}
-          onPress={onAccountsTilePress}
-          visible={accountsTileVisible}
-        />
+        {accountApplicableChannels.length > 0 && (
+          <FeatureTile
+            description=""
+            backgroundImage={Images.accountsImage}
+            onPress={onAccountsTilePress}
+          />
+        )}
       </View>
     );
   };
@@ -76,7 +98,6 @@ FeatureTilesContainer.propTypes = {
   onNewsTilePress: PropTypes.func.isRequired,
   onContactsTilePress: PropTypes.func.isRequired,
   onAccountsTilePress: PropTypes.func.isRequired,
-  accountsTileVisible: PropTypes.bool.isRequired,
 };
 
 export default FeatureTilesContainer;
