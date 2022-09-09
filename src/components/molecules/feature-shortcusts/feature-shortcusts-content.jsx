@@ -75,7 +75,7 @@ const ShortCutsActionSheetContent = ({
             color={Colors.gray}
           />
         )}
-        <Text style={{ color: Colors.white }}>SUBSCRIBE TO CHANNEL</Text>
+        <Text style={[...[{ color: Colors.white, fontSize: 18 }]]}>Subscribe To Channel</Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={onPressNewServiceRequest}
@@ -92,7 +92,7 @@ const ShortCutsActionSheetContent = ({
           serviceRequestButtonStyle,
         ]}
       >
-        <Text style={{ color: Colors.white }}>NEW SERVICE REQUEST</Text>
+        <Text style={[...[{ color: Colors.white, fontSize: 18 }]]}>New Service Request</Text>
       </TouchableOpacity>
 
       {accountApplicableChannels.length > 0 && (
@@ -110,7 +110,7 @@ const ShortCutsActionSheetContent = ({
             accountButtonStyle,
           ]}
         >
-          <Text style={{ color: Colors.white }}>ADD ACCOUNT</Text>
+          <Text style={[...[{ color: Colors.white, fontSize: 18 }]]}>Add Account</Text>
         </TouchableOpacity>
       )}
     </View>

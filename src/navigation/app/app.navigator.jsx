@@ -185,16 +185,8 @@ const DrawerNavigator = () => {
       drawerContent={(props) => <DrawerContent {...props} />}
       drawerStyle={Common.drawerStyle}
     >
-      <Drawer.Screen
-        name="HomeTabs"
-        component={TabNavigator}
-        options={{ headerShown: true, title: 'Home' }}
-      />
-      <Drawer.Screen
-        name="News"
-        component={NewsScreen}
-        options={{ headerShown: true, title: 'Home' }}
-      />
+      <Drawer.Screen name="HomeTabs" component={TabNavigator} options={{ headerShown: true }} />
+      <Drawer.Screen name="News" component={NewsScreen} options={{ headerShown: true }} />
       <Drawer.Screen
         name="Accounts"
         component={AccountsScreen}
