@@ -24,6 +24,7 @@ export const Colors = {
   red: '#d01a1a',
   lightGreen: '#a9dfbf',
   lightBlue: '#aed6f1',
+  cardBackground: '#FFFFFF',
   lightOrange: '#edbb99',
   lightMediumGray: '#d3d3d3',
   lightgray: '#e0e0e0',

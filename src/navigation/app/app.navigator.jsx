@@ -1,10 +1,10 @@
 import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../../screens/app/home/home.screen';
 import ProfileScreen from '../../screens/app/profile/profile.screen';
 import useTheme from '../../theme/hooks/useTheme';
-
 import ServiceRequestScreen from '../../screens/app/service-request/service-request.screen';
 import CreateServiceRequestScreen from '../../screens/app/service-request/create-service-request/create-service-request.screen';
 import SelectLocationScreen from '../../screens/app/service-request/select-location/select-location.screen';
@@ -29,9 +29,13 @@ import AccountDetailsScreen from '../../screens/app/accounts/account-details.scr
 import ReadingsHistoryScreen from '../../screens/app/accounts/readings-history.screen';
 import SubmitMeterReadingScreen from '../../screens/app/accounts/submit-readings.screen';
 import CreateNotificationScreen from '../../screens/app/channels/create-notification/create-notification.screen';
+import TabBar from '../../components/molecules/tab-bar/tab-bar';
+import NewsScreen from '../../screens/news-screen/news.screen';
 
 const Drawer = createDrawerNavigator();
 const AppStack = createStackNavigator();
+const Tab = createBottomTabNavigator();
+const AddFeatureStack = createStackNavigator();
 
 const AppNavigator = () => {
   const { Custom } = useTheme();
@@ -180,13 +184,9 @@ const DrawerNavigator = () => {
       screenOptions={Custom.globalNavigatorScreenOptions}
       drawerContent={(props) => <DrawerContent {...props} />}
       drawerStyle={Common.drawerStyle}
-      initialRouteName="Home"
     >
-      <Drawer.Screen
-        name="Home"
-        component={HomeScreen}
-        options={{ headerShown: true, title: 'Home' }}
-      />
+      <Drawer.Screen name="HomeTabs" component={TabNavigator} options={{ headerShown: true }} />
+      <Drawer.Screen name="News" component={NewsScreen} options={{ headerShown: true }} />
       <Drawer.Screen
         name="Accounts"
         component={AccountsScreen}
@@ -229,5 +229,57 @@ const DrawerNavigator = () => {
     </Drawer.Navigator>
   );
 };
+
+const AddFeatureNavigator = () => {
+  const { Custom } = useTheme();
+  return (
+    <AddFeatureStack.Navigator
+      screenOptions={Custom.globalNavigatorScreenOptions}
+      headerMode="screen"
+    >
+      <AddFeatureStack.Screen
+        name="SubscribeToChannels"
+        component={SubscribeToChannelsScreen}
+        options={{
+          headerShown: false,
+          title: 'Subscribe To Channels',
+        }}
+      />
+      <AddFeatureStack.Screen
+        name="Accountchannels"
+        component={AccountChannelsScreen}
+        options={{
+          headerShown: true,
+          header: (props) => <HeaderBackGround {...props} backButton />,
+        }}
+      />
+      <AddFeatureStack.Screen
+        name="SelectLocationScreen"
+        component={SelectLocationScreen}
+        options={{
+          headerShown: false,
+          title: 'Select Location',
+          gestureEnabled: false,
+        }}
+      />
+    </AddFeatureStack.Navigator>
+  );
+};
+
+const TabNavigator = () => (
+  <Tab.Navigator
+    initialRouteName="Home"
+    tabBar={(props) => <TabBar {...props} />}
+    lazy={false}
+    tabBarOptions={{
+      keyboardHidesTabBar: true,
+      showLabel: false,
+    }}
+  >
+    <Tab.Screen name="Home" component={HomeScreen} />
+    <Tab.Screen name="addFeatures" component={AddFeatureNavigator} />
+    <Tab.Screen name="Profile" component={ProfileScreen} />
+  </Tab.Navigator>
+);
 
 export default AppNavigator;
