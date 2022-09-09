@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   tabBarWrapper: {
-    backgroundColor: Colors.secondary,
+    backgroundColor: Colors.softBlue,
     borderTopLeftRadius: 17,
     borderTopRightRadius: 17,
     width: '100%',

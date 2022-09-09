@@ -1,26 +1,30 @@
-import React from 'react';
-import { Dimensions, Pressable, StyleSheet, Text, View } from 'react-native';
+import React, { useRef } from 'react';
+import { Dimensions, Pressable, StyleSheet, View, Platform } from 'react-native';
+import ActionSheet from 'react-native-actions-sheet';
 import PropTypes from 'prop-types';
 import { Icon } from 'react-native-elements';
 import _ from 'lodash';
+import { hasGmsSync, hasHmsSync } from 'react-native-device-info';
 import { useTheme } from '../../../theme';
 import { Colors } from '../../../theme/Variables';
+import ShortCutsActionSheetContent from '../feature-shortcusts/feature-shortcusts-content';
+import { flashService, permissionsService } from '../../../services';
 
 const tabIcons = {
   Home: { icon: 'home', type: 'feather', iconColor: Colors.white },
-  ServiceRequests: { icon: 'pluscircleo', type: 'antdesign', iconColor: Colors.primary },
+  addFeatures: { icon: 'pluscircleo', type: 'antdesign', iconColor: Colors.primary },
   Profile: { icon: 'user-circle', type: 'font-awesome-5', iconColor: Colors.white },
 };
 
 const { width } = Dimensions.get('window');
 
 const Tab = ({ route, navigation, isFocused }) => {
+  const actionSheetRef = useRef();
   const { Layout, Gutters, Common } = useTheme();
 
   const name = _.get(route, 'name');
   const iconName = _.get(tabIcons, `${name}.icon`);
   const iconType = _.get(tabIcons, `${name}.type`);
-  const iconColor = _.get(tabIcons, `${name}.iconColor`);
 
   const onTabPress = () => {
     const event = navigation.emit({
@@ -30,27 +34,120 @@ const Tab = ({ route, navigation, isFocused }) => {
     });
 
     if (!isFocused && !event.defaultPrevented) {
-      navigation.navigate(route.name);
+      if (name === 'addFeatures') {
+        openActionSheet();
+      } else {
+        navigation.navigate(route.name);
+      }
     }
   };
 
+  const navigateToCreateServiceRequest = async () => {
+    if (Platform.OS === 'ios' || hasGmsSync()) await permissionsService.checkLocationPermissions();
+    if (hasHmsSync()) {
+      await permissionsService.requestHmsLocationPermissions();
+    }
+    closeActionSheet();
+    if (hasGmsSync() || Platform.OS === 'ios') {
+      permissionsService
+        .checkLocationPermissions()
+        .then(() => {
+          navigation.navigate('SelectLocationScreen', {
+            fromSubscribedChannels: false,
+            showSRPins: true,
+          });
+        })
+        .catch(() => {
+          flashService.error('Please grant permissions to select a location.');
+        });
+    } else if (hasHmsSync()) {
+      permissionsService
+        .requestHmsLocationPermissions()
+        .then(() => {
+          navigation.navigate('SelectLocationScreen', {
+            fromSubscribedChannels: false,
+            showSRPins: true,
+          });
+        })
+        .catch(() => {
+          flashService.error('Please grant permissions to select a location.');
+        });
+    }
+  };
+
+  const navigateToSubscribeToChannel = async () => {
+    if (hasGmsSync() || Platform.OS === 'ios') {
+      permissionsService
+        .checkLocationPermissions()
+        .then(() => {
+          navigation.navigate('SelectLocationScreen', { fromSubscribedChannels: true });
+        })
+        .catch(() => {
+          flashService.error('Please grant permissions to select a location.');
+        });
+    } else if (hasHmsSync()) {
+      permissionsService
+        .requestHmsLocationPermissions()
+        .then(() => {
+          navigation.navigate('SelectLocationScreen', { fromSubscribedChannels: true });
+        })
+        .catch(() => {
+          flashService.error('Please grant permissions to select a location.');
+        });
+    }
+    closeActionSheet();
+  };
+  const navigateToAddAccount = () => {
+    closeActionSheet();
+    navigation.navigate('Accountchannels');
+  };
+
+  const openActionSheet = () => {
+    return actionSheetRef.current.setModalVisible(true);
+  };
+
+  const closeActionSheet = () => {
+    return actionSheetRef.current?.setModalVisible(false);
+  };
+
   return (
-    <Pressable onPress={onTabPress} disabled={isFocused}>
-      {({ pressed }) => (
-        <View
-          style={[
-            Layout.rowCenter,
-            Gutters.smallVPadding,
-            styles.tabContainer,
-            isFocused && styles.tabContainerFocused,
-            pressed && Common.pressed,
-          ]}
-        >
-          <Icon name={iconName} type={iconType} color={iconColor} size={name==='ServiceRequests'? 32: 27} />
-          {isFocused && <Text style={[Gutters.smallLMargin, styles.tabText]}>{name}</Text>}
-        </View>
-      )}
-    </Pressable>
+    <>
+      <ActionSheet
+        ref={actionSheetRef}
+        gestureEnabled
+        animated
+        containerStyle={{ backgroundColor: Colors.softBlue }}
+        extraScroll={20}
+      >
+        <ShortCutsActionSheetContent
+          loading={false}
+          onCancel={closeActionSheet}
+          onPressAddAccount={navigateToAddAccount}
+          onPressNewServiceRequest={navigateToCreateServiceRequest}
+          onPressSubscribeToChannel={navigateToSubscribeToChannel}
+        />
+      </ActionSheet>
+      <Pressable onPress={onTabPress} disabled={isFocused}>
+        {({ pressed }) => (
+          <View
+            style={[
+              Layout.rowCenter,
+              Gutters.smallVPadding,
+              styles.tabContainer,
+              isFocused && styles.tabContainerFocused,
+              pressed && Common.pressed,
+            ]}
+          >
+            <Icon
+              name={iconName}
+              type={iconType}
+              color={isFocused ? Colors.primary : Colors.white}
+              size={name === 'addFeatures' ? 32 : 27}
+            />
+          </View>
+        )}
+      </Pressable>
+    </>
   );
 };
 
@@ -64,10 +161,6 @@ const styles = StyleSheet.create({
   tabContainerFocused: {
     backgroundColor: Colors.primary10Percent,
     borderRadius: 23,
-  },
-  tabText: {
-    color: Colors.primary,
-    fontWeight: '600',
   },
 });
 

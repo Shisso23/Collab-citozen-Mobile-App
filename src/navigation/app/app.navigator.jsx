@@ -36,7 +36,7 @@ import NewsScreen from '../../screens/news-screen/news.screen';
 const Drawer = createDrawerNavigator();
 const AppStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-const CategoriesStack = createStackNavigator();
+const AddFeatureStack = createStackNavigator();
 
 const AppNavigator = () => {
   const { Custom } = useTheme();
@@ -235,6 +235,42 @@ const DrawerNavigator = () => {
   );
 };
 
+const AddFeatureNavigator = () => {
+  const { Custom } = useTheme();
+  return (
+    <AddFeatureStack.Navigator
+      screenOptions={Custom.globalNavigatorScreenOptions}
+      headerMode="screen"
+    >
+      <AddFeatureStack.Screen
+        name="SubscribeToChannels"
+        component={SubscribeToChannelsScreen}
+        options={{
+          headerShown: false,
+          title: 'Subscribe To Channels',
+        }}
+      />
+      <AddFeatureStack.Screen
+        name="Accountchannels"
+        component={AccountChannelsScreen}
+        options={{
+          headerShown: true,
+          header: (props) => <HeaderBackGround {...props} backButton />,
+        }}
+      />
+      <AddFeatureStack.Screen
+        name="SelectLocationScreen"
+        component={SelectLocationScreen}
+        options={{
+          headerShown: false,
+          title: 'Select Location',
+          gestureEnabled: false,
+        }}
+      />
+    </AddFeatureStack.Navigator>
+  );
+};
+
 const TabNavigator = () => (
   <Tab.Navigator
     initialRouteName="Home"
@@ -242,10 +278,11 @@ const TabNavigator = () => (
     lazy={false}
     tabBarOptions={{
       keyboardHidesTabBar: true,
+      showLabel: false,
     }}
   >
     <Tab.Screen name="Home" component={HomeScreen} />
-    <Tab.Screen name="ServiceRequests" component={ServiceRequestScreen} />
+    <Tab.Screen name="addFeatures" component={AddFeatureNavigator} />
     <Tab.Screen name="Profile" component={ProfileScreen} />
   </Tab.Navigator>
 );

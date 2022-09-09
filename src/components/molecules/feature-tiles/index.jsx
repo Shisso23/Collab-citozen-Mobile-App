@@ -12,20 +12,20 @@ const FeatureTilesContainer = ({
   onContactsTilePress,
   onAccountsTilePress,
 }) => {
-  const { Gutters, Common, Layout, Fonts } = useTheme();
+  const { Gutters, Layout, Images } = useTheme();
 
   const renderfeatureTiles = () => {
     return (
       <View style={styles.tilesContainer}>
         <FeatureTile
           description="Channels"
-          backgroundImage=""
+          backgroundImage={Images.channels}
           onPress={onChannelTilePress}
           visible // TODO
         />
         <FeatureTile
           description={'Service\nRequest'}
-          backgroundImage=""
+          backgroundImage={Images.serviceRequestImage}
           onPress={onServiceRequestTilePress}
           imageWidth={40}
           imageHeight={40}
@@ -33,7 +33,7 @@ const FeatureTilesContainer = ({
         />
         <FeatureTile
           description="News"
-          backgroundImage=""
+          backgroundImage={Images.newsImage}
           imageWidth={40}
           imageHeight={40}
           onPress={onNewsTilePress}
@@ -41,15 +41,15 @@ const FeatureTilesContainer = ({
         />
         <FeatureTile
           description="Contacts"
-          backgroundImage=""
+          backgroundImage={Images.contactsImage}
           imageWidth={40}
           imageHeight={40}
           onPress={onContactsTilePress}
           visible // TODO
         />
         <FeatureTile
-          description="Accounts"
-          backgroundImage=""
+          description=""
+          backgroundImage={Images.accountsImage}
           imageWidth={40}
           imageHeight={40}
           onPress={onAccountsTilePress}

@@ -4,14 +4,19 @@ import { ImageBackground, Text } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import PushNotification from 'react-native-push-notification';
 
-import NewsArticlesList from '../../../components/molecules/news-articles/news-articles-list.component';
+import { useDispatch } from 'react-redux';
 import useTheme from '../../../theme/hooks/useTheme';
 import { exitAppOnHardwarePressListener } from '../../../helpers';
 import { handleNotificationOpenedBackGround } from '../../../hooks/notification-background/notification-background';
 import FeatureTilesContainer from '../../../components/molecules/feature-tiles';
+import {
+  getCurrentPositionAction,
+  getAddressFromRegionAction,
+} from '../../../reducers/location-reducer/location.actions';
 
 const HomeScreen = () => {
-  const { Gutters, Fonts, Layout, Images, Colors } = useTheme();
+  const { Gutters, Layout, Images, Colors } = useTheme();
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const notificationOpenedBackGround = handleNotificationOpenedBackGround();
 
@@ -21,9 +26,14 @@ const HomeScreen = () => {
       PushNotification.setApplicationIconBadgeNumber(0);
     }, []),
   );
+
   useEffect(() => {
     notificationOpenedBackGround();
-  });
+    dispatch(getCurrentPositionAction()).then(async (position) => {
+      dispatch(getAddressFromRegionAction(position));
+    });
+  }, []);
+
   const navigateToAccounts = () => {
     navigation.navigate('Accounts');
   };
@@ -61,7 +71,6 @@ const HomeScreen = () => {
           onNewsTilePress={navigateTonews}
           onServiceRequestTilePress={navigateToServiceRequests}
         />
-        {/* <NewsArticlesList /> */}
       </ImageBackground>
     </>
   );

@@ -36,7 +36,7 @@ const FeatureTile = ({
       ]}
     >
       <ImageBackground
-        source={Images.dummy2}
+        source={backgroundImage}
         style={[
           {
             height: '100%',
