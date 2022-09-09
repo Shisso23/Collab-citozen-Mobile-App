@@ -11,6 +11,7 @@ const FeatureTilesContainer = ({
   onNewsTilePress,
   onContactsTilePress,
   onAccountsTilePress,
+  accountsTileVisible,
 }) => {
   const { Gutters, Layout, Images } = useTheme();
 
@@ -33,29 +34,22 @@ const FeatureTilesContainer = ({
           description={'Service\nRequest'}
           backgroundImage={Images.serviceRequestImage}
           onPress={onServiceRequestTilePress}
-          imageWidth={40}
-          imageHeight={40}
         />
         <FeatureTile
           description="News"
           backgroundImage={Images.newsImage}
-          imageWidth={40}
-          imageHeight={40}
           onPress={onNewsTilePress}
         />
         <FeatureTile
           description="Contacts"
           backgroundImage={Images.contactsImage}
-          imageWidth={40}
-          imageHeight={40}
           onPress={onContactsTilePress}
         />
         <FeatureTile
           description=""
           backgroundImage={Images.accountsImage}
-          imageWidth={40}
-          imageHeight={40}
           onPress={onAccountsTilePress}
+          visible={accountsTileVisible}
         />
       </View>
     );
@@ -82,6 +76,7 @@ FeatureTilesContainer.propTypes = {
   onNewsTilePress: PropTypes.func.isRequired,
   onContactsTilePress: PropTypes.func.isRequired,
   onAccountsTilePress: PropTypes.func.isRequired,
+  accountsTileVisible: PropTypes.bool.isRequired,
 };
 
 export default FeatureTilesContainer;

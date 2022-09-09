@@ -2,7 +2,12 @@ import React, { useState } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Icon } from 'react-native-elements';
 import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { useFocusEffect } from '@react-navigation/native';
+import _ from 'lodash';
 
+import { myChannelsSelector } from '../../../reducers/my-channels/my-channels.reducer';
+import { getMyChannelsAction } from '../../../reducers/my-channels/my-channels.actions';
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
 
@@ -13,10 +18,27 @@ const ShortCutsActionSheetContent = ({
   onPressAddAccount,
   onCancel,
 }) => {
+  const dispatch = useDispatch();
   const [accountButtonStyle, setAccountButtonStyle] = useState({});
   const [serviceRequestButtonStyle, setServiceRequesButtonStyle] = useState({});
   const [channelsButtonStyle, setChannelsButtonStyle] = useState({});
+  const [accountApplicableChannels, setAccountApplicableChannels] = useState([]);
+  const { myChannels } = useSelector(myChannelsSelector);
   const { Gutters, Layout, Common } = useTheme();
+
+  const _loadMyChannels = () => {
+    dispatch(getMyChannelsAction()).then(() => {
+      setAccountApplicableChannels(
+        myChannels.filter((channel) => _.get(channel, 'accountApplicable', null) === true),
+      );
+    });
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      _loadMyChannels();
+    }, []),
+  );
 
   const renderCloseButton = () => {
     return (
@@ -73,22 +95,24 @@ const ShortCutsActionSheetContent = ({
         <Text style={{ color: Colors.white }}>NEW SERVICE REQUEST</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity
-        onPress={onPressAddAccount}
-        onPressIn={() => setAccountButtonStyle({ backgroundColor: Colors.primary })}
-        onPressOut={() => setAccountButtonStyle({ backgroundColor: Colors.transparent })}
-        style={[
-          Common.viewWithShadow,
-          styles.confirmButton,
-          Layout.alignSelfCenter,
-          Layout.alignItemsCenter,
-          Gutters.largeHPadding,
-          Gutters.regularVPadding,
-          accountButtonStyle,
-        ]}
-      >
-        <Text style={{ color: Colors.white }}>ADD ACCOUNT</Text>
-      </TouchableOpacity>
+      {accountApplicableChannels.length > 0 && (
+        <TouchableOpacity
+          onPress={onPressAddAccount}
+          onPressIn={() => setAccountButtonStyle({ backgroundColor: Colors.primary })}
+          onPressOut={() => setAccountButtonStyle({ backgroundColor: Colors.transparent })}
+          style={[
+            Common.viewWithShadow,
+            styles.confirmButton,
+            Layout.alignSelfCenter,
+            Layout.alignItemsCenter,
+            Gutters.largeHPadding,
+            Gutters.regularVPadding,
+            accountButtonStyle,
+          ]}
+        >
+          <Text style={{ color: Colors.white }}>ADD ACCOUNT</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
