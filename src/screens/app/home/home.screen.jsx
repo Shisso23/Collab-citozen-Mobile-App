@@ -73,7 +73,7 @@ const HomeScreen = () => {
         resizeMode="cover"
       >
         <Text style={[Gutters.regularMargin, ...[{ textAlign: 'center', color: Colors.black }]]}>
-          Welcome to ColabCitizen, designed to facilitate a quicker, more responsive service
+          Welcome to Collab Citizen, designed to facilitate a quicker, more responsive service
           delivery, content sharing and broadcasting platform.
         </Text>
         <FeatureTilesContainer
