@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 
 import useTheme from '../../../theme/hooks/useTheme';
-import { exitAppOnHardwarePressListener } from '../../../helpers';
 import { handleNotificationOpenedBackGround } from '../../../hooks/notification-background/notification-background';
 import FeatureTilesContainer from '../../../components/molecules/feature-tiles';
 import { myChannelsSelector } from '../../../reducers/my-channels/my-channels.reducer';
@@ -33,7 +32,6 @@ const HomeScreen = () => {
     });
   };
 
-  useFocusEffect(exitAppOnHardwarePressListener);
   useFocusEffect(
     React.useCallback(() => {
       PushNotification.setApplicationIconBadgeNumber(0);
