@@ -68,7 +68,7 @@ const FeatureTilesContainer = ({
         />
         {accountApplicableChannels.length > 0 && (
           <FeatureTile
-            description=""
+            description="Accounts"
             backgroundImage={Images.accountsImage}
             onPress={onAccountsTilePress}
           />
