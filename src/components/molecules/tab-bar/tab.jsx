@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { Icon } from 'react-native-elements';
 import _ from 'lodash';
 import { hasGmsSync, hasHmsSync } from 'react-native-device-info';
+
 import { useTheme } from '../../../theme';
 import { Colors } from '../../../theme/Variables';
 import ShortCutsActionSheetContent from '../feature-shortcusts/feature-shortcusts-content';
@@ -21,7 +22,6 @@ const { width } = Dimensions.get('window');
 const Tab = ({ route, navigation, isFocused }) => {
   const actionSheetRef = useRef();
   const { Layout, Gutters, Common } = useTheme();
-
   const name = _.get(route, 'name');
   const iconName = _.get(tabIcons, `${name}.icon`);
   const iconType = _.get(tabIcons, `${name}.type`);
