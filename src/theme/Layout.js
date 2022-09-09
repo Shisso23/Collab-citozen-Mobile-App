@@ -75,6 +75,9 @@ export default () =>
     justifyContentFlexStart: {
       justifyContent: 'flex-start',
     },
+    justifyContentFlexEnd: {
+      justifyContent: 'flex-end',
+    },
     alignSelfStart: {
       alignSelf: 'flex-start',
     },

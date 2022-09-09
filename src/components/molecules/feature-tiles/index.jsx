@@ -16,12 +16,18 @@ const FeatureTilesContainer = ({
 
   const renderfeatureTiles = () => {
     return (
-      <View style={styles.tilesContainer}>
+      <View
+        style={[
+          styles.tilesContainer,
+          Layout.row,
+          Layout.alignItemsCenter,
+          Layout.justifyContentCenter,
+        ]}
+      >
         <FeatureTile
           description="Channels"
           backgroundImage={Images.channels}
           onPress={onChannelTilePress}
-          visible // TODO
         />
         <FeatureTile
           description={'Service\nRequest'}
@@ -29,7 +35,6 @@ const FeatureTilesContainer = ({
           onPress={onServiceRequestTilePress}
           imageWidth={40}
           imageHeight={40}
-          visible // TODO
         />
         <FeatureTile
           description="News"
@@ -37,7 +42,6 @@ const FeatureTilesContainer = ({
           imageWidth={40}
           imageHeight={40}
           onPress={onNewsTilePress}
-          visible // TODO
         />
         <FeatureTile
           description="Contacts"
@@ -45,7 +49,6 @@ const FeatureTilesContainer = ({
           imageWidth={40}
           imageHeight={40}
           onPress={onContactsTilePress}
-          visible // TODO
         />
         <FeatureTile
           description=""
@@ -53,7 +56,6 @@ const FeatureTilesContainer = ({
           imageWidth={40}
           imageHeight={40}
           onPress={onAccountsTilePress}
-          visible // TODO
         />
       </View>
     );
@@ -70,10 +72,7 @@ const FeatureTilesContainer = ({
 
 const styles = StyleSheet.create({
   tilesContainer: {
-    alignItems: 'center',
-    flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center',
   },
 });
 

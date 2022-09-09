@@ -1,28 +1,14 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  Dimensions,
-  TouchableOpacity,
-  Image,
-  ImageBackground,
-} from 'react-native';
-import { Text, Icon } from 'react-native-elements';
+import { StyleSheet, Dimensions, TouchableOpacity, ImageBackground } from 'react-native';
+import { Text } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
 
 const { width } = Dimensions.get('window');
 
-const FeatureTile = ({
-  backgroundImage,
-  description,
-  imageHeight,
-  imageWidth,
-  onPress,
-  visible,
-}) => {
-  const { Layout, Gutters, Common, Images, Fonts } = useTheme();
+const FeatureTile = ({ backgroundImage, description, onPress }) => {
+  const { Layout, Gutters, Common, Fonts } = useTheme();
 
   return (
     <TouchableOpacity
@@ -38,19 +24,14 @@ const FeatureTile = ({
       <ImageBackground
         source={backgroundImage}
         style={[
-          {
-            height: '100%',
-            width: '100%',
-            borderRadius: 15,
-            overflow: 'hidden',
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-          },
+          styles.imageBackground,
+          Layout.alignitemsCenter,
+          Layout.justifyContentFlexEnd,
           Gutters.regularBPadding,
         ]}
         resizeMode="cover"
       >
-        <Text style={[ Fonts.titleTiny, styles.description,]}>{description}</Text>
+        <Text style={[Fonts.titleTiny, styles.description]}>{description}</Text>
       </ImageBackground>
     </TouchableOpacity>
   );
@@ -67,15 +48,18 @@ const styles = StyleSheet.create({
     color: Colors.white,
     textAlign: 'center',
   },
+  imageBackground: {
+    borderRadius: 15,
+    height: '100%',
+    overflow: 'hidden',
+    width: '100%',
+  },
 });
 
 FeatureTile.propTypes = {
   backgroundImage: PropTypes.any.isRequired,
-  imageWidth: PropTypes.number.isRequired,
-  imageHeight: PropTypes.number.isRequired,
   description: PropTypes.string.isRequired,
   onPress: PropTypes.any.isRequired,
-  visible: PropTypes.bool.isRequired,
 };
 
 export default FeatureTile;

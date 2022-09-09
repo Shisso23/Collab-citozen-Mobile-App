@@ -72,9 +72,7 @@ const confirmCreateServiceRequest = async ({ uploadCompleted, serviceRequestId }
 const followServiceRequest = async ({ userId, serviceRequestId, followed }) => {
   const url = globalUrl.createUpdateRecordUrl();
   const requestData = dataFollowServiceRequest({ userId, serviceRequestId, followed });
-  console.log({requestData});
   return authNetworkService.post(url, requestData).then((response) => {
-    console.log({response})
     return response;
   });
 };

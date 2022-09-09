@@ -5,7 +5,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from '../../screens/app/home/home.screen';
 import ProfileScreen from '../../screens/app/profile/profile.screen';
 import useTheme from '../../theme/hooks/useTheme';
-
 import ServiceRequestScreen from '../../screens/app/service-request/service-request.screen';
 import CreateServiceRequestScreen from '../../screens/app/service-request/create-service-request/create-service-request.screen';
 import SelectLocationScreen from '../../screens/app/service-request/select-location/select-location.screen';
@@ -42,7 +41,11 @@ const AppNavigator = () => {
   const { Custom } = useTheme();
   return (
     <AppStack.Navigator screenOptions={Custom.globalNavigatorScreenOptions} headerMode="screen">
-      <AppStack.Screen name="Drawer" component={DrawerNavigator} options={{ header: () => null }} />
+      <AppStack.Screen
+        name="App Home"
+        component={DrawerNavigator}
+        options={{ headerShown: false }}
+      />
       <AppStack.Screen
         name="SelectLocationScreen"
         component={SelectLocationScreen}

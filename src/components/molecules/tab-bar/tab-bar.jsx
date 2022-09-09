@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { View, Dimensions, StyleSheet } from 'react-native';
 import { BoxShadow } from 'react-native-shadow';
+import PropTypes from 'prop-types';
 import _ from 'lodash';
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -55,6 +56,11 @@ const TabBar = ({ state, navigation }) => {
 };
 
 export default TabBar;
+
+TabBar.propTypes = {
+  navigation: PropTypes.any.isRequired,
+  state: PropTypes.object.isRequired,
+};
 
 const styles = StyleSheet.create({
   backgroundWrapper: {
