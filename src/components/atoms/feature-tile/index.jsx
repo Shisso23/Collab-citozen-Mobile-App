@@ -62,8 +62,4 @@ FeatureTile.propTypes = {
   onPress: PropTypes.any.isRequired,
 };
 
-FeatureTile.defaultProps = {
-  visible: true,
-};
-
 export default FeatureTile;

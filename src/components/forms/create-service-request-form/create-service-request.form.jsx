@@ -19,7 +19,9 @@ import {
 import { getFormError } from '../form-utils';
 import useTheme from '../../../theme/hooks/useTheme';
 import UploadDocumentButton from '../../molecules/upload-document-button';
+import Categories from '../../molecules/service-request-categories/categories';
 import { Colors } from '../../../theme/Variables';
+import CategoriesListView from '../../molecules/service-request-categories/categories-list-view';
 
 navigator.geolocation = require('react-native-geolocation-service');
 
@@ -31,43 +33,35 @@ const CreateServiceRequestForm = ({
   municipalities,
   setThumbNailImages,
   thumbNailImages,
+  categories,
 }) => {
   const { Common, Layout, Gutters, Fonts } = useTheme();
   const { params } = useRoute();
   const selectedCoordinates = params?.mapPosition;
   const addressSelected = params?.selectedAddress;
   const [searchValue, setSearchValue] = useState('');
+  const [srCategories, setSrCategories] = useState([]);
   const navigation = useNavigation();
   const formikRef = useRef(null);
   const [accordionExpanded, setAccordionExpanded] = useState(true);
   const [selectedChannel, setSelectedChannel] = useState('');
-  const [municipalitiesData, setMunicipalitiesData] = useState([]);
+  const [showAllCategories, setShowAllCategories] = useState(false);
   const [selectedServiceType, setSelectedServiceType] = useState(null);
 
   useEffect(() => {
-    setMunicipalitiesData(reformMunicipalitiesData());
+    console.log({ municipalities });
+    // setMunicipalitiesData(reformMunicipalitiesData());
+    setSrCategories(categories);
   }, []);
 
-  const reformMunicipalitiesData = () => {
-    const municipalitiesList = Object.keys(municipalities).map((municipalityRef) => {
-      const currentMucipalityData = municipalities[municipalityRef];
-      const municipalityServiceTypes = Object.keys(currentMucipalityData.serviceTypes).map(
-        (serviceTypeCategoryName) => {
-          return {
-            categorisedServiceTypes: currentMucipalityData.serviceTypes[serviceTypeCategoryName],
-          };
-        },
-      );
-      return {
-        municipalityData: {
-          id: currentMucipalityData.id,
-          municipalityCode: currentMucipalityData.municipalityCode,
-          name: currentMucipalityData.name,
-          serviceTypes: municipalityServiceTypes,
-        },
-      };
-    });
-    return municipalitiesList;
+  useEffect(() => {
+    setSrCategories(categories);
+  }, [categories.length]);
+
+  const onCategoryPress = (category) => {};
+
+  const onViewAllPress = () => {
+    setShowAllCategories(true);
   };
 
   useEffect(() => {
@@ -96,15 +90,16 @@ const CreateServiceRequestForm = ({
       .catch((error) => _handleFormSubmitError(error, actions, formData));
   };
 
-  const handleServiceTypeSelected = ({ serviceType, channel }) => {
-    setAccordionExpanded(false);
-    setSelectedChannel(channel);
+  const handleServiceTypeSelected = (serviceType) => {
     setSelectedServiceType(serviceType);
-    formikRef.current.setFieldValue('channel', channel.name);
-    formikRef.current.setFieldValue('serviceTypeCategory', serviceType.category);
     formikRef.current.setFieldValue('serviceType', serviceType);
-    formikRef.current.setFieldValue('municipalityCode', channel.municipalityCode);
-    formikRef.current.setFieldValue('channelRef', channel.id);
+  };
+
+  const handleCategorySelected = (category) => {
+    formikRef.current.setFieldValue('channel', _.get(category, 'channelName', null));
+    formikRef.current.setFieldValue('serviceTypeCategory', _.get(category, 'name', null));
+    formikRef.current.setFieldValue('channelRef', _.get(category, 'channelObjectId', null));
+    formikRef.current.setFieldValue('municipalityCode', _.get(category, 'municipalityCode', null));
   };
 
   const handleChangeServiceTypePressed = () => {
@@ -113,31 +108,31 @@ const CreateServiceRequestForm = ({
   };
 
   useEffect(() => {
-    if (searchValue && searchValue.length > 0) {
-      handleServiceTypesSearch(searchValue);
-    } else if (searchValue !== null && searchValue.length === 0) {
-      setMunicipalitiesData(reformMunicipalitiesData());
-    }
+    // if (searchValue && searchValue.length > 0) {
+    //   handleServiceTypesSearch(searchValue);
+    // } else if (searchValue !== null && searchValue.length === 0) {
+    //   setMunicipalitiesData(reformMunicipalitiesData());
+    // }
   }, [JSON.stringify(searchValue)]);
 
   const handleServiceTypesSearch = (searchKeyWord) => {
-    if (searchKeyWord && searchKeyWord.length > 0) {
-      const result = reformMunicipalitiesData().map((municipalityData) => {
-        const municipalityResult = _.clone(municipalityData);
-        municipalityResult.municipalityData.serviceTypes =
-          municipalityData.municipalityData.serviceTypes.filter((serviceTypesByCategory) => {
-            return serviceTypesByCategory.categorisedServiceTypes.some((serviceType) => {
-              return (
-                `${serviceType.aliases}`.toLowerCase().includes(searchKeyWord.toLowerCase()) ||
-                `${serviceType.name}`.toLowerCase().includes(searchKeyWord.toLowerCase()) ||
-                `${serviceType.category}`.toLowerCase().includes(searchKeyWord.toLowerCase())
-              );
-            });
-          });
-        return municipalityResult;
-      });
-      setMunicipalitiesData(result);
-    }
+    // if (searchKeyWord && searchKeyWord.length > 0) {
+    //   const result = municipalities.map((municipalityData) => {
+    //     const municipalityResult = _.clone(municipalityData);
+    //     municipalityResult.municipalityData.serviceTypes =
+    //       municipalityData.municipalityData.serviceTypes.filter((serviceTypesByCategory) => {
+    //         return serviceTypesByCategory.categorisedServiceTypes.some((serviceType) => {
+    //           return (
+    //             `${serviceType.aliases}`.toLowerCase().includes(searchKeyWord.toLowerCase()) ||
+    //             `${serviceType.name}`.toLowerCase().includes(searchKeyWord.toLowerCase()) ||
+    //             `${serviceType.category}`.toLowerCase().includes(searchKeyWord.toLowerCase())
+    //           );
+    //         });
+    //       });
+    //     return municipalityResult;
+    //   });
+    //   setMunicipalitiesData(result);
+    // }
   };
 
   return (
@@ -198,91 +193,21 @@ const CreateServiceRequestForm = ({
                 />
               )}
               <HelperText />
-              {(accordionExpanded && (
-                <View style={styles.viewItemsChannelContainer}>
-                  {municipalitiesData.map((municipality, index) => {
-                    const currentMunicipality = municipality.municipalityData;
-                    return (
-                      <ListItem.Accordion
-                        key={`${currentMunicipality.id}-${index}`}
-                        noIcon
-                        underlayColor={Colors.transparent}
-                        content={
-                          (accordionExpanded && (
-                            <View style={[styles.viewTextContainer]}>
-                              <Text style={[Fonts.textRegular, styles.textHeaderChannel]}>
-                                {currentMunicipality.name}
-                              </Text>
-                            </View>
-                          )) || <View />
-                        }
-                        containerStyle={{ backgroundColor: Colors.transparent }}
-                        isExpanded={accordionExpanded}
-                      >
-                        <View style={styles.viewItemsCategoryContainer}>
-                          {currentMunicipality.serviceTypes?.map(
-                            (serviceTypesByCategory, serviceTypesByCategoryIndex) => {
-                              const currentCategoryServiceTypes =
-                                serviceTypesByCategory.categorisedServiceTypes;
-                              return (
-                                <ListItem.Accordion
-                                  key={`${serviceTypesByCategoryIndex}`}
-                                  noIcon
-                                  underlayColor={Colors.transparent}
-                                  content={
-                                    <View style={[styles.viewTextContainer]}>
-                                      <Text style={[Fonts.textRegular, styles.textHeaderCategory]}>
-                                        {currentCategoryServiceTypes[0].category}
-                                      </Text>
-                                    </View>
-                                  }
-                                  containerStyle={{ backgroundColor: Colors.transparent }}
-                                  isExpanded={accordionExpanded}
-                                >
-                                  <View style={styles.viewItemsTypesContainer}>
-                                    {currentCategoryServiceTypes.map(
-                                      (serviceTypeObject, serviceTypeIndex) => {
-                                        return (
-                                          <View
-                                            key={`${serviceTypeObject.name}-${serviceTypeIndex}`}
-                                            style={[
-                                              Common.textInputWithoutShadow,
-                                              Gutters.smallBMargin,
-                                              styles.listItem,
-                                              styles.viewButton,
-                                            ]}
-                                          >
-                                            <List.Item
-                                              key={serviceTypeObject}
-                                              style={Layout.fill}
-                                              title={serviceTypeObject.name}
-                                              titleNumberOfLines={3}
-                                              onPress={() => {
-                                                handleServiceTypeSelected({
-                                                  serviceType: serviceTypeObject,
-                                                  channel: currentMunicipality,
-                                                });
-                                              }}
-                                              titleStyle={
-                                                (Common.cardTitle, styles.listItemTitleStyle)
-                                              }
-                                            />
-                                          </View>
-                                        );
-                                      },
-                                    )}
-                                  </View>
-                                </ListItem.Accordion>
-                              );
-                            },
-                          )}
-                        </View>
-                      </ListItem.Accordion>
-                    );
-                  })}
-                </View>
-              )) || <View />}
-              {!accordionExpanded && (
+              {!showAllCategories && (
+                <Categories
+                  categories={municipalities.categories}
+                  onCategoryPress={onCategoryPress}
+                  onViewAllPress={onViewAllPress}
+                />
+              )}
+              {showAllCategories && (
+                <CategoriesListView
+                  categories={srCategories}
+                  onCategorySelected={handleCategorySelected}
+                  onServiceTypeSelected={handleServiceTypeSelected}
+                />
+              )}
+              {selectedServiceType && (
                 <>
                   <Button
                     mode="contained"
@@ -291,26 +216,26 @@ const CreateServiceRequestForm = ({
                   >
                     Change Type
                   </Button>
-                  {selectedServiceType && (
-                    <View>
-                      <Text style={[Fonts.textRegular, Gutters.smallBMargin]}>
-                        Channel: {selectedChannel.name}
-                      </Text>
-                      <Text style={[Fonts.textRegular, Gutters.smallBMargin]}>
-                        Channel Category: {selectedServiceType?.category}
-                      </Text>
 
-                      <Text style={[Fonts.textRegular, Gutters.smallBMargin]}>
-                        Selected Type: {selectedServiceType.name}
-                      </Text>
+                  <View>
+                    <Text style={[Fonts.textRegular, Gutters.smallBMargin]}>
+                      Channel: {selectedChannel.name}
+                    </Text>
+                    <Text style={[Fonts.textRegular, Gutters.smallBMargin]}>
+                      Channel Category: {selectedServiceType?.category}
+                    </Text>
 
-                      {(selectedServiceType.requirements.length !== 0 && (
-                        <Text style={[Fonts.textRegular, Gutters.smallBMargin]}>
-                          Requirements: {selectedServiceType.requirements}
-                        </Text>
-                      )) || <View />}
-                    </View>
-                  )}
+                    <Text style={[Fonts.textRegular, Gutters.smallBMargin]}>
+                      Selected Type: {selectedServiceType.name}
+                    </Text>
+
+                    {(selectedServiceType.requirements.length !== 0 && (
+                      <Text style={[Fonts.textRegular, Gutters.smallBMargin]}>
+                        Requirements: {selectedServiceType.requirements}
+                      </Text>
+                    )) || <View />}
+                  </View>
+
                   <TextInput
                     label="Description"
                     value={values.description}
@@ -364,9 +289,10 @@ CreateServiceRequestForm.propTypes = {
   initialValues: PropTypes.object.isRequired,
   onSuccess: PropTypes.func,
   containerStyle: ViewPropTypes.style,
-  municipalities: PropTypes.object.isRequired,
+  municipalities: PropTypes.array.isRequired,
   setThumbNailImages: PropTypes.func.isRequired,
   thumbNailImages: PropTypes.array,
+  categories: PropTypes.array.isRequired,
 };
 
 CreateServiceRequestForm.defaultProps = {
@@ -376,57 +302,10 @@ CreateServiceRequestForm.defaultProps = {
 };
 
 const styles = StyleSheet.create({
-  listItem: {
-    backgroundColor: Colors.lightgray,
-    marginLeft: 10,
-    marginRight: 10,
-    textAlign: 'center',
-  },
-  listItemTitleStyle: {
-    textAlign: 'center',
-  },
-
-  textHeaderCategory: {
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  textHeaderChannel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
   textHeaderInstruction: {
     fontSize: 16,
     paddingBottom: 20,
     textAlign: 'center',
-  },
-  viewButton: {
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 0.16,
-  },
-  viewItemsCategoryContainer: {
-    borderBottomWidth: 0,
-    borderColor: Colors.lightMediumGray,
-    borderLeftWidth: 0,
-    borderRightWidth: 0,
-    borderWidth: 1,
-  },
-  viewItemsChannelContainer: {
-    borderBottomWidth: 0,
-    borderColor: Colors.lightMediumGray,
-    borderWidth: 1,
-  },
-  viewItemsTypesContainer: {
-    borderColor: Colors.lightMediumGray,
-    borderLeftWidth: 0,
-    borderRightWidth: 0,
-    borderTopWidth: 0,
-    borderWidth: 1,
-    padding: 10,
   },
   viewTextContainer: {
     flex: 1,
