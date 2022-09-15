@@ -159,8 +159,7 @@ const CreateServiceRequestForm = ({
               const serviceTypes = categoryResult.serviceTypes.filter((serviceType) => {
                 return (
                   `${serviceType.aliases}`.toLowerCase().includes(searchKeyWord.toLowerCase()) ||
-                  `${serviceType.name}`.toLowerCase().includes(searchKeyWord.toLowerCase()) ||
-                  `${serviceType.category}`.toLowerCase().includes(searchKeyWord.toLowerCase())
+                  `${serviceType.name}`.toLowerCase().includes(searchKeyWord.toLowerCase())
                 );
               });
               categoryResult.serviceTypes = serviceTypes;
