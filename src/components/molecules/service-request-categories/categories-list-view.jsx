@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { List } from 'react-native-paper';
@@ -14,28 +14,18 @@ const CategoriesListView = ({
   onServiceTypeSelected,
 }) => {
   const { Gutters, Common, Layout, Fonts } = useTheme();
-  const [selectedCategory, setSelectedCategory] = useState();
 
-  const handleServiceTypeSelected = (serviceType, category) => () => {
+  const handleServiceTypeSelected = (serviceType, category, municipality) => () => {
     onCategorySelected(category);
-    setSelectedCategory(category);
     onServiceTypeSelected(serviceType);
+    setSelectedChanne(municipality);
   };
 
   useEffect(() => {
     setSelectedChanne(municipalities[0]);
   }, []);
 
-  const onAccordionExpanded = (category, channel) => () => {
-    if (selectedCategory) {
-      setSelectedCategory(null);
-    } else {
-      setSelectedCategory(category);
-      setSelectedChanne(channel);
-    }
-  };
-
-  const renderServiceTypes = (serviceTypes, category) => {
+  const renderServiceTypes = (serviceTypes, category, municipality) => {
     return (
       <View style={[Gutters.largeHMargin]}>
         {serviceTypes.map((serviceTypeObject) => {
@@ -52,7 +42,7 @@ const CategoriesListView = ({
                 style={[Layout.fill]}
                 title={serviceTypeObject.name}
                 titleNumberOfLines={3}
-                onPress={handleServiceTypeSelected(serviceTypeObject, category)}
+                onPress={handleServiceTypeSelected(serviceTypeObject, category, municipality)}
                 titleStyle={[Common.cardTitle, ...[{ textAlign: 'center' }]]}
               />
             </View>
@@ -79,10 +69,9 @@ const CategoriesListView = ({
                 </View>
               }
               containerStyle={{ backgroundColor: Colors.transparent }}
-              onPress={onAccordionExpanded(category, municipality)}
               isExpanded
             >
-              {renderServiceTypes(category.serviceTypes, category)}
+              {renderServiceTypes(category.serviceTypes, category, municipality)}
             </ListItem.Accordion>
           );
         })}

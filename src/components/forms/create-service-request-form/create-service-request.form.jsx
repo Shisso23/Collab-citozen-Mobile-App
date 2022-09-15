@@ -45,6 +45,7 @@ const CreateServiceRequestForm = ({
   const navigation = useNavigation();
   const formikRef = useRef(null);
   const [showAllCategories, setShowAllCategories] = useState(false);
+  const [showSingleCategory, setShowSingleCategory] = useState(false);
   const [selectedChannel, setSelectedChannel] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [switchEnabled, setSwitchEnabled] = useState(false);
@@ -52,60 +53,51 @@ const CreateServiceRequestForm = ({
   const [municipalitiesSearchResult, setMunicipalitiesSearchResult] = useState(municipalities);
 
   useEffect(() => {
-    if (!switchEnabled) {
-      setSelectedCategory(null);
-      setSelectedServiceType(null);
-      setSelectedChannel(null);
-    }
-  }, [switchEnabled]);
-
-  useEffect(() => {
     if (searchValue.length > 0) {
+      setMunicipalitiesSearchResult(handleServiceTypesSearch(searchValue));
       if (!switchEnabled) {
         setSwitchEnabled(true);
       }
-      if (!selectedChannel) {
-        setSelectedCategory(null);
-        setSelectedChannel(null);
-        setSelectedServiceType(null);
+      if (showSingleCategory) {
+        setShowSingleCategory(false);
       }
-
       if (!showAllCategories) {
         setShowAllCategories(true);
       }
+      if (selectedChannel) {
+        resetMunicipalityTypeSelected();
+      }
     }
-    setMunicipalitiesSearchResult(handleServiceTypesSearch(searchValue));
   }, [searchValue]);
 
   const onCategoryPress = (category) => {
     setSelectedCategory(category);
-    if (!switchEnabled) {
-      setSwitchEnabled(true);
-    }
+    setShowSingleCategory(true);
+    setSwitchEnabled(true);
   };
   const setChannel = (channel) => {
     setSelectedChannel(channel);
   };
 
-  const onViewAllPress = () => {
-    setShowAllCategories(true);
-    setSwitchEnabled(true);
-    setSelectedServiceType(null);
-  };
-
   const toggleSwitch = (value) => {
     setSwitchEnabled(value);
     if (value === false) {
+      resetMunicipalityTypeSelected();
+      if (showSingleCategory) {
+        setShowSingleCategory(false);
+      }
       if (showAllCategories) {
         setShowAllCategories(false);
       }
     } else {
-      if (selectedChannel !== null) {
-        setSelectedCategory(null);
-        setSelectedChannel(null);
-      }
       setShowAllCategories(true);
     }
+  };
+
+  const resetMunicipalityTypeSelected = () => {
+    setSelectedServiceType(null);
+    setSelectedCategory(null);
+    setSelectedChannel(null);
   };
 
   useEffect(() => {
@@ -136,7 +128,12 @@ const CreateServiceRequestForm = ({
 
   const handleServiceTypeSelected = (serviceType) => {
     setSelectedServiceType(serviceType);
-    formikRef.current.setFieldValue('serviceType', serviceType);
+    if (showSingleCategory) {
+      setShowSingleCategory(false);
+    }
+    if (showAllCategories) {
+      setShowAllCategories(false);
+    }
   };
 
   const handleCategorySelected = (category) => {
@@ -144,7 +141,8 @@ const CreateServiceRequestForm = ({
   };
 
   const handleChangeServiceTypePressed = () => {
-    setSelectedServiceType(null);
+    resetMunicipalityTypeSelected();
+    setShowAllCategories(true);
     setThumbNailImages([]);
     formikRef.current.setFieldValue('images', []);
     dispatch(setImagesSources([]));
@@ -232,11 +230,13 @@ const CreateServiceRequestForm = ({
                 }
               />
               <HelperText />
-              <View style={[styles.viewTextContainer]}>
-                <Text style={[Fonts.textRegular, styles.textHeaderInstruction, Fonts.titleTiny]}>
-                  Select a Service Type
-                </Text>
-              </View>
+              {!selectedServiceType && (
+                <View style={[styles.viewTextContainer]}>
+                  <Text style={[Fonts.textRegular, styles.textHeaderInstruction, Fonts.titleTiny]}>
+                    Select a Service Type
+                  </Text>
+                </View>
+              )}
               {!selectedServiceType && (
                 <TextInput
                   value={searchValue}
@@ -254,15 +254,14 @@ const CreateServiceRequestForm = ({
                   <Switch onValueChange={toggleSwitch} value={switchEnabled} />
                 </View>
               )}
-              {!showAllCategories && !switchEnabled && (
+              {!switchEnabled && (
                 <Categories
                   municipalities={municipalitiesSearchResult}
                   onCategoryPress={onCategoryPress}
                   setSelectedChanne={setChannel}
-                  onViewAllPress={onViewAllPress}
                 />
               )}
-              {showAllCategories && switchEnabled && !selectedServiceType && (
+              {showAllCategories && (
                 <CategoriesListView
                   municipalities={municipalitiesSearchResult}
                   onCategorySelected={handleCategorySelected}
@@ -270,7 +269,7 @@ const CreateServiceRequestForm = ({
                   onServiceTypeSelected={handleServiceTypeSelected}
                 />
               )}
-              {selectedCategory !== null && !showAllCategories && selectedServiceType === null && (
+              {showSingleCategory && (
                 <ServiceTypesView
                   category={selectedCategory}
                   onServiceTypeSelected={handleServiceTypeSelected}

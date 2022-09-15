@@ -58,7 +58,7 @@ const Categories = ({ municipalities, onCategoryPress, setSelectedChanne }) => {
           return (
             <View key={municipality.id}>
               <Text style={[Fonts.textLarge, Gutters.tinyBMargin]}>{municipality.name}</Text>
-              <View style={[Layout.row, styles.categoriesContainer]}>
+              <View style={[Layout.row, styles.categoriesContainer, Layout.justifyContentCenter]}>
                 {municipality.categories.map((category) => (
                   <CategoryTile
                     key={`${category.id}`}
