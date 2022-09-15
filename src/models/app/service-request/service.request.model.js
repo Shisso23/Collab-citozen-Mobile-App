@@ -68,7 +68,7 @@ export const nearbyPinLocationModel = (_apiNearbyPinLocationsModel = {}) => ({
   status: _.get(_apiNearbyPinLocationsModel, 'status', ''),
   serviceTypeRef: _.get(_apiNearbyPinLocationsModel, 'service_type_ref', ''),
   ownerId: _.get(_apiNearbyPinLocationsModel, 'created_by_user_id', null),
-  following: _.get(_apiNearbyPinLocationsModel, 'follow', false),
+  following: _.get(_apiNearbyPinLocationsModel, 'following', false),
 });
 
 export const construcCommentModels = async (apiComments) => {

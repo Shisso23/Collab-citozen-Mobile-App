@@ -41,8 +41,8 @@ const styles = StyleSheet.create({
   container: {
     borderColor: Colors.shadow,
     borderRadius: 10,
-    height: width * 0.4,
-    width: width * 0.45,
+    height: width * 0.37,
+    width: width * 0.44,
   },
   description: {
     color: Colors.white,
@@ -60,10 +60,6 @@ FeatureTile.propTypes = {
   backgroundImage: PropTypes.any.isRequired,
   description: PropTypes.string.isRequired,
   onPress: PropTypes.any.isRequired,
-};
-
-FeatureTile.defaultProps = {
-  visible: true,
 };
 
 export default FeatureTile;

@@ -1,13 +1,13 @@
-/* eslint-disable react/no-array-index-key */
 import React, { useEffect, useState, useRef } from 'react';
-import { ViewPropTypes, View, Keyboard, StyleSheet } from 'react-native';
+import { ViewPropTypes, View, Keyboard, StyleSheet, Switch } from 'react-native';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { Button, HelperText, TextInput, List } from 'react-native-paper';
-import { ListItem, Text } from 'react-native-elements';
+import { Button, HelperText, TextInput } from 'react-native-paper';
+import { Text } from 'react-native-elements';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import _ from 'lodash';
+import { useDispatch } from 'react-redux';
 
 import {
   selectChannelSchema,
@@ -19,7 +19,11 @@ import {
 import { getFormError } from '../form-utils';
 import useTheme from '../../../theme/hooks/useTheme';
 import UploadDocumentButton from '../../molecules/upload-document-button';
+import Categories from '../../molecules/service-request-categories/categories';
 import { Colors } from '../../../theme/Variables';
+import CategoriesListView from '../../molecules/service-request-categories/categories-list-view';
+import ServiceTypesView from '../../molecules/service-request-categories/service-type';
+import { setImagesSources } from '../../../reducers/service-request-reducer/service-request.actions';
 
 navigator.geolocation = require('react-native-geolocation-service');
 
@@ -33,41 +37,80 @@ const CreateServiceRequestForm = ({
   thumbNailImages,
 }) => {
   const { Common, Layout, Gutters, Fonts } = useTheme();
+  const dispatch = useDispatch();
   const { params } = useRoute();
   const selectedCoordinates = params?.mapPosition;
   const addressSelected = params?.selectedAddress;
   const [searchValue, setSearchValue] = useState('');
   const navigation = useNavigation();
   const formikRef = useRef(null);
-  const [accordionExpanded, setAccordionExpanded] = useState(true);
-  const [selectedChannel, setSelectedChannel] = useState('');
-  const [municipalitiesData, setMunicipalitiesData] = useState([]);
+  const [showAllCategories, setShowAllCategories] = useState(false);
+  const [showSingleCategory, setShowSingleCategory] = useState(false);
+  const [selectedChannel, setSelectedChannel] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [switchEnabled, setSwitchEnabled] = useState(false);
   const [selectedServiceType, setSelectedServiceType] = useState(null);
+  const [municipalitiesSearchResult, setMunicipalitiesSearchResult] = useState(municipalities);
 
   useEffect(() => {
-    setMunicipalitiesData(reformMunicipalitiesData());
-  }, []);
+    if (searchValue.length > 0) {
+      setMunicipalitiesSearchResult(handleServiceTypesSearch(searchValue));
+      if (!switchEnabled) {
+        setSwitchEnabled(true);
+      }
+      if (showSingleCategory) {
+        setShowSingleCategory(false);
+      }
+      if (!showAllCategories) {
+        setShowAllCategories(true);
+      }
+      if (selectedChannel) {
+        resetMunicipalityTypeSelected();
+      }
+    } else {
+      setMunicipalitiesSearchResult(municipalities);
+    }
+  }, [searchValue]);
 
-  const reformMunicipalitiesData = () => {
-    const municipalitiesList = Object.keys(municipalities).map((municipalityRef) => {
-      const currentMucipalityData = municipalities[municipalityRef];
-      const municipalityServiceTypes = Object.keys(currentMucipalityData.serviceTypes).map(
-        (serviceTypeCategoryName) => {
-          return {
-            categorisedServiceTypes: currentMucipalityData.serviceTypes[serviceTypeCategoryName],
-          };
-        },
-      );
-      return {
-        municipalityData: {
-          id: currentMucipalityData.id,
-          municipalityCode: currentMucipalityData.municipalityCode,
-          name: currentMucipalityData.name,
-          serviceTypes: municipalityServiceTypes,
-        },
-      };
-    });
-    return municipalitiesList;
+  useEffect(() => {
+    formikRef.current.setFieldValue('channel', _.get(selectedChannel, 'name', null));
+    formikRef.current.setFieldValue('serviceTypeCategory', _.get(selectedCategory, 'name', null));
+    formikRef.current.setFieldValue('channelRef', _.get(selectedChannel, 'id', null));
+    formikRef.current.setFieldValue(
+      'municipalityCode',
+      _.get(selectedChannel, 'municipalityCode', null),
+    );
+    formikRef.current.setFieldValue('serviceType', selectedServiceType);
+  }, [JSON.stringify(selectedServiceType)]);
+
+  const onCategoryPress = (category) => {
+    setSelectedCategory(category);
+    setShowSingleCategory(true);
+    setSwitchEnabled(true);
+  };
+  const setChannel = (channel) => {
+    setSelectedChannel(channel);
+  };
+
+  const toggleSwitch = (value) => {
+    setSwitchEnabled(value);
+    if (value === false) {
+      resetMunicipalityTypeSelected();
+      if (showSingleCategory) {
+        setShowSingleCategory(false);
+      }
+      if (showAllCategories) {
+        setShowAllCategories(false);
+      }
+    } else {
+      setShowAllCategories(true);
+    }
+  };
+
+  const resetMunicipalityTypeSelected = () => {
+    setSelectedServiceType(null);
+    setSelectedCategory(null);
+    setSelectedChannel(null);
   };
 
   useEffect(() => {
@@ -84,7 +127,7 @@ const CreateServiceRequestForm = ({
 
   const _handleFormSubmitError = (error, actions) => {
     actions.setSubmitting(false);
-    actions.setFieldError('account', error.message);
+    actions.setFieldError('account', _.get(error, 'message', ''));
   };
 
   const _handleSubmission = (formData, actions) => {
@@ -96,48 +139,55 @@ const CreateServiceRequestForm = ({
       .catch((error) => _handleFormSubmitError(error, actions, formData));
   };
 
-  const handleServiceTypeSelected = ({ serviceType, channel }) => {
-    setAccordionExpanded(false);
-    setSelectedChannel(channel);
+  const handleServiceTypeSelected = (serviceType) => {
     setSelectedServiceType(serviceType);
-    formikRef.current.setFieldValue('channel', channel.name);
-    formikRef.current.setFieldValue('serviceTypeCategory', serviceType.category);
-    formikRef.current.setFieldValue('serviceType', serviceType);
-    formikRef.current.setFieldValue('municipalityCode', channel.municipalityCode);
-    formikRef.current.setFieldValue('channelRef', channel.id);
+    if (showSingleCategory) {
+      setShowSingleCategory(false);
+    }
+    if (showAllCategories) {
+      setShowAllCategories(false);
+    }
+  };
+
+  const handleCategorySelected = (category) => {
+    setSelectedCategory(category);
   };
 
   const handleChangeServiceTypePressed = () => {
-    setSelectedServiceType(null);
-    setAccordionExpanded(true);
+    resetMunicipalityTypeSelected();
+    setShowAllCategories(true);
+    setThumbNailImages([]);
+    formikRef.current.setFieldValue('images', []);
+    dispatch(setImagesSources([]));
   };
 
-  useEffect(() => {
-    if (searchValue && searchValue.length > 0) {
-      handleServiceTypesSearch(searchValue);
-    } else if (searchValue !== null && searchValue.length === 0) {
-      setMunicipalitiesData(reformMunicipalitiesData());
-    }
-  }, [JSON.stringify(searchValue)]);
-
   const handleServiceTypesSearch = (searchKeyWord) => {
-    if (searchKeyWord && searchKeyWord.length > 0) {
-      const result = reformMunicipalitiesData().map((municipalityData) => {
-        const municipalityResult = _.clone(municipalityData);
-        municipalityResult.municipalityData.serviceTypes =
-          municipalityData.municipalityData.serviceTypes.filter((serviceTypesByCategory) => {
-            return serviceTypesByCategory.categorisedServiceTypes.some((serviceType) => {
-              return (
-                `${serviceType.aliases}`.toLowerCase().includes(searchKeyWord.toLowerCase()) ||
-                `${serviceType.name}`.toLowerCase().includes(searchKeyWord.toLowerCase()) ||
-                `${serviceType.category}`.toLowerCase().includes(searchKeyWord.toLowerCase())
-              );
+    if (searchKeyWord.length > 0) {
+      const result = municipalities
+        .map((municipality) => {
+          const municipalityResult = _.clone(municipality);
+          municipalityResult.categories = municipality.categories
+            .map((category) => {
+              const categoryResult = _.clone(category);
+              const serviceTypes = categoryResult.serviceTypes.filter((serviceType) => {
+                return (
+                  `${serviceType.aliases}`.toLowerCase().includes(searchKeyWord.toLowerCase()) ||
+                  `${serviceType.name}`.toLowerCase().includes(searchKeyWord.toLowerCase())
+                );
+              });
+              categoryResult.serviceTypes = serviceTypes;
+              return categoryResult;
+            })
+            .filter((category) => {
+              return category.serviceTypes.length !== 0;
             });
-          });
-        return municipalityResult;
-      });
-      setMunicipalitiesData(result);
+
+          return municipalityResult;
+        })
+        .filter((municipalityResult_) => municipalityResult_.categories.length !== 0);
+      return result;
     }
+    return municipalities;
   };
 
   return (
@@ -182,11 +232,13 @@ const CreateServiceRequestForm = ({
                 }
               />
               <HelperText />
-              <View style={[styles.viewTextContainer]}>
-                <Text style={[Fonts.textRegular, styles.textHeaderInstruction, Fonts.titleTiny]}>
-                  Select a Service Type
-                </Text>
-              </View>
+              {!selectedServiceType && (
+                <View style={[styles.viewTextContainer]}>
+                  <Text style={[Fonts.textRegular, styles.textHeaderInstruction, Fonts.titleTiny]}>
+                    Select a Service Type
+                  </Text>
+                </View>
+              )}
               {!selectedServiceType && (
                 <TextInput
                   value={searchValue}
@@ -198,91 +250,34 @@ const CreateServiceRequestForm = ({
                 />
               )}
               <HelperText />
-              {(accordionExpanded && (
-                <View style={styles.viewItemsChannelContainer}>
-                  {municipalitiesData.map((municipality, index) => {
-                    const currentMunicipality = municipality.municipalityData;
-                    return (
-                      <ListItem.Accordion
-                        key={`${currentMunicipality.id}-${index}`}
-                        noIcon
-                        underlayColor={Colors.transparent}
-                        content={
-                          (accordionExpanded && (
-                            <View style={[styles.viewTextContainer]}>
-                              <Text style={[Fonts.textRegular, styles.textHeaderChannel]}>
-                                {currentMunicipality.name}
-                              </Text>
-                            </View>
-                          )) || <View />
-                        }
-                        containerStyle={{ backgroundColor: Colors.transparent }}
-                        isExpanded={accordionExpanded}
-                      >
-                        <View style={styles.viewItemsCategoryContainer}>
-                          {currentMunicipality.serviceTypes?.map(
-                            (serviceTypesByCategory, serviceTypesByCategoryIndex) => {
-                              const currentCategoryServiceTypes =
-                                serviceTypesByCategory.categorisedServiceTypes;
-                              return (
-                                <ListItem.Accordion
-                                  key={`${serviceTypesByCategoryIndex}`}
-                                  noIcon
-                                  underlayColor={Colors.transparent}
-                                  content={
-                                    <View style={[styles.viewTextContainer]}>
-                                      <Text style={[Fonts.textRegular, styles.textHeaderCategory]}>
-                                        {currentCategoryServiceTypes[0].category}
-                                      </Text>
-                                    </View>
-                                  }
-                                  containerStyle={{ backgroundColor: Colors.transparent }}
-                                  isExpanded={accordionExpanded}
-                                >
-                                  <View style={styles.viewItemsTypesContainer}>
-                                    {currentCategoryServiceTypes.map(
-                                      (serviceTypeObject, serviceTypeIndex) => {
-                                        return (
-                                          <View
-                                            key={`${serviceTypeObject.name}-${serviceTypeIndex}`}
-                                            style={[
-                                              Common.textInputWithoutShadow,
-                                              Gutters.smallBMargin,
-                                              styles.listItem,
-                                              styles.viewButton,
-                                            ]}
-                                          >
-                                            <List.Item
-                                              key={serviceTypeObject}
-                                              style={Layout.fill}
-                                              title={serviceTypeObject.name}
-                                              titleNumberOfLines={3}
-                                              onPress={() => {
-                                                handleServiceTypeSelected({
-                                                  serviceType: serviceTypeObject,
-                                                  channel: currentMunicipality,
-                                                });
-                                              }}
-                                              titleStyle={
-                                                (Common.cardTitle, styles.listItemTitleStyle)
-                                              }
-                                            />
-                                          </View>
-                                        );
-                                      },
-                                    )}
-                                  </View>
-                                </ListItem.Accordion>
-                              );
-                            },
-                          )}
-                        </View>
-                      </ListItem.Accordion>
-                    );
-                  })}
+              {selectedServiceType === null && (
+                <View style={[styles.switchView, Layout.rowBetween, Gutters.smallBMargin]}>
+                  <Text style={[Fonts.textRegular, ...[{ fontSize: 15 }]]}>Change View</Text>
+                  <Switch onValueChange={toggleSwitch} value={switchEnabled} />
                 </View>
-              )) || <View />}
-              {!accordionExpanded && (
+              )}
+              {!switchEnabled && (
+                <Categories
+                  municipalities={municipalitiesSearchResult}
+                  onCategoryPress={onCategoryPress}
+                  setSelectedChanne={setChannel}
+                />
+              )}
+              {showAllCategories && (
+                <CategoriesListView
+                  municipalities={municipalitiesSearchResult}
+                  onCategorySelected={handleCategorySelected}
+                  setSelectedChanne={setChannel}
+                  onServiceTypeSelected={handleServiceTypeSelected}
+                />
+              )}
+              {showSingleCategory && (
+                <ServiceTypesView
+                  category={selectedCategory}
+                  onServiceTypeSelected={handleServiceTypeSelected}
+                />
+              )}
+              {selectedServiceType && (
                 <>
                   <Button
                     mode="contained"
@@ -291,26 +286,26 @@ const CreateServiceRequestForm = ({
                   >
                     Change Type
                   </Button>
-                  {selectedServiceType && (
-                    <View>
-                      <Text style={[Fonts.textRegular, Gutters.smallBMargin]}>
-                        Channel: {selectedChannel.name}
-                      </Text>
-                      <Text style={[Fonts.textRegular, Gutters.smallBMargin]}>
-                        Channel Category: {selectedServiceType?.category}
-                      </Text>
 
-                      <Text style={[Fonts.textRegular, Gutters.smallBMargin]}>
-                        Selected Type: {selectedServiceType.name}
-                      </Text>
+                  <View>
+                    <Text style={[Fonts.textRegular, Gutters.smallBMargin]}>
+                      Channel: {selectedChannel.name}
+                    </Text>
+                    <Text style={[Fonts.textRegular, Gutters.smallBMargin]}>
+                      Channel Category: {selectedCategory.name}
+                    </Text>
 
-                      {(selectedServiceType.requirements.length !== 0 && (
-                        <Text style={[Fonts.textRegular, Gutters.smallBMargin]}>
-                          Requirements: {selectedServiceType.requirements}
-                        </Text>
-                      )) || <View />}
-                    </View>
-                  )}
+                    <Text style={[Fonts.textRegular, Gutters.smallBMargin]}>
+                      Selected Type: {selectedServiceType.name}
+                    </Text>
+
+                    {(selectedServiceType.requirements.length !== 0 && (
+                      <Text style={[Fonts.textRegular, Gutters.smallBMargin]}>
+                        Requirements: {selectedServiceType.requirements}
+                      </Text>
+                    )) || <View />}
+                  </View>
+
                   <TextInput
                     label="Description"
                     value={values.description}
@@ -364,7 +359,7 @@ CreateServiceRequestForm.propTypes = {
   initialValues: PropTypes.object.isRequired,
   onSuccess: PropTypes.func,
   containerStyle: ViewPropTypes.style,
-  municipalities: PropTypes.object.isRequired,
+  municipalities: PropTypes.array.isRequired,
   setThumbNailImages: PropTypes.func.isRequired,
   thumbNailImages: PropTypes.array,
 };
@@ -376,57 +371,13 @@ CreateServiceRequestForm.defaultProps = {
 };
 
 const styles = StyleSheet.create({
-  listItem: {
-    backgroundColor: Colors.lightgray,
-    marginLeft: 10,
-    marginRight: 10,
-    textAlign: 'center',
-  },
-  listItemTitleStyle: {
-    textAlign: 'center',
-  },
-
-  textHeaderCategory: {
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  textHeaderChannel: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
+  switchView: {
+    width: '100%',
   },
   textHeaderInstruction: {
     fontSize: 16,
     paddingBottom: 20,
     textAlign: 'center',
-  },
-  viewButton: {
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 0.16,
-  },
-  viewItemsCategoryContainer: {
-    borderBottomWidth: 0,
-    borderColor: Colors.lightMediumGray,
-    borderLeftWidth: 0,
-    borderRightWidth: 0,
-    borderWidth: 1,
-  },
-  viewItemsChannelContainer: {
-    borderBottomWidth: 0,
-    borderColor: Colors.lightMediumGray,
-    borderWidth: 1,
-  },
-  viewItemsTypesContainer: {
-    borderColor: Colors.lightMediumGray,
-    borderLeftWidth: 0,
-    borderRightWidth: 0,
-    borderTopWidth: 0,
-    borderWidth: 1,
-    padding: 10,
   },
   viewTextContainer: {
     flex: 1,

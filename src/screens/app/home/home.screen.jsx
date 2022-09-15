@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { ImageBackground, Text } from 'react-native';
+import { ImageBackground, Text, ScrollView, Dimensions } from 'react-native';
 
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import PushNotification from 'react-native-push-notification';
@@ -16,6 +16,7 @@ import {
 
 const HomeScreen = () => {
   const { Gutters, Layout, Images, Colors } = useTheme();
+  const screenHeight = Dimensions.get('window').height;
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const notificationOpenedBackGround = handleNotificationOpenedBackGround();
@@ -53,7 +54,14 @@ const HomeScreen = () => {
     navigation.navigate('ServiceRequests');
   };
   return (
-    <>
+    <ScrollView
+      contentContainerStyle={[
+        Gutters.largeBPadding,
+        {
+          height: screenHeight + screenHeight * 0.03,
+        },
+      ]}
+    >
       <ImageBackground
         source={Images.serviceRequest}
         style={[Layout.fullSize, Layout.fill, Gutters.regularTPadding]}
@@ -71,7 +79,7 @@ const HomeScreen = () => {
           onServiceRequestTilePress={navigateToServiceRequests}
         />
       </ImageBackground>
-    </>
+    </ScrollView>
   );
 };
 HomeScreen.propTypes = {};

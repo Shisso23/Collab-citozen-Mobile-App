@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import {
   setIsLoadingNewsFeedsAction,
   setIsLoadingNewsFeedReactionsAction,
@@ -14,7 +15,7 @@ export const getNewsFeedAction = (userId) => async (dispatch) => {
     .then((newsFeeds) => {
       return dispatch(setNewsFeedsAction(newsFeeds));
     })
-    .catch((error) => flashService.error(error.message))
+    .catch((error) => flashService.error(_.get(error, 'message', '')))
     .finally(() => {
       dispatch(setIsLoadingNewsFeedsAction(false));
     });
@@ -27,7 +28,7 @@ export const getNewsfeedReactions = (newsfeedRefNr) => async (dispatch) => {
     .then((newsfeedReactions) => {
       dispatch(setNewsFeedReactionsAction(newsfeedReactions));
     })
-    .catch((error) => flashService.error(error.message))
+    .catch((error) => flashService.error(_.get(error, 'message', '')))
     .finally(() => {
       dispatch(setIsLoadingNewsFeedReactionsAction(false));
     });

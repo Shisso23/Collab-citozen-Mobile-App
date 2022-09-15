@@ -43,11 +43,6 @@ const Tab = ({ route, navigation, isFocused }) => {
   };
 
   const navigateToCreateServiceRequest = async () => {
-    if (Platform.OS === 'ios' || hasGmsSync()) await permissionsService.checkLocationPermissions();
-    if (hasHmsSync()) {
-      await permissionsService.requestHmsLocationPermissions();
-    }
-    closeActionSheet();
     if (hasGmsSync() || Platform.OS === 'ios') {
       permissionsService
         .checkLocationPermissions()
@@ -73,6 +68,7 @@ const Tab = ({ route, navigation, isFocused }) => {
           flashService.error('Please grant permissions to select a location.');
         });
     }
+    closeActionSheet();
   };
 
   const navigateToSubscribeToChannel = async () => {
@@ -120,7 +116,6 @@ const Tab = ({ route, navigation, isFocused }) => {
         extraScroll={20}
       >
         <ShortCutsActionSheetContent
-          loading={false}
           onCancel={closeActionSheet}
           onPressAddAccount={navigateToAddAccount}
           onPressNewServiceRequest={navigateToCreateServiceRequest}

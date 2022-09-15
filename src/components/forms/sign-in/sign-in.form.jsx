@@ -5,6 +5,8 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { TextInput, Button, HelperText } from 'react-native-paper';
 import { Divider, Input } from 'react-native-elements';
+import _ from 'lodash';
+
 import { emailSchema, passwordSchema } from '../form-validaton-schemas';
 import { getFormError } from '../form-utils';
 import useTheme from '../../../theme/hooks/useTheme';
@@ -22,7 +24,7 @@ const SignInForm = ({ submitForm, onSuccess, containerStyle, initialValues }) =>
 
   const _handleFormSubmitError = (error, actions) => {
     actions.setSubmitting(false);
-    actions.setFieldError('email', error.message);
+    actions.setFieldError('email', _.get(error, 'message', ''));
   };
 
   const _showPasswordShort = () => {

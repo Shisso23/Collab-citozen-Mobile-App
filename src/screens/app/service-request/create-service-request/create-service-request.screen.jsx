@@ -25,7 +25,6 @@ const CreateServiceRequestScreen = () => {
   const navigation = useNavigation();
   const [thumNailImages, setThumNailImages] = useState([]);
   const { municipalities } = useSelector(municipalitiesSelector);
-
   const { Gutters, Common, Layout } = useTheme();
 
   const _onFormSuccess = async () => {
@@ -36,6 +35,7 @@ const CreateServiceRequestScreen = () => {
   useEffect(() => {
     dispatch(setImagesSources([]));
   }, []);
+
   const _handleFormSubmit = (form) => {
     return dispatch(createServiceRequestAction(form));
   };

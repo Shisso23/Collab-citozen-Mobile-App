@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import MapView, { Marker } from 'react-native-maps';
-import HmsMapView, { MapTypes, HMSMarker, Hue, HMSInfoWindow } from '@hmscore/react-native-hms-map';
+import HmsMapView, { MapTypes, HMSMarker, Hue } from '@hmscore/react-native-hms-map';
 import { Icon } from 'react-native-elements';
 import {
   StyleSheet,
@@ -114,7 +114,7 @@ const SelectLocationScreen = () => {
     [],
   );
 
-  const handleFollowSR = (serviceRequestObjId, following) => () => {
+  const handleFollowSR = (serviceRequestObjId, following) => {
     setIsLoadingFollowSR(true);
     serviceRequestService
       .followServiceRequest({
@@ -132,10 +132,11 @@ const SelectLocationScreen = () => {
   };
 
   const getNearbyPinLocations = async (currentLatitude, currentLongitude) => {
-    const nearbyPinLocationsResponse = await dispatch(
-      getNearbyPinLocationsAction(currentLatitude, currentLongitude),
+    dispatch(getNearbyPinLocationsAction(currentLatitude, currentLongitude)).then(
+      (nearbyPinLocationsResponse) => {
+        setNearbyPinLocations(nearbyPinLocationsResponse.payload);
+      },
     );
-    setNearbyPinLocations(nearbyPinLocationsResponse.payload);
   };
 
   const returnMarkerColour = (serviceRequestStatus) => {
@@ -197,10 +198,10 @@ const SelectLocationScreen = () => {
           key={pin.id}
           icon={{ hue: returnMarkerColour(pin.status) }}
           clusterable
+          defaultActionOnClick={false}
           coordinate={{ latitude: lng, longitude: lat }}
-        >
-          {renderHmsMarkerInfoWindow(pin)}
-        </HMSMarker>
+          onClick={displayModalToggle(pin, true)}
+        />
       ) : (
         <View />
       );
@@ -220,47 +221,13 @@ const SelectLocationScreen = () => {
             Layout.alignSelfEnd,
           ]}
           color={Colors.primary}
-          onPress={handleFollowSR(id, !following)}
+          onPress={() => handleFollowSR(id, !following)}
           loading={isLoadingFollowSR}
           disabled={isLoadingFollowSR}
         >
           {following ? 'UnFollow' : 'Follow'}
         </Button>
       )) || <></>
-    );
-  };
-
-  const renderHmsMarkerInfoWindow = (pin) => {
-    const { id, serviceType, serviceDescription, requestDate, status } = pin;
-    if (pin) {
-      setSelectedSRPin(pin);
-    }
-    return (
-      <HMSInfoWindow>
-        <TouchableHighlight>
-          <View style={Fonts.textRegular}>
-            <View
-              style={[
-                ...[{ backgroundColor: Colors.lightgray, borderRadius: 10 }, Gutters.smallPadding],
-              ]}
-            >
-              <Text style={[Gutters.smallVMargin, Fonts.textRegular, styles.headerFont]}>
-                Type: {serviceType}
-              </Text>
-              <View style={styles.textLine} />
-              <Text style={[Gutters.smallVMargin, Fonts.textRegular, styles.descriptionFont]}>
-                Description:
-              </Text>
-              <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>{serviceDescription}</Text>
-              <View style={styles.textLine} />
-              <Text style={[Gutters.smallVMargin, Fonts.textRegular]}>Status: {status}</Text>
-              <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>Date: {requestDate}</Text>
-              <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>Reference No: {id}</Text>
-            </View>
-          </View>
-        </TouchableHighlight>
-        {renderFollowSRButon()}
-      </HMSInfoWindow>
     );
   };
 
