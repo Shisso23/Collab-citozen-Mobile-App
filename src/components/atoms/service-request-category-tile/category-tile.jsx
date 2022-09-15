@@ -9,7 +9,7 @@ const { width } = Dimensions.get('window');
 
 const CategoryTile = ({ categoryObject, size, onPress }) => {
   const { Layout, Gutters, Common } = useTheme();
-  const { iconName, iconSetName, name } = categoryObject;
+  const { iconName, iconSet, name } = categoryObject;
 
   return (
     <TouchableOpacity
@@ -32,8 +32,9 @@ const CategoryTile = ({ categoryObject, size, onPress }) => {
       >
         <Icon
           name={iconName}
-          type={iconSetName}
+          type={iconSet}
           size={size}
+          color={Colors.darkgray}
           containerStyle={Gutters.smallBMargin}
         />
         <Text style={[styles.description]}>{name}</Text>
@@ -63,17 +64,13 @@ const styles = StyleSheet.create({
 });
 
 CategoryTile.propTypes = {
-  // TODO verify after real data
   categoryObject: PropTypes.shape({
-    objId: PropTypes.number.isRequired,
     name: PropTypes.string.isRequired,
-    channelName: PropTypes.string.isRequired,
-    channelObjectID: PropTypes.number.isRequired,
+    id: PropTypes.number.isRequired,
     iconName: PropTypes.string.isRequired,
-    iconSetName: PropTypes.string.isRequired,
-    favorite: PropTypes.bool.isRequired,
+    iconSet: PropTypes.string.isRequired,
+    favourite: PropTypes.bool.isRequired,
     serviceTypes: PropTypes.array.isRequired,
-    municipalityCode: PropTypes.string.isRequired,
   }).isRequired,
   size: PropTypes.number,
   onPress: PropTypes.any.isRequired,

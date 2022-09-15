@@ -23,7 +23,6 @@ import authNetworkService from '../auth-network-service/auth-network.service';
 import srUrls from './service-request.urls';
 import { flashService } from '../../index';
 import storageService from '../storage-service/storage.service';
-import { mockApi } from '../../../dummy-data/mock-api';
 
 const createServiceRequest = async (createServiceRequestForm, userInfo) => {
   const url = srUrls.createSrUrl();
@@ -125,17 +124,6 @@ const getServiceRequestPins = async (currentLatitude, currentLongitude) => {
   return pinLocations;
 };
 
-const getServiceRequestCategories = async (currentLatitude, currentLongitude) => {
-  const url = globalUrl.globalFunctionUrl();
-  // const data = dataNearbyPinLocations(currentLatitude, currentLongitude);
-  const apiResponse = await mockApi.post(url, {
-    currentLatitude,
-    currentLongitude,
-  }); // TODO use real API
-  const categories = _.get(apiResponse, 'data.categories', []);
-  return categories;
-};
-
 export default {
   createServiceRequest,
   getServiceRequests,
@@ -146,5 +134,4 @@ export default {
   addNewComment,
   getServiceRequestPins,
   followServiceRequest,
-  getServiceRequestCategories,
 };

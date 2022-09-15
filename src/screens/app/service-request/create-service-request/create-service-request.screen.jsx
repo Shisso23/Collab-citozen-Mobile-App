@@ -14,7 +14,7 @@ import {
   getServiceRequestsAction,
   setImagesSources,
 } from '../../../../reducers/service-request-reducer/service-request.actions';
-import { flashService, serviceRequestService } from '../../../../services';
+import { flashService } from '../../../../services';
 import { createServiceRequestModel } from '../../../../models';
 import { municipalitiesSelector } from '../../../../reducers/municipalities-reducer/municipalities.reducer';
 import { promptConfirm } from '../../../../helpers/prompt.helper';
@@ -24,7 +24,6 @@ const CreateServiceRequestScreen = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [thumNailImages, setThumNailImages] = useState([]);
-  const [categories, setCategories] = useState([]);
   const { municipalities } = useSelector(municipalitiesSelector);
   const { Gutters, Common, Layout } = useTheme();
 
@@ -34,20 +33,8 @@ const CreateServiceRequestScreen = () => {
     navigation.navigate('ServiceRequests');
   };
   useEffect(() => {
-    getCategories();
     dispatch(setImagesSources([]));
   }, []);
-
-  useEffect(() => {
-    getCategories();
-  }, [categories.length]);
-
-  const getCategories = () => {
-    // TODO. change this
-    serviceRequestService.getServiceRequestCategories(123123, 3212).then((response) => {
-      setCategories(response);
-    });
-  };
 
   const _handleFormSubmit = (form) => {
     return dispatch(createServiceRequestAction(form));
@@ -95,7 +82,6 @@ const CreateServiceRequestScreen = () => {
             submitForm={_handleFormSubmit}
             onSuccess={_onFormSuccess}
             municipalities={municipalities}
-            categories={categories}
             initialValues={createServiceRequestModel()}
             containerStyle={[Gutters.regularHMargin, Gutters.regularTMargin]}
             setThumbNailImages={setThumNailImages}

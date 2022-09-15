@@ -1,14 +1,14 @@
-/* eslint-disable react/no-array-index-key */
 import React, { useEffect, useState, useRef } from 'react';
-import { ViewPropTypes, View, Keyboard, StyleSheet } from 'react-native';
+import { ViewPropTypes, View, Keyboard, StyleSheet, Switch } from 'react-native';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
-import { Button, HelperText, TextInput, List } from 'react-native-paper';
-import { ListItem, Text } from 'react-native-elements';
+import { Button, HelperText, TextInput } from 'react-native-paper';
+import { Text } from 'react-native-elements';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import _ from 'lodash';
 
+import { useDispatch } from 'react-redux';
 import {
   selectChannelSchema,
   selectServiceTypeCategorySchema,
@@ -22,6 +22,8 @@ import UploadDocumentButton from '../../molecules/upload-document-button';
 import Categories from '../../molecules/service-request-categories/categories';
 import { Colors } from '../../../theme/Variables';
 import CategoriesListView from '../../molecules/service-request-categories/categories-list-view';
+import ServiceTypesView from '../../molecules/service-request-categories/service-type';
+import { setImagesSources } from '../../../reducers/service-request-reducer/service-request.actions';
 
 navigator.geolocation = require('react-native-geolocation-service');
 
@@ -33,35 +35,77 @@ const CreateServiceRequestForm = ({
   municipalities,
   setThumbNailImages,
   thumbNailImages,
-  categories,
 }) => {
   const { Common, Layout, Gutters, Fonts } = useTheme();
+  const dispatch = useDispatch();
   const { params } = useRoute();
   const selectedCoordinates = params?.mapPosition;
   const addressSelected = params?.selectedAddress;
   const [searchValue, setSearchValue] = useState('');
-  const [srCategories, setSrCategories] = useState([]);
   const navigation = useNavigation();
   const formikRef = useRef(null);
-  const [accordionExpanded, setAccordionExpanded] = useState(true);
-  const [selectedChannel, setSelectedChannel] = useState('');
   const [showAllCategories, setShowAllCategories] = useState(false);
+  const [selectedChannel, setSelectedChannel] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [switchEnabled, setSwitchEnabled] = useState(false);
   const [selectedServiceType, setSelectedServiceType] = useState(null);
+  const [municipalitiesSearchResult, setMunicipalitiesSearchResult] = useState(municipalities);
 
   useEffect(() => {
-    console.log({ municipalities });
-    // setMunicipalitiesData(reformMunicipalitiesData());
-    setSrCategories(categories);
-  }, []);
+    if (!switchEnabled) {
+      setSelectedCategory(null);
+      setSelectedServiceType(null);
+      setSelectedChannel(null);
+    }
+  }, [switchEnabled]);
 
   useEffect(() => {
-    setSrCategories(categories);
-  }, [categories.length]);
+    if (searchValue.length > 0) {
+      if (!switchEnabled) {
+        setSwitchEnabled(true);
+      }
+      if (!selectedChannel) {
+        setSelectedCategory(null);
+        setSelectedChannel(null);
+        setSelectedServiceType(null);
+      }
 
-  const onCategoryPress = (category) => {};
+      if (!showAllCategories) {
+        setShowAllCategories(true);
+      }
+    }
+    setMunicipalitiesSearchResult(handleServiceTypesSearch(searchValue));
+  }, [searchValue]);
+
+  const onCategoryPress = (category) => {
+    setSelectedCategory(category);
+    if (!switchEnabled) {
+      setSwitchEnabled(true);
+    }
+  };
+  const setChannel = (channel) => {
+    setSelectedChannel(channel);
+  };
 
   const onViewAllPress = () => {
     setShowAllCategories(true);
+    setSwitchEnabled(true);
+    setSelectedServiceType(null);
+  };
+
+  const toggleSwitch = (value) => {
+    setSwitchEnabled(value);
+    if (value === false) {
+      if (showAllCategories) {
+        setShowAllCategories(false);
+      }
+    } else {
+      if (selectedChannel !== null) {
+        setSelectedCategory(null);
+        setSelectedChannel(null);
+      }
+      setShowAllCategories(true);
+    }
   };
 
   useEffect(() => {
@@ -96,43 +140,44 @@ const CreateServiceRequestForm = ({
   };
 
   const handleCategorySelected = (category) => {
-    formikRef.current.setFieldValue('channel', _.get(category, 'channelName', null));
-    formikRef.current.setFieldValue('serviceTypeCategory', _.get(category, 'name', null));
-    formikRef.current.setFieldValue('channelRef', _.get(category, 'channelObjectId', null));
-    formikRef.current.setFieldValue('municipalityCode', _.get(category, 'municipalityCode', null));
+    setSelectedCategory(category);
   };
 
   const handleChangeServiceTypePressed = () => {
     setSelectedServiceType(null);
-    setAccordionExpanded(true);
+    setThumbNailImages([]);
+    formikRef.current.setFieldValue('images', []);
+    dispatch(setImagesSources([]));
   };
 
-  useEffect(() => {
-    // if (searchValue && searchValue.length > 0) {
-    //   handleServiceTypesSearch(searchValue);
-    // } else if (searchValue !== null && searchValue.length === 0) {
-    //   setMunicipalitiesData(reformMunicipalitiesData());
-    // }
-  }, [JSON.stringify(searchValue)]);
-
   const handleServiceTypesSearch = (searchKeyWord) => {
-    // if (searchKeyWord && searchKeyWord.length > 0) {
-    //   const result = municipalities.map((municipalityData) => {
-    //     const municipalityResult = _.clone(municipalityData);
-    //     municipalityResult.municipalityData.serviceTypes =
-    //       municipalityData.municipalityData.serviceTypes.filter((serviceTypesByCategory) => {
-    //         return serviceTypesByCategory.categorisedServiceTypes.some((serviceType) => {
-    //           return (
-    //             `${serviceType.aliases}`.toLowerCase().includes(searchKeyWord.toLowerCase()) ||
-    //             `${serviceType.name}`.toLowerCase().includes(searchKeyWord.toLowerCase()) ||
-    //             `${serviceType.category}`.toLowerCase().includes(searchKeyWord.toLowerCase())
-    //           );
-    //         });
-    //       });
-    //     return municipalityResult;
-    //   });
-    //   setMunicipalitiesData(result);
-    // }
+    if (searchKeyWord.length > 0) {
+      const result = municipalities
+        .map((municipality) => {
+          const municipalityResult = _.clone(municipality);
+          municipalityResult.categories = municipality.categories
+            .map((category) => {
+              const categoryResult = _.clone(category);
+              const serviceTypes = categoryResult.serviceTypes.filter((serviceType) => {
+                return (
+                  `${serviceType.aliases}`.toLowerCase().includes(searchKeyWord.toLowerCase()) ||
+                  `${serviceType.name}`.toLowerCase().includes(searchKeyWord.toLowerCase()) ||
+                  `${serviceType.category}`.toLowerCase().includes(searchKeyWord.toLowerCase())
+                );
+              });
+              categoryResult.serviceTypes = serviceTypes;
+              return categoryResult;
+            })
+            .filter((category) => {
+              return category.serviceTypes.length !== 0;
+            });
+
+          return municipalityResult;
+        })
+        .filter((municipalityResult_) => municipalityResult_.categories.length !== 0);
+      return result;
+    }
+    return municipalities;
   };
 
   return (
@@ -156,6 +201,16 @@ const CreateServiceRequestForm = ({
           setFieldValue,
         }) => {
           const handleSubmissionFormik = (vals) => {
+            formikRef.current.setFieldValue('channel', _.get(selectedChannel, 'name', null));
+            formikRef.current.setFieldValue(
+              'serviceTypeCategory',
+              _.get(selectedCategory, 'name', null),
+            );
+            formikRef.current.setFieldValue('channelRef', _.get(selectedChannel, 'id', null));
+            formikRef.current.setFieldValue(
+              'municipalityCode',
+              _.get(selectedChannel, 'municipalityCode', null),
+            );
             setFieldValue('location', selectedCoordinates);
             vals.location = selectedCoordinates;
             setFieldValue('address', addressSelected);
@@ -193,17 +248,31 @@ const CreateServiceRequestForm = ({
                 />
               )}
               <HelperText />
-              {!showAllCategories && (
+              {selectedServiceType === null && (
+                <View style={[styles.switchView, Layout.rowBetween, Gutters.smallBMargin]}>
+                  <Text style={[Fonts.textRegular, ...[{ fontSize: 15 }]]}>Change View</Text>
+                  <Switch onValueChange={toggleSwitch} value={switchEnabled} />
+                </View>
+              )}
+              {!showAllCategories && !switchEnabled && (
                 <Categories
-                  categories={municipalities.categories}
+                  municipalities={municipalitiesSearchResult}
                   onCategoryPress={onCategoryPress}
+                  setSelectedChanne={setChannel}
                   onViewAllPress={onViewAllPress}
                 />
               )}
-              {showAllCategories && (
+              {showAllCategories && switchEnabled && !selectedServiceType && (
                 <CategoriesListView
-                  categories={srCategories}
+                  municipalities={municipalitiesSearchResult}
                   onCategorySelected={handleCategorySelected}
+                  setSelectedChanne={setChannel}
+                  onServiceTypeSelected={handleServiceTypeSelected}
+                />
+              )}
+              {selectedCategory !== null && !showAllCategories && selectedServiceType === null && (
+                <ServiceTypesView
+                  category={selectedCategory}
                   onServiceTypeSelected={handleServiceTypeSelected}
                 />
               )}
@@ -222,7 +291,7 @@ const CreateServiceRequestForm = ({
                       Channel: {selectedChannel.name}
                     </Text>
                     <Text style={[Fonts.textRegular, Gutters.smallBMargin]}>
-                      Channel Category: {selectedServiceType?.category}
+                      Channel Category: {selectedCategory.name}
                     </Text>
 
                     <Text style={[Fonts.textRegular, Gutters.smallBMargin]}>
@@ -292,7 +361,6 @@ CreateServiceRequestForm.propTypes = {
   municipalities: PropTypes.array.isRequired,
   setThumbNailImages: PropTypes.func.isRequired,
   thumbNailImages: PropTypes.array,
-  categories: PropTypes.array.isRequired,
 };
 
 CreateServiceRequestForm.defaultProps = {
@@ -302,6 +370,9 @@ CreateServiceRequestForm.defaultProps = {
 };
 
 const styles = StyleSheet.create({
+  switchView: {
+    width: '100%',
+  },
   textHeaderInstruction: {
     fontSize: 16,
     paddingBottom: 20,

@@ -1,77 +1,94 @@
-import React, { useEffect } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Text } from 'react-native-elements';
 
 import useTheme from '../../../theme/hooks/useTheme';
-import { setImagesSources } from '../../../reducers/service-request-reducer/service-request.actions';
-import { Colors } from '../../../theme/Variables';
 import CategoryTile from '../../atoms/service-request-category-tile/category-tile';
 
-const Categories = ({ categories, onCategoryPress, onViewAllPress }) => {
-  const dispatch = useDispatch();
-  const { Gutters, Common, Layout } = useTheme();
+const Categories = ({ municipalities, onCategoryPress, setSelectedChanne }) => {
+  const VIEWMORETILESDATA = {
+    name: 'View More',
+    id: 0,
+    iconName: 'more-horizontal',
+    iconSet: 'feather',
+    favourite: true,
+    serviceTypes: [],
+  };
+  const { Gutters, Layout, Fonts } = useTheme();
+  const [favoriteCategoriesData, setFavoriteCategoriesData] = useState([]);
+  const [showMoreTiles, setShowMoreTiles] = useState(false);
+  const [viewMoreTilesData, setViewMoreTilesData] = useState(VIEWMORETILESDATA);
 
   useEffect(() => {
-    dispatch(setImagesSources([]));
+    setFavoriteCategoriesData(
+      municipalities.map((municipality) => ({
+        ...municipality,
+        categories: municipality.categories.filter((category) => category.favourite === true),
+      })),
+    );
   }, []);
 
-  const onPressCategory = (category) => () => {
+  const onPressCategory = (category, channel) => () => {
     onCategoryPress(category);
+    setSelectedChanne(channel);
+  };
+
+  const onViewMorePress = () => {
+    if (showMoreTiles) {
+      setShowMoreTiles(false);
+      setViewMoreTilesData({ ...viewMoreTilesData, name: 'View More' });
+      setFavoriteCategoriesData(
+        municipalities.map((municipality) => ({
+          ...municipality,
+          categories: municipality.categories.filter((category) => category.favourite === true),
+        })),
+      );
+    } else {
+      setFavoriteCategoriesData(municipalities);
+      setShowMoreTiles(true);
+      setViewMoreTilesData({ ...viewMoreTilesData, name: 'View Less' });
+    }
   };
 
   const renderCategories = () => {
     return (
-      <View style={[Layout.row, styles.categoriesContainer]}>
-        {categories
-          .filter((category) => category.favorite === true)
-          .map((category) => (
-            <CategoryTile
-              key={`${category.objId}`}
-              categoryObject={category}
-              onPress={onPressCategory(category)}
-              size={36}
-            />
-          ))}
-      </View>
+      <>
+        {favoriteCategoriesData.map((municipality, index) => {
+          return (
+            <View key={municipality.id}>
+              <Text style={[Fonts.textLarge, Gutters.tinyBMargin]}>{municipality.name}</Text>
+              <View style={[Layout.row, styles.categoriesContainer]}>
+                {municipality.categories.map((category) => (
+                  <CategoryTile
+                    key={`${category.id}`}
+                    categoryObject={category}
+                    onPress={onPressCategory(category, municipality)}
+                    size={36}
+                  />
+                ))}
+                {index === favoriteCategoriesData.length - 1 && (
+                  <CategoryTile
+                    categoryObject={viewMoreTilesData}
+                    onPress={onViewMorePress}
+                    size={36}
+                  />
+                )}
+              </View>
+            </View>
+          );
+        })}
+      </>
     );
   };
 
-  const renderViewMoreButton = () => {
-    return (
-      <TouchableOpacity
-        onPress={onViewAllPress}
-        style={[
-          Common.viewWithShadow,
-          Layout.colCenter,
-          styles.viewAllButton,
-          Gutters.regularVMargin,
-        ]}
-      >
-        <Text style={[Common.textPrimary, styles.viewAllText]}>View all Categories</Text>
-      </TouchableOpacity>
-    );
-  };
-
-  return (
-    <KeyboardAwareScrollView
-      keyboardShouldPersistTaps="handled"
-      style={[Common.defaultBackGround]}
-      extraHeight={150}
-      enableOnAndroid
-    >
-      {renderCategories()}
-      {renderViewMoreButton()}
-    </KeyboardAwareScrollView>
-  );
+  return <>{renderCategories()}</>;
 };
 
 Categories.propTypes = {
-  categories: PropTypes.array.isRequired,
+  municipalities: PropTypes.array.isRequired,
   onCategoryPress: PropTypes.func.isRequired,
-  onViewAllPress: PropTypes.func.isRequired,
+  setSelectedChanne: PropTypes.func.isRequired,
 };
 
 Categories.defaultProps = {};
@@ -79,18 +96,6 @@ Categories.defaultProps = {};
 const styles = StyleSheet.create({
   categoriesContainer: {
     flexWrap: 'wrap',
-  },
-  viewAllButton: {
-    backgroundColor: Colors.transparent,
-    borderColor: Colors.primary,
-    borderRadius: 10,
-    borderWidth: 2,
-    elevation: 0,
-    height: 45,
-    shadowOffset: {
-      width: 0,
-      height: 0,
-    },
   },
 });
 

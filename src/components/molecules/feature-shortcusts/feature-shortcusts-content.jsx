@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { Icon } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,7 +14,6 @@ import { Colors } from '../../../theme/Variables';
 const ShortCutsActionSheetContent = ({
   onPressSubscribeToChannel,
   onPressNewServiceRequest,
-  loading,
   onPressAddAccount,
   onCancel,
 }) => {
@@ -53,7 +52,6 @@ const ShortCutsActionSheetContent = ({
     <View style={[Gutters.smallPadding, { backgroundColor: Colors.softBlue }]}>
       {renderCloseButton()}
       <TouchableOpacity
-        disabled={loading}
         onPress={onPressSubscribeToChannel}
         onPressIn={() => setChannelsButtonStyle({ backgroundColor: Colors.primary })}
         onPressOut={() => setChannelsButtonStyle({ backgroundColor: Colors.transparent })}
@@ -68,13 +66,6 @@ const ShortCutsActionSheetContent = ({
           channelsButtonStyle,
         ]}
       >
-        {loading && (
-          <ActivityIndicator
-            style={[styles.loadingIndicator, Layout.alignSelfCenter]}
-            animating
-            color={Colors.gray}
-          />
-        )}
         <Text style={[...[{ color: Colors.white, fontSize: 18 }]]}>Subscribe To Channel</Text>
       </TouchableOpacity>
       <TouchableOpacity
@@ -125,9 +116,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: '80%',
   },
-  loadingIndicator: {
-    position: 'absolute',
-  },
 });
 
 ShortCutsActionSheetContent.propTypes = {
@@ -135,7 +123,6 @@ ShortCutsActionSheetContent.propTypes = {
   onPressNewServiceRequest: PropTypes.func.isRequired,
   onPressAddAccount: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
-  loading: PropTypes.bool.isRequired,
 };
 ShortCutsActionSheetContent.defaultProps = {};
 

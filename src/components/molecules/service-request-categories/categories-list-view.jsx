@@ -7,46 +7,53 @@ import { ListItem, Text } from 'react-native-elements';
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
 
-const CategoriesListView = ({ categories, onCategorySelected, onServiceTypeSelected }) => {
+const CategoriesListView = ({
+  municipalities,
+  onCategorySelected,
+  setSelectedChanne,
+  onServiceTypeSelected,
+}) => {
   const { Gutters, Common, Layout, Fonts } = useTheme();
-  const [selectedServiceType, setSelectedServiceType] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState(categories[0]);
+  const [selectedCategory, setSelectedCategory] = useState();
 
-  const handleServiceTypeSelected = (serviceType) => () => {
-    setSelectedServiceType(serviceType);
+  const handleServiceTypeSelected = (serviceType, category) => () => {
+    onCategorySelected(category);
+    setSelectedCategory(category);
+    onServiceTypeSelected(serviceType);
   };
 
   useEffect(() => {
-    if (selectedServiceType) {
-      onServiceTypeSelected(selectedServiceType);
-    }
-  }, [selectedServiceType?.objectId]);
+    setSelectedChanne(municipalities[0]);
+  }, []);
 
-  const onAccordionExpanded = (category) => () => {
+  const onAccordionExpanded = (category, channel) => () => {
     if (selectedCategory) {
       setSelectedCategory(null);
     } else {
       setSelectedCategory(category);
-      onCategorySelected(category);
+      setSelectedChanne(channel);
     }
   };
 
-  const renderServiceTypes = (serviceTypes) => {
+  const renderServiceTypes = (serviceTypes, category) => {
     return (
-      <View style={styles.viewItemsTypesContainer}>
+      <View style={[Gutters.largeHMargin]}>
         {serviceTypes.map((serviceTypeObject) => {
           return (
             <View
-              key={`${serviceTypeObject.objectId}`}
-              style={[Common.viewWithShadow, Gutters.smallBMargin]}
+              key={`${serviceTypeObject.id}`}
+              style={[
+                Common.viewWithShadow,
+                { backgroundColor: Colors.lightgray },
+                Gutters.largeBMargin,
+              ]}
             >
               <List.Item
-                key={`${serviceTypeObject.objectId}`}
-                style={Layout.fill}
+                style={[Layout.fill]}
                 title={serviceTypeObject.name}
                 titleNumberOfLines={3}
-                onPress={handleServiceTypeSelected(serviceTypeObject)}
-                titleStyle={Common.cardTitle}
+                onPress={handleServiceTypeSelected(serviceTypeObject, category)}
+                titleStyle={[Common.cardTitle, ...[{ textAlign: 'center' }]]}
               />
             </View>
           );
@@ -55,55 +62,71 @@ const CategoriesListView = ({ categories, onCategorySelected, onServiceTypeSelec
     );
   };
 
-  const renderCategoryAccordion = (category) => {
+  const renderCategoryAccordion = (municipality) => {
     return (
-      <View key={`${category.objId}`}>
-        <Text style={[Fonts.textLarge, styles.categoryText]}>{category.channelName}</Text>
-        <ListItem.Accordion
-          key={`${category.objId}`}
-          underlayColor={Colors.transparent}
-          style={[Common.viewWithShadow, styles.accordion]}
-          content={
-            <View style={styles.categoryTextContainer}>
-              <Text style={[Fonts.textSmall, styles.categoryText]}>{category.name}</Text>
-            </View>
-          }
-          containerStyle={{ backgroundColor: Colors.transparent }}
-          onPress={onAccordionExpanded(category)}
-          isExpanded={selectedCategory ? selectedCategory.objId === category.objId : false}
-        >
-          {renderServiceTypes(category.serviceTypes)}
-        </ListItem.Accordion>
+      <View style={styles.mainView} key={`${municipality.id}`}>
+        <Text style={[Fonts.textLarge, styles.categoryText]}>{municipality.name}</Text>
+        {municipality.categories.map((category) => {
+          return (
+            <ListItem.Accordion
+              key={`${category.id}`}
+              underlayColor={Colors.transparent}
+              noIcon
+              style={[styles.accordion]}
+              content={
+                <View style={styles.categoryTextContainer}>
+                  <Text style={[Fonts.textSmall, styles.categoryText]}>{category.name}</Text>
+                </View>
+              }
+              containerStyle={{ backgroundColor: Colors.transparent }}
+              onPress={onAccordionExpanded(category, municipality)}
+              isExpanded
+            >
+              {renderServiceTypes(category.serviceTypes, category)}
+            </ListItem.Accordion>
+          );
+        })}
       </View>
     );
   };
 
-  return categories.map((category) => renderCategoryAccordion(category));
+  return municipalities.map((municipality) => renderCategoryAccordion(municipality));
 };
 
 CategoriesListView.propTypes = {
-  categories: PropTypes.array.isRequired,
+  municipalities: PropTypes.array.isRequired,
   onCategorySelected: PropTypes.func.isRequired,
   onServiceTypeSelected: PropTypes.func.isRequired,
+  setSelectedChanne: PropTypes.func.isRequired,
 };
 
 CategoriesListView.defaultProps = {};
 
 const styles = StyleSheet.create({
   accordion: {
-    backgroundColor: Colors.lightgray,
-    borderRadius: 0,
-    marginBottom: 10,
     marginTop: 5,
   },
 
   categoryText: {
     fontSize: 16,
     fontWeight: '500',
+    textAlign: 'center',
   },
 
   categoryTextContainer: {
-    width: '90%',
+    borderBottomWidth: 0,
+    borderColor: Colors.gray,
+    borderLeftWidth: 0,
+    borderRadius: 0,
+    borderRightWidth: 0,
+    borderWidth: 0.3,
+    paddingTop: 5,
+    width: '100%',
+  },
+  mainView: {
+    borderColor: Colors.gray,
+    borderWidth: 0.3,
+    paddingVertical: 8,
   },
 });
 

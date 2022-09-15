@@ -11,6 +11,8 @@
 export const Colors = {
   transparent: 'rgba(0,0,0,0)',
   inputBackground: '#FFFFFF',
+  primaryBackground: '#F6FAFB',
+  separatorLine: '#c4c4c4',
   white: '#ffffff',
   black: '#000',
   text: '#212529',
