@@ -19,7 +19,7 @@ export const getServiceRequestsAction = () => (dispatch) => {
     .then((serviceRequests) => {
       dispatch(setServiceRequestsAction(serviceRequests));
     })
-    .catch((error) => flashService.error(error.message))
+    .catch((error) => flashService.error(_.get(error, 'message', '')))
     .finally(() => {
       dispatch(setIsLoadingServiceRequestsAction(false));
     });
@@ -33,7 +33,7 @@ export const getNearbyPinLocationsAction =
       .then(async (locations) => {
         return dispatch(setNearbyPinLocationsAction(locations));
       })
-      .catch((error) => flashService.error(error.message))
+      .catch((error) => flashService.error(_.get(error, 'message', '')))
       .finally(() => {
         dispatch(setIsLoadingNearbyPinLocationsAction(false));
       });

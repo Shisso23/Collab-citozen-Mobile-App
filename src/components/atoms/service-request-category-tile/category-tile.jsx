@@ -35,9 +35,11 @@ const CategoryTile = ({ categoryObject, size, onPress }) => {
           type={iconSet}
           size={size}
           color={Colors.darkgray}
-          containerStyle={Gutters.smallBMargin}
+          containerStyle={Gutters.tinyVMargin}
         />
-        <Text style={[styles.description]}>{name}</Text>
+        <Text numberOfLines={2} style={[styles.description, Gutters.smallPadding]}>
+          {name}
+        </Text>
       </View>
     </TouchableOpacity>
   );
@@ -46,7 +48,7 @@ const CategoryTile = ({ categoryObject, size, onPress }) => {
 const styles = StyleSheet.create({
   container: {
     borderColor: Colors.shadow,
-    borderRadius: 10,
+    borderRadius: 11,
     height: width * 0.28,
     width: width * 0.27,
   },
@@ -58,7 +60,7 @@ const styles = StyleSheet.create({
   },
   description: {
     color: Colors.black,
-    fontSize: 13,
+    fontSize: 11,
     textAlign: 'center',
   },
 });

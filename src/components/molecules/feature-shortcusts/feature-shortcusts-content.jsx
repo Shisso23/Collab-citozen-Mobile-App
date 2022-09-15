@@ -23,7 +23,7 @@ const ShortCutsActionSheetContent = ({
   const [channelsButtonStyle, setChannelsButtonStyle] = useState({});
   const [accountApplicableChannels, setAccountApplicableChannels] = useState([]);
   const { myChannels } = useSelector(myChannelsSelector);
-  const { Gutters, Layout, Common } = useTheme();
+  const { Gutters, Layout } = useTheme();
 
   const _loadMyChannels = () => {
     dispatch(getMyChannelsAction()).then(() => {
@@ -56,7 +56,6 @@ const ShortCutsActionSheetContent = ({
         onPressIn={() => setChannelsButtonStyle({ backgroundColor: Colors.primary })}
         onPressOut={() => setChannelsButtonStyle({ backgroundColor: Colors.transparent })}
         style={[
-          Common.viewWithShadow,
           styles.confirmButton,
           Layout.alignSelfCenter,
           Layout.alignItemsCenter,
@@ -73,7 +72,6 @@ const ShortCutsActionSheetContent = ({
         onPressIn={() => setServiceRequesButtonStyle({ backgroundColor: Colors.primary })}
         onPressOut={() => setServiceRequesButtonStyle({ backgroundColor: Colors.transparent })}
         style={[
-          Common.viewWithShadow,
           styles.confirmButton,
           Layout.alignSelfCenter,
           Layout.alignItemsCenter,
@@ -92,7 +90,6 @@ const ShortCutsActionSheetContent = ({
           onPressIn={() => setAccountButtonStyle({ backgroundColor: Colors.primary })}
           onPressOut={() => setAccountButtonStyle({ backgroundColor: Colors.transparent })}
           style={[
-            Common.viewWithShadow,
             styles.confirmButton,
             Layout.alignSelfCenter,
             Layout.alignItemsCenter,

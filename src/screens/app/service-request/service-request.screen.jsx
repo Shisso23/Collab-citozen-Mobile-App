@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import MapView, { Marker } from 'react-native-maps';
-import HmsMapView, { HMSMarker, MapTypes, Hue, HMSInfoWindow } from '@hmscore/react-native-hms-map';
+import HmsMapView, { HMSMarker, MapTypes, Hue } from '@hmscore/react-native-hms-map';
 import { FAB, Modal, Button } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import {
@@ -13,7 +13,6 @@ import {
   View,
   Keyboard,
   TouchableOpacity,
-  TouchableHighlight,
   SafeAreaView,
 } from 'react-native';
 import { Tab, Icon } from 'react-native-elements';
@@ -309,11 +308,11 @@ const ServiceRequestScreen = () => {
         <HMSMarker
           key={pin.id}
           icon={{ hue: returnMarkerColour(pin.status) }}
+          defaultActionOnClick={false}
+          onClick={displayModalToggle(pin, true)}
           clusterable
           coordinate={{ latitude: lng, longitude: lat }}
-        >
-          {renderHmsMarkerInfoWindow(pin)}
-        </HMSMarker>
+        />
       ) : (
         <View />
       );
@@ -419,41 +418,6 @@ const ServiceRequestScreen = () => {
           {following ? 'UnFollow' : 'Follow'}
         </Button>
       )) || <></>
-    );
-  };
-
-  const renderHmsMarkerInfoWindow = (pin) => {
-    const { id, serviceType, serviceDescription, requestDate, status } = pin;
-    if (pin) {
-      setSelectedSRPin(pin);
-    }
-    return (
-      <HMSInfoWindow>
-        <TouchableHighlight>
-          <View style={Fonts.textRegular}>
-            <View
-              style={[
-                ...[{ backgroundColor: Colors.lightgray, borderRadius: 10 }],
-                Gutters.smallPadding,
-              ]}
-            >
-              <Text style={[Gutters.smallVMargin, Fonts.textRegular, styles.headerFont]}>
-                Type: {serviceType}
-              </Text>
-              <View style={styles.textLine} />
-              <Text style={[Gutters.smallVMargin, Fonts.textRegular, styles.descriptionFont]}>
-                Description:
-              </Text>
-              <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>{serviceDescription}</Text>
-              <View style={styles.textLine} />
-              <Text style={[Gutters.smallVMargin, Fonts.textRegular]}>Status: {status}</Text>
-              <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>Date: {requestDate}</Text>
-              <Text style={[Gutters.smallBMargin, Fonts.textRegular]}>Reference No: {id}</Text>
-              {renderFollowSRButon()}
-            </View>
-          </View>
-        </TouchableHighlight>
-      </HMSInfoWindow>
     );
   };
 

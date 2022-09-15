@@ -67,8 +67,21 @@ const CreateServiceRequestForm = ({
       if (selectedChannel) {
         resetMunicipalityTypeSelected();
       }
+    } else {
+      setMunicipalitiesSearchResult(municipalities);
     }
   }, [searchValue]);
+
+  useEffect(() => {
+    formikRef.current.setFieldValue('channel', _.get(selectedChannel, 'name', null));
+    formikRef.current.setFieldValue('serviceTypeCategory', _.get(selectedCategory, 'name', null));
+    formikRef.current.setFieldValue('channelRef', _.get(selectedChannel, 'id', null));
+    formikRef.current.setFieldValue(
+      'municipalityCode',
+      _.get(selectedChannel, 'municipalityCode', null),
+    );
+    formikRef.current.setFieldValue('serviceType', selectedServiceType);
+  }, [JSON.stringify(selectedServiceType)]);
 
   const onCategoryPress = (category) => {
     setSelectedCategory(category);
@@ -114,7 +127,7 @@ const CreateServiceRequestForm = ({
 
   const _handleFormSubmitError = (error, actions) => {
     actions.setSubmitting(false);
-    actions.setFieldError('account', error.message);
+    actions.setFieldError('account', _.get(error, 'message', ''));
   };
 
   const _handleSubmission = (formData, actions) => {
@@ -198,16 +211,6 @@ const CreateServiceRequestForm = ({
           setFieldValue,
         }) => {
           const handleSubmissionFormik = (vals) => {
-            formikRef.current.setFieldValue('channel', _.get(selectedChannel, 'name', null));
-            formikRef.current.setFieldValue(
-              'serviceTypeCategory',
-              _.get(selectedCategory, 'name', null),
-            );
-            formikRef.current.setFieldValue('channelRef', _.get(selectedChannel, 'id', null));
-            formikRef.current.setFieldValue(
-              'municipalityCode',
-              _.get(selectedChannel, 'municipalityCode', null),
-            );
             setFieldValue('location', selectedCoordinates);
             vals.location = selectedCoordinates;
             setFieldValue('address', addressSelected);
