@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Dimensions, TouchableOpacity, View } from 'react-native';
 import { Icon, Text } from 'react-native-elements';
 import PropTypes from 'prop-types';
+
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
 

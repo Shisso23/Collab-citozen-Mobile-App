@@ -7,8 +7,8 @@ import { Button, HelperText, TextInput } from 'react-native-paper';
 import { Text } from 'react-native-elements';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import _ from 'lodash';
-
 import { useDispatch } from 'react-redux';
+
 import {
   selectChannelSchema,
   selectServiceTypeCategorySchema,
