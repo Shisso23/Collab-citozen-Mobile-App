@@ -6,38 +6,75 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import _ from 'lodash';
 
 import { Fade, Placeholder, PlaceholderLine, PlaceholderMedia } from 'rn-placeholder';
+import moment from 'moment';
 import useTheme from '../../../theme/hooks/useTheme';
 import ScreenContainer from '../../../components/containers/screen-container/screen.container';
 import PaddedContainer from '../../../components/containers/padded-container/padded.container';
 import Notification from '../../../components/molecules/notification';
-import { getNotificationsAction } from '../../../reducers/notification-reducer/notification.actions';
+import {
+  deleteNotificationAction,
+  getNotificationsAction,
+} from '../../../reducers/notification-reducer/notification.actions';
 import { promptConfirm } from '../../../helpers/prompt.helper';
-import { setUnOpenedNotificationsAction } from '../../../reducers/notification-reducer/notification.reducer';
 import { setTabBarVisibilityAction } from '../../../reducers/navigation-reducer/navigation.actions';
 
 const InboxScreen = () => {
   const { Colors } = useTheme();
-  const { notifications, isLoading, unOpenedNotifications } = useSelector(
-    (reducers) => reducers.notificationReducer,
-  );
+  const { notifications, isLoading } = useSelector((reducers) => reducers.notificationReducer);
   const { Fonts, Layout, Images, Common, Gutters } = useTheme();
   const dispatch = useDispatch();
-  const [atLeastOneSelected, setAtLeastOneSelected] = useState(false);
+  const { user } = useSelector((reducers) => reducers.userReducer);
   const [selectedCounter, setSelectedCounter] = useState(0);
-  const [multiDeleteConfirmed, setMultiDeleteConfirmed] = useState(false);
+  const [multiselectEnabled, setMultiselectEnabled] = useState(false);
+  const [selectedNotifications, setSelectedNotifications] = useState([]);
+  const [expandedNotification, setExpandeNotification] = useState(null);
+  const [userNotifications, setUserNotifications] = useState(_.get(notifications, 'Feed', []));
 
   useEffect(() => {
     dispatch(setTabBarVisibilityAction(true));
     dispatch(getNotificationsAction());
   }, []);
+  useEffect(() => {
+    setUserNotifications(_.get(notifications, 'Feed', []));
+  }, [JSON.stringify(notifications)]);
 
   useEffect(() => {
-    if (selectedCounter === 0) {
-      setAtLeastOneSelected(false);
+    if (selectedNotifications.length === 0) {
+      setMultiselectEnabled(false);
     } else {
-      setAtLeastOneSelected(true);
+      setMultiselectEnabled(true);
     }
-  }, [selectedCounter]);
+  }, [JSON.stringify(selectedNotifications)]);
+
+  const handleNotificationLongPress = (notification) => () => {
+    setSelectedNotifications([...selectedNotifications, notification]);
+  };
+
+  const handleNotificationPress = (notification) => () => {
+    if (multiselectEnabled) {
+      if (
+        selectedNotifications.some(
+          (notification_) => _.get(notification_, 'obj_id') === _.get(notification, 'obj_id'),
+        )
+      ) {
+        setSelectedNotifications(
+          selectedNotifications.filter(
+            (notification_) => _.get(notification_, 'obj_id') !== _.get(notification, 'obj_id'),
+          ),
+        );
+      } else {
+        setSelectedNotifications([...selectedNotifications, notification]);
+      }
+    } else if (
+      !multiselectEnabled &&
+      expandedNotification &&
+      _.get(expandedNotification, 'obj_id') === _.get(notification, 'obj_id')
+    ) {
+      setExpandeNotification(null);
+    } else {
+      setExpandeNotification(notification);
+    }
+  };
 
   const renderPlaceHolders = () => {
     const dummyArray = [1, 2, 3, 4, 5, 6, 7];
@@ -72,16 +109,45 @@ const InboxScreen = () => {
     );
   };
 
+  const handleDeleteNotification = (notificationToDelete) => () => {
+    setUserNotifications(
+      userNotifications.filter(
+        (notification) => _.get(notificationToDelete, 'obj_id') !== _.get(notification, 'obj_id'),
+      ),
+    );
+  };
+
   const deleteNotificationsSelected = () => {
     promptConfirm(
       'Are you sure?',
       'Are you sure you want to delete all selected items?',
       'Delete',
       () => {
-        setSelectedCounter(0);
-        setMultiDeleteConfirmed(true);
-        setTimeout(() => setMultiDeleteConfirmed(false), 100);
-        setUnOpenedNotificationsAction(unOpenedNotifications - selectedCounter);
+        setUserNotifications(
+          userNotifications.filter((notification) => {
+            if (
+              selectedNotifications.every(
+                (selectedNotification) =>
+                  _.get(selectedNotification, 'obj_id') !== _.get(notification, 'obj_id'),
+              )
+            ) {
+              return true;
+            }
+            return false;
+          }),
+        );
+        setMultiselectEnabled(false);
+        Promise.all(
+          selectedNotifications.map((notification) =>
+            dispatch(
+              deleteNotificationAction(
+                _.get(notification, 'obj_id'),
+                moment(new Date()).format('yyyy-mm-DD hh:mm:ss'),
+                _.get(user, 'user_id', ''),
+              ),
+            ),
+          ),
+        );
       },
     );
   };
@@ -97,7 +163,7 @@ const InboxScreen = () => {
       </Text>
       {!isLoading ? (
         <ScreenContainer>
-          {atLeastOneSelected && (
+          {multiselectEnabled && (
             <PaddedContainer>
               <View style={Layout.alignSelfEnd}>
                 <Icon
@@ -110,7 +176,7 @@ const InboxScreen = () => {
               </View>
             </PaddedContainer>
           )}
-          {_.get(notifications, 'Feed', []).map((notification, index) => {
+          {userNotifications.map((notification, index) => {
             return (
               <Notification
                 notification={notification}
@@ -118,7 +184,22 @@ const InboxScreen = () => {
                 index={index}
                 selectedCounter={selectedCounter}
                 setSelectedCounter={setSelectedCounter}
-                multiDeleteConfirmed={multiDeleteConfirmed}
+                onPress={handleNotificationPress(notification)}
+                onLongPress={handleNotificationLongPress(notification)}
+                multiselectEnabled={multiselectEnabled}
+                handleDeleteNotification={handleDeleteNotification(notification)}
+                expanded={
+                  !multiselectEnabled &&
+                  _.get(expandedNotification, 'obj_id') === _.get(notification, 'obj_id')
+                }
+                isSelected={
+                  !selectedNotifications
+                    ? false
+                    : selectedNotifications.some(
+                        (notification_) =>
+                          _.get(notification_, 'obj_id', index) === _.get(notification, 'obj_id'),
+                      )
+                }
               />
             );
           })}
