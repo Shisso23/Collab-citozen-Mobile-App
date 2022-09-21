@@ -33,6 +33,7 @@ import { getUnsubscribedChannelsByLocationAction } from '../../../../reducers/un
 import { flashService, permissionsService, serviceRequestService } from '../../../../services';
 import LoadingOverlay from '../../../../components/molecules/loading-overlay';
 import { Colors } from '../../../../theme/Variables';
+import { setTabBarVisibilityAction } from '../../../../reducers/navigation-reducer/navigation.actions';
 
 const { width } = Dimensions.get('window');
 const loadingImageSource = require('../../../../assets/lottie-files/rings-loading.json');
@@ -75,6 +76,7 @@ const SelectLocationScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
+      dispatch(setTabBarVisibilityAction(false));
       if (hasGmsSync() || Platform.OS === 'ios') {
         permissionsService
           .checkLocationPermissions()
@@ -94,6 +96,9 @@ const SelectLocationScreen = () => {
             flashService.error('Please grant permissions to select a location.');
           });
       }
+      return () => {
+        dispatch(setTabBarVisibilityAction(true));
+      };
     }, []),
   );
 

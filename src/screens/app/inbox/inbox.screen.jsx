@@ -13,6 +13,7 @@ import Notification from '../../../components/molecules/notification';
 import { getNotificationsAction } from '../../../reducers/notification-reducer/notification.actions';
 import { promptConfirm } from '../../../helpers/prompt.helper';
 import { setUnOpenedNotificationsAction } from '../../../reducers/notification-reducer/notification.reducer';
+import { setTabBarVisibilityAction } from '../../../reducers/navigation-reducer/navigation.actions';
 
 const InboxScreen = () => {
   const { Colors } = useTheme();
@@ -26,6 +27,7 @@ const InboxScreen = () => {
   const [multiDeleteConfirmed, setMultiDeleteConfirmed] = useState(false);
 
   useEffect(() => {
+    dispatch(setTabBarVisibilityAction(true));
     dispatch(getNotificationsAction());
   }, []);
 

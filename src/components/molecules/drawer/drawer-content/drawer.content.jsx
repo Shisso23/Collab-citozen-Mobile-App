@@ -87,7 +87,7 @@ const DrawerContent = (props) => {
           <Drawer.Item
             icon="home"
             label="Home"
-            onPress={() => navigation.navigate('Home')}
+            onPress={() => navigation.navigate('HomeScreen')}
             theme={theme}
           />
           <Drawer.Item

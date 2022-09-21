@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   RefreshControl,
+  Dimensions,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
@@ -22,8 +23,10 @@ import {
 import { channelContactsSelector } from '../../../reducers/contacts-reducer/contacts.reducer';
 import { locationSelector } from '../../../reducers/location-reducer/location.reducer';
 import ContactButtons from '../../../components/molecules/contact-buttons';
+import { setTabBarVisibilityAction } from '../../../reducers/navigation-reducer/navigation.actions';
 
 const ContactDetailsScreen = () => {
+  const screenHeight = Dimensions.get('window').height;
   const { Common, Gutters, Fonts, Layout, Images } = useTheme();
   const dispatch = useDispatch();
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -33,6 +36,7 @@ const ContactDetailsScreen = () => {
   const { selectedAddress, region } = useSelector(locationSelector);
 
   useEffect(() => {
+    dispatch(setTabBarVisibilityAction(true));
     dispatch(getCurrentPositionAction()).then((position) => {
       getAddress(position);
       getContacts(position);
@@ -122,7 +126,7 @@ const ContactDetailsScreen = () => {
         </TouchableOpacity>
 
         <FlatList
-          contentContainerStyle={Gutters.smallHMargin}
+          contentContainerStyle={[...[{ height: screenHeight + screenHeight * 0.03 }], Gutters.smallHMarginF]}
           data={channelsContacts}
           renderItem={renderContactDetails}
           keyExtractor={(item) => String(item.number)}

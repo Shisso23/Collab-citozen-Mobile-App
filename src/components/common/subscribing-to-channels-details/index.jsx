@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
-import { Text, View, FlatList, StyleSheet } from 'react-native';
+import { Text, View, FlatList, StyleSheet, Dimensions } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { Button, List } from 'react-native-paper';
 
@@ -18,6 +18,7 @@ const SubscribingToChannelsDetails = (props) => {
   const { Gutters, Fonts, Colors, Common, Layout } = useTheme();
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const screenHeight = Dimensions.get('window').height;
 
   const { user } = useSelector((reducers) => reducers.userReducer);
   const [isLoading, setIsLoading] = useState(false);
@@ -95,6 +96,7 @@ const SubscribingToChannelsDetails = (props) => {
       <FlatList
         data={interestTypes}
         renderItem={subscribeToItem}
+        contentContainerStyle={{ height: screenHeight + screenHeight * 0.03 }}
         keyExtractor={(item) => String(item.obj_id)}
       />
       <Divider color={Colors.transparent} />

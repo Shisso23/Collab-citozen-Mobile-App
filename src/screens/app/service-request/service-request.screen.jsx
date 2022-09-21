@@ -37,6 +37,7 @@ import { TrashButton } from '../../../components/atoms';
 import { locationSelector } from '../../../reducers/location-reducer/location.reducer';
 import { getCurrentPositionAction } from '../../../reducers/location-reducer/location.actions';
 import LoadingOverlay from '../../../components/molecules/loading-overlay/index';
+import { setTabBarVisibilityAction } from '../../../reducers/navigation-reducer/navigation.actions';
 
 const { Colors } = useTheme();
 const loadingImageSource = require('../../../assets/lottie-files/rings-loading.json');
@@ -93,6 +94,7 @@ const ServiceRequestScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
+      dispatch(setTabBarVisibilityAction(false));
       dispatch(getCurrentPositionAction()).then((position) => {
         setUserLocation(position);
         setMapPosition(position);

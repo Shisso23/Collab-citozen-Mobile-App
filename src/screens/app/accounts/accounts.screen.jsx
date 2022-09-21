@@ -13,6 +13,7 @@ import { TrashButton } from '../../../components/atoms';
 import SwipeRowContainer from '../../../components/atoms/swipe-row/swipe-row';
 import { promptConfirm } from '../../../helpers/prompt.helper';
 import { previewDeleAccountAction } from '../../../reducers/accounts-reducer/accounts.actions';
+import { setTabBarVisibilityAction } from '../../../reducers/navigation-reducer/navigation.actions';
 
 const AccountsScreen = () => {
   const dispatch = useDispatch();
@@ -30,6 +31,7 @@ const AccountsScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
+      dispatch(setTabBarVisibilityAction(true));
       _loadMyChannels();
     }, []),
   );
