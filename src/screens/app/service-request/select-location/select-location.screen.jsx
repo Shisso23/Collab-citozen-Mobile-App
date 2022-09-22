@@ -549,7 +549,7 @@ const SelectLocationScreen = () => {
       {Platform.OS === 'android' && (
         <View
           style={[
-            ...[{ paddingBottom: !keyboardVisible ? screenHeight - screenHeight * 0.88 : 0 }],
+            ...[{ paddingBottom: !keyboardVisible ? screenHeight - screenHeight * 0.91 : 0 }],
           ]}
         >
           <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'position' : ''}>
@@ -570,7 +570,7 @@ const SelectLocationScreen = () => {
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'position' : ''}
           contentContainerStyle={[
-            ...[{ paddingBottom: !keyboardVisible ? screenHeight - screenHeight * 0.88 : 0 }],
+            ...[{ paddingBottom: !keyboardVisible ? screenHeight - screenHeight * 0.885 : 0 }],
           ]}
         >
           <View style={Layout.fullWidth}>

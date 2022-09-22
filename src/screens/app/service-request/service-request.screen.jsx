@@ -335,7 +335,6 @@ const ServiceRequestScreen = () => {
             minZoomPreference={3}
             maxZoomPreference={20}
             animationDuration={2000}
-            zoomControlsEnabled
             rotateGesturesEnabled
             scrollGesturesEnabled
             tiltGesturesEnabled
@@ -369,7 +368,6 @@ const ServiceRequestScreen = () => {
           return _setMapPosition(newPosition);
         }}
         onMapReady={() => setMapReady(true)}
-        zoomControlEnabled
         zoomEnabled
         showsMyLocationButton
       >
