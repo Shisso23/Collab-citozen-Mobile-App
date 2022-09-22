@@ -32,11 +32,7 @@ const CategoriesListView = ({
           return (
             <View
               key={`${serviceTypeObject.id}`}
-              style={[
-                Common.viewWithShadow,
-                { backgroundColor: Colors.lightgray },
-                Gutters.largeBMargin,
-              ]}
+              style={[Common.viewWithShadow, Gutters.largeBMargin]}
             >
               <List.Item
                 style={[Layout.fill]}
