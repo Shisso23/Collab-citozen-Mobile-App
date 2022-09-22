@@ -53,8 +53,6 @@ const styles = StyleSheet.create({
   },
   tabBarWrapper: {
     backgroundColor: Colors.softBlue,
-    borderTopLeftRadius: 17,
-    borderTopRightRadius: 17,
     width: '100%',
   },
 });
