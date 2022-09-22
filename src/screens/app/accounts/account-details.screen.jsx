@@ -8,6 +8,7 @@ import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
 import StatementsTabContent from '../../../components/molecules/add-account/statements-tab-content';
 import MetersTabContent from '../../../components/molecules/meters/meters-tab-content';
+import ScreenContainer from '../../../components/containers/screen-container/screen.container';
 
 const AccountDetailsScreen = ({ route }) => {
   const accountDetails = _.get(route, 'params.account', {});
@@ -59,56 +60,65 @@ const AccountDetailsScreen = ({ route }) => {
         style={[Layout.fullSize, Layout.fill]}
         resizeMode="cover"
       >
-        <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>Account</Text>
-        <Text style={[styles.accountDetails, Gutters.smallLMargin]}>{accountNumber}</Text>
-        <Text style={[styles.accountDetails, Gutters.tinyVMargin, Gutters.smallLMargin]}>
-          {accountChannel}
-        </Text>
-        <Tab
-          value={tabIndex}
-          onChange={(index) => {
-            setTabIndex(index);
-          }}
-          indicatorStyle={[
-            { backgroundColor: Colors.softBlue },
-            Platform.select({ android: { borderWidth: 15 }, ios: {} }),
-          ]}
-          disableIndicator={disableIndicator}
-        >
-          <Tab.Item
-            titleStyle={[{ color: tabIndex === 0 ? Colors.black : Colors.gray }, styles.tabItem]}
-            title="Statements"
-          />
-          {meters.length > 0 ? (
-            <Tab.Item
-              titleStyle={[{ color: tabIndex === 1 ? Colors.black : Colors.gray }, styles.tabItem]}
-              title="Meters"
-            />
-          ) : (
-            <></>
-          )}
-        </Tab>
-        {tabIndex === 0 ? (
-          <StatementsTabContent account={accountDetails} statements={statements} />
-        ) : (
-          <MetersTabContent meters={meters} accountNumber={accountNumber} channelRef={channelRef} />
-        )}
-
-        {false && ( // TODO remove this condition when we integrate payment
-          <TouchableOpacity
-            onPress={onMakePaymentPress}
-            style={[
-              styles.submitButton,
-              Layout.alignItemsCenter,
-              Layout.justifyContentCenter,
-              Gutters.largeHMargin,
-              Gutters.smallVPadding,
-              Gutters.smallBMargin,
+        <ScreenContainer>
+          <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>Account</Text>
+          <Text style={[styles.accountDetails, Gutters.smallLMargin]}>{accountNumber}</Text>
+          <Text style={[styles.accountDetails, Gutters.tinyVMargin, Gutters.smallLMargin]}>
+            {accountChannel}
+          </Text>
+          <Tab
+            value={tabIndex}
+            onChange={(index) => {
+              setTabIndex(index);
+            }}
+            indicatorStyle={[
+              { backgroundColor: Colors.softBlue },
+              Platform.select({ android: { borderWidth: 15 }, ios: {} }),
             ]}
+            disableIndicator={disableIndicator}
           >
-            {renderMakePaymentButtonContent()}
-          </TouchableOpacity>
-        )}
+            <Tab.Item
+              titleStyle={[{ color: tabIndex === 0 ? Colors.black : Colors.gray }, styles.tabItem]}
+              title="Statements"
+            />
+            {meters.length > 0 ? (
+              <Tab.Item
+                titleStyle={[
+                  { color: tabIndex === 1 ? Colors.black : Colors.gray },
+                  styles.tabItem,
+                ]}
+                title="Meters"
+              />
+            ) : (
+              <></>
+            )}
+          </Tab>
+          {tabIndex === 0 ? (
+            <StatementsTabContent account={accountDetails} statements={statements} />
+          ) : (
+            <MetersTabContent
+              meters={meters}
+              accountNumber={accountNumber}
+              channelRef={channelRef}
+            />
+          )}
+
+          {false && ( // TODO remove this condition when we integrate payment
+            <TouchableOpacity
+              onPress={onMakePaymentPress}
+              style={[
+                styles.submitButton,
+                Layout.alignItemsCenter,
+                Layout.justifyContentCenter,
+                Gutters.largeHMargin,
+                Gutters.smallVPadding,
+                Gutters.smallBMargin,
+              ]}
+            >
+              {renderMakePaymentButtonContent()}
+            </TouchableOpacity>
+          )}
+        </ScreenContainer>
       </ImageBackground>
     </>
   );

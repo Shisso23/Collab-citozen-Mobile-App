@@ -16,7 +16,7 @@ const CreateNotificationScreen = () => {
   const navigation = useNavigation();
   const onNotificationCreateSuccess = () => {
     flashService.success('Success', 'Successfully created notification!');
-    navigation.goBack();
+    navigation.navigate('HomeScreen');
   };
 
   const onFormSubmit = async (values) => {

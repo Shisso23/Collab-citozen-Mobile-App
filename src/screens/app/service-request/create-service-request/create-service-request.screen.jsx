@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
-import { FlatList, View, StyleSheet, ImageBackground } from 'react-native';
+import { FlatList, View, StyleSheet, ImageBackground, Dimensions } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Icon } from 'react-native-elements';
@@ -21,6 +21,7 @@ import { promptConfirm } from '../../../../helpers/prompt.helper';
 import { Colors } from '../../../../theme/Variables';
 
 const CreateServiceRequestScreen = () => {
+  const screenHeight = Dimensions.get('window').height;
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const [thumNailImages, setThumNailImages] = useState([]);
@@ -72,7 +73,10 @@ const CreateServiceRequestScreen = () => {
   return (
     <KeyboardAwareScrollView
       keyboardShouldPersistTaps="handled"
-      style={[Common.defaultBackGround]}
+      contentContainerStyle={[
+        Common.defaultBackGround,
+        ...[{ paddingBottom: screenHeight - screenHeight * 0.6 }],
+      ]}
       extraHeight={150}
       enableOnAndroid
     >

@@ -1,9 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ScrollView } from 'react-native';
+import { Dimensions, ScrollView } from 'react-native';
 
 const ScreenContainer = ({ children }) => {
-  return <ScrollView>{children}</ScrollView>;
+  const screenHeight = Dimensions.get('window').height;
+  return (
+    <ScrollView contentContainerStyle={{ paddingBottom: screenHeight - screenHeight * 0.8 }}>
+      {children}
+    </ScrollView>
+  );
 };
 
 ScreenContainer.propTypes = {

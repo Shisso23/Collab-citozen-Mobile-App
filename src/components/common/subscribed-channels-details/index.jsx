@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Text, View, FlatList, StyleSheet } from 'react-native';
+import { Text, View, FlatList, StyleSheet, Dimensions } from 'react-native';
 import { Divider, Button } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import { List } from 'react-native-paper';
@@ -12,6 +12,7 @@ import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
 
 const SubscribedToChannelsDetails = (props) => {
+  const screenHeight = Dimensions.get('window').height;
   const { Gutters, Fonts, Common } = useTheme();
   const { channel } = props;
   const channelItem = _.get(channel, 'channelItem');
@@ -57,6 +58,7 @@ const SubscribedToChannelsDetails = (props) => {
       <FlatList
         data={interestTypes}
         renderItem={subscribeToItem}
+        contentContainerStyle={{ height: screenHeight + screenHeight * 0.03 }}
         keyExtractor={(item) => String(item.obj_id)}
       />
       {(channelItem.userCanCreateNotification && (
