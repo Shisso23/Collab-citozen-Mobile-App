@@ -1,7 +1,15 @@
 import React, { useCallback } from 'react';
 import { FAB, List } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { FlatList, Text, ImageBackground, RefreshControl, View, StyleSheet } from 'react-native';
+import {
+  FlatList,
+  Text,
+  ImageBackground,
+  RefreshControl,
+  View,
+  StyleSheet,
+  Dimensions,
+} from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import _ from 'lodash';
@@ -17,6 +25,7 @@ import { setTabBarVisibilityAction } from '../../../reducers/navigation-reducer/
 
 const AccountsScreen = () => {
   const dispatch = useDispatch();
+  const screenHeight = Dimensions.get('window').height;
   const { accountChannels, isLoadingAccountChannels } = useSelector(accountsSelector);
   const { user } = useSelector((reducer) => reducer.userReducer);
   const { isLoadingDeleteAccount, deleteAccountPreview } = useSelector(
@@ -157,7 +166,11 @@ const AccountsScreen = () => {
           }
         />
       </ImageBackground>
-      <FAB style={[Common.fabAlignment]} icon="plus" onPress={_handleAddAccountPress} />
+      <FAB
+        style={[Common.fabAlignment, { marginBottom: screenHeight - screenHeight * 0.85 }]}
+        icon="plus"
+        onPress={_handleAddAccountPress}
+      />
     </>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
@@ -27,11 +27,16 @@ const FeatureTilesContainer = ({
       _loadMyChannels();
     }, []),
   );
+  useEffect(() => {
+    setAccountApplicableChannels(
+      myChannels.filter((channel) => _.get(channel, 'accountApplicable', null) === true),
+    );
+  }, [JSON.stringify(myChannels)]);
 
   const _loadMyChannels = () => {
-    dispatch(getMyChannelsAction()).then(() => {
+    dispatch(getMyChannelsAction()).then((response) => {
       setAccountApplicableChannels(
-        myChannels.filter((channel) => _.get(channel, 'accountApplicable', null) === true),
+        response.filter((channel) => _.get(channel, 'accountApplicable', null) === true),
       );
     });
   };

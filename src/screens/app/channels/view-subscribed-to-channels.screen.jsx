@@ -1,7 +1,15 @@
 import React from 'react';
 import { FAB, List } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
-import { FlatList, Text, View, ImageBackground, RefreshControl, StyleSheet } from 'react-native';
+import {
+  FlatList,
+  Text,
+  View,
+  ImageBackground,
+  RefreshControl,
+  StyleSheet,
+  Dimensions,
+} from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 
 import useTheme from '../../../theme/hooks/useTheme';
@@ -11,6 +19,7 @@ import { getMyChannelsAction } from '../../../reducers/my-channels/my-channels.a
 import { setTabBarVisibilityAction } from '../../../reducers/navigation-reducer/navigation.actions';
 
 const ViewSubscribeToChannelsScreen = () => {
+  const screenHeight = Dimensions.get('window').height;
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { Common, Gutters, Fonts, Layout, Images, Colors } = useTheme();
@@ -22,7 +31,7 @@ const ViewSubscribeToChannelsScreen = () => {
 
   useFocusEffect(
     React.useCallback(() => {
-      dispatch(setTabBarVisibilityAction(false));
+      dispatch(setTabBarVisibilityAction(true));
       _loadMyChannels();
     }, []),
   );
@@ -95,7 +104,11 @@ const ViewSubscribeToChannelsScreen = () => {
         />
       </ImageBackground>
 
-      <FAB style={Common.fabAlignment} icon="plus" onPress={_handleOnSubscribeToChannelsPress} />
+      <FAB
+        style={[Common.fabAlignment, { marginBottom: screenHeight - screenHeight * 0.85 }]}
+        icon="plus"
+        onPress={_handleOnSubscribeToChannelsPress}
+      />
     </>
   );
 };

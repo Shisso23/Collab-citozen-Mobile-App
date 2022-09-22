@@ -14,6 +14,7 @@ import {
   Keyboard,
   TouchableOpacity,
   SafeAreaView,
+  Dimensions,
 } from 'react-native';
 import { Tab, Icon } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
@@ -42,6 +43,7 @@ import { setTabBarVisibilityAction } from '../../../reducers/navigation-reducer/
 const { Colors } = useTheme();
 const loadingImageSource = require('../../../assets/lottie-files/rings-loading.json');
 
+const screenHeight = Dimensions.get('window').height;
 const ServiceRequestScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -91,6 +93,12 @@ const ServiceRequestScreen = () => {
     );
     setNearbyPinLocations(nearbyPinLocationsResponse.payload);
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      dispatch(setTabBarVisibilityAction(tabIndex === 1));
+    }, [tabIndex]),
+  );
 
   useFocusEffect(
     useCallback(() => {
@@ -388,7 +396,10 @@ const ServiceRequestScreen = () => {
         >
           <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>Service Requests</Text>
           <FlatList
-            contentContainerStyle={Gutters.smallHMargin}
+            contentContainerStyle={[
+              Gutters.smallHMargin,
+              { paddingBottom: screenHeight - screenHeight * 0.6 },
+            ]}
             data={_sortServiceRequestDescending(serviceRequests)}
             renderItem={renderServiceRequest}
             keyExtractor={(item) => String(item.id)}
@@ -400,7 +411,11 @@ const ServiceRequestScreen = () => {
             }
           />
         </ImageBackground>
-        <FAB style={Common.fabAlignment} icon="plus" onPress={_handleOnServiceRequestCreatePress} />
+        <FAB
+          style={[Common.fabAlignment, { marginBottom: screenHeight - screenHeight * 0.85 }]}
+          icon="plus"
+          onPress={_handleOnServiceRequestCreatePress}
+        />
       </>
     );
   };

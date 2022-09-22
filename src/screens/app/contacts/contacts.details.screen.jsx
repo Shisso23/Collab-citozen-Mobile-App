@@ -126,7 +126,10 @@ const ContactDetailsScreen = () => {
         </TouchableOpacity>
 
         <FlatList
-          contentContainerStyle={[...[{ height: screenHeight + screenHeight * 0.03 }], Gutters.smallHMarginF]}
+          contentContainerStyle={[
+            ...[{ height: screenHeight + screenHeight * 0.3 }],
+            Gutters.smallHMarginF,
+          ]}
           data={channelsContacts}
           renderItem={renderContactDetails}
           keyExtractor={(item) => String(item.number)}
