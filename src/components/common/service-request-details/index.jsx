@@ -11,7 +11,6 @@ import { Colors } from '../../../theme/Variables';
 import { formatTime } from '../../../helpers/time.helper';
 import { serviceRequestService } from '../../../services';
 
-
 const screenWidth = Dimensions.get('screen').width;
 const ServiceRequestDetails = ({ serviceRequest }) => {
   const { user } = useSelector((reducers) => reducers.userReducer);
@@ -41,8 +40,14 @@ const ServiceRequestDetails = ({ serviceRequest }) => {
   return (
     <View style={[Layout.row, Gutters.regularHMargin]}>
       <Avatar.Image rounded size={50} source={_setImageUrl(serviceRequest)} />
-      <View style={[Gutters.regularHMargin, Layout.column, Gutters.smallTMargin]}>
-        <View style={[Layout.rowBetween, { width: screenWidth - screenWidth * 0.18 }]}>
+      <View style={[Gutters.tinyLMargin, Layout.column]}>
+        <View
+          style={[
+            Layout.rowBetween,
+            Layout.alignItemsCenter,
+            ...[{ width: screenWidth - screenWidth * 0.18, height: 50 }],
+          ]}
+        >
           <Text
             style={[Fonts.textLarge, Gutters.tinyMargin]}
           >{`${serviceRequest.serviceType}`}</Text>
@@ -51,8 +56,8 @@ const ServiceRequestDetails = ({ serviceRequest }) => {
               mode="outlined"
               color={Colors.white}
               style={[
-                Gutters.regularMargin,
-                ...[{ backgroundColor: Colors.primary, width: 140, height: 35 }],
+                Gutters.smallRMargin,
+                ...[{ backgroundColor: Colors.primary, width: 130, height: 30 }],
               ]}
               labelStyle={[Fonts.textSmall, Common.whiteText]}
               loading={isLoadingFollowSR}
