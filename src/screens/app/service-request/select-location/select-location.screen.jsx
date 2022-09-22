@@ -33,9 +33,9 @@ import { getUnsubscribedChannelsByLocationAction } from '../../../../reducers/un
 import { flashService, permissionsService, serviceRequestService } from '../../../../services';
 import LoadingOverlay from '../../../../components/molecules/loading-overlay';
 import { Colors } from '../../../../theme/Variables';
-import { setTabBarVisibilityAction } from '../../../../reducers/navigation-reducer/navigation.actions';
 
 const { width } = Dimensions.get('window');
+const screenHeight = Dimensions.get('window').height;
 const loadingImageSource = require('../../../../assets/lottie-files/rings-loading.json');
 
 const SelectLocationScreen = () => {
@@ -60,6 +60,7 @@ const SelectLocationScreen = () => {
   );
   const [loadingModalTransparent, setLoadingModalTransparent] = useState(false);
   const [mapRef, setMapRef] = useState(undefined);
+  const [keyboardVisible, setKeyboardVisible] = useState(undefined);
   const [hmsMapRef, setHmsMapRef] = useState(undefined);
 
   useEffect(() => {
@@ -76,7 +77,12 @@ const SelectLocationScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
-      dispatch(setTabBarVisibilityAction(false));
+      const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
+        setKeyboardVisible(true);
+      });
+      const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+        setKeyboardVisible(false);
+      });
       if (hasGmsSync() || Platform.OS === 'ios') {
         permissionsService
           .checkLocationPermissions()
@@ -97,7 +103,8 @@ const SelectLocationScreen = () => {
           });
       }
       return () => {
-        dispatch(setTabBarVisibilityAction(true));
+        showSubscription.remove();
+        hideSubscription.remove();
       };
     }, []),
   );
@@ -539,17 +546,45 @@ const SelectLocationScreen = () => {
         <Icon type="ionicon" name="pin-outline" size={30} color={Colors.primary} />
       </View>
 
-      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'position' : ''}>
-        <View style={Layout.fullWidth}>
-          <TouchableHighlight
-            onPress={handlePickLocation ? handlePickLocation(mapPosition) : _handlePickLocation}
-          >
-            <Button style={Common.buttonPickLocation} mode="contained">
-              Pick this location
-            </Button>
-          </TouchableHighlight>
+      {Platform.OS === 'android' && (
+        <View
+          style={[
+            ...[{ paddingBottom: !keyboardVisible ? screenHeight - screenHeight * 0.88 : 0 }],
+          ]}
+        >
+          <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'position' : ''}>
+            <View style={Layout.fullWidth}>
+              <TouchableHighlight
+                onPress={handlePickLocation ? handlePickLocation(mapPosition) : _handlePickLocation}
+              >
+                <Button style={Common.buttonPickLocation} mode="contained">
+                  Pick this location
+                </Button>
+              </TouchableHighlight>
+            </View>
+          </KeyboardAvoidingView>
         </View>
-      </KeyboardAvoidingView>
+      )}
+
+      {Platform.OS === 'ios' && (
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'position' : ''}
+          contentContainerStyle={[
+            ...[{ paddingBottom: !keyboardVisible ? screenHeight - screenHeight * 0.88 : 0 }],
+          ]}
+        >
+          <View style={Layout.fullWidth}>
+            <TouchableHighlight
+              onPress={handlePickLocation ? handlePickLocation(mapPosition) : _handlePickLocation}
+            >
+              <Button style={Common.buttonPickLocation} mode="contained">
+                Pick this location
+              </Button>
+            </TouchableHighlight>
+          </View>
+        </KeyboardAvoidingView>
+      )}
+
       {pinDetailsModal()}
       <LoadingOverlay
         source={loadingImageSource}

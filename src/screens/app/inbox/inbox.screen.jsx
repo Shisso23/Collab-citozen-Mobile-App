@@ -16,7 +16,6 @@ import {
   getNotificationsAction,
 } from '../../../reducers/notification-reducer/notification.actions';
 import { promptConfirm } from '../../../helpers/prompt.helper';
-import { setTabBarVisibilityAction } from '../../../reducers/navigation-reducer/navigation.actions';
 
 const InboxScreen = () => {
   const { Colors } = useTheme();
@@ -31,7 +30,6 @@ const InboxScreen = () => {
   const [userNotifications, setUserNotifications] = useState(_.get(notifications, 'Feed', []));
 
   useEffect(() => {
-    dispatch(setTabBarVisibilityAction(true));
     dispatch(getNotificationsAction());
   }, []);
   useEffect(() => {

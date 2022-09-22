@@ -8,7 +8,6 @@ import { useDispatch } from 'react-redux';
 import useTheme from '../../../theme/hooks/useTheme';
 import { handleNotificationOpenedBackGround } from '../../../hooks/notification-background/notification-background';
 import FeatureTilesContainer from '../../../components/molecules/feature-tiles';
-import { setTabBarVisibilityAction } from '../../../reducers/navigation-reducer/navigation.actions';
 import {
   getCurrentPositionAction,
   getAddressFromRegionAction,
@@ -23,7 +22,6 @@ const HomeScreen = () => {
 
   useFocusEffect(
     React.useCallback(() => {
-      dispatch(setTabBarVisibilityAction(true));
       PushNotification.setApplicationIconBadgeNumber(0);
     }, []),
   );
@@ -58,9 +56,12 @@ const HomeScreen = () => {
     <ScrollView
       contentContainerStyle={[
         Gutters.largeBPadding,
-        {
-          height: screenHeight + screenHeight * 0.03,
-        },
+        ...[
+          {
+            paddingBottom: screenHeight - screenHeight * 0.8,
+            flexGrow: 1,
+          },
+        ],
       ]}
     >
       <ImageBackground

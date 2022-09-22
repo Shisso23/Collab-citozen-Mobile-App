@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View } from 'react-native';
-import { useSelector } from 'react-redux';
+import { View, Keyboard } from 'react-native';
 import HomeScreen from '../../screens/app/home/home.screen';
 import ProfileScreen from '../../screens/app/profile/profile.screen';
 import useTheme from '../../theme/hooks/useTheme';
@@ -33,7 +32,6 @@ import SubmitMeterReadingScreen from '../../screens/app/accounts/submit-readings
 import CreateNotificationScreen from '../../screens/app/channels/create-notification/create-notification.screen';
 import TabBar from '../../components/molecules/tab-bar/tab-bar';
 import NewsScreen from '../../screens/news-screen/news.screen';
-import { navigationSelector } from '../../reducers/navigation-reducer/navigation.reducer';
 
 const Drawer = createDrawerNavigator();
 const AppStack = createStackNavigator();
@@ -235,11 +233,24 @@ const DrawerNavigator = () => {
 const renderEmptyComponent = () => <View />;
 
 const TabNavigator = () => {
-  const { tabBarVisible } = useSelector(navigationSelector);
+  const [keyboardVisible, setKeyboardVisible] = useState(undefined);
+  useLayoutEffect(() => {
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardVisible(true);
+    });
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardVisible(false);
+    });
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
   return (
     <Tab.Navigator
       initialRouteName="Home"
-      tabBar={(props) => tabBarVisible && <TabBar {...props} />}
+      tabBar={(props) => !keyboardVisible && <TabBar {...props} />}
       lazy={false}
       screenOptions={{}}
       tabBarOptions={{

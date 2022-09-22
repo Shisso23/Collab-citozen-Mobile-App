@@ -162,6 +162,7 @@ const CreateServiceRequestForm = ({
   const handleChangeServiceTypePressed = () => {
     resetMunicipalityTypeSelected();
     setShowAllCategories(true);
+    setMunicipalitiesSearchResult(municipalities);
     setThumbNailImages([]);
     formikRef.current.setFieldValue('images', []);
     dispatch(setImagesSources([]));

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { List } from 'react-native-paper';
 import { ListItem, Text } from 'react-native-elements';
@@ -13,6 +13,7 @@ const CategoriesListView = ({
   setSelectedChanne,
   onServiceTypeSelected,
 }) => {
+  const screenHeight = Dimensions.get('window').height;
   const { Gutters, Common, Layout, Fonts } = useTheme();
 
   const handleServiceTypeSelected = (serviceType, category, municipality) => () => {
@@ -75,7 +76,11 @@ const CategoriesListView = ({
     );
   };
 
-  return municipalities.map((municipality) => renderCategoryAccordion(municipality));
+  return (
+    <View style={{ paddingBottom: screenHeight - screenHeight * 0.8 }}>
+      {municipalities.map((municipality) => renderCategoryAccordion(municipality))}
+    </View>
+  );
 };
 
 CategoriesListView.propTypes = {

@@ -23,7 +23,6 @@ import {
 import { channelContactsSelector } from '../../../reducers/contacts-reducer/contacts.reducer';
 import { locationSelector } from '../../../reducers/location-reducer/location.reducer';
 import ContactButtons from '../../../components/molecules/contact-buttons';
-import { setTabBarVisibilityAction } from '../../../reducers/navigation-reducer/navigation.actions';
 
 const ContactDetailsScreen = () => {
   const screenHeight = Dimensions.get('window').height;
@@ -36,7 +35,6 @@ const ContactDetailsScreen = () => {
   const { selectedAddress, region } = useSelector(locationSelector);
 
   useEffect(() => {
-    dispatch(setTabBarVisibilityAction(true));
     dispatch(getCurrentPositionAction()).then((position) => {
       getAddress(position);
       getContacts(position);

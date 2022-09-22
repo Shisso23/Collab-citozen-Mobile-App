@@ -38,7 +38,6 @@ import { TrashButton } from '../../../components/atoms';
 import { locationSelector } from '../../../reducers/location-reducer/location.reducer';
 import { getCurrentPositionAction } from '../../../reducers/location-reducer/location.actions';
 import LoadingOverlay from '../../../components/molecules/loading-overlay/index';
-import { setTabBarVisibilityAction } from '../../../reducers/navigation-reducer/navigation.actions';
 
 const { Colors } = useTheme();
 const loadingImageSource = require('../../../assets/lottie-files/rings-loading.json');
@@ -96,13 +95,6 @@ const ServiceRequestScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
-      dispatch(setTabBarVisibilityAction(tabIndex === 1));
-    }, [tabIndex]),
-  );
-
-  useFocusEffect(
-    useCallback(() => {
-      dispatch(setTabBarVisibilityAction(false));
       dispatch(getCurrentPositionAction()).then((position) => {
         setUserLocation(position);
         setMapPosition(position);
@@ -529,7 +521,7 @@ const ServiceRequestScreen = () => {
             <Icon type="ionicon" name="pin-outline" size={30} color={Colors.primary} />
           </View>
           <FAB
-            style={Common.fabAlignment}
+            style={[Common.fabAlignment, { marginBottom: screenHeight - screenHeight * 0.85 }]}
             icon="plus"
             onPress={_handleOnServiceRequestCreatePress}
           />

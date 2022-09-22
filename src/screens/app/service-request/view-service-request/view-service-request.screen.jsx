@@ -16,7 +16,6 @@ import UploadDocumentButton from '../../../../components/molecules/upload-docume
 import CustomCarousel from '../../../../components/molecules/custom-carousel';
 import Comments from '../../../../components/molecules/service-request-comments';
 import { serviceRequestService } from '../../../../services';
-import { setTabBarVisibilityAction } from '../../../../reducers/navigation-reducer/navigation.actions';
 
 const ViewServiceRequestScreen = () => {
   const { params } = useRoute();
@@ -34,7 +33,6 @@ const ViewServiceRequestScreen = () => {
   const serviceRequestImages = serviceRequest.serviceRequestImage;
 
   useEffect(() => {
-    dispatch(setTabBarVisibilityAction(true));
     dispatch(setImagesSources([]));
   }, []);
 

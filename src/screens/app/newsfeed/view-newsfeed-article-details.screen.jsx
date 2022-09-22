@@ -14,7 +14,7 @@ const NewsFeedArticleDetailsScreen = () => {
   return (
     <ImageBackground source={Images.serviceRequest} style={Layout.fullSize} resizeMode="cover">
       <OnBackPressHeader arrowColor="#000000" />
-      <ScrollView contentContainerStyle={{ height: screenHeight + screenHeight * 0.03 }}>
+      <ScrollView contentContainerStyle={{ paddingBottom: screenHeight - screenHeight * 0.8 }}>
         <NewsFeedArticleDetail NewsFeedArticle={params} />
       </ScrollView>
     </ImageBackground>
