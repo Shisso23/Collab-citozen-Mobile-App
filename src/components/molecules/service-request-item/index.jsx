@@ -4,12 +4,13 @@ import _ from 'lodash';
 import { Avatar, List } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 
 import useTheme from '../../../theme/hooks/useTheme';
 
 const ServiceRequestItem = ({ item, onPress }) => {
   const { Common, Gutters, Fonts, Layout, Colors } = useTheme();
-
+  const { user } = useSelector((reducers) => reducers.userReducer);
   const _setImageUrl = (serviceRequestItem) => {
     return !serviceRequestItem.serviceRequestImage
       ? null
@@ -59,7 +60,7 @@ const ServiceRequestItem = ({ item, onPress }) => {
           </View>
         )}
         right={() => (
-          <View style={[Layout.rowVCenter]}>
+          <View style={[Layout.alignItemsFlexEnd, Layout.justifyContentFlexEnd]}>
             {!_.isEmpty(item.serviceRequestImage) ? null : (
               <Icon
                 color={Colors.red}
@@ -68,6 +69,9 @@ const ServiceRequestItem = ({ item, onPress }) => {
                 style={[Layout.alignSelfCenter, Gutters.smallHMargin]}
               />
             )}
+            <Text style={[Gutters.smallVMargin, { color: Colors.primary }]}>
+              {item.ownerId !== user.user_id.trim() ? 'Following' : ''}
+            </Text>
           </View>
         )}
         descriptionNumberOfLines={10}
