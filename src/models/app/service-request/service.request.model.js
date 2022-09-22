@@ -54,7 +54,7 @@ export const serviceRequestModel = (_apiServiceRequestModel = {}, accessToken) =
   channelId: _.get(_apiServiceRequestModel, 'channel_ref ', ''),
   channelName: _.get(_apiServiceRequestModel, 'channel_name ', ''),
   ownerId: _.get(_apiServiceRequestModel, 'created_by_user_id', null),
-  following: _.get(_apiServiceRequestModel, 'follow', false),
+  following: _.get(_apiServiceRequestModel, 'following', false),
 });
 
 export const nearbyPinLocationModel = (_apiNearbyPinLocationsModel = {}) => ({
