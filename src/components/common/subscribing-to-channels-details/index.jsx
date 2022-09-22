@@ -98,9 +98,15 @@ const SubscribingToChannelsDetails = (props) => {
         renderItem={subscribeToItem}
         contentContainerStyle={{ height: screenHeight + screenHeight * 0.03 }}
         keyExtractor={(item) => String(item.obj_id)}
+        showsVerticalScrollIndicator={false}
       />
       <Divider color={Colors.transparent} />
-      <View style={Common.bottomButtonChannelDetails}>
+      <View
+        style={[
+          Common.bottomButtonChannelDetails,
+          { marginBottom: screenHeight - screenHeight * 0.88 },
+        ]}
+      >
         <Button mode="contained" onPress={handleSub} loading={isLoading} disabled={isLoading}>
           Submit
         </Button>

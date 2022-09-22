@@ -26,6 +26,7 @@ const ViewServiceRequestScreen = () => {
   const { serviceRequest } = params;
   const [visible, setVisible] = React.useState(false);
   const { user } = useSelector((reducers) => reducers.userReducer);
+  const [isLoadingFollowSR, setIsLoadingFollowSR] = useState(false);
   const showModal = () => setVisible(true);
   const hideModal = () => setVisible(false);
   const [scrollEnabled, setScrollEnabled] = useState(true);
@@ -46,6 +47,22 @@ const ViewServiceRequestScreen = () => {
     await serviceRequestService.addNewComment(serviceRequest.id, comment);
   };
 
+  const handleFollowSR = (serviceRequestObjId, following) => () => {
+    setIsLoadingFollowSR(true);
+    serviceRequestService
+      .followServiceRequest({
+        userId: user.user_id,
+        serviceRequestId: serviceRequestObjId,
+        followed: following,
+      })
+      .then(() => {
+        navigation.goBack();
+      })
+      .finally(() => {
+        setIsLoadingFollowSR(false);
+      });
+  };
+
   return (
     <ImageBackground
       source={Images.serviceRequest}
@@ -58,9 +75,27 @@ const ViewServiceRequestScreen = () => {
         enableOnAndroid
         nestedScrollEnabled
         scrollEnabled={scrollEnabled}
+        contentContainerStyle={Gutters.smallHorizontalPadding}
         ref={keyBoardAwareRef}
       >
         <Text style={[Gutters.regularMargin, Fonts.titleTiny]}>Service Request</Text>
+        {user.user_id?.trim() !== serviceRequest.ownerId.trim() && (
+          <Button
+            mode="outlined"
+            color={Colors.white}
+            style={[
+              Gutters.smallRMargin,
+              ...[
+                { backgroundColor: Colors.primary, height: 30, width: 120, alignSelf: 'flex-end' },
+              ],
+            ]}
+            labelStyle={[Fonts.textSmall, Common.whiteText]}
+            loading={isLoadingFollowSR}
+            onPress={handleFollowSR(serviceRequest.id, false)}
+          >
+            Unfollow
+          </Button>
+        )}
         <ServiceRequestDetails serviceRequest={serviceRequest} />
         {_.isEmpty(serviceRequest.serviceRequestImage) ? null : (
           <Button
