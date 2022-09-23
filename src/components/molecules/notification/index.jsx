@@ -22,7 +22,7 @@ import { Colors } from '../../../theme/Variables';
 const Notification = ({
   notification,
   index,
-  multiselectEnabled,
+  multiSelectEnabled,
   onPress,
   onLongPress,
   isSelected,
@@ -43,7 +43,7 @@ const Notification = ({
   const [isSeen, setIsSeen] = useState(seen);
 
   const _handleCollapse = () => {
-    if (!isSeen && !multiselectEnabled) {
+    if (!isSeen && !multiSelectEnabled) {
       const seenAt = Moment(new Date()).format('yyyy-mm-DD hh:mm:ss');
       dispatch(openNotificationAction(notificationId, seenAt, _.get(user, 'user_id', '')));
       dispatch(getUnOpenedNotificationsAction());
@@ -79,7 +79,7 @@ const Notification = ({
       width: '100%',
     };
     return (
-      <View style={{ backgroundColor: Colors.white }}>
+      <View style={styles.accordionContainer}>
         <List.Accordion
           title={`${title}`}
           titleNumberOfLines={3}
@@ -133,6 +133,7 @@ const Notification = ({
 };
 
 const styles = StyleSheet.create({
+  accordionContainer: { backgroundColor: Colors.white },
   badge: {
     borderRadius: 50,
     height: 14,
@@ -145,7 +146,7 @@ const styles = StyleSheet.create({
 Notification.propTypes = {
   notification: PropTypes.object,
   index: PropTypes.number.isRequired,
-  multiselectEnabled: PropTypes.bool.isRequired,
+  multiSelectEnabled: PropTypes.bool.isRequired,
   onPress: PropTypes.func.isRequired,
   onLongPress: PropTypes.func.isRequired,
   isSelected: PropTypes.bool.isRequired,
