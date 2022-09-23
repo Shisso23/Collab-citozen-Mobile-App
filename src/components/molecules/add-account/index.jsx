@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useLayoutEffect } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { StyleSheet, Keyboard, Dimensions } from 'react-native';
 import { TextInput, Button, Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -25,7 +25,7 @@ const AddAccounts = ({ selectedChannel }) => {
   const [accountNumberError, setAccountNumberError] = useState(false);
   const navigation = useNavigation();
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
       setKeyboardVisible(true);
     });
