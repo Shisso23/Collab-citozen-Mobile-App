@@ -14,7 +14,7 @@ import { serviceRequestService } from '../../../services';
 const screenWidth = Dimensions.get('screen').width;
 const ServiceRequestDetails = ({ serviceRequest }) => {
   const { user } = useSelector((reducers) => reducers.userReducer);
-  const [isLoadingFollowSR, setIsLoadingFollowSR] = useState(false);
+  const [isLoadingFollowServiceRequest, setIsLoadingFollowServiceRequest] = useState(false);
   const navigation = useNavigation();
   const { Gutters, Layout, Fonts, Common } = useTheme();
 
@@ -23,7 +23,7 @@ const ServiceRequestDetails = ({ serviceRequest }) => {
   };
 
   const handleFollowSR = (serviceRequestObjId, following) => () => {
-    setIsLoadingFollowSR(true);
+    setIsLoadingFollowServiceRequest(true);
     serviceRequestService
       .followServiceRequest({
         userId: user.user_id,
@@ -34,7 +34,7 @@ const ServiceRequestDetails = ({ serviceRequest }) => {
         navigation.goBack();
       })
       .finally(() => {
-        setIsLoadingFollowSR(false);
+        setIsLoadingFollowServiceRequest(false);
       });
   };
   return (
@@ -55,12 +55,9 @@ const ServiceRequestDetails = ({ serviceRequest }) => {
             <Button
               mode="outlined"
               color={Colors.white}
-              style={[
-                Gutters.smallRMargin,
-                ...[{ backgroundColor: Colors.primary, width: 130, height: 30 }],
-              ]}
+              style={[Gutters.smallRMargin, styles.unfollowButton]}
               labelStyle={[Fonts.textSmall, Common.whiteText]}
-              loading={isLoadingFollowSR}
+              loading={isLoadingFollowServiceRequest}
               onPress={handleFollowSR(serviceRequest.id, false)}
             >
               Unfollow
@@ -90,6 +87,7 @@ const styles = StyleSheet.create({
     color: Colors.primary,
     width: 200,
   },
+  unfollowButton: { backgroundColor: Colors.primary, height: 30, width: 130 },
 });
 
 ServiceRequestDetails.propTypes = {
