@@ -36,11 +36,7 @@ const ServiceRequestDetails = ({ serviceRequest }) => {
             style={[Fonts.textRegular, Gutters.tinyMargin]}
           >{`Reference Number: ${serviceRequest.referenceNumber}`}</Text>
           <Text
-            style={[
-              Fonts.textRegular,
-              Gutters.tinyMargin,
-              ...[{ maxWidth: '80%', flexWrap: 'wrap' }],
-            ]}
+            style={[Fonts.textRegular, Gutters.tinyMargin, styles.desciptionText]}
           >{`Description: ${serviceRequest.serviceDescription}`}</Text>
           <Text style={[Fonts.textRegular, Gutters.tinyMargin]}>{`Date Registered: ${formatTime(
             serviceRequest.requestedDate,
@@ -60,6 +56,7 @@ const styles = StyleSheet.create({
     color: Colors.primary,
     width: 200,
   },
+  desciptionText: { flexWrap: 'wrap', maxWidth: '80%' },
 });
 
 ServiceRequestDetails.propTypes = {
