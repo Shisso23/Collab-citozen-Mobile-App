@@ -22,7 +22,6 @@ import UploadDocumentButton from '../../molecules/upload-document-button';
 import Categories from '../../molecules/service-request-categories/categories';
 import { Colors } from '../../../theme/Variables';
 import CategoriesListView from '../../molecules/service-request-categories/categories-list-view';
-import ServiceTypesView from '../../molecules/service-request-categories/service-type';
 import { setImagesSources } from '../../../reducers/service-request-reducer/service-request.actions';
 
 navigator.geolocation = require('react-native-geolocation-service');
@@ -45,7 +44,6 @@ const CreateServiceRequestForm = ({
   const navigation = useNavigation();
   const formikRef = useRef(null);
   const [showAllCategories, setShowAllCategories] = useState(false);
-  const [showSingleCategory, setShowSingleCategory] = useState(false);
   const [selectedChannel, setSelectedChannel] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [switchEnabled, setSwitchEnabled] = useState(false);
@@ -57,9 +55,6 @@ const CreateServiceRequestForm = ({
       setMunicipalitiesSearchResult(handleServiceTypesSearch(searchValue));
       if (!switchEnabled) {
         setSwitchEnabled(true);
-      }
-      if (showSingleCategory) {
-        setShowSingleCategory(false);
       }
       if (!showAllCategories) {
         setShowAllCategories(true);
@@ -85,20 +80,34 @@ const CreateServiceRequestForm = ({
 
   const onCategoryPress = (category) => {
     setSelectedCategory(category);
-    setShowSingleCategory(true);
+    setShowAllCategories(true);
+    setMunicipalitiesSearchResult(filterToSingleCategory(category.id));
     setSwitchEnabled(true);
   };
   const setChannel = (channel) => {
     setSelectedChannel(channel);
   };
 
+  const filterToSingleCategory = (categoryId) => {
+    const result = municipalities
+      .map((municipality) => {
+        const municipalityResult = _.clone(municipality);
+        municipalityResult.categories = municipality.categories.filter((category) => {
+          return category.id === categoryId;
+        });
+
+        return municipalityResult;
+      })
+      .filter((municipalityResult_) => municipalityResult_.categories.length !== 0);
+    return result;
+  };
+
   const toggleSwitch = (value) => {
     setSwitchEnabled(value);
     if (value === false) {
       resetMunicipalityTypeSelected();
-      if (showSingleCategory) {
-        setShowSingleCategory(false);
-      }
+      setMunicipalitiesSearchResult(municipalities);
+
       if (showAllCategories) {
         setShowAllCategories(false);
       }
@@ -141,9 +150,6 @@ const CreateServiceRequestForm = ({
 
   const handleServiceTypeSelected = (serviceType) => {
     setSelectedServiceType(serviceType);
-    if (showSingleCategory) {
-      setShowSingleCategory(false);
-    }
     if (showAllCategories) {
       setShowAllCategories(false);
     }
@@ -156,6 +162,7 @@ const CreateServiceRequestForm = ({
   const handleChangeServiceTypePressed = () => {
     resetMunicipalityTypeSelected();
     setShowAllCategories(true);
+    setMunicipalitiesSearchResult(municipalities);
     setThumbNailImages([]);
     formikRef.current.setFieldValue('images', []);
     dispatch(setImagesSources([]));
@@ -268,12 +275,6 @@ const CreateServiceRequestForm = ({
                   municipalities={municipalitiesSearchResult}
                   onCategorySelected={handleCategorySelected}
                   setSelectedChanne={setChannel}
-                  onServiceTypeSelected={handleServiceTypeSelected}
-                />
-              )}
-              {showSingleCategory && (
-                <ServiceTypesView
-                  category={selectedCategory}
                   onServiceTypeSelected={handleServiceTypeSelected}
                 />
               )}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { RefreshControl, FlatList, View, Text } from 'react-native';
+import { RefreshControl, FlatList, View, Text, Dimensions } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { useFocusEffect } from '@react-navigation/native';
@@ -8,10 +8,10 @@ import useTheme from '../../../theme/hooks/useTheme';
 import NewsArticle from './news-article.component';
 import newsFeedService from '../../../services/sub-services/news-feed-service/news-feed.service';
 import { Colors } from '../../../theme/Variables';
-import Layout from '../../../theme/Layout';
 import Fonts from '../../../theme/Fonts';
 
 const NewsArticlesList = () => {
+  const screenHeight = Dimensions.get('window').height;
   const { user } = useSelector((reducers) => reducers.userReducer);
   const [newsFeeds, setNewsFeeds] = useState([]);
   const { Gutters, Common } = useTheme();
@@ -88,7 +88,10 @@ const NewsArticlesList = () => {
   return (
     <>
       <FlatList
-        contentContainerStyle={Gutters.smallHMargin}
+        contentContainerStyle={[
+          Gutters.smallHMargin,
+          ...[{ paddingBottom: screenHeight - screenHeight * 0.8 }],
+        ]}
         data={newsFeeds}
         renderItem={renderItem}
         keyExtractor={extractListKey}

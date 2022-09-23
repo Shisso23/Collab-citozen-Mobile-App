@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   loadingComponent: { height: 30, width: 30 },
   pdf: {
     alignSelf: 'flex-start',
-    height: Dimensions.get('screen').height,
+    height: Dimensions.get('screen').height - Dimensions.get('screen').height * 0.3,
     width: Dimensions.get('screen').width,
   },
 });

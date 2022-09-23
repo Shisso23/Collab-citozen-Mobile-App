@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Dimensions, StyleSheet, View } from 'react-native';
 import PropTypes from 'prop-types';
 import { Text } from 'react-native-elements';
 
@@ -7,6 +7,7 @@ import useTheme from '../../../theme/hooks/useTheme';
 import CategoryTile from '../../atoms/service-request-category-tile/category-tile';
 
 const Categories = ({ municipalities, onCategoryPress, setSelectedChanne }) => {
+  const screenHeight = Dimensions.get('window').height;
   const VIEWMORETILESDATA = {
     name: 'View More',
     id: 0,
@@ -53,7 +54,7 @@ const Categories = ({ municipalities, onCategoryPress, setSelectedChanne }) => {
 
   const renderCategories = () => {
     return (
-      <>
+      <View style={{ paddingBottom: screenHeight - screenHeight * 0.8 }}>
         {favoriteCategoriesData.map((municipality, index) => {
           return (
             <View key={municipality.id}>
@@ -78,7 +79,7 @@ const Categories = ({ municipalities, onCategoryPress, setSelectedChanne }) => {
             </View>
           );
         })}
-      </>
+      </View>
     );
   };
 

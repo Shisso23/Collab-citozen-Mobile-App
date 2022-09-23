@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Badge, Text } from 'react-native-elements';
 import { Avatar, List } from 'react-native-paper';
@@ -22,9 +22,12 @@ import { Colors } from '../../../theme/Variables';
 const Notification = ({
   notification,
   index,
-  selectedCounter,
-  setSelectedCounter,
-  multiDeleteConfirmed,
+  multiSelectEnabled,
+  onPress,
+  onLongPress,
+  isSelected,
+  expanded,
+  handleDeleteNotification,
 }) => {
   const dispatch = useDispatch();
   const { user } = useSelector((reducers) => reducers.userReducer);
@@ -37,26 +40,16 @@ const Notification = ({
   const channelName = _.get(notification, 'channel_name', '');
 
   const { Layout, Images, Gutters } = useTheme();
-  const [isCollapsed, setIsCollapsed] = useState(true);
   const [isSeen, setIsSeen] = useState(seen);
-  const [isDeleting, setDeleting] = useState(false);
-  const [isDeleted, setIsDeleted] = useState(false);
-  const [isSelected, setIsSelected] = useState(false);
-  const [shortPressSelectEnabled, setShortPressSelectedEnabled] = useState(false);
 
   const _handleCollapse = () => {
-    if (shortPressSelectEnabled && !isSelected) {
-      notificationSelected();
-    } else if (shortPressSelectEnabled && isSelected) {
-      notificationUnselected();
+    if (!isSeen && !multiSelectEnabled) {
+      const seenAt = Moment(new Date()).format('yyyy-mm-DD hh:mm:ss');
+      dispatch(openNotificationAction(notificationId, seenAt, _.get(user, 'user_id', '')));
+      dispatch(getUnOpenedNotificationsAction());
+      setIsSeen(true);
     } else {
-      if (!isSeen) {
-        const seenAt = Moment(new Date()).format('yyyy-mm-DD hh:mm:ss');
-        dispatch(openNotificationAction(notificationId, seenAt, _.get(user, 'user_id', '')));
-        dispatch(getUnOpenedNotificationsAction());
-        setIsSeen(true);
-      }
-      setIsCollapsed(!isCollapsed);
+      onPress();
     }
   };
 
@@ -66,124 +59,62 @@ const Notification = ({
 
   const _handleDelete = () => {
     const deletedAt = Moment(new Date()).format('yyyy-mm-DD hh:mm:ss');
-    if (multiDeleteConfirmed) {
-      setIsDeleted(true);
-      setDeleting(true);
-      const seenAt = Moment(new Date()).format('yyyy-mm-DD hh:mm:ss');
-      dispatch(openNotificationAction(notificationId, seenAt, _.get(user, 'user_id', '')));
-      dispatch(getUnOpenedNotificationsAction());
+    promptConfirm('Are you sure?', 'Are you sure you want to delete this item?', 'Delete', () => {
+      handleDeleteNotification();
       dispatch(deleteNotificationAction(notificationId, deletedAt, _.get(user, 'user_id', '')));
-    } else {
-      promptConfirm('Are you sure?', 'Are you sure you want to delete this item?', 'Delete', () => {
-        setIsDeleted(true);
-        setDeleting(true);
-        const seenAt = Moment(new Date()).format('yyyy-mm-DD hh:mm:ss');
-        dispatch(openNotificationAction(notificationId, seenAt, _.get(user, 'user_id', '')));
-        dispatch(getUnOpenedNotificationsAction());
-        dispatch(deleteNotificationAction(notificationId, deletedAt, _.get(user, 'user_id', '')));
-      });
-    }
+    });
   };
-
-  useEffect(() => {
-    if (multiDeleteConfirmed && isSelected) {
-      _handleDelete();
-    }
-  }, [multiDeleteConfirmed]);
-
-  useEffect(() => {
-    if (selectedCounter > 0) {
-      setShortPressSelectedEnabled(true);
-    } else {
-      setShortPressSelectedEnabled(false);
-    }
-  }, [selectedCounter]);
 
   const _setImageUrl = (image) => {
     return !image ? null : image;
   };
 
-  const renderHiddenComponent = () => (
-    <TrashButton onPress={_handleDelete} iconSize={27} loading={isDeleting} />
-  );
-
-  const notificationSelected = () => {
-    setIsSelected(true);
-    setSelectedCounter(selectedCounter + 1);
-  };
-
-  const notificationUnselected = () => {
-    setIsSelected(false);
-    setSelectedCounter(selectedCounter - 1);
-  };
+  const renderHiddenComponent = () => <TrashButton onPress={_handleDelete} iconSize={27} />;
 
   const renderVisibleComponent = () => {
     const accordionStyle = {
-      borderBottomColor: Colors.darkgray,
-      borderBottomWidth: !isCollapsed ? 0 : 0.4,
+      borderColor: Colors.lightgray,
+      borderTopWidth: 1,
+      backgroundColor: Colors.white,
+      width: '100%',
     };
-    return !isDeleted && !isSelected ? (
-      <List.Accordion
-        title={`${title}`}
-        titleNumberOfLines={3}
-        description={
-          <View>
-            <Text style={[Gutters.tinyTMargin, styles.channelName]}>{channelName}</Text>
-            <Text>{formatDate(datePublished)}</Text>
-          </View>
-        }
-        left={() => (
-          <View style={[Layout.justifyContentCenter]}>
-            <Avatar.Image rounded size={35} source={_setImageUrl(Images.avatarImage)} />
-          </View>
-        )}
-        right={() =>
-          !isSeen && (
-            <Badge
-              status="error"
-              badgeStyle={[{ backgroundColor: Colors.primary }, styles.badge]}
-            />
-          )
-        }
-        onPress={_handleCollapse}
-        onLongPress={notificationSelected}
-        style={[Gutters.smallBMargin, accordionStyle]}
-      >
-        <Text style={[Gutters.largeRPadding, styles.notificationBody]}>{body}</Text>
-      </List.Accordion>
-    ) : !isDeleted && isSelected ? (
-      <List.Accordion
-        title={`${title}`}
-        titleNumberOfLines={3}
-        description={
-          <View>
-            <Text style={[Gutters.tinyTMargin, { color: Colors.primary }]}>{channelName}</Text>
-            <Text>{formatDate(datePublished)}</Text>
-          </View>
-        }
-        left={() => (
-          <View style={[Layout.justifyContentCenter]}>
-            <Avatar.Image rounded size={35} source={_setImageUrl(Images.avatarSelected)} />
-          </View>
-        )}
-        right={() =>
-          !isSeen && (
-            <Badge
-              status="error"
-              badgeStyle={[{ backgroundColor: Colors.primary }, styles.badge]}
-            />
-          )
-        }
-        onPress={_handleCollapse}
-        onLongPress={notificationUnselected}
-        style={[Gutters.smallBMargin, accordionStyle]}
-      >
-        {!shortPressSelectEnabled && (
+    return (
+      <View style={styles.accordionContainer}>
+        <List.Accordion
+          title={`${title}`}
+          titleNumberOfLines={3}
+          description={
+            <View>
+              <Text style={[Gutters.tinyTMargin, styles.channelName]}>{channelName}</Text>
+              <Text>{formatDate(datePublished)}</Text>
+            </View>
+          }
+          left={() => (
+            <View style={[Layout.justifyContentCenter]}>
+              <Avatar.Image
+                rounded
+                size={35}
+                style={{ backgroundColor: isSelected ? Colors.secondary : Colors.transparent }}
+                source={isSelected ? null : _setImageUrl(Images.avatarImage)}
+              />
+            </View>
+          )}
+          right={() =>
+            !isSeen && (
+              <Badge
+                status="error"
+                badgeStyle={[{ backgroundColor: Colors.primary }, styles.badge]}
+              />
+            )
+          }
+          expanded={expanded}
+          onPress={_handleCollapse}
+          onLongPress={onLongPress}
+          style={[Gutters.smallBMargin, accordionStyle]}
+        >
           <Text style={[Gutters.largeRPadding, styles.notificationBody]}>{body}</Text>
-        )}
-      </List.Accordion>
-    ) : (
-      <></>
+        </List.Accordion>
+      </View>
     );
   };
 
@@ -202,6 +133,7 @@ const Notification = ({
 };
 
 const styles = StyleSheet.create({
+  accordionContainer: { backgroundColor: Colors.white },
   badge: {
     borderRadius: 50,
     height: 14,
@@ -214,16 +146,16 @@ const styles = StyleSheet.create({
 Notification.propTypes = {
   notification: PropTypes.object,
   index: PropTypes.number.isRequired,
-  selectedCounter: PropTypes.number,
-  setSelectedCounter: PropTypes.any,
-  multiDeleteConfirmed: PropTypes.bool,
+  multiSelectEnabled: PropTypes.bool.isRequired,
+  onPress: PropTypes.func.isRequired,
+  onLongPress: PropTypes.func.isRequired,
+  isSelected: PropTypes.bool.isRequired,
+  expanded: PropTypes.bool.isRequired,
+  handleDeleteNotification: PropTypes.func.isRequired,
 };
 
 Notification.defaultProps = {
   notification: {},
-  selectedCounter: {},
-  setSelectedCounter: {},
-  multiDeleteConfirmed: {},
 };
 
 export default Notification;

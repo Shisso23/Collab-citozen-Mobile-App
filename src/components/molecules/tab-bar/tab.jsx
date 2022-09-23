@@ -27,18 +27,12 @@ const Tab = ({ route, navigation, isFocused }) => {
   const iconType = _.get(tabIcons, `${name}.type`);
 
   const onTabPress = () => {
-    const event = navigation.emit({
-      type: 'tabPress',
-      target: route.key,
-      canPreventDefault: true,
-    });
-
-    if (!isFocused && !event.defaultPrevented) {
-      if (name === 'addFeatures') {
-        openActionSheet();
-      } else {
-        navigation.navigate(route.name);
-      }
+    if (name === 'addFeatures') {
+      openActionSheet();
+    } else if (name === 'Home') {
+      navigation.navigate('HomeScreen');
+    } else {
+      navigation.navigate(route.name);
     }
   };
 
@@ -76,7 +70,10 @@ const Tab = ({ route, navigation, isFocused }) => {
       permissionsService
         .checkLocationPermissions()
         .then(() => {
-          navigation.navigate('SelectLocationScreen', { fromSubscribedChannels: true });
+          navigation.navigate('SelectLocationScreen', {
+            fromSubscribedChannels: true,
+            showSRPins: false,
+          });
         })
         .catch(() => {
           flashService.error('Please grant permissions to select a location.');
@@ -85,7 +82,10 @@ const Tab = ({ route, navigation, isFocused }) => {
       permissionsService
         .requestHmsLocationPermissions()
         .then(() => {
-          navigation.navigate('SelectLocationScreen', { fromSubscribedChannels: true });
+          navigation.navigate('SelectLocationScreen', {
+            fromSubscribedChannels: true,
+            showSRPins: false,
+          });
         })
         .catch(() => {
           flashService.error('Please grant permissions to select a location.');
@@ -122,7 +122,7 @@ const Tab = ({ route, navigation, isFocused }) => {
           onPressSubscribeToChannel={navigateToSubscribeToChannel}
         />
       </ActionSheet>
-      <Pressable onPress={onTabPress} disabled={isFocused}>
+      <Pressable onPress={onTabPress} disabled={isFocused && name !== 'Home'}>
         {({ pressed }) => (
           <View
             style={[

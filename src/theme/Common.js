@@ -68,6 +68,7 @@ export default ({ Colors, FontFamily, MetricsSizes, FontSize }) =>
       fontSize: FontSize.small,
     },
     fabAlignment: {
+      backgroundColor: Colors.softBlue,
       bottom: 0,
       margin: MetricsSizes.large,
       position: 'absolute',

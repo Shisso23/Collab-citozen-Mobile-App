@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   RefreshControl,
+  Dimensions,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
@@ -24,6 +25,7 @@ import { locationSelector } from '../../../reducers/location-reducer/location.re
 import ContactButtons from '../../../components/molecules/contact-buttons';
 
 const ContactDetailsScreen = () => {
+  const screenHeight = Dimensions.get('window').height;
   const { Common, Gutters, Fonts, Layout, Images } = useTheme();
   const dispatch = useDispatch();
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -122,7 +124,10 @@ const ContactDetailsScreen = () => {
         </TouchableOpacity>
 
         <FlatList
-          contentContainerStyle={Gutters.smallHMargin}
+          contentContainerStyle={[
+            ...[{ height: screenHeight + screenHeight * 0.3 }],
+            Gutters.smallHMarginF,
+          ]}
           data={channelsContacts}
           renderItem={renderContactDetails}
           keyExtractor={(item) => String(item.number)}

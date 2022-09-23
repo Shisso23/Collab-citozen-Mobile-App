@@ -10,8 +10,9 @@ import { useTheme } from '../../../theme';
 
 const TAB_BAR_HEIGHT = 65;
 
-const TabBar = ({ state, navigation }) => {
+const TabBar = (props) => {
   const { Layout } = useTheme();
+  const { state, navigation } = props;
   const insets = useSafeAreaInsets();
 
   return (
@@ -52,8 +53,6 @@ const styles = StyleSheet.create({
   },
   tabBarWrapper: {
     backgroundColor: Colors.softBlue,
-    borderTopLeftRadius: 17,
-    borderTopRightRadius: 17,
     width: '100%',
   },
 });

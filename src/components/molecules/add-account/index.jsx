@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { StyleSheet, Keyboard } from 'react-native';
+import React, { useState, useMemo, useEffect } from 'react';
+import { StyleSheet, Keyboard, Dimensions } from 'react-native';
 import { TextInput, Button, Text } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 
@@ -15,13 +15,28 @@ import FormScreenContainer from '../../containers/form-screen-container/form-scr
 
 const AddAccounts = ({ selectedChannel }) => {
   const dispatch = useDispatch();
+  const screenHeight = Dimensions.get('window').height;
   const { isLoadingAddAccount, isLoadingValidateAccount } = useSelector(accountsSelector);
   const { user } = useSelector((reducer) => reducer.userReducer);
   const { Common, Gutters, Layout } = useTheme();
   const [accountNumber, setAccountNumber] = useState(null);
+  const [keyboardVisible, setKeyboardVisible] = useState(undefined);
   const channelId = useMemo(() => _.get(selectedChannel, 'objId', ''), []);
   const [accountNumberError, setAccountNumberError] = useState(false);
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardVisible(true);
+    });
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardVisible(false);
+    });
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
 
   const handleSubmit = () => {
     if (!accountNumber || `${accountNumber}`.length < 1) {
@@ -76,7 +91,11 @@ const AddAccounts = ({ selectedChannel }) => {
           Gutters.tinyVPadding,
           Layout.alignSelfCenter,
           Gutters.largeHPadding,
-          Gutters.largeBMargin,
+          {
+            marginBottom: keyboardVisible
+              ? screenHeight - screenHeight * 0.6
+              : screenHeight - screenHeight * 0.88,
+          },
           styles.submitBUtton,
         ]}
         onPress={handleSubmit}

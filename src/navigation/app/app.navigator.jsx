@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { View, Keyboard } from 'react-native';
 import HomeScreen from '../../screens/app/home/home.screen';
 import ProfileScreen from '../../screens/app/profile/profile.screen';
 import useTheme from '../../theme/hooks/useTheme';
@@ -35,7 +36,6 @@ import NewsScreen from '../../screens/news-screen/news.screen';
 const Drawer = createDrawerNavigator();
 const AppStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
-const AddFeatureStack = createStackNavigator();
 
 const AppNavigator = () => {
   const { Custom } = useTheme();
@@ -185,7 +185,7 @@ const DrawerNavigator = () => {
       drawerContent={(props) => <DrawerContent {...props} />}
       drawerStyle={Common.drawerStyle}
     >
-      <Drawer.Screen name="HomeTabs" component={TabNavigator} options={{ headerShown: true }} />
+      <Drawer.Screen name="HomeScreen" component={HomeScreen} options={{ headerShown: true }} />
       <Drawer.Screen name="News" component={NewsScreen} options={{ headerShown: true }} />
       <Drawer.Screen
         name="Accounts"
@@ -230,56 +230,39 @@ const DrawerNavigator = () => {
   );
 };
 
-const AddFeatureNavigator = () => {
-  const { Custom } = useTheme();
+const renderEmptyComponent = () => <View />;
+
+const TabNavigator = () => {
+  const [keyboardVisible, setKeyboardVisible] = useState(undefined);
+  useLayoutEffect(() => {
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardVisible(true);
+    });
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardVisible(false);
+    });
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
   return (
-    <AddFeatureStack.Navigator
-      screenOptions={Custom.globalNavigatorScreenOptions}
-      headerMode="screen"
+    <Tab.Navigator
+      initialRouteName="Home"
+      tabBar={(props) => !keyboardVisible && <TabBar {...props} />}
+      lazy={false}
+      screenOptions={{}}
+      tabBarOptions={{
+        keyboardHidesTabBar: true,
+        showLabel: false,
+      }}
     >
-      <AddFeatureStack.Screen
-        name="SubscribeToChannels"
-        component={SubscribeToChannelsScreen}
-        options={{
-          headerShown: false,
-          title: 'Subscribe To Channels',
-        }}
-      />
-      <AddFeatureStack.Screen
-        name="Accountchannels"
-        component={AccountChannelsScreen}
-        options={{
-          headerShown: true,
-          header: (props) => <HeaderBackGround {...props} backButton />,
-        }}
-      />
-      <AddFeatureStack.Screen
-        name="SelectLocationScreen"
-        component={SelectLocationScreen}
-        options={{
-          headerShown: false,
-          title: 'Select Location',
-          gestureEnabled: false,
-        }}
-      />
-    </AddFeatureStack.Navigator>
+      <Tab.Screen name="Home" component={AppNavigator} />
+      <Tab.Screen name="addFeatures" component={renderEmptyComponent} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
+    </Tab.Navigator>
   );
 };
 
-const TabNavigator = () => (
-  <Tab.Navigator
-    initialRouteName="Home"
-    tabBar={(props) => <TabBar {...props} />}
-    lazy={false}
-    tabBarOptions={{
-      keyboardHidesTabBar: true,
-      showLabel: false,
-    }}
-  >
-    <Tab.Screen name="Home" component={HomeScreen} />
-    <Tab.Screen name="addFeatures" component={AddFeatureNavigator} />
-    <Tab.Screen name="Profile" component={ProfileScreen} />
-  </Tab.Navigator>
-);
-
-export default AppNavigator;
+export default TabNavigator;

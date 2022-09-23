@@ -2,12 +2,13 @@ import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Avatar } from 'react-native-paper';
-import { StyleSheet, Text, View } from 'react-native';
+import { Dimensions, StyleSheet, Text, View } from 'react-native';
 
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
 import { formatTime } from '../../../helpers/time.helper';
 
+const screenWidth = Dimensions.get('screen').width;
 const ServiceRequestDetails = ({ serviceRequest }) => {
   const { Gutters, Layout, Fonts } = useTheme();
 
@@ -18,22 +19,33 @@ const ServiceRequestDetails = ({ serviceRequest }) => {
   return (
     <View style={[Layout.row, Gutters.regularHMargin]}>
       <Avatar.Image rounded size={50} source={_setImageUrl(serviceRequest)} />
-      <View style={[Gutters.regularHMargin, Layout.column, Gutters.smallTMargin]}>
-        <Text style={[Fonts.textLarge, Gutters.tinyMargin]}>{`${serviceRequest.serviceType}`}</Text>
-
-        <Text
-          style={[Fonts.textRegular, Gutters.tinyMargin]}
-        >{`Reference Number: ${serviceRequest.referenceNumber}`}</Text>
-        <Text
-          style={[Fonts.textRegular, Gutters.tinyMargin]}
-        >{`Description: ${serviceRequest.serviceDescription}`}</Text>
-        <Text style={[Fonts.textRegular, Gutters.tinyMargin]}>{`Date Registered: ${formatTime(
-          serviceRequest.requestedDate,
-        )}`}</Text>
-        <Text style={[Fonts.textRegular, Gutters.tinyMargin]}>{`${serviceRequest.address}`}</Text>
-        <Text
-          style={[Fonts.textRegular, Gutters.tinyMargin, styles.button]}
-        >{`${serviceRequest.status}`}</Text>
+      <View style={[Gutters.tinyLMargin, Layout.column]}>
+        <View
+          style={[
+            Layout.rowBetween,
+            Layout.alignItemsCenter,
+            ...[{ width: screenWidth - screenWidth * 0.18, height: 50 }],
+          ]}
+        >
+          <Text
+            style={[Fonts.textLarge, Gutters.tinyMargin]}
+          >{`${serviceRequest.serviceType}`}</Text>
+        </View>
+        <View style={Gutters.smallRMargin}>
+          <Text
+            style={[Fonts.textRegular, Gutters.tinyMargin]}
+          >{`Reference Number: ${serviceRequest.referenceNumber}`}</Text>
+          <Text
+            style={[Fonts.textRegular, Gutters.tinyMargin, styles.desciptionText]}
+          >{`Description: ${serviceRequest.serviceDescription}`}</Text>
+          <Text style={[Fonts.textRegular, Gutters.tinyMargin]}>{`Date Registered: ${formatTime(
+            serviceRequest.requestedDate,
+          )}`}</Text>
+          <Text style={[Fonts.textRegular, Gutters.tinyMargin]}>{`${serviceRequest.address}`}</Text>
+          <Text
+            style={[Fonts.textRegular, Gutters.tinyMargin, styles.button]}
+          >{`${serviceRequest.status}`}</Text>
+        </View>
       </View>
     </View>
   );
@@ -44,6 +56,7 @@ const styles = StyleSheet.create({
     color: Colors.primary,
     width: 200,
   },
+  desciptionText: { flexWrap: 'wrap', maxWidth: '80%' },
 });
 
 ServiceRequestDetails.propTypes = {

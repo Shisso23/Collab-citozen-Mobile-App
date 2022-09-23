@@ -14,6 +14,7 @@ import {
   Keyboard,
   TouchableOpacity,
   SafeAreaView,
+  Dimensions,
 } from 'react-native';
 import { Tab, Icon } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
@@ -41,6 +42,7 @@ import LoadingOverlay from '../../../components/molecules/loading-overlay/index'
 const { Colors } = useTheme();
 const loadingImageSource = require('../../../assets/lottie-files/rings-loading.json');
 
+const screenHeight = Dimensions.get('window').height;
 const ServiceRequestScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -333,7 +335,6 @@ const ServiceRequestScreen = () => {
             minZoomPreference={3}
             maxZoomPreference={20}
             animationDuration={2000}
-            zoomControlsEnabled
             rotateGesturesEnabled
             scrollGesturesEnabled
             tiltGesturesEnabled
@@ -367,7 +368,6 @@ const ServiceRequestScreen = () => {
           return _setMapPosition(newPosition);
         }}
         onMapReady={() => setMapReady(true)}
-        zoomControlEnabled
         zoomEnabled
         showsMyLocationButton
       >
@@ -386,7 +386,10 @@ const ServiceRequestScreen = () => {
         >
           <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>Service Requests</Text>
           <FlatList
-            contentContainerStyle={Gutters.smallHMargin}
+            contentContainerStyle={[
+              Gutters.smallHMargin,
+              { paddingBottom: screenHeight - screenHeight * 0.6 },
+            ]}
             data={_sortServiceRequestDescending(serviceRequests)}
             renderItem={renderServiceRequest}
             keyExtractor={(item) => String(item.id)}
@@ -398,7 +401,11 @@ const ServiceRequestScreen = () => {
             }
           />
         </ImageBackground>
-        <FAB style={Common.fabAlignment} icon="plus" onPress={_handleOnServiceRequestCreatePress} />
+        <FAB
+          style={[Common.fabAlignment, { marginBottom: screenHeight - screenHeight * 0.85 }]}
+          icon="plus"
+          onPress={_handleOnServiceRequestCreatePress}
+        />
       </>
     );
   };
@@ -512,7 +519,7 @@ const ServiceRequestScreen = () => {
             <Icon type="ionicon" name="pin-outline" size={30} color={Colors.primary} />
           </View>
           <FAB
-            style={Common.fabAlignment}
+            style={[Common.fabAlignment, { marginBottom: screenHeight - screenHeight * 0.85 }]}
             icon="plus"
             onPress={_handleOnServiceRequestCreatePress}
           />
