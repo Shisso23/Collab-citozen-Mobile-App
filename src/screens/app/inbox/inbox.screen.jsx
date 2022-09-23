@@ -24,7 +24,7 @@ const InboxScreen = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((reducers) => reducers.userReducer);
   const [selectedCounter, setSelectedCounter] = useState(0);
-  const [multiselectEnabled, setMultiselectEnabled] = useState(false);
+  const [multiSelectEnabled, setMultiSelectEnabled] = useState(false);
   const [selectedNotifications, setSelectedNotifications] = useState([]);
   const [expandedNotification, setExpandeNotification] = useState(null);
   const [userNotifications, setUserNotifications] = useState(_.get(notifications, 'Feed', []));
@@ -38,9 +38,9 @@ const InboxScreen = () => {
 
   useEffect(() => {
     if (selectedNotifications.length === 0) {
-      setMultiselectEnabled(false);
+      setMultiSelectEnabled(false);
     } else {
-      setMultiselectEnabled(true);
+      setMultiSelectEnabled(true);
     }
   }, [JSON.stringify(selectedNotifications)]);
 
@@ -49,7 +49,7 @@ const InboxScreen = () => {
   };
 
   const handleNotificationPress = (notification) => () => {
-    if (multiselectEnabled) {
+    if (multiSelectEnabled) {
       if (
         selectedNotifications.some(
           (notification_) => _.get(notification_, 'obj_id') === _.get(notification, 'obj_id'),
@@ -64,7 +64,7 @@ const InboxScreen = () => {
         setSelectedNotifications([...selectedNotifications, notification]);
       }
     } else if (
-      !multiselectEnabled &&
+      !multiSelectEnabled &&
       expandedNotification &&
       _.get(expandedNotification, 'obj_id') === _.get(notification, 'obj_id')
     ) {
@@ -134,7 +134,7 @@ const InboxScreen = () => {
             return false;
           }),
         );
-        setMultiselectEnabled(false);
+        setMultiSelectEnabled(false);
         Promise.all(
           selectedNotifications.map((notification) =>
             dispatch(
@@ -161,7 +161,7 @@ const InboxScreen = () => {
       </Text>
       {!isLoading ? (
         <ScreenContainer>
-          {multiselectEnabled && (
+          {multiSelectEnabled && (
             <PaddedContainer>
               <View style={Layout.alignSelfEnd}>
                 <Icon
@@ -184,10 +184,10 @@ const InboxScreen = () => {
                 setSelectedCounter={setSelectedCounter}
                 onPress={handleNotificationPress(notification)}
                 onLongPress={handleNotificationLongPress(notification)}
-                multiselectEnabled={multiselectEnabled}
+                multiSelectEnabled={multiSelectEnabled}
                 handleDeleteNotification={handleDeleteNotification(notification)}
                 expanded={
-                  !multiselectEnabled &&
+                  !multiSelectEnabled &&
                   _.get(expandedNotification, 'obj_id') === _.get(notification, 'obj_id')
                 }
                 isSelected={
