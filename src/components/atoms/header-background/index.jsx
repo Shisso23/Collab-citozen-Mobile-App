@@ -152,7 +152,7 @@ const HeaderBackGround = (props) => {
             size={30}
             color={Colors.white}
             onPress={handleOnPress}
-            style={Gutters.largeTMargin}
+            style={styles.leftIcon}
           />
           <NotificationHeader style={styles.notificationHeader} />
         </ImageBackground>
@@ -167,7 +167,7 @@ const HeaderBackGround = (props) => {
             size={30}
             color={Colors.white}
             onPress={handleOnPress}
-            style={Gutters.largeTMargin}
+            style={styles.leftIcon}
           />
           <NotificationHeader style={styles.notificationHeader} />
         </ImageBackground>
@@ -187,7 +187,10 @@ HeaderBackGround.defaultProps = {
 };
 
 const styles = StyleSheet.create({
-  notificationHeader: { position: 'absolute', right: 0, top: '37%' },
+  leftIcon: {
+    marginTop: 50,
+  },
+  notificationHeader: { marginTop: 25, position: 'absolute', right: 0, top: '34%' },
 });
 
 export default HeaderBackGround;

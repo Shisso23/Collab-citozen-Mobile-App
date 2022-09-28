@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import MapView, { Marker } from 'react-native-maps';
 import HmsMapView, { HMSMarker, MapTypes, Hue } from '@hmscore/react-native-hms-map';
@@ -288,7 +289,7 @@ const ServiceRequestScreen = () => {
   };
 
   const displayPins = () => {
-    return nearbyPinLocations?.map((pin) => {
+    return nearbyPinLocations?.map((pin, index) => {
       const { gpsCoordinates } = pin;
       const cordinates = gpsCoordinates
         .substring(gpsCoordinates.indexOf('(') + 1, gpsCoordinates.indexOf(')'))
@@ -300,7 +301,7 @@ const ServiceRequestScreen = () => {
         <Marker
           coordinate={{ latitude: lng, longitude: lat }}
           onPress={displayModalToggle(pin, true)}
-          key={pin.id}
+          key={`${pin.id}-${index}`}
         >
           <View style={styles.pin}>
             <Icon name="location-pin" size={45} color={returnMarkerColour(pin.status)} />

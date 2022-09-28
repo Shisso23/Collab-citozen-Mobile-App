@@ -61,10 +61,9 @@ const SubscribedToChannelsDetails = (props) => {
         contentContainerStyle={{ height: screenHeight + screenHeight * 0.03 }}
         keyExtractor={(item) => String(item.obj_id)}
         ListFooterComponent={
-          channelItem.userCanCreateNotification && (
+          !channelItem.userCanCreateNotification && (
             <Button
               style={styles.newNotificationButton}
-              type="outline"
               title="New Notification"
               titleStyle={Gutters.smallMarginHorizontal}
               buttonStyle={[...[{ borderBottomWidth: 0 }]]}
@@ -86,9 +85,9 @@ const styles = StyleSheet.create({
   buttonContainer: {
     borderColor: Colors.primary,
     borderRadius: 10,
-    borderWidth: 1,
   },
   newNotificationButton: {
+    backgroundColor: Colors.primary,
     borderRadius: 10,
     overflow: 'hidden',
   },
