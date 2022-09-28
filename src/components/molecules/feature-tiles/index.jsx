@@ -57,7 +57,7 @@ const FeatureTilesContainer = ({
           onPress={onChannelTilePress}
         />
         <FeatureTile
-          description={'Service\nRequest'}
+          description={'Service\nRequests'}
           backgroundImage={Images.serviceRequestImage}
           onPress={onServiceRequestTilePress}
         />

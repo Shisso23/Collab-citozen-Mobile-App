@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import React, { useRef } from 'react';
 import { Dimensions, Pressable, StyleSheet, View, Platform } from 'react-native';
 import ActionSheet from 'react-native-actions-sheet';
@@ -12,16 +13,16 @@ import ShortCutsActionSheetContent from '../feature-shortcusts/feature-shortcust
 import { flashService, permissionsService } from '../../../services';
 
 const tabIcons = {
-  Home: { icon: 'home', type: 'feather', iconColor: Colors.white },
-  addFeatures: { icon: 'pluscircleo', type: 'antdesign', iconColor: Colors.primary },
-  Profile: { icon: 'user-circle', type: 'font-awesome-5', iconColor: Colors.white },
+  Home: { icon: 'home', type: 'fontisto', iconColor: Colors.white },
+  addFeatures: { icon: 'plus', type: 'font-awesome-5', iconColor: Colors.primary },
+  Profile: { icon: 'user-alt', type: 'font-awesome-5', iconColor: Colors.white },
 };
 
 const { width } = Dimensions.get('window');
 
 const Tab = ({ route, navigation, isFocused }) => {
   const actionSheetRef = useRef();
-  const { Layout, Gutters, Common } = useTheme();
+  const { Layout, Common } = useTheme();
   const name = _.get(route, 'name');
   const iconName = _.get(tabIcons, `${name}.icon`);
   const iconType = _.get(tabIcons, `${name}.type`);
@@ -127,7 +128,6 @@ const Tab = ({ route, navigation, isFocused }) => {
           <View
             style={[
               Layout.rowCenter,
-              Gutters.smallVPadding,
               styles.tabContainer,
               isFocused && styles.tabContainerFocused,
               pressed && Common.pressed,
@@ -137,7 +137,17 @@ const Tab = ({ route, navigation, isFocused }) => {
               name={iconName}
               type={iconType}
               color={isFocused ? Colors.primary : Colors.white}
-              size={name === 'addFeatures' ? 32 : 27}
+              size={name === 'addFeatures' ? 25 : 30}
+              containerStyle={[
+                {
+                  borderRadius: name === 'addFeatures' ? 40 : 0,
+                  borderWidth: name === 'addFeatures' ? 1 : 0,
+                  borderColor: isFocused ? Colors.primary : Colors.white,
+                  padding: 5,
+                  width: name === 'addFeatures' ? 35 : 45,
+                  height: name === 'addFeatures' ? 35 : 45,
+                },
+              ]}
             />
           </View>
         )}

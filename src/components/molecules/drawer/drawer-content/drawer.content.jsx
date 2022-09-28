@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Share, Platform } from 'react-native';
+import { View, StyleSheet, Share, Platform, Dimensions } from 'react-native';
 import PropTypes from 'prop-types';
 import { Text, Drawer, Divider } from 'react-native-paper';
 import { DrawerContentScrollView } from '@react-navigation/drawer';
@@ -23,6 +23,8 @@ const theme = {
     text: Colors.white,
   },
 };
+
+const screenHeight = Dimensions.get('window').height;
 const DrawerContent = (props) => {
   const { navigation } = props;
   const { user } = useSelector((reducers) => reducers.userReducer);
@@ -201,7 +203,7 @@ const DrawerContent = (props) => {
           <Drawer.Item icon="exit-to-app" label="Sign Out" onPress={_signOut} />
         </View>
       </DrawerContentScrollView>
-      <View style={styles.versionContainer}>
+      <View style={[styles.versionContainer, Gutters.regularLMargin]}>
         <Text style={[Colors.gray]}>Version </Text>
         <Text style={[Colors.gray]}>{DeviceInfo.getVersion()}</Text>
         <Text
@@ -222,10 +224,8 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   versionContainer: {
-    alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 20,
+    marginBottom: screenHeight - screenHeight * 0.88,
   },
 });
 export default DrawerContent;

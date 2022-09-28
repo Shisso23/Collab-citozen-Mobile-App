@@ -60,18 +60,20 @@ const SubscribedToChannelsDetails = (props) => {
         renderItem={subscribeToItem}
         contentContainerStyle={{ height: screenHeight + screenHeight * 0.03 }}
         keyExtractor={(item) => String(item.obj_id)}
+        ListFooterComponent={
+          channelItem.userCanCreateNotification && (
+            <Button
+              style={styles.newNotificationButton}
+              type="outline"
+              title="New Notification"
+              titleStyle={Gutters.smallMarginHorizontal}
+              buttonStyle={[...[{ borderBottomWidth: 0 }]]}
+              containerStyle={[Gutters.regularTMargin, Gutters.tinyHMargin, styles.buttonContainer]}
+              onPress={onCreateNotificationPressed(interestTypes, channelId)}
+            />
+          )
+        }
       />
-      {(channelItem.userCanCreateNotification && (
-        <Button
-          style={styles.newNotificationButton}
-          type="outline"
-          title="New Notification"
-          titleStyle={Gutters.smallMarginHorizontal}
-          buttonStyle={[...[{ borderBottomWidth: 0 }]]}
-          containerStyle={[Gutters.smallVMargin, Gutters.tinyHMargin, styles.buttonContainer]}
-          onPress={onCreateNotificationPressed(interestTypes, channelId)}
-        />
-      )) || <></>}
     </View>
   );
 };
