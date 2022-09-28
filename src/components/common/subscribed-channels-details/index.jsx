@@ -61,7 +61,7 @@ const SubscribedToChannelsDetails = (props) => {
         contentContainerStyle={{ height: screenHeight + screenHeight * 0.03 }}
         keyExtractor={(item) => String(item.obj_id)}
         ListFooterComponent={
-          !channelItem.userCanCreateNotification && (
+          channelItem.userCanCreateNotification && (
             <Button
               style={styles.newNotificationButton}
               title="New Notification"
