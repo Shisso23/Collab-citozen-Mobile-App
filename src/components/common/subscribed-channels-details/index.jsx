@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Text, View, FlatList, StyleSheet, Dimensions } from 'react-native';
+import { Text, View, FlatList, StyleSheet, Dimensions, StatusBar } from 'react-native';
 import { Divider, Button } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import { List } from 'react-native-paper';
@@ -21,9 +21,13 @@ const SubscribedToChannelsDetails = (props) => {
   const navigation = useNavigation();
 
   useEffect(() => {
+    StatusBar.setHidden(true);
     if (_.get(channelItem, 'interest_types', []).length === 0) {
       flashService.error('There are currently no Interest Types');
     }
+    return () => {
+      StatusBar.setHidden(false);
+    };
   }, []);
 
   const onCreateNotificationPressed = (_interestTypes, channelRef) => () => {

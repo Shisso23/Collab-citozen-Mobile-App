@@ -1,5 +1,5 @@
-import React from 'react';
-import { ImageBackground } from 'react-native';
+import React, { useEffect } from 'react';
+import { ImageBackground, StatusBar } from 'react-native';
 import { useRoute, useNavigation } from '@react-navigation/native';
 
 import OnBackPressHeader from '../../../../components/atoms/on-back-press-header/index';
@@ -18,6 +18,10 @@ const CreateNotificationScreen = () => {
     flashService.success('Success', 'Successfully created notification!');
     navigation.navigate('HomeScreen');
   };
+
+  useEffect(() => {
+    StatusBar.setHidden(true);
+  }, []);
 
   const onFormSubmit = async (values) => {
     return notificationService.createNotification(values, channelRef);
