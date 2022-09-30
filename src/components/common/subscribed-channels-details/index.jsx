@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Text, View, FlatList, StyleSheet, Dimensions } from 'react-native';
+import { Text, View, FlatList, StyleSheet, Dimensions, StatusBar } from 'react-native';
 import { Divider, Button } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import { List } from 'react-native-paper';
@@ -21,9 +21,13 @@ const SubscribedToChannelsDetails = (props) => {
   const navigation = useNavigation();
 
   useEffect(() => {
+    StatusBar.setHidden(true);
     if (_.get(channelItem, 'interest_types', []).length === 0) {
       flashService.error('There are currently no Interest Types');
     }
+    return () => {
+      StatusBar.setHidden(false);
+    };
   }, []);
 
   const onCreateNotificationPressed = (_interestTypes, channelRef) => () => {
@@ -60,18 +64,19 @@ const SubscribedToChannelsDetails = (props) => {
         renderItem={subscribeToItem}
         contentContainerStyle={{ height: screenHeight + screenHeight * 0.03 }}
         keyExtractor={(item) => String(item.obj_id)}
+        ListFooterComponent={
+          channelItem.userCanCreateNotification && (
+            <Button
+              style={styles.newNotificationButton}
+              title="New Notification"
+              titleStyle={Gutters.smallMarginHorizontal}
+              buttonStyle={[...[{ borderBottomWidth: 0 }]]}
+              containerStyle={[Gutters.regularTMargin, Gutters.tinyHMargin, styles.buttonContainer]}
+              onPress={onCreateNotificationPressed(interestTypes, channelId)}
+            />
+          )
+        }
       />
-      {(channelItem.userCanCreateNotification && (
-        <Button
-          style={styles.newNotificationButton}
-          type="outline"
-          title="New Notification"
-          titleStyle={Gutters.smallMarginHorizontal}
-          buttonStyle={[...[{ borderBottomWidth: 0 }]]}
-          containerStyle={[Gutters.smallVMargin, Gutters.tinyHMargin, styles.buttonContainer]}
-          onPress={onCreateNotificationPressed(interestTypes, channelId)}
-        />
-      )) || <></>}
     </View>
   );
 };
@@ -84,9 +89,9 @@ const styles = StyleSheet.create({
   buttonContainer: {
     borderColor: Colors.primary,
     borderRadius: 10,
-    borderWidth: 1,
   },
   newNotificationButton: {
+    backgroundColor: Colors.primary,
     borderRadius: 10,
     overflow: 'hidden',
   },

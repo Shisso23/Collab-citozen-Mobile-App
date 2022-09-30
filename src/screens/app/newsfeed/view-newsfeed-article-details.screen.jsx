@@ -1,5 +1,5 @@
-import React from 'react';
-import { ScrollView, ImageBackground, Dimensions } from 'react-native';
+import React, { useEffect } from 'react';
+import { ScrollView, ImageBackground, Dimensions, StatusBar } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 
 import useTheme from '../../../theme/hooks/useTheme';
@@ -10,6 +10,13 @@ const NewsFeedArticleDetailsScreen = () => {
   const screenHeight = Dimensions.get('window').height;
   const { params } = useRoute();
   const { Images, Layout } = useTheme();
+
+  useEffect(() => {
+    StatusBar.setHidden(true);
+    return () => {
+      StatusBar.setHidden(false);
+    };
+  }, []);
 
   return (
     <ImageBackground source={Images.serviceRequest} style={Layout.fullSize} resizeMode="cover">

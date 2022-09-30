@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Dimensions } from 'react-native';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
 
@@ -9,9 +9,10 @@ import Tab from './tab';
 import { useTheme } from '../../../theme';
 
 const TAB_BAR_HEIGHT = 65;
+const screenWidth = Dimensions.get('screen').width;
 
 const TabBar = (props) => {
-  const { Layout } = useTheme();
+  const { Layout, Gutters } = useTheme();
   const { state, navigation } = props;
   const insets = useSafeAreaInsets();
 
@@ -21,7 +22,8 @@ const TabBar = (props) => {
         style={[
           styles.tabBarWrapper,
           Layout.rowCenter,
-          Layout.justifyContentAround,
+          Layout.justifyContentBetween,
+          Gutters.largeHPadding,
           { height: TAB_BAR_HEIGHT + insets.bottom, paddingBottom: insets.bottom },
         ]}
       >
@@ -53,6 +55,6 @@ const styles = StyleSheet.create({
   },
   tabBarWrapper: {
     backgroundColor: Colors.softBlue,
-    width: '100%',
+    width: screenWidth,
   },
 });

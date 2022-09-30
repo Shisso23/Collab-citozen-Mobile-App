@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import MapView, { Marker } from 'react-native-maps';
 import HmsMapView, { MapTypes, HMSMarker, Hue } from '@hmscore/react-native-hms-map';
@@ -12,6 +13,7 @@ import {
   Dimensions,
   KeyboardAvoidingView,
   Platform,
+  StatusBar,
 } from 'react-native';
 import { Button, TextInput, IconButton, Modal } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
@@ -109,6 +111,12 @@ const SelectLocationScreen = () => {
     }, []),
   );
 
+  useEffect(() => {
+    StatusBar.setHidden(true);
+    return () => {
+      StatusBar.setHidden(false);
+    };
+  }, []);
   useFocusEffect(
     useCallback(() => {
       throttleGetPinLocations(mapPosition?.latitude, mapPosition?.longitude);
@@ -187,7 +195,7 @@ const SelectLocationScreen = () => {
   };
 
   const displayPins = () => {
-    return nearbyPinLocations?.map((pin) => {
+    return nearbyPinLocations?.map((pin, index) => {
       const { gpsCoordinates } = pin;
       const cordinates = gpsCoordinates
         .substring(gpsCoordinates.indexOf('(') + 1, gpsCoordinates.indexOf(')'))
@@ -199,7 +207,7 @@ const SelectLocationScreen = () => {
         <Marker
           coordinate={{ latitude: lng, longitude: lat }}
           onPress={displayModalToggle(pin, true)}
-          key={pin.id}
+          key={`${pin.id}-${index}`}
         >
           <View style={styles.pin}>
             <Icon name="location-pin" size={45} color={returnMarkerColour(pin.status)} />

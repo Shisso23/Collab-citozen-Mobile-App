@@ -79,12 +79,15 @@ const ViewServiceRequestScreen = () => {
         <Text style={[Gutters.regularMargin, Fonts.titleTiny]}>Service Request</Text>
         {user.user_id?.trim() !== serviceRequest.ownerId.trim() && (
           <Button
-            mode="outlined"
-            color={Colors.white}
-            style={[
+            contentStyle={[
               Gutters.smallRMargin,
               ...[
-                { backgroundColor: Colors.primary, height: 30, width: 120, alignSelf: 'flex-end' },
+                {
+                  width: 120,
+                  alignSelf: 'flex-end',
+                  borderRadius: 5,
+                  backgroundColor: Colors.primary,
+                },
               ],
             ]}
             labelStyle={[Fonts.textSmall, Common.whiteText]}
