@@ -52,6 +52,19 @@ const Categories = ({ municipalities, onCategoryPress, setSelectedChanne }) => {
     }
   };
 
+  const isShowMoreTileVisible = () => {
+    const allCategories = [];
+    const favoriteCategories = [];
+    municipalities.forEach((municipality) => {
+      allCategories.push(...municipality.categories);
+    });
+
+    favoriteCategoriesData.forEach((municipality) => {
+      favoriteCategories.push(...municipality.categories);
+    });
+    return allCategories.length > favoriteCategories.length;
+  };
+
   const renderCategories = () => {
     return (
       <View style={{ paddingBottom: screenHeight - screenHeight * 0.8 }}>
@@ -68,7 +81,7 @@ const Categories = ({ municipalities, onCategoryPress, setSelectedChanne }) => {
                     size={36}
                   />
                 ))}
-                {index === favoriteCategoriesData.length - 1 && (
+                {index === favoriteCategoriesData.length - 1 && isShowMoreTileVisible() && (
                   <CategoryTile
                     categoryObject={viewMoreTilesData}
                     onPress={onViewMorePress}
