@@ -1,46 +1,33 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.collaboratorapp"  xmlns:tools="http://schemas.android.com/tools">
-
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-feature android:name="android.hardware.camera" android:required="false" />
-
-    <application
-      android:name=".MainApplication"
-      android:label="@string/app_name"
-      android:icon="@mipmap/collaborator_icons"
-      android:roundIcon="@mipmap/collaborator_icons_round"
-      android:allowBackup="false"
-      android:requestLegacyExternalStorage="true"
-      android:theme="@style/AppTheme">
-      <activity
-        android:name=".MainActivity"
-        android:label="@string/app_name"
-        android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
-        android:windowSoftInputMode="adjustResize"
-        android:exported="true"
-        android:launchMode="singleTask">
-      </activity>
-      <activity
-          android:name="com.zoontek.rnbootsplash.RNBootSplashActivity"
-          android:exported="true"
-          android:theme="@style/BootTheme"
-          android:launchMode="singleTask">
-          <intent-filter>
-              <action android:name="android.intent.action.MAIN" />
-              <category android:name="android.intent.category.LAUNCHER" />
-          </intent-filter>
-      </activity>
-      <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
-
-      <meta-data
-          android:name="com.google.android.geo.API_KEY"
-          android:value="@string/google_maps_api_key"/>
-
-      <uses-library android:name="org.apache.http.legacy" android:required="false"/>
-    </application>
-  
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.collaboratorapp" xmlns:tools="http://schemas.android.com/tools">
+  <uses-permission android:name="android.permission.INTERNET"/>
+  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+  <uses-permission android:name="android.permission.CAMERA"/>
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+  <uses-feature android:name="android.hardware.camera" android:required="false"/>
+  <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/collaborator_icons" android:roundIcon="@mipmap/collaborator_icons_round" android:allowBackup="false" android:requestLegacyExternalStorage="true" android:theme="@style/AppTheme">
+    <activity android:name=".MainActivity" android:label="@string/app_name" android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode" android:windowSoftInputMode="adjustResize" android:exported="true" android:launchMode="singleTask">
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+        <data android:scheme="collaborator"/>
+      </intent-filter>
+        <intent-filter>
+        <action android:name="android.intent.action.VIEW"/>
+        <category android:name="android.intent.category.DEFAULT"/>
+        <category android:name="android.intent.category.BROWSABLE"/>
+        <data android:scheme="payat"/>
+      </intent-filter>
+    </activity>
+    <activity android:name="com.zoontek.rnbootsplash.RNBootSplashActivity" android:exported="true" android:theme="@style/BootTheme" android:launchMode="singleTask">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+    </activity>
+    <activity android:name="com.facebook.react.devsupport.DevSettingsActivity"/>
+    <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/google_maps_api_key"/>
+    <uses-library android:name="org.apache.http.legacy" android:required="false"/>
+  </application>
 </manifest>
