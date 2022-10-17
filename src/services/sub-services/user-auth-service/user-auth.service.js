@@ -23,11 +23,11 @@ const signIn = async (formData) => {
     const errorMessage = _.get(apiResponse, 'data');
     throw new Error(errorMessage);
   }
-  await Promise.all([storeAccessToken(apiResponse), storageService.storeEmail(formData.email)]);
+  await Promise.all([storeAccessToken(apiResponse)]);
 };
 
 const signOut = () => {
-  return Promise.all([storageService.removeAccessToken(), storageService.removeEmail()]);
+  return Promise.all([storageService.removeAccessToken()]);
 };
 
 const register = (formData) => {
