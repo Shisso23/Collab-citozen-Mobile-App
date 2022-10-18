@@ -8,6 +8,7 @@
 #import "ReactNativeConfig.h"
 #import <Firebase.h>
 #import <CodePush/CodePush.h>
+#import <React/RCTLinkingManager.h>
 
 #ifdef FB_SONARKIT_ENABLED
 #import <FlipperKit/FlipperClient.h>
@@ -65,6 +66,13 @@ if ([FIRApp defaultApp] == nil) {
   #else
     return [CodePush bundleURL];
   #endif
+}
+
+- (BOOL)application:(UIApplication *)application
+   openURL:(NSURL *)url
+   options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
+{
+  return [RCTLinkingManager application:application openURL:url options:options];
 }
 
 @end

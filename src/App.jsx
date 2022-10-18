@@ -18,6 +18,7 @@ import {
 } from './services';
 import config from './config';
 import { checkAppVersion } from './helpers/appstore-version-check.helper';
+import linking from './linking';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -168,6 +169,6 @@ const App = () => {
     };
   }, []);
 
-  return <NavigationContainer />;
+  return <NavigationContainer linking={linking} />;
 };
 export default App;

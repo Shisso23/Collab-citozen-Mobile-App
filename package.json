@@ -72,7 +72,7 @@
     "react-native-swipe-list-view": "3.2.9",
     "react-native-toast-message": "1.4.1",
     "react-native-vector-icons": "8.0.0",
-    "react-native-webview": "11.4.4",
+    "react-native-webview": "11.23.1",
     "react-redux": "7.2.4",
     "redux": "4.1.0",
     "redux-promise": "0.6.0",
