@@ -19,3 +19,4 @@ export { default as notificationService } from './sub-services/notification-serv
 export { default as firebaseNotificationService } from './sub-services/update-notification-token/update-notification-token.service';
 export { default as contactsService } from './sub-services/contacts-service/contacts-service';
 export { default as metersService } from './sub-services/meters-service/meters.service';
+export { default as paymentService } from './sub-services/payment-service/payment.service';
