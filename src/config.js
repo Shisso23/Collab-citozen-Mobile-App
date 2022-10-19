@@ -16,6 +16,7 @@ const {
   PAYATCLIENTID,
   PAYATCLIENTSECRET,
   PAYATSCOPE,
+  PAYATCLIENTREFERENCE,
 } = Config;
 export default {
   accessTokenKey: 'access_token',
@@ -45,4 +46,5 @@ export default {
   payAtClientId: PAYATCLIENTID,
   payAtClientSecret: PAYATCLIENTSECRET,
   payAtScope: PAYATSCOPE,
+  payAtClientReference: PAYATCLIENTREFERENCE,
 };

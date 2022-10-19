@@ -4,6 +4,7 @@ import _ from 'lodash';
 
 import paymentAuthService from './payment-auth-util';
 import config from '../../../config';
+import paymentUrls from './payment.urls';
 
 const paymentAuthAdapter = ax.create({
   timeout: 20000,
@@ -59,6 +60,35 @@ const getPayAtAuthToken = async () => {
     .then((response) => _.get(response, 'data.access_token', null));
 };
 
+const initiatePayment = ({
+  accountNumber,
+  amount,
+  successUrlScheme,
+  failedUrlScheme,
+  cancelledUrlScheme,
+  payAtAuthToken,
+}) => {
+  const url = paymentUrls.initPaymentUrl();
+  // TODO use correct message id and transmissionDateTime
+  const data = {
+    accountNumber,
+    amount,
+    successUrl: successUrlScheme,
+    failedUrl: failedUrlScheme,
+    cancelledUrl: cancelledUrlScheme,
+    clientReference: config.payAtClientReference,
+    messageId: '92377a5f-23b9-4cb5-892b-6e1ffbc5d706',
+    transmissionDateTime: '1993-03-01T00:02:17.815Z',
+    accountType: 'BILL_PAY',
+  };
+
+  paymentAuthAdapter.post(url, data, {
+    headers: {
+      Authorization: `Bearer ${payAtAuthToken}`,
+    },
+  });
+};
 export default {
   getPayAtAuthToken,
+  initiatePayment,
 };
