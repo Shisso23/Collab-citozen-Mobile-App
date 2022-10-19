@@ -19,9 +19,6 @@ target 'collaboratorapp' do
 
   pod 'RNShare', :path => '../node_modules/react-native-share'
 
-  pod 'React', :path => '../node_modules/react-native', :subspecs => [
-    'RCTLinkingIOS',
-  ]
 
   target 'collaboratorappTests' do
     inherit! :complete

@@ -4,5 +4,10 @@
 <dict>
 	<key>aps-environment</key>
 	<string>development</string>
+	<!-- TODO remember to test this associated domain or see if the part /webapi/Api/ needs to be added. Should be Without the last /   -->
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:citizencollab.collaboratoronline.com</string>
+	</array>
 </dict>
 </plist>
