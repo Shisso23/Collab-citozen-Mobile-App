@@ -13,6 +13,9 @@ const {
   ENVIRONMENT,
   HUAWEI_API_KEY,
   APP_STORE_APP_ID,
+  PAYATCLIENTID,
+  PAYATCLIENTSECRET,
+  PAYATSCOPE,
 } = Config;
 export default {
   accessTokenKey: 'access_token',
@@ -37,4 +40,9 @@ export default {
   combinedLink: 'https://onelink.to/jjzt2k',
   appStoreAppId: APP_STORE_APP_ID,
   androidPackageId: 'com.collaboratorapp',
+  payAtBaseUrl: 'https://payat.io:9443/digiapi/v1',
+  payAtAuthUrl: 'https://payat.io:9443/oauth/v1/token',
+  payAtClientId: PAYATCLIENTID,
+  payAtClientSecret: PAYATCLIENTSECRET,
+  payAtScope: PAYATSCOPE,
 };

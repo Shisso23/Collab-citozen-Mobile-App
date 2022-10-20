@@ -36,6 +36,7 @@
     "lottie-react-native": "4.0.3",
     "moment": "2.29.1",
     "prop-types": "15.7.2",
+    "querystring": "^0.2.1",
     "react": "17.0.2",
     "react-native": "0.63.4",
     "react-native-actions-sheet": "0.4.8",
