@@ -20,7 +20,7 @@ import {
 
 const HeaderBackGround = (props) => {
   const { backButton, onBack } = props;
-  const { Images, Common, Gutters, Layout, Colors } = useTheme();
+  const { Images, Common, Layout, Colors } = useTheme();
   const { apiUrl } = appConfig;
   const { myChannels, loadedBannerImages, importedBannerImagesChannels } =
     useSelector(myChannelsSelector);
