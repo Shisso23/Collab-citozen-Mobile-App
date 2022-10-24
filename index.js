@@ -1,3 +1,4 @@
+import 'react-native-gesture-handler';
 /* eslint-disable react/jsx-filename-extension */
 import React from 'react';
 import { Provider as PaperProvider } from 'react-native-paper';
