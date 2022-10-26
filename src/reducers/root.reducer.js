@@ -13,6 +13,7 @@ import unsubscribedChannelsReducer from './unsubscribed-channels/unsubscribed-ch
 import notificationReducer from './notification-reducer/notification.reducer';
 import channelContactsReducer from './contacts-reducer/contacts.reducer';
 import meterReadingsReducer from './account-meters/account-meters.reducer';
+import paymentReducer from './payment-reducer/payment.reducer';
 
 export default combineReducers({
   userAuthReducer,
@@ -28,4 +29,5 @@ export default combineReducers({
   notificationReducer,
   channelContactsReducer,
   meterReadingsReducer,
+  paymentReducer,
 });

@@ -10,7 +10,7 @@ import useTheme from '../../../theme/hooks/useTheme';
 import { constructStatementModels } from '../../../models/app/accounts/statement.model';
 import { flashService } from '../../../services';
 
-const StatementsTabContent = ({ account, statements }) => {
+const StatementsTabContent = ({ account, statements, totalBalance }) => {
   const navigation = useNavigation();
   const statusText = useMemo(() => _.get(account, 'statusText', ''), []);
   const [statementsWithPdfFiles, setStatementsWithPdfFiles] = useState([]);
@@ -74,19 +74,25 @@ const StatementsTabContent = ({ account, statements }) => {
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
         />
-        <View
-          style={[
-            Common.textInputWithShadow,
-            Gutters.xlLargeTMargin,
-            Gutters.smallPadding,
-            Layout.rowBetween,
-            Gutters.smallMargin,
-            styles.statementItem,
-          ]}
-        >
-          <Text style={Common.cardDescription}>Total Balance</Text>
-          <Text style={Common.cardDescription}>R12 730</Text>
-        </View>
+        {totalBalance ? (
+          <View
+            style={[
+              Common.textInputWithShadow,
+              Gutters.xlLargeTMargin,
+              Gutters.smallPadding,
+              Layout.rowBetween,
+              Gutters.smallMargin,
+              styles.statementItem,
+            ]}
+          >
+            <>
+              <Text style={Common.cardDescription}>Total Balance</Text>
+              <Text style={Common.cardDescription}>R {totalBalance}</Text>
+            </>
+          </View>
+        ) : (
+          <></>
+        )}
       </View>
     </>
   );
@@ -95,6 +101,7 @@ const StatementsTabContent = ({ account, statements }) => {
 StatementsTabContent.propTypes = {
   account: PropTypes.object.isRequired,
   statements: PropTypes.object.isRequired,
+  totalBalance: PropTypes.number.isRequired,
 };
 
 const styles = StyleSheet.create({

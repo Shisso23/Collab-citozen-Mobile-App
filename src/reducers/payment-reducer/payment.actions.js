@@ -5,7 +5,7 @@ export const getUserTokenAction = async () => {
   return async (dispatch) => {
     dispatch(setIsLoadingGetPayAtTokenAction(true));
     return paymentService
-      .getUserToken()
+      .getUserToken({ username: 'danie@codehesion.co.za', password: 'Johannes12!' })
       .then((token) => dispatch(setPayAtTokenAction(token)))
       .finally(() => dispatch(setIsLoadingGetPayAtTokenAction(false)));
   };

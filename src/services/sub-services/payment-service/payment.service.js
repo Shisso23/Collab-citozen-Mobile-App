@@ -1,4 +1,5 @@
 import axios from 'axios';
+import _ from 'lodash';
 import paymentUrls from './payment.urls';
 
 const paymentAuthAdapter = axios.create({
@@ -45,7 +46,7 @@ const getUserToken = async ({ username, password }) => {
 
   return paymentAuthAdapter.post(url, { username, password }).then((response) => {
     console.log({ response });
-    return response;
+    return _.get(response, 'data', null);
   });
 };
 
@@ -64,14 +65,14 @@ const getAccountDetails = async ({ accountNumber, token }) => {
       config,
     )
     .then((response) => {
-      return response;
+      return _.get(response, 'data', null);
     });
 };
 
-const initiatePayment = async ({ accountNumber, amount, token }) => {
+const initiatePayment = async ({ accountNumber, amount, token, authToken }) => {
   const url = paymentUrls.initPaymentUrl();
   const config = {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: { Authorization: `Bearer ${authToken}` },
   };
 
   return paymentAuthAdapter
@@ -89,7 +90,7 @@ const initiatePayment = async ({ accountNumber, amount, token }) => {
       config,
     )
     .then((response) => {
-      return response;
+      return _.get(response, 'data', null);
     });
 };
 
