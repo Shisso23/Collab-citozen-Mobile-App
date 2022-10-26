@@ -1,17 +1,20 @@
 import React from 'react';
 import { View, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import PropTypes from 'prop-types';
 
+import _ from 'lodash';
 import useTheme from '../../../theme/hooks/useTheme';
 import AccountPaymentForm from '../../../components/forms/account-payment-form/account-payment.form';
 
-const AccountPaymentScreen = () => {
+const AccountPaymentScreen = ({ route }) => {
+  const link = _.get(route, 'params.link', 'https://www.google.com');
   const { Layout, Images } = useTheme();
   const navigation = useNavigation();
 
   const _onFormSuccess = () => {
     navigation.navigate('AccountPaymentWebView', {
-      redirectUrl: 'https://www.google.com',
+      redirectUrl: link,
     });
   };
   const handleSubmit = async (values) => {
@@ -34,6 +37,10 @@ const AccountPaymentScreen = () => {
       </View>
     </ImageBackground>
   );
+};
+
+AccountPaymentScreen.propTypes = {
+  route: PropTypes.object.isRequired,
 };
 
 export default AccountPaymentScreen;

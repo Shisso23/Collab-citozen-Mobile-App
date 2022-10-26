@@ -1,11 +1,8 @@
-import ax from 'axios';
-import querystring from 'querystring';
+import axios from 'axios';
 import _ from 'lodash';
+import paymentUrls from './payment.urls';
 
-import paymentAuthService from './payment-auth-util';
-import config from '../../../config';
-
-const paymentAuthAdapter = ax.create({
+const paymentAuthAdapter = axios.create({
   timeout: 20000,
   headers: {
     Accept: 'application/json',
@@ -14,6 +11,7 @@ const paymentAuthAdapter = ax.create({
   responseType: 'json',
 });
 
+// Interceptors are here to help  us log the requests
 if (__DEV__) {
   paymentAuthAdapter.interceptors.request.use(
     (requestConfig) => {
@@ -43,22 +41,61 @@ if (__DEV__) {
   );
 }
 
-const getPayAtAuthToken = async () => {
-  const data = paymentAuthService.constructOAuthTokenData();
+const getUserToken = async ({ username, password }) => {
+  const url = paymentUrls.getUserTokenUrl();
+
+  return paymentAuthAdapter.post(url, { username, password }).then((response) => {
+    console.log({ response });
+    return _.get(response, 'data', null);
+  });
+};
+
+const getAccountDetails = async ({ accountNumber, token }) => {
+  const url = paymentUrls.getAccountDetailsUrl();
+  const config = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+
   return paymentAuthAdapter
-    .post(config.payAtAuthUrl, querystring.stringify(data), {
-      headers: {
-        Accept: 'application/json',
-        'Content-type': 'application/x-www-form-urlencoded',
+    .post(
+      url,
+      {
+        ACCOUNTNUMBER: accountNumber,
       },
-      auth: {
-        username: config.payAtClientId,
-        password: config.payAtClientSecret,
+      config,
+    )
+    .then((response) => {
+      return _.get(response, 'data', null);
+    });
+};
+
+const initiatePayment = async ({ accountNumber, amount, token, authToken }) => {
+  const url = paymentUrls.initPaymentUrl();
+  const config = {
+    headers: { Authorization: `Bearer ${authToken}` },
+  };
+
+  return paymentAuthAdapter
+    .post(
+      url,
+      {
+        ACCOUNTNUMBER: accountNumber,
+        AMOUNT: amount,
+        token,
+        clientReference: 'accountrefernce0001',
+        successUrl: 'https://citizen.collaboratoronline.com',
+        failedUrl: 'https://citizen.collaboratoronline.com',
+        cancelledUrl: 'https://citizen.collaboratoronline.com',
       },
-    })
-    .then((response) => _.get(response, 'data.access_token', null));
+      config,
+    )
+    .then((response) => {
+      return _.get(response, 'data', null);
+    });
 };
 
 export default {
-  getPayAtAuthToken,
+  getUserToken,
+  getAccountDetails,
+  initiatePayment,
 };

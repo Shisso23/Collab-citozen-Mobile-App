@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 import React, { useEffect, useState } from 'react';
 import { ImageBackground, StyleSheet, Text, View, TouchableOpacity, Platform } from 'react-native';
 import { Tab } from 'react-native-elements';
@@ -5,11 +6,15 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { useNavigation } from '@react-navigation/native';
 
+import { useDispatch, useSelector } from 'react-redux';
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
 import StatementsTabContent from '../../../components/molecules/add-account/statements-tab-content';
 import MetersTabContent from '../../../components/molecules/meters/meters-tab-content';
 import ScreenContainer from '../../../components/containers/screen-container/screen.container';
+import { paymentService } from '../../../services';
+import { getUserTokenAction } from '../../../reducers/payment-reducer/payment.actions';
+import LoadingOverlay from '../../../components/molecules/loading-overlay';
 
 const AccountDetailsScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -17,11 +22,18 @@ const AccountDetailsScreen = ({ route }) => {
   const accountChannel = _.get(route, 'params.accountChannel.name', '');
   const channelRef = _.get(route, 'params.accountChannel.objectId', '');
   const statements = _.get(route, 'params.statements', []);
+  const dispatch = useDispatch();
+  const loadingImageSource = require('../../../assets/lottie-files/rings-loading.json');
+  const { payAtAuthToken } = useSelector((reducers) => reducers.paymentReducer);
+  const [accountPaymentDetails, setAccountPaymentDetails] = useState(null);
+  const [isLoadingGetAccountDetails, setIsLoadingGetAccountDetails] = useState(false);
+  // const [initPaymentResponse, setInitPaymentResponse] = useState(null);
   const [tabIndex, setTabIndex] = useState(0);
   const [disableIndicator, setDisableIndicator] = useState(false);
   const { Gutters, Fonts, Layout, Images } = useTheme();
   const meters = _.get(accountDetails, 'meters', '');
   const accountNumber = _.get(accountDetails, 'accountNumber', '');
+  const [tempToken, setTempToken] = useState(null);
 
   const renderMakePaymentButtonContent = () => {
     return (
@@ -45,10 +57,44 @@ const AccountDetailsScreen = ({ route }) => {
     if (meters.length === 0) {
       setDisableIndicator(true);
     }
-  });
+    setIsLoadingGetAccountDetails(true);
+    dispatch(getUserTokenAction())
+      .then((tokenResponse) => {
+        console.log({ tokenResponse });
+        setTempToken(tokenResponse.payload);
+        paymentService
+          .getAccountDetails({ accountNumber: '11379020013560229', token: tokenResponse.payload })
+          .then((accountDetailsResponse) => {
+            setAccountPaymentDetails({
+              accountNumber: _.get(accountDetailsResponse, 'accountNumber', null),
+              amount: _.get(accountDetailsResponse, 'amount', null),
+              minAmount: _.get(accountDetailsResponse, 'paymentRules.minAmount', null),
+              maxAmount: _.get(accountDetailsResponse, 'paymentRules.maxAmount', null),
+              token: _.get(accountDetailsResponse, 'token', null),
+            });
+            console.log({ accountDetailsResponse });
+          })
+          .catch((error) => console.log({ error }));
+      })
+      .finally(() => {
+        setIsLoadingGetAccountDetails(false);
+      });
+  }, []);
 
   const onMakePaymentPress = () => {
-    navigation.navigate('AccountPayment');
+    console.log({ payAtAuthToken });
+    // navigation.navigate('AccountPayment', { accountPaymentDetails });
+    paymentService
+      .initiatePayment({
+        accountNumber: accountPaymentDetails.accountNumber,
+        amount: accountPaymentDetails.amount,
+        token: _.get(accountPaymentDetails, 'token', null),
+        authToken: tempToken,
+      })
+      .then((response) => {
+        console.log({ response });
+        navigation.navigate('AccountPayment', { link: response.appPaymentLinks[0].paymentUrl });
+      });
   };
 
   useEffect(() => {
@@ -98,7 +144,11 @@ const AccountDetailsScreen = ({ route }) => {
             )}
           </Tab>
           {tabIndex === 0 ? (
-            <StatementsTabContent account={accountDetails} statements={statements} />
+            <StatementsTabContent
+              account={accountDetails}
+              statements={statements}
+              totalBalance={_.get(accountPaymentDetails, 'amount', null)}
+            />
           ) : (
             <MetersTabContent
               meters={meters}
@@ -106,18 +156,25 @@ const AccountDetailsScreen = ({ route }) => {
               channelRef={channelRef}
             />
           )}
-          <TouchableOpacity
-            onPress={onMakePaymentPress}
-            style={[
-              styles.submitButton,
-              Layout.alignItemsCenter,
-              Gutters.smallVPadding,
-              Gutters.regularHMargin,
-            ]}
-          >
-            {renderMakePaymentButtonContent()}
-          </TouchableOpacity>
+          {(accountPaymentDetails && (
+            <TouchableOpacity
+              onPress={onMakePaymentPress}
+              style={[
+                styles.submitButton,
+                Layout.alignItemsCenter,
+                Gutters.smallVPadding,
+                Gutters.regularHMargin,
+              ]}
+            >
+              {renderMakePaymentButtonContent()}
+            </TouchableOpacity>
+          )) || <></>}
         </ScreenContainer>
+        <LoadingOverlay
+          source={loadingImageSource}
+          visible={isLoadingGetAccountDetails}
+          transparent
+        />
       </ImageBackground>
     </>
   );

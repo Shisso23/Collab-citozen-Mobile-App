@@ -1,7 +1,9 @@
 import appConfig from '../../../config';
 
-const { payAtBaseUrl } = appConfig;
+const { paymentBaseUrl } = appConfig;
 
 export default {
-  initPaymentUrl: () => `${payAtBaseUrl}/payment/initiate`,
+  getUserTokenUrl: () => `${paymentBaseUrl}/MobileToken/GetTokenForUser`,
+  getAccountDetailsUrl: () => `${paymentBaseUrl}/Payment/account`,
+  initPaymentUrl: () => `${paymentBaseUrl}/Payment/initiate`,
 };

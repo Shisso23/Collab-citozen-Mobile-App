@@ -42,6 +42,14 @@ export const dataUpdateUserProfile = async (functionName, data) => {
   };
 };
 
+export const dataInitiatePayment = async (functionName, accountNumber, amount) => {
+  return {
+    taskID: 0,
+    uniqName: `${functionName}`,
+    InputValues: `<valRoot><val>${accountNumber}</val><val>${amount}</val></valRoot>`,
+  };
+};
+
 export const notificationActivityData = ({ notificationId, userId, action, dateTime }) =>
   `<Objects><User_Notification_Activity><F1>${notificationId}</F1><F2>${userId}</F2><F3>${action}</F3><F4>${dateTime}</F4></User_Notification_Activity></Objects>`;
 
