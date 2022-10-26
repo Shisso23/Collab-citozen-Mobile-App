@@ -33,6 +33,7 @@ import SubmitMeterReadingScreen from '../../screens/app/accounts/submit-readings
 import CreateNotificationScreen from '../../screens/app/channels/create-notification/create-notification.screen';
 import TabBar from '../../components/molecules/tab-bar/tab-bar';
 import NewsScreen from '../../screens/news-screen/news.screen';
+import AccountPaymentWebViewScreen from '../../screens/app/account-payment-web-view-screen/account-payment-web-view.screen';
 
 const Drawer = createDrawerNavigator();
 const AppStack = createStackNavigator();
@@ -180,6 +181,13 @@ const AppNavigator = () => {
         options={{
           headerShown: true,
           header: (props) => <HeaderBackGround {...props} backButton />,
+        }}
+      />
+      <AppStack.Screen
+        name="AccountPaymentWebView"
+        component={AccountPaymentWebViewScreen}
+        options={{
+          headerShown: false,
         }}
       />
     </AppStack.Navigator>
