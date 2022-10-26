@@ -6,13 +6,13 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { useNavigation } from '@react-navigation/native';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
 import StatementsTabContent from '../../../components/molecules/add-account/statements-tab-content';
 import MetersTabContent from '../../../components/molecules/meters/meters-tab-content';
 import ScreenContainer from '../../../components/containers/screen-container/screen.container';
-import { paymentService } from '../../../services';
+import { flashService, paymentService } from '../../../services';
 import { getUserTokenAction } from '../../../reducers/payment-reducer/payment.actions';
 import LoadingOverlay from '../../../components/molecules/loading-overlay';
 
@@ -24,16 +24,14 @@ const AccountDetailsScreen = ({ route }) => {
   const statements = _.get(route, 'params.statements', []);
   const dispatch = useDispatch();
   const loadingImageSource = require('../../../assets/lottie-files/rings-loading.json');
-  const { payAtAuthToken } = useSelector((reducers) => reducers.paymentReducer);
   const [accountPaymentDetails, setAccountPaymentDetails] = useState(null);
   const [isLoadingGetAccountDetails, setIsLoadingGetAccountDetails] = useState(false);
-  // const [initPaymentResponse, setInitPaymentResponse] = useState(null);
   const [tabIndex, setTabIndex] = useState(0);
   const [disableIndicator, setDisableIndicator] = useState(false);
   const { Gutters, Fonts, Layout, Images } = useTheme();
   const meters = _.get(accountDetails, 'meters', '');
   const accountNumber = _.get(accountDetails, 'accountNumber', '');
-  const [tempToken, setTempToken] = useState(null);
+  const [userToken, setUserToken] = useState(null);
 
   const renderMakePaymentButtonContent = () => {
     return (
@@ -60,8 +58,7 @@ const AccountDetailsScreen = ({ route }) => {
     setIsLoadingGetAccountDetails(true);
     dispatch(getUserTokenAction())
       .then((tokenResponse) => {
-        console.log({ tokenResponse });
-        setTempToken(tokenResponse.payload);
+        setUserToken(tokenResponse.payload);
         paymentService
           .getAccountDetails({ accountNumber: '11379020013560229', token: tokenResponse.payload })
           .then((accountDetailsResponse) => {
@@ -72,9 +69,8 @@ const AccountDetailsScreen = ({ route }) => {
               maxAmount: _.get(accountDetailsResponse, 'paymentRules.maxAmount', null),
               token: _.get(accountDetailsResponse, 'token', null),
             });
-            console.log({ accountDetailsResponse });
           })
-          .catch((error) => console.log({ error }));
+          .catch(() => flashService.error('Failed fetching account details!'));
       })
       .finally(() => {
         setIsLoadingGetAccountDetails(false);
@@ -82,18 +78,18 @@ const AccountDetailsScreen = ({ route }) => {
   }, []);
 
   const onMakePaymentPress = () => {
-    console.log({ payAtAuthToken });
-    // navigation.navigate('AccountPayment', { accountPaymentDetails });
     paymentService
       .initiatePayment({
         accountNumber: accountPaymentDetails.accountNumber,
         amount: accountPaymentDetails.amount,
         token: _.get(accountPaymentDetails, 'token', null),
-        authToken: tempToken,
+        authToken: userToken,
       })
       .then((response) => {
-        console.log({ response });
-        navigation.navigate('AccountPayment', { link: response.appPaymentLinks[0].paymentUrl });
+        navigation.navigate('AccountPayment', {
+          creditCardLink: response.webPaymentLinks[1].paymentUrl,
+          eftLink: response.webPaymentLinks[2].paymentUrl,
+        });
       });
   };
 
