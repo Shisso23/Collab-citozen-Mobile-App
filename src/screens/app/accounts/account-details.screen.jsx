@@ -3,6 +3,7 @@ import { ImageBackground, StyleSheet, Text, View, TouchableOpacity, Platform } f
 import { Tab } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
+import { useNavigation } from '@react-navigation/native';
 
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
@@ -11,6 +12,7 @@ import MetersTabContent from '../../../components/molecules/meters/meters-tab-co
 import ScreenContainer from '../../../components/containers/screen-container/screen.container';
 
 const AccountDetailsScreen = ({ route }) => {
+  const navigation = useNavigation();
   const accountDetails = _.get(route, 'params.account', {});
   const accountChannel = _.get(route, 'params.accountChannel.name', '');
   const channelRef = _.get(route, 'params.accountChannel.objectId', '');
@@ -45,7 +47,9 @@ const AccountDetailsScreen = ({ route }) => {
     }
   });
 
-  const onMakePaymentPress = () => {};
+  const onMakePaymentPress = () => {
+    navigation.navigate('AccountPayment');
+  };
 
   useEffect(() => {
     if (meters.length === 0) {
@@ -102,22 +106,17 @@ const AccountDetailsScreen = ({ route }) => {
               channelRef={channelRef}
             />
           )}
-
-          {false && ( // TODO remove this condition when we integrate payment
-            <TouchableOpacity
-              onPress={onMakePaymentPress}
-              style={[
-                styles.submitButton,
-                Layout.alignItemsCenter,
-                Layout.justifyContentCenter,
-                Gutters.largeHMargin,
-                Gutters.smallVPadding,
-                Gutters.smallBMargin,
-              ]}
-            >
-              {renderMakePaymentButtonContent()}
-            </TouchableOpacity>
-          )}
+          <TouchableOpacity
+            onPress={onMakePaymentPress}
+            style={[
+              styles.submitButton,
+              Layout.alignItemsCenter,
+              Gutters.smallVPadding,
+              Gutters.regularHMargin,
+            ]}
+          >
+            {renderMakePaymentButtonContent()}
+          </TouchableOpacity>
         </ScreenContainer>
       </ImageBackground>
     </>

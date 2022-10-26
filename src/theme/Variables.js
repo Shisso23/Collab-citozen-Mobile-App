@@ -34,6 +34,7 @@ export const Colors = {
   darkgray: '#5d5d5d',
   shadow: '#e3e3e3',
   commentsBubble: '#6e9e52',
+  mainBlue: '#39609C',
 };
 
 export const NavigationColors = {
@@ -61,9 +62,11 @@ const tiny = 5; // 10
 const small = tiny * 2; // 10
 const regular = tiny * 3; // 15
 const large = regular * 2; // 30
+const xlLarge = large * 2; // 60
 export const MetricsSizes = {
   tiny,
   small,
   regular,
   large,
+  xlLarge,
 };
