@@ -19,6 +19,7 @@ target 'collaboratorapp' do
 
   pod 'RNShare', :path => '../node_modules/react-native-share'
 
+
   target 'collaboratorappTests' do
     inherit! :complete
     # Pods for testing

@@ -74,6 +74,19 @@ const StatementsTabContent = ({ account, statements }) => {
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
         />
+        <View
+          style={[
+            Common.textInputWithShadow,
+            Gutters.xlLargeTMargin,
+            Gutters.smallPadding,
+            Layout.rowBetween,
+            Gutters.smallMargin,
+            styles.statementItem,
+          ]}
+        >
+          <Text style={Common.cardDescription}>Total Balance</Text>
+          <Text style={Common.cardDescription}>R12 730</Text>
+        </View>
       </View>
     </>
   );

@@ -96,7 +96,7 @@ const SubscribingToChannelsDetails = (props) => {
       <FlatList
         data={interestTypes}
         renderItem={subscribeToItem}
-        contentContainerStyle={{ height: screenHeight + screenHeight * 0.03 }}
+        contentContainerStyle={{ height: screenHeight + screenHeight * 0.5 }}
         keyExtractor={(item) => String(item.obj_id)}
         showsVerticalScrollIndicator={false}
       />

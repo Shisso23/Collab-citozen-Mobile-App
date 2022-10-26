@@ -308,7 +308,7 @@ PODS:
     - React-Core
   - react-native-safe-area-context (3.1.9):
     - React-Core
-  - react-native-webview (11.4.4):
+  - react-native-webview (11.23.1):
     - React-Core
   - React-RCTActionSheet (0.63.4):
     - React-Core/RCTActionSheetHeaders (= 0.63.4)
@@ -679,7 +679,7 @@ SPEC CHECKSUMS:
   react-native-progress-bar-android: ce95a69f11ac580799021633071368d08aaf9ad8
   react-native-progress-view: 11298da10e13c29bd28042bc0f284d9868f5da18
   react-native-safe-area-context: 86612d2c9a9e94e288319262d10b5f93f0b395f5
-  react-native-webview: 5483cffa8c9d7e0181587729d4a65eb718c9eba0
+  react-native-webview: a192040320142d8f10d652a745c46e4f43e37f8c
   React-RCTActionSheet: 89a0ca9f4a06c1f93c26067af074ccdce0f40336
   React-RCTAnimation: 1bde3ecc0c104c55df246eda516e0deb03c4e49b
   React-RCTBlob: a97d378b527740cc667e03ebfa183a75231ab0f0
@@ -713,6 +713,6 @@ SPEC CHECKSUMS:
   TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
   Yoga: 4bd86afe9883422a7c4028c00e34790f560923d6
 
-PODFILE CHECKSUM: ef822a1a3210603c1ada06ce9da58e1f93a8f60b
+PODFILE CHECKSUM: b5f920e6c37d9a6bf086e172514c233dc78d0d7a
 
 COCOAPODS: 1.11.3
