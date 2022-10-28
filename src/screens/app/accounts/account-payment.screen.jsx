@@ -11,7 +11,7 @@ const AccountPaymentScreen = () => {
 
   const _onFormSuccess = () => {
     navigation.navigate('AccountPaymentWebView', {
-      redirectUrl: 'https://www.google.com',
+      redirectUrl: 'https://www.google.com', // TODO add correct url, must take you to the correct pay@ page
     });
   };
   const handleSubmit = async (values) => {

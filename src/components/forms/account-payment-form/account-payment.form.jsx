@@ -33,7 +33,6 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm }) => {
     submitForm(formData)
       .then(() => {
         actions.setSubmitting(false);
-        // onSuccess();
       })
       .catch((error) => _handleFormSubmitError(error, actions, formData));
   };
@@ -190,8 +189,7 @@ const styles = StyleSheet.create({
   placeHolder: {
     color: Colors.darkgray,
   },
-  // eslint-disable-next-line react-native/no-color-literals
-  subTitle: { color: '#39609C', fontSize: 14 },
+  subTitle: { color: Colors.mainBlue, fontSize: 14 },
   submitButton: {
     backgroundColor: Colors.primary,
     marginLeft: '15%',
