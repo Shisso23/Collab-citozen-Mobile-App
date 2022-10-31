@@ -20,6 +20,8 @@ target 'collaboratorapp' do
   pod 'RNShare', :path => '../node_modules/react-native-share'
 
 
+  pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
+
   target 'collaboratorappTests' do
     inherit! :complete
     # Pods for testing

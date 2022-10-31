@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.swmansion.reanimated.ReanimatedPackage;
 import com.poberwong.launcher.IntentLauncherPackage;
 import org.wonday.pdf.RCTPdfView;
 import com.facebook.react.ReactInstanceManager;

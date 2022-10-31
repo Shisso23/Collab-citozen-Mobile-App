@@ -15,7 +15,6 @@ import {
   firebaseNotificationService,
   pushKitService,
   permissionsService,
-  paymentService,
 } from './services';
 import config from './config';
 import { checkAppVersion } from './helpers/appstore-version-check.helper';
