@@ -7,7 +7,7 @@ export const setPayAtTokenAction = setPayAtToken.action;
 const setIsLoadingGetPayAtToken = CreateAction(reducerName, 'SET-IS-LOADING-GET-PAYAT-TOKEN');
 export const setIsLoadingGetPayAtTokenAction = setIsLoadingGetPayAtToken.action;
 const initialState = {
-  payAtAuthToken: [],
+  payAtAuthToken: null,
   isLoadingGetPayAtToken: false,
 };
 
