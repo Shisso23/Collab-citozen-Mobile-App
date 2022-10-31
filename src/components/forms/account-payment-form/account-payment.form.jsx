@@ -1,9 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { View, StyleSheet, Text, ImageBackground } from 'react-native';
 import PropTypes from 'prop-types';
-import { Formik } from 'formik';
-import { Button, HelperText, TextInput } from 'react-native-paper';
+import { Formik, ErrorMessage } from 'formik';
+import { Button, TextInput } from 'react-native-paper';
+import * as Yup from 'yup';
+import _, { values } from 'lodash';
 
+import { getFormError } from '../form-utils';
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
 import CheckBoxTick from '../../atoms/check-box';
@@ -11,34 +14,38 @@ import ScreenContainer from '../../containers/screen-container/screen.container'
 
 const AccountPaymentForm = ({ initialValues, onSuccess, submitForm }) => {
   const { Gutters, Common, Layout, Images } = useTheme();
-  const [paymentAmount, setPaymentAmount] = useState('');
   const formikRef = useRef(null);
-  const [paymentAmountError, setPaymentAmountError] = useState('');
-  const [creditCard, setCreditCard] = useState();
+  const [paymentType, setPaymentType] = useState();
+
+  const validationSchema = Yup.object().shape({
+    amount: Yup.number().required('Payment Amount is required.'),
+
+    eft: Yup.bool,
+    creditCard: Yup.bool,
+  });
 
   const _handleFormSubmitError = (error, actions) => {
     actions.setSubmitting(false);
+    actions.setFieldError('amount', _.get(error, 'message', ''));
   };
 
   const _handleSubmission = (formData, actions) => {
-    console.warn(formData);
     submitForm(formData)
       .then(() => {
         actions.setSubmitting(false);
-        // onSuccess();
       })
       .catch((error) => _handleFormSubmitError(error, actions, formData));
   };
 
   useEffect(() => {
-    if (formikRef.current && creditCard) {
-      formikRef.current.setFieldValue('creditCard', creditCard);
-      formikRef.current.setFieldValue('eft', !creditCard);
-    } else if (formikRef.current && !creditCard) {
-      formikRef.current.setFieldValue('creditCard', creditCard);
-      formikRef.current.setFieldValue('eft', !creditCard);
+    if (formikRef.current && paymentType) {
+      formikRef.current.setFieldValue('paymentType', paymentType);
+      formikRef.current.setFieldValue('eft', !paymentType);
+    } else if (formikRef.current && !paymentType) {
+      formikRef.current.setFieldValue('paymentType', paymentType);
+      formikRef.current.setFieldValue('eft', !paymentType);
     }
-  }, [creditCard]);
+  }, [paymentType]);
 
   return (
     <ImageBackground
@@ -53,8 +60,11 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm }) => {
           initialStatus={{ apiErrors: {} }}
           onSubmit={_handleSubmission}
           onSuccess={onSuccess}
+          validationSchema={validationSchema}
         >
-          {({ handleSubmit, isSubmitting, item, setFieldValue }) => {
+          {({ handleSubmit, isSubmitting, item, setFieldValue, errors, touched, status }) => {
+            const error = (name) => getFormError(name, { touched, status, errors });
+
             return (
               <ScreenContainer>
                 <View style={(Layout.fill, Layout.fullSize)}>
@@ -69,14 +79,15 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm }) => {
                   <View style={[Gutters.xlLargeHMargin, Gutters.largeTMargin]}>
                     <View style={[Layout.row, Layout.alignItemsCenter, styles.container]}>
                       <CheckBoxTick
+                        name="eft"
                         selectedItem={item}
                         checkedIcon="check-circle"
                         uncheckedIcon="circle-o"
                         hitSlop={{ right: 200 }}
                         checkedColor={Colors.softBlue}
                         size={20}
-                        checked={!creditCard}
-                        onPress={() => setCreditCard(false)}
+                        checked={!paymentType}
+                        onPress={() => setPaymentType(false)}
                       />
                       <Text style={[styles.placeHolder, Gutters.largeHMargin]}>EFT</Text>
                     </View>
@@ -89,6 +100,7 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm }) => {
                       ]}
                     >
                       <CheckBoxTick
+                        name="creditCard"
                         selectedItem={item}
                         checkedIcon="check-circle"
                         uncheckedIcon="circle-o"
@@ -96,8 +108,8 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm }) => {
                         setItem={item}
                         checkedColor={Colors.softBlue}
                         size={20}
-                        checked={creditCard}
-                        onPress={() => setCreditCard(true)}
+                        checked={paymentType}
+                        onPress={() => setPaymentType(true)}
                       />
                       <Text style={[styles.placeHolder, Gutters.largeHMargin]}>Credit Card</Text>
                     </View>
@@ -110,38 +122,22 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm }) => {
                             <Text style={styles.subTitle}>Please enter your desired amount</Text>
                           </View>
                           <TextInput
+                            name="amount"
                             labelStyle={Layout.alignItemsCenter}
                             placeholder="Amount"
                             style={[Common.textInput, styles.accountInput]}
                             onChangeText={(value) => {
                               setFieldValue('amount', value);
-                              setPaymentAmount(value);
-                              if (`${paymentAmount}`.length > 0) setPaymentAmountError('');
-                              else {
-                                setPaymentAmountError('No amount value entered!');
-                              }
                             }}
-                            value={paymentAmount}
+                            value={values.amount}
                             multiline={false}
-                            error={`${paymentAmountError}`.length > 0}
-                            onEndEditing={() => {
-                              if (`${paymentAmount}`.length === 0) {
-                                setPaymentAmountError('No amount value entered!');
-                              }
-                            }}
                             textAlign="center"
                             keyboardType="numeric"
+                            error={error('amount')}
+                            type="number"
                           />
-                          <HelperText
-                            type="error"
-                            style={styles.errorStyle}
-                            visible={`${paymentAmountError}`.length > 0}
-                          >
-                            {paymentAmountError}
-                          </HelperText>
-                          <View>
-                            <Text style={styles.lastReadingInfo}>Minimum Amount of R1 500</Text>
-                          </View>
+                          {errors.amount && touched.amount ? <div>{errors.amount}</div> : null}
+                          <ErrorMessage name="amount" />
                         </View>
                       </View>
                     </View>
@@ -190,20 +186,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
   },
-  errorStyle: {
-    color: Colors.danger,
-    marginHorizontal: '12%',
-  },
-  lastReadingInfo: {
-    color: Colors.darkgray,
-    fontSize: 14,
-    textAlign: 'center',
-  },
   placeHolder: {
     color: Colors.darkgray,
   },
-  // eslint-disable-next-line react-native/no-color-literals
-  subTitle: { color: '#39609C', fontSize: 14 },
+  subTitle: { color: Colors.mainBlue, fontSize: 14 },
   submitButton: {
     backgroundColor: Colors.primary,
     marginLeft: '15%',
