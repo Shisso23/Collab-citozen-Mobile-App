@@ -47,4 +47,5 @@ export default {
   payAtClientSecret: PAYATCLIENTSECRET,
   payAtScope: PAYATSCOPE,
   payAtClientReference: PAYATCLIENTREFERENCE,
+  isFirstTimeUserKey: 'isFirstTimeUserKey',
 };

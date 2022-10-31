@@ -14,6 +14,7 @@ import notificationReducer from './notification-reducer/notification.reducer';
 import channelContactsReducer from './contacts-reducer/contacts.reducer';
 import meterReadingsReducer from './account-meters/account-meters.reducer';
 import paymentReducer from './payment-reducer/payment.reducer';
+import appTourReducer from './app-tour-reducer/app-tour.reducer';
 
 export default combineReducers({
   userAuthReducer,
@@ -30,4 +31,5 @@ export default combineReducers({
   channelContactsReducer,
   meterReadingsReducer,
   paymentReducer,
+  appTourReducer,
 });

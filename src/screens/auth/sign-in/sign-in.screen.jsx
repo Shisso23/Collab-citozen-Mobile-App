@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import RNBootSplash from 'react-native-bootsplash';
 import { useDispatch } from 'react-redux';
 import { ImageBackground, Text, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RegisterLink, ForgotPasswordLink } from '../../../components/atoms';
 import { SignInForm } from '../../../components/forms';
 
@@ -15,6 +16,14 @@ import { getMyChannelsAction } from '../../../reducers/my-channels/my-channels.a
 
 const SignInScreen = () => {
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    AsyncStorage.getItem('isFirstTimeUserKey').then((response) => {
+      if (response === null) {
+        AsyncStorage.setItem(`isFirstTimeUserKey`, `${true}`);
+      }
+    });
+  }, []);
 
   const { Gutters, Layout, Images, Common } = useTheme();
 

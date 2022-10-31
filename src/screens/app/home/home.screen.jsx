@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { ImageBackground, Text, ScrollView, Dimensions } from 'react-native';
 
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -17,6 +17,8 @@ const HomeScreen = () => {
   const { Gutters, Layout, Images, Colors } = useTheme();
   const screenHeight = Dimensions.get('window').height;
   const dispatch = useDispatch();
+  const scrollViewRef = useRef(null);
+  const isSmallHeightDevice = screenHeight <= 700;
   const navigation = useNavigation();
   const notificationOpenedBackGround = handleNotificationOpenedBackGround();
 
@@ -52,8 +54,14 @@ const HomeScreen = () => {
   const navigateToServiceRequests = () => {
     navigation.navigate('ServiceRequests');
   };
+  const handleGuideZoneChange = (zone) => {
+    if (isSmallHeightDevice && zone === 5) {
+      scrollViewRef.current.scrollToEnd({ animated: true });
+    }
+  };
   return (
     <ScrollView
+      ref={scrollViewRef}
       contentContainerStyle={[
         Gutters.largeBPadding,
         ...[
@@ -79,6 +87,7 @@ const HomeScreen = () => {
           onContactsTilePress={navigateToContacts}
           onNewsTilePress={navigateTonews}
           onServiceRequestTilePress={navigateToServiceRequests}
+          handleZoneChange={handleGuideZoneChange}
         />
       </ImageBackground>
     </ScrollView>
