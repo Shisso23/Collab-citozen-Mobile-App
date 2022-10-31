@@ -22,6 +22,7 @@ import ViewServiceRequestScreen from '../../screens/app/service-request/view-ser
 import NewsFeedArticleDetailsScreen from '../../screens/app/newsfeed/view-newsfeed-article-details.screen';
 import InboxScreen from '../../screens/app/inbox/inbox.screen';
 import AccountsScreen from '../../screens/app/accounts/accounts.screen';
+import AccountPaymentScreen from '../../screens/app/accounts/account-payment.screen';
 import StatementViewScreen from '../../screens/app/accounts/statementView.screen';
 import AccountChannelsScreen from '../../screens/app/accounts/account.channels.screen';
 import AddAccountScreen from '../../screens/app/accounts/add-account.screen';
@@ -32,6 +33,7 @@ import SubmitMeterReadingScreen from '../../screens/app/accounts/submit-readings
 import CreateNotificationScreen from '../../screens/app/channels/create-notification/create-notification.screen';
 import TabBar from '../../components/molecules/tab-bar/tab-bar';
 import NewsScreen from '../../screens/news-screen/news.screen';
+import AccountPaymentWebViewScreen from '../../screens/app/account-payment-web-view-screen/account-payment-web-view.screen';
 
 const Drawer = createDrawerNavigator();
 const AppStack = createStackNavigator();
@@ -171,6 +173,21 @@ const AppNavigator = () => {
         options={{
           headerShown: true,
           header: (props) => <HeaderBackGround {...props} backButton />,
+        }}
+      />
+      <AppStack.Screen
+        name="AccountPayment"
+        component={AccountPaymentScreen}
+        options={{
+          headerShown: true,
+          header: (props) => <HeaderBackGround {...props} backButton />,
+        }}
+      />
+      <AppStack.Screen
+        name="AccountPaymentWebView"
+        component={AccountPaymentWebViewScreen}
+        options={{
+          headerShown: false,
         }}
       />
     </AppStack.Navigator>
