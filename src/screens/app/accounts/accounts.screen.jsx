@@ -144,11 +144,10 @@ const AccountsScreen = () => {
     <>
       <ImageBackground
         source={Images.serviceRequest}
-        style={[Layout.fullSize, Layout.fill]}
+        style={[Layout.fullSize, Layout.fill, ...[{ marginBottom: 110 }]]}
         resizeMode="cover"
       >
         <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>My Accounts</Text>
-
         <FlatList
           contentContainerStyle={Gutters.smallHMargin}
           data={accountChannels}

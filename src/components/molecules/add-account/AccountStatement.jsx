@@ -9,7 +9,7 @@ import LoadingComponent from '../loading/loading.component';
 import useTheme from '../../../theme/hooks/useTheme';
 
 const AccountStatement = ({ statement }) => {
-  const { Layout } = useTheme();
+  const { Layout, Gutters } = useTheme();
 
   const source = useMemo(() => _.get(statement, 'statementPdf', {}), []);
 
@@ -21,7 +21,7 @@ const AccountStatement = ({ statement }) => {
           FlashService.error(_.get(error, 'message', 'Error while loading pdf!'));
         }}
         activityIndicator={<LoadingComponent style={styles.loadingComponent} size="small" />}
-        style={[Layout.fill, styles.pdf]}
+        style={[styles.pdf, Gutters.largeBPadding]}
         fitPolicy={1}
         scrollIndicatorInsets={{ right: 0 }}
       />

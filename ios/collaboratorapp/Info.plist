@@ -26,7 +26,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>collaborator</string>
+			<string>com.collab.citizen</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>collaborator</string>

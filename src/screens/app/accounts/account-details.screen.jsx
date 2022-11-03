@@ -70,7 +70,9 @@ const AccountDetailsScreen = ({ route }) => {
               token: _.get(accountDetailsResponse, 'token', null),
             });
           })
-          .catch(() => flashService.error('Failed fetching account details!'));
+          .catch(() => {
+            flashService.error('Failed fetching account details!');
+          });
       })
       .finally(() => {
         setIsLoadingGetAccountDetails(false);
@@ -89,6 +91,9 @@ const AccountDetailsScreen = ({ route }) => {
         navigation.navigate('AccountPayment', {
           creditCardLink: response.webPaymentLinks[1].paymentUrl,
           eftLink: response.webPaymentLinks[2].paymentUrl,
+          totalBalance: accountPaymentDetails.amount,
+          maxAmount: accountPaymentDetails.maxAmount,
+          minAmount: accountDetails.minAmount,
         });
       });
   };
@@ -140,11 +145,7 @@ const AccountDetailsScreen = ({ route }) => {
             )}
           </Tab>
           {tabIndex === 0 ? (
-            <StatementsTabContent
-              account={accountDetails}
-              statements={statements}
-              totalBalance={_.get(accountPaymentDetails, 'amount', null)}
-            />
+            <StatementsTabContent account={accountDetails} statements={statements} />
           ) : (
             <MetersTabContent
               meters={meters}
@@ -152,20 +153,20 @@ const AccountDetailsScreen = ({ route }) => {
               channelRef={channelRef}
             />
           )}
-          {(accountPaymentDetails && (
-            <TouchableOpacity
-              onPress={onMakePaymentPress}
-              style={[
-                styles.submitButton,
-                Layout.alignItemsCenter,
-                Gutters.smallVPadding,
-                Gutters.regularHMargin,
-              ]}
-            >
-              {renderMakePaymentButtonContent()}
-            </TouchableOpacity>
-          )) || <></>}
         </ScreenContainer>
+        {(accountPaymentDetails && (
+          <TouchableOpacity
+            onPress={onMakePaymentPress}
+            style={[
+              styles.submitButton,
+              Layout.alignItemsCenter,
+              Gutters.smallVPadding,
+              Gutters.regularHMargin,
+            ]}
+          >
+            {renderMakePaymentButtonContent()}
+          </TouchableOpacity>
+        )) || <></>}
         <LoadingOverlay
           source={loadingImageSource}
           visible={isLoadingGetAccountDetails}
@@ -178,7 +179,14 @@ const AccountDetailsScreen = ({ route }) => {
 const styles = StyleSheet.create({
   accountCard: { width: '42%' },
   accountDetails: { color: Colors.darkgray, fontSize: 15 },
-  submitButton: { backgroundColor: Colors.softBlue, borderRadius: 10 },
+  submitButton: {
+    backgroundColor: Colors.softBlue,
+    borderRadius: 10,
+    bottom: '15%',
+    left: '15%',
+    position: 'absolute',
+    width: '60%',
+  },
   submitButtonContent: {
     borderColor: Colors.white,
     borderRadius: 20,
