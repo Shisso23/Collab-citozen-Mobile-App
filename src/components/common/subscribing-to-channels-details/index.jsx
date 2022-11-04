@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Text, View, FlatList, StyleSheet, Dimensions } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { Button, List } from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { getMyChannelsAction } from '../../../reducers/my-channels/my-channels.actions';
 import { getUnOpenedNotificationsAction } from '../../../reducers/notification-reducer/notification.actions';
@@ -13,12 +14,13 @@ import { flashService } from '../../../services';
 import { subscribeToChannelsAction } from '../../../reducers/subscribe-to-channels-reducer/subscribe-to-channel.actions';
 import SubscriptionSetting from '../../molecules/subscription-setting/subscription-setting.component';
 import useTheme from '../../../theme/hooks/useTheme';
+import config from '../../../config';
 
+const screenHeight = Dimensions.get('window').height;
 const SubscribingToChannelsDetails = (props) => {
   const { Gutters, Fonts, Colors, Common, Layout } = useTheme();
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const screenHeight = Dimensions.get('window').height;
 
   const { user } = useSelector((reducers) => reducers.userReducer);
   const [isLoading, setIsLoading] = useState(false);
@@ -63,7 +65,8 @@ const SubscribingToChannelsDetails = (props) => {
       setIsLoading(false);
       dispatch(getMyChannelsAction());
       dispatch(getUnOpenedNotificationsAction());
-      navigation.navigate('ViewSubscribeToChannels');
+      await AsyncStorage.setItem(config.accountTourEnabled, `${true}`);
+      navigation.navigate('HomeScreen');
       flashService.success('Successfully Subscribed To Channel');
     }
   };
@@ -96,7 +99,6 @@ const SubscribingToChannelsDetails = (props) => {
       <FlatList
         data={interestTypes}
         renderItem={subscribeToItem}
-        contentContainerStyle={{ height: screenHeight + screenHeight * 0.5 }}
         keyExtractor={(item) => String(item.obj_id)}
         showsVerticalScrollIndicator={false}
       />

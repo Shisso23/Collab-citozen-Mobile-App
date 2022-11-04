@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   StyleSheet,
   RefreshControl,
-  Dimensions,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
@@ -23,9 +22,9 @@ import {
 import { channelContactsSelector } from '../../../reducers/contacts-reducer/contacts.reducer';
 import { locationSelector } from '../../../reducers/location-reducer/location.reducer';
 import ContactButtons from '../../../components/molecules/contact-buttons';
+import TabScreenContainer from '../../../components/containers/tab-screen-container';
 
 const ContactDetailsScreen = () => {
-  const screenHeight = Dimensions.get('window').height;
   const { Common, Gutters, Fonts, Layout, Images } = useTheme();
   const dispatch = useDispatch();
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -92,7 +91,7 @@ const ContactDetailsScreen = () => {
   };
 
   return (
-    <>
+    <TabScreenContainer>
       <ImageBackground
         source={Images.serviceRequest}
         style={[Layout.fullSize, Layout.fill]}
@@ -124,10 +123,7 @@ const ContactDetailsScreen = () => {
         </TouchableOpacity>
 
         <FlatList
-          contentContainerStyle={[
-            ...[{ height: screenHeight + screenHeight * 0.3 }],
-            Gutters.smallHMarginF,
-          ]}
+          contentContainerStyle={Gutters.smallHMargin}
           data={channelsContacts}
           renderItem={renderContactDetails}
           keyExtractor={(item) => String(item.number)}
@@ -142,7 +138,7 @@ const ContactDetailsScreen = () => {
           }
         />
       </ImageBackground>
-    </>
+    </TabScreenContainer>
   );
 };
 

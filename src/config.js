@@ -48,4 +48,5 @@ export default {
   payAtScope: PAYATSCOPE,
   payAtClientReference: PAYATCLIENTREFERENCE,
   isFirstTimeUserKey: 'isFirstTimeUserKey',
+  accountTourEnabled: 'accountTourEnabled',
 };

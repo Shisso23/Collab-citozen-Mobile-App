@@ -6,5 +6,5 @@ export const tourGuideData = {
   contacts: 'In this section you can get access to municipalities contact details and social media',
   news: 'Stay up to date with your municipalities, get news based on your interest types.',
   accounts:
-    'In this section, you can add accounts, access your statements, meter readings and pay your bills\n\nInsure you have subscribed at least to one channel ',
+    'In this section, you can add accounts, access your statements, meter readings and pay your bills. ',
 };

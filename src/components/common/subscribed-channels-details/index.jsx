@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Text, View, FlatList, StyleSheet, Dimensions, StatusBar } from 'react-native';
+import { Text, View, FlatList, StyleSheet, StatusBar } from 'react-native';
 import { Divider, Button } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import { List } from 'react-native-paper';
@@ -10,9 +10,9 @@ import { flashService } from '../../../services';
 import SubscriptionSetting from '../../molecules/subscription-setting/subscription-setting.component';
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
+import TabScreenContainer from '../../containers/tab-screen-container';
 
 const SubscribedToChannelsDetails = (props) => {
-  const screenHeight = Dimensions.get('window').height;
   const { Gutters, Fonts, Common } = useTheme();
   const { channel } = props;
   const channelItem = _.get(channel, 'channelItem');
@@ -54,30 +54,35 @@ const SubscribedToChannelsDetails = (props) => {
   };
 
   return (
-    <View style={Gutters.regularHMargin}>
-      <Text style={[Fonts.titleRegular, Gutters.regularHMargin]}>{`${channelItem.name}`}</Text>
-      <Divider color={Colors.transparent} />
-      <Text style={[Fonts.titleTiny, Gutters.regularHMargin]}>Interest Types:</Text>
-      <Divider color={Colors.transparent} />
-      <FlatList
-        data={interestTypes}
-        renderItem={subscribeToItem}
-        contentContainerStyle={{ height: screenHeight + screenHeight * 0.03 }}
-        keyExtractor={(item) => String(item.obj_id)}
-        ListFooterComponent={
-          channelItem.userCanCreateNotification && (
-            <Button
-              style={styles.newNotificationButton}
-              title="New Notification"
-              titleStyle={Gutters.smallMarginHorizontal}
-              buttonStyle={[...[{ borderBottomWidth: 0 }]]}
-              containerStyle={[Gutters.regularTMargin, Gutters.tinyHMargin, styles.buttonContainer]}
-              onPress={onCreateNotificationPressed(interestTypes, channelId)}
-            />
-          )
-        }
-      />
-    </View>
+    <TabScreenContainer>
+      <View style={Gutters.regularHMargin}>
+        <Text style={[Fonts.titleRegular, Gutters.regularHMargin]}>{`${channelItem.name}`}</Text>
+        <Divider color={Colors.transparent} />
+        <Text style={[Fonts.titleTiny, Gutters.regularHMargin]}>Interest Types:</Text>
+        <Divider color={Colors.transparent} />
+        <FlatList
+          data={interestTypes}
+          renderItem={subscribeToItem}
+          keyExtractor={(item) => String(item.obj_id)}
+          ListFooterComponent={
+            channelItem.userCanCreateNotification && (
+              <Button
+                style={styles.newNotificationButton}
+                title="New Notification"
+                titleStyle={Gutters.smallMarginHorizontal}
+                buttonStyle={[...[{ borderBottomWidth: 0 }]]}
+                containerStyle={[
+                  Gutters.regularTMargin,
+                  Gutters.tinyHMargin,
+                  styles.buttonContainer,
+                ]}
+                onPress={onCreateNotificationPressed(interestTypes, channelId)}
+              />
+            )
+          }
+        />
+      </View>
+    </TabScreenContainer>
   );
 };
 
