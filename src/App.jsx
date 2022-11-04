@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { LogBox, Alert, Platform } from 'react-native';
+import { LogBox, Alert, Platform, Linking } from 'react-native';
 import messaging from '@react-native-firebase/messaging';
 import PushNotification from 'react-native-push-notification';
 import DeviceInfo, { hasGmsSync, hasHmsSync } from 'react-native-device-info';
@@ -110,6 +110,11 @@ const App = () => {
   };
 
   useEffect(() => {
+    if (isAuthenticated) {
+      Linking.getInitialURL().then((data) => {
+        console.log({ data });
+      });
+    }
     if (isAuthenticated && messagingEnabled) {
       DeviceInfo.hasHms().then((hasHms) => {
         if (hasHms) {

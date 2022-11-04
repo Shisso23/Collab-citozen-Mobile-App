@@ -11,41 +11,10 @@ const paymentAuthAdapter = axios.create({
   responseType: 'json',
 });
 
-// Interceptors are here to help  us log the requests
-if (__DEV__) {
-  paymentAuthAdapter.interceptors.request.use(
-    (requestConfig) => {
-      const { method, url, data, headers } = requestConfig;
-      console.log(`🤔 ${method.toUpperCase()} ${url}`, { data, headers }); // eslint-disable-line no-console
-      return requestConfig;
-    },
-    (error) => {
-      console.log('❌', error); // eslint-disable-line no-console
-      return Promise.reject(error);
-    },
-  );
-  paymentAuthAdapter.interceptors.response.use(
-    (response) => {
-      const {
-        data,
-        headers,
-        config: { url, method },
-      } = response;
-      console.log(`✅ ${method.toUpperCase()} "${url}"`, { data, headers }); // eslint-disable-line no-console
-      return response;
-    },
-    (error) => {
-      console.log('❌', error); // eslint-disable-line no-console
-      return Promise.reject(error);
-    },
-  );
-}
-
 const getUserToken = async ({ username, password }) => {
   const url = paymentUrls.getUserTokenUrl();
 
   return paymentAuthAdapter.post(url, { username, password }).then((response) => {
-    console.log({ response });
     return _.get(response, 'data', null);
   });
 };
@@ -83,9 +52,9 @@ const initiatePayment = async ({ accountNumber, amount, token, authToken }) => {
         AMOUNT: amount,
         token,
         clientReference: 'accountrefernce0001',
-        successUrl: 'https://citizen.collaboratoronline.com',
-        failedUrl: 'https://citizen.collaboratoronline.com',
-        cancelledUrl: 'https://citizen.collaboratoronline.com',
+        successUrl: 'https://pay.collaboratoronline.com/success',
+        failedUrl: 'https://pay.collaboratoronline.com/failed',
+        cancelledUrl: 'https://pay.collaboratoronline.com/cancelled',
       },
       config,
     )

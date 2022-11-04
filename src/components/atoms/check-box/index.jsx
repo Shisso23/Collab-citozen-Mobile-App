@@ -29,10 +29,13 @@ const styles = StyleSheet.create({
 });
 
 CheckBoxTick.propTypes = {
-  selectedItem: PropTypes.object.isRequired,
-  setItem: PropTypes.func.isRequired,
+  selectedItem: PropTypes.object,
+  setItem: PropTypes.func,
 };
 
-CheckBoxTick.defaultProps = {};
+CheckBoxTick.defaultProps = {
+  selectedItem: null,
+  setItem: () => {},
+};
 
 export default CheckBoxTick;

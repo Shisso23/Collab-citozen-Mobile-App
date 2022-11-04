@@ -34,6 +34,7 @@ import CreateNotificationScreen from '../../screens/app/channels/create-notifica
 import TabBar from '../../components/molecules/tab-bar/tab-bar';
 import NewsScreen from '../../screens/news-screen/news.screen';
 import AccountPaymentWebViewScreen from '../../screens/app/account-payment-web-view-screen/account-payment-web-view.screen';
+import PaymentStatusScreen from '../../screens/app/accounts/payment-status.screen';
 
 const Drawer = createDrawerNavigator();
 const AppStack = createStackNavigator();
@@ -188,6 +189,13 @@ const AppNavigator = () => {
         component={AccountPaymentWebViewScreen}
         options={{
           headerShown: false,
+        }}
+      />
+      <AppStack.Screen
+        name="PaymentStatus"
+        component={PaymentStatusScreen}
+        options={{
+          header: (props) => <HeaderBackGround {...props} backButton />,
         }}
       />
     </AppStack.Navigator>

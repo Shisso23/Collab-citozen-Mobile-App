@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, StyleSheet, Text, ImageBackground } from 'react-native';
+import { View, StyleSheet, Text, ImageBackground, Pressable } from 'react-native';
 import PropTypes from 'prop-types';
-import { Formik, ErrorMessage } from 'formik';
-import { Button, TextInput } from 'react-native-paper';
+import { Formik } from 'formik';
+import { Button, HelperText, TextInput } from 'react-native-paper';
 import * as Yup from 'yup';
-import _, { values } from 'lodash';
+import _ from 'lodash';
 
 import { getFormError } from '../form-utils';
 import useTheme from '../../../theme/hooks/useTheme';
@@ -12,16 +12,18 @@ import { Colors } from '../../../theme/Variables';
 import CheckBoxTick from '../../atoms/check-box';
 import ScreenContainer from '../../containers/screen-container/screen.container';
 
-const AccountPaymentForm = ({ initialValues, onSuccess, submitForm }) => {
+const AccountPaymentForm = ({ initialValues, onSuccess, submitForm, maxAmount, minAmount }) => {
   const { Gutters, Common, Layout, Images } = useTheme();
   const formikRef = useRef(null);
-  const [paymentType, setPaymentType] = useState();
+  const [isEft, setIsEft] = useState();
 
   const validationSchema = Yup.object().shape({
-    amount: Yup.number().required('Payment Amount is required.'),
-
-    eft: Yup.bool,
-    creditCard: Yup.bool,
+    amount: Yup.number('Payment Amount is required.')
+      .min(minAmount)
+      .max(maxAmount)
+      .required('Payment Amount is required.'),
+    eft: Yup.bool().required(),
+    creditCard: Yup.bool().required(),
   });
 
   const _handleFormSubmitError = (error, actions) => {
@@ -31,21 +33,22 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm }) => {
 
   const _handleSubmission = (formData, actions) => {
     submitForm(formData)
-      .then(() => {
+      .then((response) => {
         actions.setSubmitting(false);
+        onSuccess(response.paymentLink);
       })
       .catch((error) => _handleFormSubmitError(error, actions, formData));
   };
 
   useEffect(() => {
-    if (formikRef.current && paymentType) {
-      formikRef.current.setFieldValue('paymentType', paymentType);
-      formikRef.current.setFieldValue('eft', !paymentType);
-    } else if (formikRef.current && !paymentType) {
-      formikRef.current.setFieldValue('paymentType', paymentType);
-      formikRef.current.setFieldValue('eft', !paymentType);
+    if (formikRef.current && isEft) {
+      formikRef.current.setFieldValue('eft', true);
+      formikRef.current.setFieldValue('creditCard', false);
+    } else if (formikRef.current && !isEft) {
+      formikRef.current.setFieldValue('eft', false);
+      formikRef.current.setFieldValue('creditCard', true);
     }
-  }, [paymentType]);
+  }, [isEft]);
 
   return (
     <ImageBackground
@@ -62,57 +65,57 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm }) => {
           onSuccess={onSuccess}
           validationSchema={validationSchema}
         >
-          {({ handleSubmit, isSubmitting, item, setFieldValue, errors, touched, status }) => {
+          {({ handleSubmit, isSubmitting, setFieldValue, errors, touched, status, values }) => {
             const error = (name) => getFormError(name, { touched, status, errors });
-
             return (
               <ScreenContainer>
                 <View style={(Layout.fill, Layout.fullSize)}>
-                  <View style={[Gutters.largeHMargin, Gutters.largeVMargin]}>
-                    <Text style={styles.title}>Payment</Text>
-                  </View>
                   <View style={Layout.center}>
                     <View style={Gutters.regularTMargin}>
                       <Text style={styles.subTitle}>Select Payment Method</Text>
                     </View>
                   </View>
                   <View style={[Gutters.xlLargeHMargin, Gutters.largeTMargin]}>
-                    <View style={[Layout.row, Layout.alignItemsCenter, styles.container]}>
-                      <CheckBoxTick
-                        name="eft"
-                        selectedItem={item}
-                        checkedIcon="check-circle"
-                        uncheckedIcon="circle-o"
-                        hitSlop={{ right: 200 }}
-                        checkedColor={Colors.softBlue}
-                        size={20}
-                        checked={!paymentType}
-                        onPress={() => setPaymentType(false)}
-                      />
-                      <Text style={[styles.placeHolder, Gutters.largeHMargin]}>EFT</Text>
-                    </View>
-                    <View
-                      style={[
-                        Layout.row,
-                        Layout.alignItemsCenter,
-                        styles.container,
-                        Gutters.regularTMargin,
-                      ]}
-                    >
-                      <CheckBoxTick
-                        name="creditCard"
-                        selectedItem={item}
-                        checkedIcon="check-circle"
-                        uncheckedIcon="circle-o"
-                        hitSlop={{ right: 200 }}
-                        setItem={item}
-                        checkedColor={Colors.softBlue}
-                        size={20}
-                        checked={paymentType}
-                        onPress={() => setPaymentType(true)}
-                      />
-                      <Text style={[styles.placeHolder, Gutters.largeHMargin]}>Credit Card</Text>
-                    </View>
+                    <Pressable onPress={() => setIsEft(true)}>
+                      {() => (
+                        <View style={[Layout.row, Layout.alignItemsCenter, styles.container]}>
+                          <CheckBoxTick
+                            name="eft"
+                            checkedIcon="check-circle"
+                            uncheckedIcon="circle-o"
+                            checkedColor={Colors.softBlue}
+                            size={20}
+                            checked={isEft}
+                          />
+                          <Text style={[styles.placeHolder, Gutters.largeHMargin]}>EFT</Text>
+                        </View>
+                      )}
+                    </Pressable>
+
+                    <Pressable onPress={() => setIsEft(false)}>
+                      {() => (
+                        <View
+                          style={[
+                            Layout.row,
+                            Layout.alignItemsCenter,
+                            styles.container,
+                            Gutters.regularTMargin,
+                          ]}
+                        >
+                          <CheckBoxTick
+                            name="creditCard"
+                            checkedIcon="check-circle"
+                            uncheckedIcon="circle-o"
+                            checkedColor={Colors.softBlue}
+                            size={20}
+                            checked={!isEft}
+                          />
+                          <Text style={[styles.placeHolder, Gutters.largeHMargin]}>
+                            Credit Card
+                          </Text>
+                        </View>
+                      )}
+                    </Pressable>
                   </View>
                   <View style={Layout.fill}>
                     <View style={(Layout.fill, Layout.center)}>
@@ -136,8 +139,13 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm }) => {
                             error={error('amount')}
                             type="number"
                           />
-                          {errors.amount && touched.amount ? <div>{errors.amount}</div> : null}
-                          <ErrorMessage name="amount" />
+                          {errors.amount && touched.amount ? (
+                            <HelperText type="error" visible={error('amount')}>
+                              Payment amount is required!
+                            </HelperText>
+                          ) : (
+                            <></>
+                          )}
                         </View>
                       </View>
                     </View>
@@ -149,7 +157,7 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm }) => {
                         contentStyle={[styles.submitButton]}
                         labelStyle={[...[{ color: Colors.white }]]}
                         mode="contained"
-                        onPress={handleSubmit} // TODO add in the url to rediret to pay@
+                        onPress={handleSubmit}
                         loading={isSubmitting}
                         color={Colors.primary}
                       >
@@ -171,6 +179,8 @@ AccountPaymentForm.propTypes = {
   submitForm: PropTypes.func.isRequired,
   initialValues: PropTypes.object.isRequired,
   onSuccess: PropTypes.func.isRequired,
+  maxAmount: PropTypes.number.isRequired,
+  minAmount: PropTypes.number.isRequired,
 };
 
 const styles = StyleSheet.create({
@@ -195,7 +205,6 @@ const styles = StyleSheet.create({
     marginLeft: '15%',
     marginRight: '15%',
   },
-  title: { fontSize: 18, fontWeight: '500' },
 });
 
 export default AccountPaymentForm;
