@@ -31,6 +31,8 @@ const FeatureTilesContainer = ({
 
   const { canStart, start, eventEmitter } = useTourGuideController('channel');
 
+  const accountGuide = useTourGuideController('account');
+
   useFocusEffect(
     React.useCallback(() => {
       _loadMyChannels();
@@ -42,6 +44,22 @@ const FeatureTilesContainer = ({
       myChannels.filter((channel) => _.get(channel, 'accountApplicable', null) === true),
     );
   }, [JSON.stringify(myChannels)]);
+
+  useEffect(() => {
+    if (accountGuide.canStart) {
+      accountGuide.eventEmitter.on('stepChange', handleOnStepChange);
+      accountGuide.eventEmitter.on('stepChange', handleOnStop);
+      AsyncStorage.getItem(config.accountTourEnabled).then((response) => {
+        if (response === 'true') {
+          accountGuide.start();
+        }
+      });
+      return () => {
+        accountGuide.eventEmitter.off('stepChange', handleOnStepChange);
+      };
+    }
+    return () => null;
+  }, [accountGuide.canStart]);
 
   useEffect(() => {
     if (canStart) {
@@ -61,6 +79,7 @@ const FeatureTilesContainer = ({
 
   const handleOnStop = async () => {
     await AsyncStorage.setItem(config.isFirstTimeUserKey, `${false}`);
+    await AsyncStorage.setItem(config.accountTourEnabled, `${false}`);
   };
 
   const handleOnStepChange = (data) => {
@@ -156,8 +175,8 @@ const FeatureTilesContainer = ({
 
         {accountApplicableChannels.length > 0 && (
           <TourGuideZone
-            tourKey="channel"
-            zone={isSmallHeightDevice ? 6 : 5}
+            tourKey="account"
+            zone={0}
             text={`${tourGuideData.accounts}🎉`}
             borderRadius={16}
             tooltipBottomOffset={screenHeight - screenHeight * 0.85}

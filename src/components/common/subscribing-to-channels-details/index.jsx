@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Text, View, FlatList, StyleSheet, Dimensions } from 'react-native';
 import { Divider } from 'react-native-elements';
 import { Button, List } from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { getMyChannelsAction } from '../../../reducers/my-channels/my-channels.actions';
 import { getUnOpenedNotificationsAction } from '../../../reducers/notification-reducer/notification.actions';
@@ -13,7 +14,7 @@ import { flashService } from '../../../services';
 import { subscribeToChannelsAction } from '../../../reducers/subscribe-to-channels-reducer/subscribe-to-channel.actions';
 import SubscriptionSetting from '../../molecules/subscription-setting/subscription-setting.component';
 import useTheme from '../../../theme/hooks/useTheme';
-import TabScreenContainer from '../../containers/tab-screen-container';
+import config from '../../../config';
 
 const screenHeight = Dimensions.get('window').height;
 const SubscribingToChannelsDetails = (props) => {
@@ -64,7 +65,8 @@ const SubscribingToChannelsDetails = (props) => {
       setIsLoading(false);
       dispatch(getMyChannelsAction());
       dispatch(getUnOpenedNotificationsAction());
-      navigation.navigate('ViewSubscribeToChannels');
+      await AsyncStorage.setItem(config.accountTourEnabled, `${true}`);
+      navigation.navigate('HomeScreen');
       flashService.success('Successfully Subscribed To Channel');
     }
   };
@@ -89,31 +91,29 @@ const SubscribingToChannelsDetails = (props) => {
   };
 
   return (
-    <TabScreenContainer>
-      <View style={[Gutters.regularHMargin, Layout.fill]}>
-        <Text style={[Fonts.titleRegular, Gutters.regularHMargin]}>{`${channelItem.name}`}</Text>
-        <Divider color={Colors.transparent} />
-        <Text style={[Fonts.titleTiny, Gutters.regularHMargin]}>Interest Types:</Text>
-        <Divider color={Colors.transparent} />
-        <FlatList
-          data={interestTypes}
-          renderItem={subscribeToItem}
-          keyExtractor={(item) => String(item.obj_id)}
-          showsVerticalScrollIndicator={false}
-        />
-        <Divider color={Colors.transparent} />
-        <View
-          style={[
-            Common.bottomButtonChannelDetails,
-            { marginBottom: screenHeight - screenHeight * 0.88 },
-          ]}
-        >
-          <Button mode="contained" onPress={handleSub} loading={isLoading} disabled={isLoading}>
-            Submit
-          </Button>
-        </View>
+    <View style={[Gutters.regularHMargin, Layout.fill]}>
+      <Text style={[Fonts.titleRegular, Gutters.regularHMargin]}>{`${channelItem.name}`}</Text>
+      <Divider color={Colors.transparent} />
+      <Text style={[Fonts.titleTiny, Gutters.regularHMargin]}>Interest Types:</Text>
+      <Divider color={Colors.transparent} />
+      <FlatList
+        data={interestTypes}
+        renderItem={subscribeToItem}
+        keyExtractor={(item) => String(item.obj_id)}
+        showsVerticalScrollIndicator={false}
+      />
+      <Divider color={Colors.transparent} />
+      <View
+        style={[
+          Common.bottomButtonChannelDetails,
+          { marginBottom: screenHeight - screenHeight * 0.88 },
+        ]}
+      >
+        <Button mode="contained" onPress={handleSub} loading={isLoading} disabled={isLoading}>
+          Submit
+        </Button>
       </View>
-    </TabScreenContainer>
+    </View>
   );
 };
 
