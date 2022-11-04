@@ -13,12 +13,13 @@ import { flashService } from '../../../services';
 import { subscribeToChannelsAction } from '../../../reducers/subscribe-to-channels-reducer/subscribe-to-channel.actions';
 import SubscriptionSetting from '../../molecules/subscription-setting/subscription-setting.component';
 import useTheme from '../../../theme/hooks/useTheme';
+import TabScreenContainer from '../../containers/tab-screen-container';
 
+const screenHeight = Dimensions.get('window').height;
 const SubscribingToChannelsDetails = (props) => {
   const { Gutters, Fonts, Colors, Common, Layout } = useTheme();
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const screenHeight = Dimensions.get('window').height;
 
   const { user } = useSelector((reducers) => reducers.userReducer);
   const [isLoading, setIsLoading] = useState(false);
@@ -88,30 +89,31 @@ const SubscribingToChannelsDetails = (props) => {
   };
 
   return (
-    <View style={[Gutters.regularHMargin, Layout.fill]}>
-      <Text style={[Fonts.titleRegular, Gutters.regularHMargin]}>{`${channelItem.name}`}</Text>
-      <Divider color={Colors.transparent} />
-      <Text style={[Fonts.titleTiny, Gutters.regularHMargin]}>Interest Types:</Text>
-      <Divider color={Colors.transparent} />
-      <FlatList
-        data={interestTypes}
-        renderItem={subscribeToItem}
-        contentContainerStyle={{ height: screenHeight + screenHeight * 0.5 }}
-        keyExtractor={(item) => String(item.obj_id)}
-        showsVerticalScrollIndicator={false}
-      />
-      <Divider color={Colors.transparent} />
-      <View
-        style={[
-          Common.bottomButtonChannelDetails,
-          { marginBottom: screenHeight - screenHeight * 0.88 },
-        ]}
-      >
-        <Button mode="contained" onPress={handleSub} loading={isLoading} disabled={isLoading}>
-          Submit
-        </Button>
+    <TabScreenContainer>
+      <View style={[Gutters.regularHMargin, Layout.fill]}>
+        <Text style={[Fonts.titleRegular, Gutters.regularHMargin]}>{`${channelItem.name}`}</Text>
+        <Divider color={Colors.transparent} />
+        <Text style={[Fonts.titleTiny, Gutters.regularHMargin]}>Interest Types:</Text>
+        <Divider color={Colors.transparent} />
+        <FlatList
+          data={interestTypes}
+          renderItem={subscribeToItem}
+          keyExtractor={(item) => String(item.obj_id)}
+          showsVerticalScrollIndicator={false}
+        />
+        <Divider color={Colors.transparent} />
+        <View
+          style={[
+            Common.bottomButtonChannelDetails,
+            { marginBottom: screenHeight - screenHeight * 0.88 },
+          ]}
+        >
+          <Button mode="contained" onPress={handleSub} loading={isLoading} disabled={isLoading}>
+            Submit
+          </Button>
+        </View>
       </View>
-    </View>
+    </TabScreenContainer>
   );
 };
 
