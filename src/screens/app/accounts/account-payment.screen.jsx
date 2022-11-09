@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, ImageBackground, Text, StyleSheet } from 'react-native';
+import { View, ImageBackground, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import PropTypes from 'prop-types';
+import { Text } from 'react-native-elements';
 
 import _ from 'lodash';
 import useTheme from '../../../theme/hooks/useTheme';
@@ -68,7 +69,7 @@ const AccountPaymentScreen = ({ route }) => {
               ]}
             >
               <>
-                <Text style={(Common.cardDescription, styles.balance)}>
+                <Text style={[Common.cardDescription, styles.balance]}>
                   R {totalBalance.toFixed(2)}
                 </Text>
               </>

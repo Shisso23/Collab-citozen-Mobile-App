@@ -75,7 +75,9 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm, maxAmount, m
                 <View style={(Layout.fill, Layout.fullSize)}>
                   <View style={Layout.center}>
                     <View style={Gutters.regularTMargin}>
-                      <Text style={styles.subTitle}>Select Payment Method</Text>
+                      <Text style={[Common.cardDescription, styles.subTitle]}>
+                        Select Payment Method
+                      </Text>
                     </View>
                   </View>
                   <View style={[Gutters.xlLargeHMargin, Gutters.largeTMargin]}>
@@ -125,7 +127,9 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm, maxAmount, m
                       <View style={Gutters.xlLargeTMargin}>
                         <View style={Gutters.xlLargeHMargin}>
                           <View style={Gutters.xlLargeTMargin}>
-                            <Text style={styles.subTitle}>Please enter your desired amount</Text>
+                            <Text style={[Common.cardDescription, styles.subTitle]}>
+                              Please enter your desired amount
+                            </Text>
                           </View>
                           <View
                             style={[
