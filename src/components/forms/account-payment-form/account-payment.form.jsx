@@ -127,7 +127,13 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm, maxAmount, m
                       <View style={Gutters.xlLargeTMargin}>
                         <View style={Gutters.xlLargeHMargin}>
                           <View style={Gutters.xlLargeTMargin}>
-                            <Text style={[Common.cardDescription, styles.subTitle]}>
+                            <Text
+                              style={[
+                                Common.cardDescription,
+                                styles.subTitle,
+                                { textAlign: 'center' },
+                              ]}
+                            >
                               Please enter your desired amount
                             </Text>
                           </View>
@@ -136,7 +142,7 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm, maxAmount, m
                               Layout.rowBetween,
                               ...[
                                 {
-                                  maxWidth: '80%',
+                                  width: 120,
                                   alignItems: 'center',
                                   justifyContent: 'center',
                                   alignSelf: 'center',
@@ -144,7 +150,11 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm, maxAmount, m
                               ],
                             ]}
                           >
-                            <Text style={[Fonts.textLarge, { marginRight: -10 }]}>R</Text>
+                            <Text
+                              style={[Fonts.textLarge, { marginRight: -10, textAlign: 'center' }]}
+                            >
+                              R
+                            </Text>
                             <TextInput
                               name="amount"
                               labelStyle={Layout.alignItemsCenter}
@@ -157,15 +167,20 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm, maxAmount, m
                                 values.amount ? `${parseInt(values.amount, 10)}` : values.amount
                               }
                               multiline={false}
-                              textAlign="center"
+                              textAlign="left"
                               keyboardType="numeric"
                               error={error('amount')}
                               type="number"
+                              maxLength={8}
                             />
                           </View>
 
                           {errors.amount && touched.amount ? (
-                            <HelperText type="error" visible={error('amount')}>
+                            <HelperText
+                              style={{ textAlign: 'center' }}
+                              type="error"
+                              visible={error('amount')}
+                            >
                               {error('amount')}
                             </HelperText>
                           ) : (
