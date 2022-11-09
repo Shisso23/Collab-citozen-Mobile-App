@@ -17,6 +17,8 @@ const {
   PAYATCLIENTSECRET,
   PAYATSCOPE,
   PAYATCLIENTREFERENCE,
+  APP_SIGN_IN,
+  APP_PASSWORD,
 } = Config;
 export default {
   accessTokenKey: 'access_token',
@@ -49,4 +51,6 @@ export default {
   payAtClientReference: PAYATCLIENTREFERENCE,
   isFirstTimeUserKey: 'isFirstTimeUserKey',
   accountTourEnabled: 'accountTourEnabled',
+  appSignIn: APP_SIGN_IN,
+  appPassword: APP_PASSWORD,
 };

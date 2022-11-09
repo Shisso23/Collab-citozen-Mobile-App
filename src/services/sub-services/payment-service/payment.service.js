@@ -1,6 +1,8 @@
 import axios from 'axios';
 import _ from 'lodash';
+import { dataRecordPayment } from '../../../helpers/api-function-name.helper';
 import paymentUrls from './payment.urls';
+import authNetworkService from '../auth-network-service/auth-network.service';
 
 const paymentAuthAdapter = axios.create({
   timeout: 20000,
@@ -63,8 +65,21 @@ const initiatePayment = async ({ accountNumber, amount, token, authToken }) => {
     });
 };
 
+const recordPayment = ({ accountNumber, paymentStatus, paymentAmount, channelRef, paymentRef }) => {
+  const url = paymentUrls.createUpdateRecordUrl();
+  const data = dataRecordPayment({
+    accountNumber,
+    paymentStatus,
+    paymentAmount,
+    channelRef,
+    paymentRef,
+  });
+  authNetworkService.post(url, data);
+};
+
 export default {
   getUserToken,
   getAccountDetails,
   initiatePayment,
+  recordPayment,
 };

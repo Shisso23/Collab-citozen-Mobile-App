@@ -80,6 +80,7 @@ const AccountDetailsScreen = ({ route }) => {
   }, []);
 
   const onMakePaymentPress = () => {
+    setIsLoadingGetAccountDetails(true);
     paymentService
       .initiatePayment({
         accountNumber: accountPaymentDetails.accountNumber,
@@ -89,12 +90,20 @@ const AccountDetailsScreen = ({ route }) => {
       })
       .then((response) => {
         navigation.navigate('AccountPayment', {
-          creditCardLink: response.webPaymentLinks[1].paymentUrl,
-          eftLink: response.webPaymentLinks[2].paymentUrl,
+          creditCardLink: response.webPaymentLinks.filter(
+            (link) => link.paymentMethodName === 'CARD',
+          )[0].paymentUrl,
+          eftLink: response.webPaymentLinks.filter((link) => link.paymentMethodName === 'EFT')[0]
+            .paymentUrl,
           totalBalance: accountPaymentDetails.amount,
           maxAmount: accountPaymentDetails.maxAmount,
-          minAmount: accountDetails.minAmount,
+          minAmount: accountPaymentDetails.minAmount,
+          channelRef,
+          accountNumber: accountPaymentDetails.accountNumber,
         });
+      })
+      .finally(() => {
+        setIsLoadingGetAccountDetails(false);
       });
   };
 

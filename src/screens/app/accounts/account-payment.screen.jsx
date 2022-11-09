@@ -14,21 +14,26 @@ const AccountPaymentScreen = ({ route }) => {
   const totalBalance = _.get(route, 'params.totalBalance', null);
   const maxAmount = _.get(route, 'params.maxAmount', null);
   const minAmount = _.get(route, 'params.minAmount', null);
+  const channelRef = _.get(route, 'params.channelRef', null);
+  const accountNumber = _.get(route, 'params.accountNumber', null);
   const { Layout, Images, Gutters, Common } = useTheme();
   const navigation = useNavigation();
 
-  const _onFormSuccess = (paymentLink) => {
+  const _onFormSuccess = (paymentLink, amount) => {
     if (paymentLink) {
       navigation.navigate('AccountPaymentWebView', {
         redirectUrl: paymentLink,
+        paymentAmount: amount,
+        channelRef,
+        accountNumber,
       });
     }
   };
   const handleSubmit = async (values) => {
     if (values.creditCard === true) {
-      return Promise.resolve({ paymentLink: creditCardLink });
+      return Promise.resolve({ paymentLink: creditCardLink, amount: values.amount });
     }
-    return Promise.resolve({ paymentLink: eftLink });
+    return Promise.resolve({ paymentLink: eftLink, amount: values.amount });
   };
 
   return (
