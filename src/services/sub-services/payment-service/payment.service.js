@@ -51,7 +51,7 @@ const initiatePayment = async ({ accountNumber, amount, token, authToken }) => {
       url,
       {
         ACCOUNTNUMBER: accountNumber,
-        AMOUNT: amount,
+        AMOUNT: amount * 100,
         token,
         clientReference: 'accountrefernce0001',
         successUrl: 'https://pay.collaboratoronline.com/success',

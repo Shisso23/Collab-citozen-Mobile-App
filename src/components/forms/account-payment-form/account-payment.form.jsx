@@ -8,11 +8,11 @@ import * as Yup from 'yup';
 import _ from 'lodash';
 import { Text } from 'react-native-elements';
 
+import FormScreenContainer from '../../containers/form-screen-container/form-screen.container';
 import { getFormError } from '../form-utils';
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
 import CheckBoxTick from '../../atoms/check-box';
-import ScreenContainer from '../../containers/screen-container/screen.container';
 
 const AccountPaymentForm = ({ initialValues, onSuccess, submitForm, maxAmount, minAmount }) => {
   const { Gutters, Common, Layout, Images, Fonts } = useTheme();
@@ -71,7 +71,7 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm, maxAmount, m
           {({ handleSubmit, isSubmitting, setFieldValue, errors, touched, status, values }) => {
             const error = (name) => getFormError(name, { touched, status, errors });
             return (
-              <ScreenContainer>
+              <FormScreenContainer>
                 <View style={(Layout.fill, Layout.fullSize)}>
                   <View style={Layout.center}>
                     <View style={Gutters.regularTMargin}>
@@ -91,6 +91,7 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm, maxAmount, m
                             checkedColor={Colors.softBlue}
                             size={20}
                             checked={isEft}
+                            onPress={() => setIsEft(true)}
                           />
                           <Text style={[styles.placeHolder, Gutters.largeHMargin]}>EFT</Text>
                         </View>
@@ -114,6 +115,7 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm, maxAmount, m
                             checkedColor={Colors.softBlue}
                             size={20}
                             checked={!isEft}
+                            onPress={() => setIsEft(false)}
                           />
                           <Text style={[styles.placeHolder, Gutters.largeHMargin]}>
                             Credit Card
@@ -206,7 +208,7 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm, maxAmount, m
                     </View>
                   </View>
                 </View>
-              </ScreenContainer>
+              </FormScreenContainer>
             );
           }}
         </Formik>

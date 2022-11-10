@@ -45,7 +45,7 @@ const PaymentStatusScreen = ({ route }) => {
   const handleButtonPress = () => {
     switch (paymentStatus) {
       case 'success':
-        return navigation.pop(4);
+        return navigation.pop(3);
       case 'failed':
         return navigation.pop(2);
       default:

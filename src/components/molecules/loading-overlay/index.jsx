@@ -36,10 +36,11 @@ const LoadingOverlay = ({ source, visible, onBackDropPress, transparent }) => {
 LoadingOverlay.propTypes = {
   source: PropTypes.object.isRequired,
   visible: PropTypes.bool.isRequired,
-  onBackDropPress: PropTypes.func.isRequired,
+  onBackDropPress: PropTypes.func,
   transparent: PropTypes.bool,
 };
 LoadingOverlay.defaultProps = {
+  onBackDropPress: () => {},
   transparent: false,
 };
 

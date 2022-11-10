@@ -4,11 +4,12 @@ import { CheckBox } from 'react-native-elements';
 import PropTypes from 'prop-types';
 
 const CheckBoxTick = (props) => {
-  const { selectedItem, setItem } = props;
+  const { selectedItem, setItem, onPress } = props;
   const [checked, setChecked] = useState(false);
 
   const _updateBox = () => {
     setChecked(!checked);
+    onPress();
     setItem({ selectedItem, present: !checked });
   };
 
@@ -31,10 +32,12 @@ const styles = StyleSheet.create({
 CheckBoxTick.propTypes = {
   selectedItem: PropTypes.object,
   setItem: PropTypes.func,
+  onPress: PropTypes.func,
 };
 
 CheckBoxTick.defaultProps = {
   selectedItem: null,
+  onPress: () => {},
   setItem: () => {},
 };
 

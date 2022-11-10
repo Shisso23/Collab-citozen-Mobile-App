@@ -1,5 +1,5 @@
 import React from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import WebView from 'react-native-webview';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
@@ -17,7 +17,7 @@ const AccountPaymentWebViewScreen = ({ route }) => {
   const navigation = useNavigation();
   const { Layout } = useTheme();
   return (
-    <View style={Layout.fill}>
+    <View style={[Layout.fill, styles.container]}>
       <OnBackPressHeader arrowColor="#000000" />
       <WebView
         startInLoadingState
@@ -72,6 +72,10 @@ const AccountPaymentWebViewScreen = ({ route }) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: { marginBottom: 90 },
+});
 
 AccountPaymentWebViewScreen.propTypes = {
   route: PropTypes.object.isRequired,
