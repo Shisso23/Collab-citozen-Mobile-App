@@ -81,7 +81,7 @@ const StatementsTabContent = ({ account, statements }) => {
 
 StatementsTabContent.propTypes = {
   account: PropTypes.object.isRequired,
-  statements: PropTypes.object.isRequired,
+  statements: PropTypes.array.isRequired,
 };
 
 const styles = StyleSheet.create({

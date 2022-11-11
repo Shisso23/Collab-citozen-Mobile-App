@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import authUrls from './user-auth.urls';
 import authUtils from './user-auth.utils';
@@ -11,6 +12,7 @@ import {
   apiSignInModel,
 } from '../../../models';
 import storageService from '../storage-service/storage.service';
+import config from '../../../config';
 
 const signIn = async (formData) => {
   const { authenticationFailed, storeAccessToken, constructSignInData } = authUtils;
@@ -23,17 +25,25 @@ const signIn = async (formData) => {
     const errorMessage = _.get(apiResponse, 'data');
     throw new Error(errorMessage);
   }
-  await Promise.all([storeAccessToken(apiResponse)]);
+  if (formData.email === `${config.appSignIn}`) {
+    AsyncStorage.setItem('registerToken', `${_.get(apiResponse, 'data', null)}`);
+  } else {
+    await Promise.all([storeAccessToken(apiResponse)]);
+  }
 };
 
 const signOut = () => {
   return Promise.all([storageService.removeAccessToken()]);
 };
 
-const register = (formData) => {
+const register = async (formData) => {
   const registerUrl = authUrls.registerUrl();
   const apiModel = apiRegistrationUserModel(formData);
-  return networkService.post(registerUrl, apiModel).catch((err) => {
+  const token = await AsyncStorage.getItem('registerToken');
+  const authConfig = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  return networkService.post(registerUrl, apiModel, authConfig).catch((err) => {
     err.errors = registrationUserModel(err.errors);
     return Promise.reject(err);
   });

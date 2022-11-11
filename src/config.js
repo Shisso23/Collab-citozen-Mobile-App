@@ -16,7 +16,8 @@ const {
   PAYATCLIENTID,
   PAYATCLIENTSECRET,
   PAYATSCOPE,
-  PAYATCLIENTREFERENCE,
+  APPSIGN_IN,
+  APPPASSWORD,
 } = Config;
 export default {
   accessTokenKey: 'access_token',
@@ -46,7 +47,12 @@ export default {
   payAtClientId: PAYATCLIENTID,
   payAtClientSecret: PAYATCLIENTSECRET,
   payAtScope: PAYATSCOPE,
-  payAtClientReference: PAYATCLIENTREFERENCE,
   isFirstTimeUserKey: 'isFirstTimeUserKey',
   accountTourEnabled: 'accountTourEnabled',
+  appSignIn: APPSIGN_IN,
+  appPassword: APPPASSWORD,
+  payAtClientReference: 'accountrefernce0001',
+  payAtsuccessUrl: 'https://pay.collaboratoronline.com/success',
+  payAtFailedUrl: 'https://pay.collaboratoronline.com/failed',
+  payAtCancelledUrl: 'https://pay.collaboratoronline.com/cancelled',
 };

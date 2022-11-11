@@ -14,6 +14,16 @@ export const dataGetAccounts = async (functionName, data) => {
   };
 };
 
+export const dataRecordPayment = ({
+  accountNumber,
+  paymentStatus,
+  paymentAmount,
+  channelRef,
+  paymentRef,
+}) => {
+  return `<Objects><Account_Payment><F1>${accountNumber}</F1><F2>${paymentAmount}</F2><F3>${channelRef}</F3><F4>${new Date()}</F4><F5>${paymentRef}</F5><F6>${paymentStatus}</F6></Account_Payment></Objects>`;
+};
+
 export const userSharedAppData = ({ userId }) => {
   return `<User_Activity><F1>${userId}</F1><F2>Shared App</F2><F3>${new Date()}</F3></User_Activity>`;
 };

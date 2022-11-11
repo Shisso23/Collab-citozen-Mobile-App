@@ -1,34 +1,55 @@
 import React from 'react';
-import { View, ImageBackground, Text, StyleSheet } from 'react-native';
+import { View, ImageBackground, StyleSheet, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import PropTypes from 'prop-types';
-
 import _ from 'lodash';
+
 import useTheme from '../../../theme/hooks/useTheme';
 import AccountPaymentForm from '../../../components/forms/account-payment-form/account-payment.form';
 import { Colors } from '../../../theme/Variables';
+import { paymentService } from '../../../services';
 
 const AccountPaymentScreen = ({ route }) => {
-  const creditCardLink = _.get(route, 'params.creditCardLink', '');
-  const eftLink = _.get(route, 'params.eftLink', '');
-  const totalBalance = _.get(route, 'params.totalBalance', null);
-  const maxAmount = _.get(route, 'params.maxAmount', null);
-  const minAmount = _.get(route, 'params.minAmount', null);
+  const accountPaymentDetails = _.get(route, 'params.accountPaymentDetails', {});
+  const totalBalance = _.get(accountPaymentDetails, 'amount', null);
+  const maxAmount = _.get(accountPaymentDetails, 'maxAmount', null);
+  const minAmount = _.get(accountPaymentDetails, 'minAmount', null);
+  const channelRef = _.get(route, 'params.channelRef', null);
+  const userToken = _.get(route, 'params.userToken', null);
+  const accountNumber = _.get(accountPaymentDetails, 'accountNumber', null);
   const { Layout, Images, Gutters, Common } = useTheme();
   const navigation = useNavigation();
 
-  const _onFormSuccess = (paymentLink) => {
+  const _onFormSuccess = (paymentLink, amount) => {
     if (paymentLink) {
       navigation.navigate('AccountPaymentWebView', {
         redirectUrl: paymentLink,
+        paymentAmount: amount,
+        channelRef,
+        accountNumber,
       });
     }
   };
   const handleSubmit = async (values) => {
-    if (values.creditCard === true) {
-      return Promise.resolve({ paymentLink: creditCardLink });
-    }
-    return Promise.resolve({ paymentLink: eftLink });
+    return paymentService
+      .initiatePayment({
+        accountNumber,
+        amount: values.amount,
+        token: _.get(accountPaymentDetails, 'token', null),
+        authToken: userToken,
+      })
+      .then((response) => {
+        const creditCardLink = response.webPaymentLinks.filter(
+          (link) => link.paymentMethodName === 'CARD',
+        )[0].paymentUrl;
+        const eftLink = response.webPaymentLinks.filter(
+          (link) => link.paymentMethodName === 'EFT',
+        )[0].paymentUrl;
+        if (values.creditCard === true) {
+          return { paymentLink: creditCardLink, amount: values.amount };
+        }
+        return { paymentLink: eftLink, amount: values.amount };
+      });
   };
 
   return (
@@ -63,7 +84,7 @@ const AccountPaymentScreen = ({ route }) => {
               ]}
             >
               <>
-                <Text style={(Common.cardDescription, styles.balance)}>
+                <Text style={[Common.cardDescription, styles.balance]}>
                   R {totalBalance.toFixed(2)}
                 </Text>
               </>

@@ -1,26 +1,28 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, StyleSheet, Text, ImageBackground, Pressable } from 'react-native';
+import { View, StyleSheet, ImageBackground, Pressable } from 'react-native';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import { Button, HelperText, TextInput } from 'react-native-paper';
 import * as Yup from 'yup';
 import _ from 'lodash';
+import { Text } from 'react-native-elements';
 
+import FormScreenContainer from '../../containers/form-screen-container/form-screen.container';
 import { getFormError } from '../form-utils';
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
 import CheckBoxTick from '../../atoms/check-box';
-import ScreenContainer from '../../containers/screen-container/screen.container';
 
 const AccountPaymentForm = ({ initialValues, onSuccess, submitForm, maxAmount, minAmount }) => {
-  const { Gutters, Common, Layout, Images } = useTheme();
+  const { Gutters, Common, Layout, Images, Fonts } = useTheme();
   const formikRef = useRef(null);
   const [isEft, setIsEft] = useState();
 
   const validationSchema = Yup.object().shape({
-    amount: Yup.number('Payment Amount is required.')
-      .min(minAmount)
-      .max(maxAmount)
+    amount: Yup.number()
+      .required('Payment Amount is required.')
+      .min(minAmount, `Amount should be minimum R ${minAmount.toFixed(2)}`)
+      .max(maxAmount, `Amount should be maximum R ${maxAmount.toFixed(2)}`)
       .required('Payment Amount is required.'),
     eft: Yup.bool().required(),
     creditCard: Yup.bool().required(),
@@ -35,7 +37,7 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm, maxAmount, m
     submitForm(formData)
       .then((response) => {
         actions.setSubmitting(false);
-        onSuccess(response.paymentLink);
+        onSuccess(response.paymentLink, formData.amount);
       })
       .catch((error) => _handleFormSubmitError(error, actions, formData));
   };
@@ -68,11 +70,13 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm, maxAmount, m
           {({ handleSubmit, isSubmitting, setFieldValue, errors, touched, status, values }) => {
             const error = (name) => getFormError(name, { touched, status, errors });
             return (
-              <ScreenContainer>
+              <FormScreenContainer>
                 <View style={(Layout.fill, Layout.fullSize)}>
                   <View style={Layout.center}>
                     <View style={Gutters.regularTMargin}>
-                      <Text style={styles.subTitle}>Select Payment Method</Text>
+                      <Text style={[Common.cardDescription, styles.subTitle]}>
+                        Select Payment Method
+                      </Text>
                     </View>
                   </View>
                   <View style={[Gutters.xlLargeHMargin, Gutters.largeTMargin]}>
@@ -86,6 +90,7 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm, maxAmount, m
                             checkedColor={Colors.softBlue}
                             size={20}
                             checked={isEft}
+                            onPress={() => setIsEft(true)}
                           />
                           <Text style={[styles.placeHolder, Gutters.largeHMargin]}>EFT</Text>
                         </View>
@@ -109,6 +114,7 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm, maxAmount, m
                             checkedColor={Colors.softBlue}
                             size={20}
                             checked={!isEft}
+                            onPress={() => setIsEft(false)}
                           />
                           <Text style={[styles.placeHolder, Gutters.largeHMargin]}>
                             Credit Card
@@ -122,26 +128,61 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm, maxAmount, m
                       <View style={Gutters.xlLargeTMargin}>
                         <View style={Gutters.xlLargeHMargin}>
                           <View style={Gutters.xlLargeTMargin}>
-                            <Text style={styles.subTitle}>Please enter your desired amount</Text>
+                            <Text
+                              style={[
+                                Common.cardDescription,
+                                styles.subTitle,
+                                styles.amountInstruction,
+                              ]}
+                            >
+                              Please enter your desired amount
+                            </Text>
                           </View>
-                          <TextInput
-                            name="amount"
-                            labelStyle={Layout.alignItemsCenter}
-                            placeholder="Amount"
-                            style={[Common.textInput, styles.accountInput]}
-                            onChangeText={(value) => {
-                              setFieldValue('amount', value);
-                            }}
-                            value={values.amount}
-                            multiline={false}
-                            textAlign="center"
-                            keyboardType="numeric"
-                            error={error('amount')}
-                            type="number"
-                          />
+                          <View
+                            style={[
+                              Layout.rowBetween,
+                              Layout.alignItemsCenter,
+                              Layout.justifyContentCenter,
+                              Layout.alignSelfCenter,
+                              styles.amountInputContainer,
+                            ]}
+                          >
+                            <Text
+                              style={[
+                                Fonts.textLarge,
+                                styles.amountInstruction,
+                                ...[{ marginRight: -10 }],
+                              ]}
+                            >
+                              R
+                            </Text>
+                            <TextInput
+                              name="amount"
+                              labelStyle={Layout.alignItemsCenter}
+                              placeholder="Amount"
+                              style={[Common.textInput, styles.accountInput]}
+                              onChangeText={(value) => {
+                                setFieldValue('amount', value);
+                              }}
+                              value={
+                                values.amount ? `${parseInt(values.amount, 10)}` : values.amount
+                              }
+                              multiline={false}
+                              textAlign="left"
+                              keyboardType="numeric"
+                              error={error('amount')}
+                              type="number"
+                              maxLength={8}
+                            />
+                          </View>
+
                           {errors.amount && touched.amount ? (
-                            <HelperText type="error" visible={error('amount')}>
-                              Payment amount is required!
+                            <HelperText
+                              style={styles.amountInstruction}
+                              type="error"
+                              visible={error('amount')}
+                            >
+                              {error('amount')}
                             </HelperText>
                           ) : (
                             <></>
@@ -166,7 +207,7 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm, maxAmount, m
                     </View>
                   </View>
                 </View>
-              </ScreenContainer>
+              </FormScreenContainer>
             );
           }}
         </Formik>
@@ -186,6 +227,13 @@ AccountPaymentForm.propTypes = {
 const styles = StyleSheet.create({
   accountInput: {
     borderColor: Colors.gray,
+    textAlign: 'center',
+    width: '100%',
+  },
+  amountInputContainer: {
+    width: 120,
+  },
+  amountInstruction: {
     textAlign: 'center',
   },
   border: {
