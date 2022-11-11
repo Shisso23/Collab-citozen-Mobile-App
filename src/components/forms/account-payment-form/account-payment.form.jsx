@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 import React, { useState, useRef, useEffect } from 'react';
 import { View, StyleSheet, ImageBackground, Pressable } from 'react-native';
 import PropTypes from 'prop-types';
@@ -81,7 +80,7 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm, maxAmount, m
                     </View>
                   </View>
                   <View style={[Gutters.xlLargeHMargin, Gutters.largeTMargin]}>
-                    <Pressable onPress={() => setIsEft(true)} hitSlop={{ left: 1000 }}>
+                    <Pressable onPress={() => setIsEft(true)}>
                       {() => (
                         <View style={[Layout.row, Layout.alignItemsCenter, styles.container]}>
                           <CheckBoxTick
@@ -98,7 +97,7 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm, maxAmount, m
                       )}
                     </Pressable>
 
-                    <Pressable onPress={() => setIsEft(false)} hitSlop={{ left: 300 }}>
+                    <Pressable onPress={() => setIsEft(false)}>
                       {() => (
                         <View
                           style={[
@@ -133,7 +132,7 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm, maxAmount, m
                               style={[
                                 Common.cardDescription,
                                 styles.subTitle,
-                                { textAlign: 'center' },
+                                styles.amountInstruction,
                               ]}
                             >
                               Please enter your desired amount
@@ -142,18 +141,18 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm, maxAmount, m
                           <View
                             style={[
                               Layout.rowBetween,
-                              ...[
-                                {
-                                  width: 120,
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  alignSelf: 'center',
-                                },
-                              ],
+                              Layout.alignItemsCenter,
+                              Layout.justifyContentCenter,
+                              Layout.alignSelfCenter,
+                              styles.amountInputContainer,
                             ]}
                           >
                             <Text
-                              style={[Fonts.textLarge, { marginRight: -10, textAlign: 'center' }]}
+                              style={[
+                                Fonts.textLarge,
+                                styles.amountInstruction,
+                                ...[{ marginRight: -10 }],
+                              ]}
                             >
                               R
                             </Text>
@@ -179,7 +178,7 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm, maxAmount, m
 
                           {errors.amount && touched.amount ? (
                             <HelperText
-                              style={{ textAlign: 'center' }}
+                              style={styles.amountInstruction}
                               type="error"
                               visible={error('amount')}
                             >
@@ -230,6 +229,12 @@ const styles = StyleSheet.create({
     borderColor: Colors.gray,
     textAlign: 'center',
     width: '100%',
+  },
+  amountInputContainer: {
+    width: 120,
+  },
+  amountInstruction: {
+    textAlign: 'center',
   },
   border: {
     borderRadius: 15,

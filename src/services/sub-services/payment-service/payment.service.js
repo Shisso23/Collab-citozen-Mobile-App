@@ -1,5 +1,7 @@
 import axios from 'axios';
 import _ from 'lodash';
+
+import appConfig from '../../../config';
 import { dataRecordPayment } from '../../../helpers/api-function-name.helper';
 import paymentUrls from './payment.urls';
 import authNetworkService from '../auth-network-service/auth-network.service';
@@ -53,10 +55,10 @@ const initiatePayment = async ({ accountNumber, amount, token, authToken }) => {
         ACCOUNTNUMBER: accountNumber,
         AMOUNT: amount * 100,
         token,
-        clientReference: 'accountrefernce0001',
-        successUrl: 'https://pay.collaboratoronline.com/success',
-        failedUrl: 'https://pay.collaboratoronline.com/failed',
-        cancelledUrl: 'https://pay.collaboratoronline.com/cancelled',
+        clientReference: appConfig.payAtClientReference,
+        successUrl: appConfig.payAtsuccessUrl,
+        failedUrl: appConfig.payAtFailedUrl,
+        cancelledUrl: appConfig.payAtCancelledUrl,
       },
       config,
     )

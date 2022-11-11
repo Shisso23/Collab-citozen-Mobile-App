@@ -1,4 +1,3 @@
-/* eslint-disable react-native/no-inline-styles */
 /* eslint-disable global-require */
 import React, { useEffect } from 'react';
 import { ImageBackground, Animated, SafeAreaView, StyleSheet, Dimensions } from 'react-native';
@@ -123,7 +122,7 @@ const PaymentStatusScreen = ({ route }) => {
             }
             mode="outlined"
             onPress={handleButtonPress}
-            style={[Layout.alignItemsCenter, Layout.justifyContentCenter, { width: '90%' }]}
+            style={[Layout.alignItemsCenter, Layout.justifyContentCenter, styles.button]}
           >
             {paymentStatus === 'success'
               ? 'Continue'
@@ -145,6 +144,9 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     width: 15,
+  },
+  button: {
+    width: '90%',
   },
   container: {
     alignItems: 'center',
