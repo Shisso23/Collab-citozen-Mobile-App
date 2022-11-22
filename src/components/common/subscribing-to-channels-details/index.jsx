@@ -76,6 +76,7 @@ const SubscribingToChannelsDetails = (props) => {
       <View style={[Common.textInputWithShadow, Gutters.tinyMargin, styles.typeItem]}>
         <List.Item
           title={item.name}
+          titleNumberOfLines={4}
           right={() => (
             <SubscriptionSetting
               itemSelected={item}
