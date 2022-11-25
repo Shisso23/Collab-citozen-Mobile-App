@@ -20,6 +20,7 @@ const AccountDetailsScreen = ({ route }) => {
   const navigation = useNavigation();
   const accountDetails = _.get(route, 'params.account', {});
   const accountChannel = _.get(route, 'params.accountChannel.name', '');
+  const paymentApplicable = _.get(route, 'params.accountChannel.paymentApplicable', false);
   const channelRef = _.get(route, 'params.accountChannel.objectId', '');
   const statements = _.get(route, 'params.statements', []);
   const dispatch = useDispatch();
@@ -55,28 +56,30 @@ const AccountDetailsScreen = ({ route }) => {
     if (meters.length === 0) {
       setDisableIndicator(true);
     }
-    setIsLoadingGetAccountDetails(true);
-    dispatch(getUserTokenAction())
-      .then((tokenResponse) => {
-        setUserToken(tokenResponse.payload);
-        paymentService
-          .getAccountDetails({ accountNumber: '11379020013560229', token: tokenResponse.payload })
-          .then((accountDetailsResponse) => {
-            setAccountPaymentDetails({
-              accountNumber: _.get(accountDetailsResponse, 'accountNumber', null),
-              amount: _.get(accountDetailsResponse, 'amount', null),
-              minAmount: _.get(accountDetailsResponse, 'paymentRules.minAmount', null),
-              maxAmount: _.get(accountDetailsResponse, 'paymentRules.maxAmount', null),
-              token: _.get(accountDetailsResponse, 'token', null),
+    if (paymentApplicable) {
+      setIsLoadingGetAccountDetails(true);
+      dispatch(getUserTokenAction())
+        .then((tokenResponse) => {
+          setUserToken(tokenResponse.payload);
+          paymentService
+            .getAccountDetails({ accountNumber: '11379020013560229', token: tokenResponse.payload })
+            .then((accountDetailsResponse) => {
+              setAccountPaymentDetails({
+                accountNumber: _.get(accountDetailsResponse, 'accountNumber', null),
+                amount: _.get(accountDetailsResponse, 'amount', null),
+                minAmount: _.get(accountDetailsResponse, 'paymentRules.minAmount', null),
+                maxAmount: _.get(accountDetailsResponse, 'paymentRules.maxAmount', null),
+                token: _.get(accountDetailsResponse, 'token', null),
+              });
+            })
+            .catch(() => {
+              flashService.error('Failed fetching account details!');
             });
-          })
-          .catch(() => {
-            flashService.error('Failed fetching account details!');
-          });
-      })
-      .finally(() => {
-        setIsLoadingGetAccountDetails(false);
-      });
+        })
+        .finally(() => {
+          setIsLoadingGetAccountDetails(false);
+        });
+    }
   }, []);
 
   const onMakePaymentPress = () => {
