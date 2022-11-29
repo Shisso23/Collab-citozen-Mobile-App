@@ -98,12 +98,12 @@ const ViewServiceRequestScreen = () => {
           </Button>
         )}
         <ServiceRequestDetails serviceRequest={serviceRequest} />
-        {_.isEmpty(serviceRequest.serviceRequestImage) ? null : (
+        {_.isEmpty(serviceRequest.serviceRequestImage) ||
+        user.user_id?.trim() !== serviceRequest.ownerId?.trim() ? null : (
           <Button
             mode="outlined"
             icon="eye"
             color={Colors.white}
-            disabled={user.user_id?.trim() !== serviceRequest.ownerId?.trim()}
             style={[Gutters.regularMargin, styles.button]}
             labelStyle={[Fonts.textRegular, Common.whiteText]}
             onPress={() => {
@@ -113,20 +113,21 @@ const ViewServiceRequestScreen = () => {
             View Image{serviceRequestImages.length > 1 ? 's' : ''}
           </Button>
         )}
-        {_.get(serviceRequest, 'serviceRequestImage', null) ? null : (
+        {_.get(serviceRequest, 'serviceRequestImage', null) ||
+        user.user_id?.trim() !== serviceRequest.ownerId?.trim() ? null : (
           <UploadDocumentButton
             title="Take Photo"
             style={[Gutters.regularMargin, styles.button]}
             disabled={
               _.get(serviceRequest, 'status', '') === 'Completed' ||
-              _.get(serviceRequest, 'status', '') === 'Submitted' ||
-              user.user_id?.trim() !== serviceRequest.ownerId?.trim()
+              _.get(serviceRequest, 'status', '') === 'Submitted'
             }
             onImageSelect={(images) => _uploadPhotos(images)}
           />
         )}
 
-        {!_.isEmpty(serviceRequest.serviceRequestImage) &&
+        {user.user_id?.trim() === serviceRequest.ownerId?.trim() &&
+        !_.isEmpty(serviceRequest.serviceRequestImage) &&
         serviceRequest.status !== 'Submitted' &&
         serviceRequest.status !== 'Completed' ? (
           <UploadDocumentButton
