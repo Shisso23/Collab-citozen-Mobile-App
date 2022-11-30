@@ -1,6 +1,7 @@
 /* eslint-disable global-require */
 import React, { useEffect, useState } from 'react';
-import { ImageBackground, StyleSheet, Text, View, TouchableOpacity, Platform } from 'react-native';
+import { ImageBackground, StyleSheet, Text, Platform } from 'react-native';
+import { Button } from 'react-native-paper';
 import { Tab } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
@@ -20,7 +21,7 @@ const AccountDetailsScreen = ({ route }) => {
   const navigation = useNavigation();
   const accountDetails = _.get(route, 'params.account', {});
   const accountChannel = _.get(route, 'params.accountChannel.name', '');
-  const paymentApplicable = _.get(route, 'params.accountChannel.paymentApplicable', false);
+  const payAtNumber = _.get(route, 'params.accountChannel.payAtNumber', false);
   const channelRef = _.get(route, 'params.accountChannel.objectId', '');
   const statements = _.get(route, 'params.statements', []);
   const dispatch = useDispatch();
@@ -34,29 +35,11 @@ const AccountDetailsScreen = ({ route }) => {
   const accountNumber = _.get(accountDetails, 'accountNumber', '');
   const [userToken, setUserToken] = useState(null);
 
-  const renderMakePaymentButtonContent = () => {
-    return (
-      <>
-        <View
-          style={[
-            styles.submitButtonContent,
-            Layout.alignItemsCenter,
-            Layout.justifyContentCenter,
-            Gutters.smallBMargin,
-          ]}
-        >
-          <Text style={styles.submitButtonText}>R</Text>
-        </View>
-        <Text style={styles.submitButtonText}>Make a payment</Text>
-      </>
-    );
-  };
-
   useEffect(() => {
     if (meters.length === 0) {
       setDisableIndicator(true);
     }
-    if (paymentApplicable) {
+    if (payAtNumber) {
       setIsLoadingGetAccountDetails(true);
       dispatch(getUserTokenAction())
         .then((tokenResponse) => {
@@ -147,17 +130,22 @@ const AccountDetailsScreen = ({ route }) => {
           )}
         </ScreenContainer>
         {(accountPaymentDetails && (
-          <TouchableOpacity
-            onPress={onMakePaymentPress}
+          <Button
+            mode="contained"
+            color={Colors.primary}
             style={[
+              Layout.fill,
+              Gutters.tinyLMargin,
               styles.submitButton,
               Layout.alignItemsCenter,
               Gutters.smallVPadding,
               Gutters.regularHMargin,
             ]}
+            contentStyle={{ backgroundColor: Colors.primary }}
+            onPress={onMakePaymentPress}
           >
-            {renderMakePaymentButtonContent()}
-          </TouchableOpacity>
+            Make a payment
+          </Button>
         )) || <></>}
         <LoadingOverlay
           source={loadingImageSource}
@@ -172,19 +160,11 @@ const styles = StyleSheet.create({
   accountCard: { width: '42%' },
   accountDetails: { color: Colors.darkgray, fontSize: 15 },
   submitButton: {
-    backgroundColor: Colors.softBlue,
     borderRadius: 10,
     bottom: '15%',
     left: '15%',
     position: 'absolute',
-    width: '60%',
-  },
-  submitButtonContent: {
-    borderColor: Colors.white,
-    borderRadius: 20,
-    borderWidth: 1.5,
-    height: 25,
-    width: 25,
+    width: '65%',
   },
   submitButtonText: { color: Colors.white, fontWeight: '600' },
   tabItem: { fontSize: 14 },

@@ -20,4 +20,6 @@ export default () => ({
   contactsImage: require('../assets/images/contactsImage.png'),
   newsImage: require('../assets/images/newsImage.png'),
   accountsImage: require('../assets/images/accountsImage.png'),
+  switchToMap: require('../assets/images/map.png'),
+  switchToSatellite: require('../assets/images/satellite.png'),
 });
