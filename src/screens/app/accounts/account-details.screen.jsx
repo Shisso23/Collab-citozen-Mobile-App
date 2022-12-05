@@ -45,7 +45,10 @@ const AccountDetailsScreen = ({ route }) => {
         .then((tokenResponse) => {
           setUserToken(tokenResponse.payload);
           paymentService
-            .getAccountDetails({ accountNumber: '11379020013560229', token: tokenResponse.payload })
+            .getAccountDetails({
+              accountNumber: `${payAtNumber}${accountNumber}`,
+              token: tokenResponse.payload,
+            })
             .then((accountDetailsResponse) => {
               setAccountPaymentDetails({
                 accountNumber: _.get(accountDetailsResponse, 'accountNumber', null),

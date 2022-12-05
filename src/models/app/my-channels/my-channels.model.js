@@ -9,7 +9,7 @@ export const myChannelModel = (apiMyChannel) => ({
   accountApplicable: _.get(apiMyChannel, 'accounts_applicable', false),
   userCanCreateNotification: _.get(apiMyChannel, 'broadcast_notification_permission', false),
   bannerImages: _.get(apiMyChannel, 'banner_images', []),
-  payAtNumber: _.get(apiMyChannel, 'pay@_number', false), // TODO change this once back end is ready
+  payAtNumber: _.get(apiMyChannel, 'pay@_number', false),
 });
 
 export const constructMyChannelsModels = async (apiMyChannels) => {
