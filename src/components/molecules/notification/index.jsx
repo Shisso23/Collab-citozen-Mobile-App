@@ -5,8 +5,8 @@ import { Avatar, List } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import Moment from 'moment';
 import _ from 'lodash';
-
 import PropTypes from 'prop-types';
+
 import {
   openNotificationAction,
   getUnOpenedNotificationsAction,
