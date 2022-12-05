@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { ImageBackground, View } from 'react-native';
-import { Text } from 'react-native-elements';
+import { ImageBackground, StyleSheet, View } from 'react-native';
+import { Text, CheckBox } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import _ from 'lodash';
@@ -9,7 +9,6 @@ import { Fade, Placeholder, PlaceholderLine, PlaceholderMedia } from 'rn-placeho
 import moment from 'moment';
 import useTheme from '../../../theme/hooks/useTheme';
 import ScreenContainer from '../../../components/containers/screen-container/screen.container';
-import PaddedContainer from '../../../components/containers/padded-container/padded.container';
 import Notification from '../../../components/molecules/notification';
 import {
   deleteNotificationAction,
@@ -27,6 +26,7 @@ const InboxScreen = () => {
   const [multiSelectEnabled, setMultiSelectEnabled] = useState(false);
   const [selectedNotifications, setSelectedNotifications] = useState([]);
   const [expandedNotification, setExpandeNotification] = useState(null);
+  const [allNotificationsSelected, setAllNotificationsSelected] = useState(false);
   const [userNotifications, setUserNotifications] = useState(_.get(notifications, 'Feed', []));
 
   useEffect(() => {
@@ -40,9 +40,20 @@ const InboxScreen = () => {
     if (selectedNotifications.length === 0) {
       setMultiSelectEnabled(false);
     } else {
+      if (selectedNotifications.length !== userNotifications.length) {
+        setAllNotificationsSelected(false);
+      } else {
+        setAllNotificationsSelected(true);
+      }
       setMultiSelectEnabled(true);
     }
   }, [JSON.stringify(selectedNotifications)]);
+
+  useEffect(() => {
+    if (allNotificationsSelected) {
+      setSelectedNotifications(userNotifications);
+    }
+  }, [allNotificationsSelected]);
 
   const handleNotificationLongPress = (notification) => () => {
     setSelectedNotifications([...selectedNotifications, notification]);
@@ -150,6 +161,13 @@ const InboxScreen = () => {
     );
   };
 
+  const toggleSelectAll = () => {
+    if (allNotificationsSelected) {
+      setSelectedNotifications([]);
+    }
+    setAllNotificationsSelected(!allNotificationsSelected);
+  };
+
   return (
     <ImageBackground
       source={Images.serviceRequest}
@@ -161,19 +179,33 @@ const InboxScreen = () => {
       </Text>
       {!isLoading ? (
         <ScreenContainer>
-          {multiSelectEnabled && (
-            <PaddedContainer>
-              <View style={Layout.alignSelfEnd}>
-                <Icon
-                  name="trash"
-                  size={27}
-                  backgroundColor="transparent"
-                  color={Colors.gray}
-                  onPress={deleteNotificationsSelected}
-                />
-              </View>
-            </PaddedContainer>
-          )}
+          <View
+            style={[
+              Layout.alignSelfEnd,
+              Gutters.tinyHPadding,
+              Layout.alignItemsCenter,
+              Layout.rowBetween,
+              styles.selectNotificationView,
+            ]}
+          >
+            <CheckBox
+              onPress={toggleSelectAll}
+              checked={allNotificationsSelected}
+              containerStyle={styles.checkbox}
+              size={32}
+              title="Select all"
+            />
+            {(multiSelectEnabled && (
+              <Icon
+                name="trash"
+                size={27}
+                backgroundColor="transparent"
+                color={Colors.gray}
+                onPress={deleteNotificationsSelected}
+              />
+            )) || <View />}
+          </View>
+
           {userNotifications.map((notification, index) => {
             return (
               <Notification
@@ -208,6 +240,13 @@ const InboxScreen = () => {
     </ImageBackground>
   );
 };
+
+const styles = StyleSheet.create({
+  checkbox: { padding: 0 },
+  selectNotificationView: {
+    width: '100%',
+  },
+});
 
 InboxScreen.propTypes = {};
 
