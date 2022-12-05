@@ -48,6 +48,7 @@ const Notification = ({
       dispatch(openNotificationAction(notificationId, seenAt, _.get(user, 'user_id', '')));
       dispatch(getUnOpenedNotificationsAction());
       setIsSeen(true);
+      onPress();
     } else {
       onPress();
     }
