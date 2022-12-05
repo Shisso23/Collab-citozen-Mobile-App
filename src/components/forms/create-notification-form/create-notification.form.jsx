@@ -1,5 +1,5 @@
 import React from 'react';
-import { ViewPropTypes, View, StyleSheet, Text } from 'react-native';
+import { ViewPropTypes, View, StyleSheet, Text, Pressable } from 'react-native';
 import PropTypes from 'prop-types';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
@@ -38,43 +38,43 @@ const CreateNotificationForm = ({
       .catch((error) => _handleFormSubmitError(error, actions, formData));
   };
 
-  const onInterestTypeSelect = (checkBoxItem, setFieldValue, values) => {
+  const onInterestTypeSelect = (checkBoxItem, setFieldValue, values) => () => {
     if (
       values.interestTypes?.every((interestType) => {
-        return interestType.obj_id !== checkBoxItem.selectedItem.obj_id && checkBoxItem.present;
+        return interestType.obj_id !== checkBoxItem.obj_id;
       })
     ) {
-      setFieldValue('interestTypes', [...values.interestTypes, checkBoxItem.selectedItem]);
+      setFieldValue('interestTypes', [...values.interestTypes, checkBoxItem]);
     } else if (
-      values.interestTypes?.some(
-        (interestType) =>
-          interestType.obj_id === checkBoxItem.selectedItem.obj_id && !checkBoxItem.present,
-      )
+      values.interestTypes?.some((interestType) => interestType.obj_id === checkBoxItem.obj_id)
     ) {
       setFieldValue(
         'interestTypes',
-        values.interestTypes?.filter(
-          (interestType) => interestType.obj_id !== checkBoxItem.selectedItem.obj_id,
-        ),
+        values.interestTypes?.filter((interestType) => interestType.obj_id !== checkBoxItem.obj_id),
       );
     }
   };
 
-  const renderServiceTypes = ({ item }, setFieldValue, values) => {
+  const renderServiceTypes = (itemData, setFieldValue, values) => {
     return (
       <View style={[Layout.row, Layout.alignItemsCenter, Common.registerTextInputWithShadow]}>
-        <CheckBoxTick
-          selectedItem={item}
-          checkedIcon="check-circle"
-          uncheckedIcon="circle-o"
-          hitSlop={{ right: 200 }}
-          setItem={(checkBoxItem) => {
-            onInterestTypeSelect(checkBoxItem, setFieldValue, values);
-          }}
-          checkedColor={Colors.primary}
-          size={30}
-        />
-        <Text>{item.name}</Text>
+        <Pressable onPress={onInterestTypeSelect(itemData.item, setFieldValue, values)}>
+          {() => (
+            <View style={[Layout.row, Layout.alignItemsCenter, styles.container]}>
+              <CheckBoxTick
+                checkedIcon="check-circle"
+                uncheckedIcon="circle-o"
+                checkedColor={Colors.primary}
+                size={30}
+                checked={values.interestTypes.some(
+                  (interestType) => interestType.obj_id === itemData.item.obj_id,
+                )}
+                onPress={onInterestTypeSelect(itemData.item, setFieldValue, values)}
+              />
+              <Text>{itemData.item.name}</Text>
+            </View>
+          )}
+        </Pressable>
       </View>
     );
   };

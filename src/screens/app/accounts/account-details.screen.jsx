@@ -20,7 +20,7 @@ const AccountDetailsScreen = ({ route }) => {
   const navigation = useNavigation();
   const accountDetails = _.get(route, 'params.account', {});
   const accountChannel = _.get(route, 'params.accountChannel.name', '');
-  const paymentApplicable = _.get(route, 'params.accountChannel.paymentApplicable', false);
+  const payAtNumber = _.get(route, 'params.accountChannel.payAtNumber', false);
   const channelRef = _.get(route, 'params.accountChannel.objectId', '');
   const statements = _.get(route, 'params.statements', []);
   const dispatch = useDispatch();
@@ -56,13 +56,16 @@ const AccountDetailsScreen = ({ route }) => {
     if (meters.length === 0) {
       setDisableIndicator(true);
     }
-    if (paymentApplicable) {
+    if (payAtNumber) {
       setIsLoadingGetAccountDetails(true);
       dispatch(getUserTokenAction())
         .then((tokenResponse) => {
           setUserToken(tokenResponse.payload);
           paymentService
-            .getAccountDetails({ accountNumber: '11379020013560229', token: tokenResponse.payload })
+            .getAccountDetails({
+              accountNumber: `${payAtNumber}${accountNumber}`,
+              token: tokenResponse.payload,
+            })
             .then((accountDetailsResponse) => {
               setAccountPaymentDetails({
                 accountNumber: _.get(accountDetailsResponse, 'accountNumber', null),

@@ -8,7 +8,7 @@ const accountChannelsModel = (_apiAccountChannelModel = {}) => {
     name: _.get(_apiAccountChannelModel, 'name', ''),
     accounts,
     accountApplicable: _.get(_apiAccountChannelModel, 'accounts_applicable', false),
-    paymentApplicable: _.get(_apiAccountChannelModel, 'payment_applicable', false), // TODO change this once back end is ready
+    payAtNumber: _.get(_apiAccountChannelModel, 'pay@_number', false),
     status: _.get(_apiAccountChannelModel, 'status', ''),
   };
 };

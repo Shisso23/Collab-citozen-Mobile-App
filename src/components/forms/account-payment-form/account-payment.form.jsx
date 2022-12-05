@@ -164,14 +164,11 @@ const AccountPaymentForm = ({ initialValues, onSuccess, submitForm, maxAmount, m
                               onChangeText={(value) => {
                                 setFieldValue('amount', value);
                               }}
-                              value={
-                                values.amount ? `${parseInt(values.amount, 10)}` : values.amount
-                              }
+                              value={values.amount}
                               multiline={false}
                               textAlign="left"
-                              keyboardType="numeric"
+                              keyboardType="decimal-pad"
                               error={error('amount')}
-                              type="number"
                               maxLength={8}
                             />
                           </View>
