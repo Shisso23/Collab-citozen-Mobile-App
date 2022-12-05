@@ -3,8 +3,8 @@ import { StyleSheet, Dimensions, SafeAreaView, View } from 'react-native';
 import Pdf from 'react-native-pdf';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
-
 import { Icon } from 'react-native-elements';
+
 import FlashService from '../../../services/sub-services/flash-service/flash.service';
 import LoadingComponent from '../loading/loading.component';
 import useTheme from '../../../theme/hooks/useTheme';
