@@ -53,7 +53,7 @@ const initiatePayment = async ({ accountNumber, amount, token, authToken }) => {
       url,
       {
         ACCOUNTNUMBER: accountNumber,
-        AMOUNT: amount * 100,
+        AMOUNT: amount,
         token,
         clientReference: appConfig.payAtClientReference,
         successUrl: appConfig.payAtsuccessUrl,
