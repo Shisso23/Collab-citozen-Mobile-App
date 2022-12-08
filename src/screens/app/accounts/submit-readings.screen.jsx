@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, SafeAreaView } from 'react-native';
 import { TextInput, HelperText, Button } from 'react-native-paper';
 import { Icon, ListItem } from 'react-native-elements';
 import ActionSheet from 'react-native-actions-sheet';
@@ -187,7 +187,7 @@ const SubmitMeterReadingScreen = ({ route }) => {
   };
 
   return (
-    <>
+    <SafeAreaView style={styles.container}>
       <KeyboardAwareScrollView contentContainerStyle={[Gutters.smallPadding]}>
         <Text style={[Gutters.smallMargin, styles.title]}>Submit reading</Text>
         {renderMeterDetails()}
@@ -259,7 +259,7 @@ const SubmitMeterReadingScreen = ({ route }) => {
           warningMessage={warningMessage}
         />
       </ActionSheet>
-    </>
+    </SafeAreaView>
   );
 };
 
@@ -271,6 +271,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.transparent,
   },
   buttonLabel: { fontSize: 14, fontWeight: '300' },
+  container: { marginBottom: 110 },
   errorStyle: {
     color: Colors.danger,
     marginHorizontal: '12%',

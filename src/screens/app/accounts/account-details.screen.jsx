@@ -1,6 +1,7 @@
 /* eslint-disable global-require */
 import React, { useEffect, useState } from 'react';
-import { ImageBackground, StyleSheet, Text, View, TouchableOpacity, Platform } from 'react-native';
+import { ImageBackground, StyleSheet, Text, Platform } from 'react-native';
+import { Button } from 'react-native-paper';
 import { Tab } from 'react-native-elements';
 import PropTypes from 'prop-types';
 import _ from 'lodash';
@@ -33,24 +34,6 @@ const AccountDetailsScreen = ({ route }) => {
   const meters = _.get(accountDetails, 'meters', '');
   const accountNumber = _.get(accountDetails, 'accountNumber', '');
   const [userToken, setUserToken] = useState(null);
-
-  const renderMakePaymentButtonContent = () => {
-    return (
-      <>
-        <View
-          style={[
-            styles.submitButtonContent,
-            Layout.alignItemsCenter,
-            Layout.justifyContentCenter,
-            Gutters.smallBMargin,
-          ]}
-        >
-          <Text style={styles.submitButtonText}>R</Text>
-        </View>
-        <Text style={styles.submitButtonText}>Make a payment</Text>
-      </>
-    );
-  };
 
   useEffect(() => {
     if (meters.length === 0) {
@@ -149,19 +132,25 @@ const AccountDetailsScreen = ({ route }) => {
             />
           )}
         </ScreenContainer>
-        {(accountPaymentDetails && (
-          <TouchableOpacity
-            onPress={onMakePaymentPress}
+        {(accountPaymentDetails && tabIndex === 0 && (
+          <Button
+            mode="contained"
+            color={Colors.primary}
             style={[
+              Layout.fill,
+              Gutters.tinyLMargin,
               styles.submitButton,
               Layout.alignItemsCenter,
               Gutters.smallVPadding,
               Gutters.regularHMargin,
             ]}
+            contentStyle={{ backgroundColor: Colors.primary }}
+            onPress={onMakePaymentPress}
           >
-            {renderMakePaymentButtonContent()}
-          </TouchableOpacity>
+            Make a payment
+          </Button>
         )) || <></>}
+
         <LoadingOverlay
           source={loadingImageSource}
           visible={isLoadingGetAccountDetails}
@@ -175,21 +164,12 @@ const styles = StyleSheet.create({
   accountCard: { width: '42%' },
   accountDetails: { color: Colors.darkgray, fontSize: 15 },
   submitButton: {
-    backgroundColor: Colors.softBlue,
     borderRadius: 10,
     bottom: '15%',
     left: '15%',
     position: 'absolute',
-    width: '60%',
+    width: '65%',
   },
-  submitButtonContent: {
-    borderColor: Colors.white,
-    borderRadius: 20,
-    borderWidth: 1.5,
-    height: 25,
-    width: 25,
-  },
-  submitButtonText: { color: Colors.white, fontWeight: '600' },
   tabItem: { fontSize: 14 },
 });
 

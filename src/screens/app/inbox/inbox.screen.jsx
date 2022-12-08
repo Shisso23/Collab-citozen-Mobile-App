@@ -15,6 +15,9 @@ import {
   getNotificationsAction,
 } from '../../../reducers/notification-reducer/notification.actions';
 import { promptConfirm } from '../../../helpers/prompt.helper';
+import LoadingOverlay from '../../../components/molecules/loading-overlay/index';
+
+const loadingImageSource = require('../../../assets/lottie-files/rings-loading.json');
 
 const InboxScreen = () => {
   const { Colors } = useTheme();
@@ -28,6 +31,7 @@ const InboxScreen = () => {
   const [expandedNotification, setExpandeNotification] = useState(null);
   const [allNotificationsSelected, setAllNotificationsSelected] = useState(false);
   const [userNotifications, setUserNotifications] = useState(_.get(notifications, 'Feed', []));
+  const [loadingDeleteNotifications, setLoadingDeleteNotifications] = useState(false);
 
   useEffect(() => {
     dispatch(getNotificationsAction());
@@ -146,6 +150,7 @@ const InboxScreen = () => {
           }),
         );
         setMultiSelectEnabled(false);
+        setLoadingDeleteNotifications(true);
         Promise.all(
           selectedNotifications.map((notification) =>
             dispatch(
@@ -156,7 +161,9 @@ const InboxScreen = () => {
               ),
             ),
           ),
-        );
+        ).finally(() => {
+          setLoadingDeleteNotifications(false);
+        });
       },
     );
   };
@@ -237,6 +244,12 @@ const InboxScreen = () => {
       ) : (
         renderPlaceHolders()
       )}
+      <LoadingOverlay
+        source={loadingImageSource}
+        visible={loadingDeleteNotifications}
+        onBackDropPress={() => setLoadingDeleteNotifications(false)}
+        transparent
+      />
     </ImageBackground>
   );
 };
