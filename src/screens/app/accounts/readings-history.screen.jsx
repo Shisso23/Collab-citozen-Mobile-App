@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, Text, View, StyleSheet, SafeAreaView } from 'react-native';
+import { FlatList, Text, View, StyleSheet, SafeAreaView, Dimensions } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { List, FAB } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
@@ -11,6 +11,8 @@ import { meterReadingsSelector } from '../../../reducers/account-meters/account-
 import useTheme from '../../../theme/hooks/useTheme';
 import { Colors } from '../../../theme/Variables';
 import { getMeterReadingsAction } from '../../../reducers/account-meters/account-meters.actions';
+
+const screenHeight = Dimensions.get('window').height;
 
 const ReadingsHistoryScreen = ({ route }) => {
   const dispatch = useDispatch();
@@ -63,7 +65,7 @@ const ReadingsHistoryScreen = ({ route }) => {
 
   return (
     <>
-      <SafeAreaView style={[Layout.fullSize, Layout.fill, Gutters.smallPadding]}>
+      <SafeAreaView style={[Gutters.smallPadding, styles.container]}>
         <Text style={[Gutters.smallMargin, Fonts.titleTiny]}>
           {meterType.toLowerCase() === 'electricity' ? 'Electricity History' : 'Water History'}
         </Text>
@@ -78,7 +80,11 @@ const ReadingsHistoryScreen = ({ route }) => {
           onRefresh={() => getMeterReadings(_.get(meter, 'objId', ''))}
         />
       </SafeAreaView>
-      <FAB style={[Common.fabAlignment]} icon="plus" onPress={addMeterReading} />
+      <FAB
+        style={[Common.fabAlignment, { marginBottom: screenHeight - screenHeight * 0.85 }]}
+        icon="plus"
+        onPress={addMeterReading}
+      />
     </>
   );
 };
@@ -88,6 +94,7 @@ ReadingsHistoryScreen.propTypes = {
 };
 
 const styles = StyleSheet.create({
+  container: { marginBottom: 130 },
   meterDetails: {
     color: Colors.darkgray,
   },

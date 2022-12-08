@@ -33,7 +33,8 @@ const AccountStatement = ({ statement }) => {
         fitPolicy={5}
         scrollIndicatorInsets={{ right: 0 }}
         maxScale={8}
-        minScale={1}
+        minScale={-10}
+        horizontal
       >
         <View style={[styles.zoomButtons, Gutters.tinyHPadding]}>
           <Icon

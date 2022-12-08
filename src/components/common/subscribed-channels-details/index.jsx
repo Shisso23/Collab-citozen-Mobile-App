@@ -17,7 +17,7 @@ const SubscribedToChannelsDetails = (props) => {
   const { channel } = props;
   const channelItem = _.get(channel, 'channelItem');
   const channelId = channelItem.objId;
-  const interestTypes = channelItem.interest_types;
+  const interestTypes = _.get(channelItem, 'interest_types', []);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -39,6 +39,7 @@ const SubscribedToChannelsDetails = (props) => {
       <View style={[Common.textInputWithShadow, Gutters.tinyMargin, styles.typeItem]}>
         <List.Item
           title={item.name}
+          titleNumberOfLines={4}
           right={() => (
             <SubscriptionSetting
               itemSelected={item}
