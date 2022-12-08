@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 import { Text, StyleSheet, View, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
@@ -10,7 +11,8 @@ import FormScreenContainer from '../../../components/containers/form-screen-cont
 import HeaderBackGround from '../../../components/atoms/header-background';
 
 const screenHeight = Dimensions.get('window').height;
-const ProfileScreen = () => {
+const ProfileScreen = ({ route }) => {
+  const fromBottomTab = route.params ? route.params.fromBottomTab : false;
   const { user } = useSelector((reducers) => reducers.userReducer);
   const navigation = useNavigation();
   const _onFormSuccess = () => {
@@ -31,7 +33,13 @@ const ProfileScreen = () => {
       <View style={[styles.header]}>
         <HeaderBackGround backButton />
       </View>
-      <FormScreenContainer contentContainerStyle={[Gutters.smallHMargin, styles.container]}>
+      <FormScreenContainer
+        contentContainerStyle={[
+          Gutters.smallHMargin,
+          styles.container,
+          ...[{ paddingTop: fromBottomTab ? 120 : 0 }],
+        ]}
+      >
         <Text style={[Gutters.smallVMargin, Fonts.titleTiny]}>Profile</Text>
         <UserInfoForm
           edit
@@ -44,12 +52,16 @@ const ProfileScreen = () => {
   );
 };
 
-ProfileScreen.propTypes = {};
+ProfileScreen.propTypes = {
+  route: PropTypes.object,
+};
 
-ProfileScreen.defaultProps = {};
+ProfileScreen.defaultProps = {
+  route: null,
+};
 
 const styles = StyleSheet.create({
-  container: { paddingBottom: screenHeight - screenHeight * 0.8, paddingTop: 120 },
+  container: { paddingBottom: screenHeight - screenHeight * 0.8 },
   header: {
     left: 0,
     position: 'absolute',

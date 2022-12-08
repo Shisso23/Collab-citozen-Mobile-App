@@ -17,7 +17,7 @@ const SubscribedToChannelsDetails = (props) => {
   const { channel } = props;
   const channelItem = _.get(channel, 'channelItem');
   const channelId = channelItem.objId;
-  const interestTypes = channelItem.interest_types;
+  const interestTypes = _.get(channelItem, 'interest_types', []);
   const navigation = useNavigation();
 
   useEffect(() => {

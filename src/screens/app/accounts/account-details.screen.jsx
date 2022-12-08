@@ -132,7 +132,7 @@ const AccountDetailsScreen = ({ route }) => {
             />
           )}
         </ScreenContainer>
-        {(accountPaymentDetails && (
+        {(accountPaymentDetails && tabIndex === 0 && (
           <Button
             mode="contained"
             color={Colors.primary}
@@ -150,6 +150,7 @@ const AccountDetailsScreen = ({ route }) => {
             Make a payment
           </Button>
         )) || <></>}
+
         <LoadingOverlay
           source={loadingImageSource}
           visible={isLoadingGetAccountDetails}
@@ -169,7 +170,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '65%',
   },
-  submitButtonText: { color: Colors.white, fontWeight: '600' },
   tabItem: { fontSize: 14 },
 });
 
