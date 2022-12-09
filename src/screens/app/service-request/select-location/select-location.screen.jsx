@@ -197,11 +197,15 @@ const SelectLocationScreen = () => {
     }
   };
 
+  const changeMapType = () => {
+    setsatelliteViewEnabled(!satelliteViewEnabled);
+  };
+
   const renderSwitchViewButton = () => {
     return (
       <View>
         <Text>Switch View</Text>
-        <Pressable onPress={() => setsatelliteViewEnabled(!satelliteViewEnabled)}>
+        <Pressable onPress={changeMapType}>
           {() => (
             <>
               <Image
@@ -444,6 +448,15 @@ const SelectLocationScreen = () => {
     }
   };
 
+  const renderMapChildren = () => {
+    return (
+      <>
+        {renderSwitchViewButton()}
+        {showSRPins && nearbyPinLocations?.length > 0 ? <>{displayPins()}</> : <></>}
+      </>
+    );
+  };
+
   return (
     <View style={[Layout.fullSize]}>
       <View style={[Common.headerSelectLocation]}>
@@ -539,10 +552,7 @@ const SelectLocationScreen = () => {
           maxZoomLevel={30}
           showsBuildings
         >
-          <>
-            {renderSwitchViewButton()}
-            {showSRPins && nearbyPinLocations?.length > 0 ? <>{displayPins()}</> : <></>}
-          </>
+          {renderMapChildren()}
         </MapView>
       ) : hasHmsSync() && locationPermission && userLocation ? (
         <HmsMapView
@@ -575,10 +585,7 @@ const SelectLocationScreen = () => {
           collapsable
           useAnimation
         >
-          <>
-            {renderSwitchViewButton()}
-            {showSRPins && nearbyPinLocations?.length > 0 ? <>{displayPins()}</> : <></>}
-          </>
+          {renderMapChildren()}
         </HmsMapView>
       ) : (
         <View />

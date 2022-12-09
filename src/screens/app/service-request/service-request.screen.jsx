@@ -361,11 +361,15 @@ const ServiceRequestScreen = () => {
     );
   };
 
+  const changeMapType = () => {
+    setsatelliteViewEnabled(!satelliteViewEnabled);
+  };
+
   const renderSwitchViewButton = () => {
     return (
       <View>
         <Text>Switch View</Text>
-        <Pressable onPress={() => setsatelliteViewEnabled(!satelliteViewEnabled)}>
+        <Pressable onPress={changeMapType}>
           {() => (
             <>
               <Image
@@ -384,6 +388,15 @@ const ServiceRequestScreen = () => {
     );
   };
 
+  const renderMapChildren = () => {
+    return (
+      <>
+        {renderSwitchViewButton()}
+        {nearbyPinLocations.length > 0 ? <>{displayPins()}</> : <></>}
+      </>
+    );
+  };
+
   const renderMapViewPins = () => {
     return (
       <MapView
@@ -399,10 +412,7 @@ const ServiceRequestScreen = () => {
         zoomEnabled
         showsMyLocationButton
       >
-        <>
-          {renderSwitchViewButton()}
-          {nearbyPinLocations.length > 0 ? <>{displayPins()}</> : <></>}
-        </>
+        {renderMapChildren()}
       </MapView>
     );
   };
