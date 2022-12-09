@@ -16,6 +16,8 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Dimensions,
+  Pressable,
+  Image,
 } from 'react-native';
 import { Tab, Icon } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
@@ -66,6 +68,7 @@ const ServiceRequestScreen = () => {
   const [isLoadingFollowSR, setIsLoadingFollowSR] = useState(false);
   const [mapReady, setMapReady] = useState(false);
   const [mapPosition, setMapPosition] = useState(userLocation);
+  const [satelliteViewEnabled, setsatelliteViewEnabled] = useState(false);
   const [loadingModalVisible, setLoadingModalVisible] = useState(
     !mapReady || !locationPermission || !userLocation,
   );
@@ -358,6 +361,29 @@ const ServiceRequestScreen = () => {
     );
   };
 
+  const renderSwitchViewButton = () => {
+    return (
+      <View>
+        <Text>Switch View</Text>
+        <Pressable onPress={() => setsatelliteViewEnabled(!satelliteViewEnabled)}>
+          {() => (
+            <>
+              <Image
+                source={satelliteViewEnabled ? Images.switchToMap : Images.switchToSatellite}
+                style={[
+                  styles.switchMapButton,
+                  Layout.alignItemsCenter,
+                  Layout.justifyContentCenter,
+                  Common.viewWithShadow,
+                ]}
+              />
+            </>
+          )}
+        </Pressable>
+      </View>
+    );
+  };
+
   const renderMapViewPins = () => {
     return (
       <MapView
@@ -369,10 +395,14 @@ const ServiceRequestScreen = () => {
           return _setMapPosition(newPosition);
         }}
         onMapReady={() => setMapReady(true)}
+        mapType={satelliteViewEnabled ? 'hybrid' : 'standard'}
         zoomEnabled
         showsMyLocationButton
       >
-        {nearbyPinLocations.length > 0 ? displayPins() : <></>}
+        <>
+          {renderSwitchViewButton()}
+          {nearbyPinLocations.length > 0 ? <>{displayPins()}</> : <></>}
+        </>
       </MapView>
     );
   };
@@ -556,6 +586,17 @@ const styles = StyleSheet.create({
   pin: {
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  switchMapButton: {
+    borderColor: Colors.primary,
+    borderRadius: 10,
+    borderWidth: 2,
+    display: 'flex',
+    height: 60,
+    left: 5,
+    position: 'absolute',
+    top: 28,
+    width: 60,
   },
   tabItem: {
     fontSize: 14,

@@ -1,7 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import MapView, { Marker } from 'react-native-maps';
-import HmsMapView, { MapTypes, HMSMarker, Hue } from '@hmscore/react-native-hms-map';
+import HmsMapView, { HMSMarker, Hue } from '@hmscore/react-native-hms-map';
 import { Icon } from 'react-native-elements';
 import {
   StyleSheet,
@@ -550,7 +550,6 @@ const SelectLocationScreen = () => {
             setHmsMapRef(e);
           }}
           style={Layout.fill}
-          mapType={satelliteViewEnabled ? MapTypes.TERRAIN : MapTypes.NORMAL}
           camera={{
             target: userLocation,
             zoom: 15,
