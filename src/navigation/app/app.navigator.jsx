@@ -285,7 +285,11 @@ const TabNavigator = () => {
     >
       <Tab.Screen name="Home" component={AppNavigator} />
       <Tab.Screen name="addFeatures" component={renderEmptyComponent} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        initialParams={{ fromBottomTab: true }}
+      />
     </Tab.Navigator>
   );
 };
