@@ -23,7 +23,7 @@ export const initAppAction = () => {
     }
     setTimeout(() => {
       RNBootSplash.hide({ fade: true });
-    }, 3000); // force process to run a bit later.
+    }, 5500); // force process to run a bit later.
     // ensures that the login screen is not shown when the user is authenticated.
   };
 };

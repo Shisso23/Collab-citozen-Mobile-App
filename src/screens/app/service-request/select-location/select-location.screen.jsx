@@ -1,7 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import MapView, { Marker } from 'react-native-maps';
-import HmsMapView, { MapTypes, HMSMarker, Hue } from '@hmscore/react-native-hms-map';
+import HmsMapView, { HMSMarker, Hue } from '@hmscore/react-native-hms-map';
 import { Icon } from 'react-native-elements';
 import {
   StyleSheet,
@@ -14,6 +14,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   StatusBar,
+  Image,
+  Pressable,
 } from 'react-native';
 import { Button, TextInput, IconButton, Modal } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
@@ -43,7 +45,7 @@ const loadingImageSource = require('../../../../assets/lottie-files/rings-loadin
 const SelectLocationScreen = () => {
   const { params } = useRoute();
   const { fromSubscribedChannels, onBack, handlePickLocation, showSRPins } = params;
-  const { Layout, Common, Gutters, Fonts, FontSize } = useTheme();
+  const { Layout, Common, Gutters, Fonts, FontSize, Images } = useTheme();
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { region, selectedAddress, isLoadingAddress } = useSelector(locationSelector);
@@ -64,6 +66,7 @@ const SelectLocationScreen = () => {
   const [mapRef, setMapRef] = useState(undefined);
   const [keyboardVisible, setKeyboardVisible] = useState(undefined);
   const [hmsMapRef, setHmsMapRef] = useState(undefined);
+  const [satelliteViewEnabled, setsatelliteViewEnabled] = useState(false);
 
   useEffect(() => {
     if (region && mapReady && locationPermission && userLocation && !isLoadingAddress) {
@@ -192,6 +195,33 @@ const SelectLocationScreen = () => {
           ? Hue.VIOLET
           : null;
     }
+  };
+
+  const changeMapType = () => {
+    setsatelliteViewEnabled(!satelliteViewEnabled);
+  };
+
+  const renderSwitchViewButton = () => {
+    return (
+      <View>
+        <Text>Switch View</Text>
+        <Pressable onPress={changeMapType}>
+          {() => (
+            <>
+              <Image
+                source={satelliteViewEnabled ? Images.switchToMap : Images.switchToSatellite}
+                style={[
+                  styles.switchMapButton,
+                  Layout.alignItemsCenter,
+                  Layout.justifyContentCenter,
+                  Common.viewWithShadow,
+                ]}
+              />
+            </>
+          )}
+        </Pressable>
+      </View>
+    );
   };
 
   const displayPins = () => {
@@ -418,6 +448,15 @@ const SelectLocationScreen = () => {
     }
   };
 
+  const renderMapChildren = () => {
+    return (
+      <>
+        {renderSwitchViewButton()}
+        {showSRPins && nearbyPinLocations?.length > 0 ? <>{displayPins()}</> : <></>}
+      </>
+    );
+  };
+
   return (
     <View style={[Layout.fullSize]}>
       <View style={[Common.headerSelectLocation]}>
@@ -506,11 +545,14 @@ const SelectLocationScreen = () => {
           onRegionChangeComplete={(newRegion) => {
             return _setMapPosition(newRegion);
           }}
+          mapType={satelliteViewEnabled ? 'hybrid' : 'standard'}
           showsMyLocationButton
           zoomControlEnabled
           zoomEnabled
+          maxZoomLevel={30}
+          showsBuildings
         >
-          {showSRPins && nearbyPinLocations.length > 0 ? displayPins() : <></>}
+          {renderMapChildren()}
         </MapView>
       ) : hasHmsSync() && locationPermission && userLocation ? (
         <HmsMapView
@@ -518,7 +560,6 @@ const SelectLocationScreen = () => {
             setHmsMapRef(e);
           }}
           style={Layout.fill}
-          mapType={MapTypes.NORMAL}
           camera={{
             target: userLocation,
             zoom: 15,
@@ -530,7 +571,6 @@ const SelectLocationScreen = () => {
             hmsMapRef.stopAnimation();
           }}
           minZoomPreference={3}
-          // maxZoomPreference={50}
           animationDuration={2000}
           zoomControlsEnabled
           rotateGesturesEnabled
@@ -542,9 +582,10 @@ const SelectLocationScreen = () => {
           myLocationButtonEnabled={false}
           markerClustering={false}
           scrollGesturesEnabledDuringRotateOrZoom
+          collapsable
           useAnimation
         >
-          {showSRPins && nearbyPinLocations?.length > 0 ? displayPins() : <></>}
+          {renderMapChildren()}
         </HmsMapView>
       ) : (
         <View />
@@ -629,6 +670,17 @@ const styles = StyleSheet.create({
   pin: {
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  switchMapButton: {
+    borderColor: Colors.primary,
+    borderRadius: 10,
+    borderWidth: 2,
+    display: 'flex',
+    height: 60,
+    left: 5,
+    position: 'absolute',
+    top: 28,
+    width: 60,
   },
   textLine: {
     borderBottomColor: Colors.gray,
