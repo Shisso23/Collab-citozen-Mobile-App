@@ -22,7 +22,8 @@ const signIn = async (formData) => {
 
   const apiResponse = await networkService.post(signInUrl, signInData);
   if (authenticationFailed(apiResponse)) {
-    const errorMessage = _.get(apiResponse, 'data');
+    const errorMessage =
+      'Incorrect Email or Password. Please try again and ensure Caps Lock is not enabled';
     throw new Error(errorMessage);
   }
   if (formData.email === `${config.appSignIn}`) {
