@@ -18,7 +18,10 @@ const constructSignInData = ({ username, password }) => ({
 
 const authenticationFailed = (apiResponse) => {
   const responseMessage = _.get(apiResponse, 'data');
-  return responseMessage === 'Auth Failed';
+  return (
+    responseMessage === 'Auth Failed' ||
+    responseMessage === 'Object reference not set to an instance of an object.'
+  );
 };
 
 const constructOAuthTokenRefreshData = () => {
