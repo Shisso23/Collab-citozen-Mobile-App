@@ -16,7 +16,6 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Dimensions,
-  Pressable,
   Image,
 } from 'react-native';
 import { Tab, Icon } from 'react-native-elements';
@@ -367,34 +366,25 @@ const ServiceRequestScreen = () => {
 
   const renderSwitchViewButton = () => {
     return (
-      <View>
-        <Text>Switch View</Text>
-        <Pressable onPress={changeMapType}>
-          {() => (
-            <>
-              <Image
-                source={satelliteViewEnabled ? Images.switchToMap : Images.switchToSatellite}
-                style={[
-                  styles.switchMapButton,
-                  Layout.alignItemsCenter,
-                  Layout.justifyContentCenter,
-                  Common.viewWithShadow,
-                ]}
-              />
-            </>
-          )}
-        </Pressable>
-      </View>
+      <TouchableOpacity
+        onPress={changeMapType}
+        style={[
+          styles.switchMapButton,
+          Layout.alignItemsCenter,
+          Layout.justifyContentCenter,
+          Common.viewWithShadow,
+        ]}
+      >
+        <Image
+          source={satelliteViewEnabled ? Images.switchToMap : Images.switchToSatellite}
+          style={[styles.mapTypeImage]}
+        />
+      </TouchableOpacity>
     );
   };
 
   const renderMapChildren = () => {
-    return (
-      <>
-        {renderSwitchViewButton()}
-        {nearbyPinLocations.length > 0 ? <>{displayPins()}</> : <></>}
-      </>
-    );
+    return nearbyPinLocations.length > 0 ? displayPins() : <></>;
   };
 
   const renderMapViewPins = () => {
@@ -564,6 +554,7 @@ const ServiceRequestScreen = () => {
             icon="plus"
             onPress={_handleOnServiceRequestCreatePress}
           />
+          {renderSwitchViewButton()}
           {pinDetailsModal()}
           <LoadingOverlay
             source={loadingImageSource}
@@ -588,6 +579,11 @@ const styles = StyleSheet.create({
   headerFont: {
     fontSize: 19,
   },
+  mapTypeImage: {
+    borderRadius: 10,
+    height: '100%',
+    width: '100%',
+  },
   modalView: {
     backgroundColor: Colors.black,
     borderRadius: 15,
@@ -605,7 +601,7 @@ const styles = StyleSheet.create({
     height: 60,
     left: 5,
     position: 'absolute',
-    top: 28,
+    top: Dimensions.get('screen').height - Dimensions.get('screen').height * 0.77,
     width: 60,
   },
   tabItem: {

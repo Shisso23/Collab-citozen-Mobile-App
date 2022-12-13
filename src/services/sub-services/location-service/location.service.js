@@ -12,8 +12,25 @@ const googleMapsApi = axios.create({
 googleMapsApi.interceptors.request.use((config) => {
   config.params = config.params || {};
   config.params.key = appConfig.googleMapsApiKey;
+  console.log({ config });
   return config;
 });
+
+googleMapsApi.interceptors.response.use(
+  (response) => {
+    const {
+      data,
+      headers,
+      config: { url, method },
+    } = response;
+    console.log(`✅ ${method.toUpperCase()} "${url}"`, { data, headers }); // eslint-disable-line no-console
+    return response;
+  },
+  (error) => {
+    console.log('❌', error); // eslint-disable-line no-console
+    return Promise.reject(error);
+  },
+);
 
 const getAddressFromCoordinates = async (region) => {
   const address = `${region.latitude},${region.longitude}`;
