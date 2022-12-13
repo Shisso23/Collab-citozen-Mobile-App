@@ -202,7 +202,7 @@ const SelectLocationScreen = () => {
 
   const renderSwitchViewButton = () => {
     return (
-      (!hasHmsSync() && (
+      (!hasHmsSync() && !keyboardVisible && (
         <TouchableOpacity
           onPress={changeMapType}
           style={[
