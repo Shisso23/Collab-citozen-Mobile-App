@@ -15,7 +15,6 @@ import {
   Platform,
   StatusBar,
   Image,
-  Pressable,
 } from 'react-native';
 import { Button, TextInput, IconButton, Modal } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
@@ -203,24 +202,22 @@ const SelectLocationScreen = () => {
 
   const renderSwitchViewButton = () => {
     return (
-      <View>
-        <Text>Switch View</Text>
-        <Pressable onPress={changeMapType}>
-          {() => (
-            <>
-              <Image
-                source={satelliteViewEnabled ? Images.switchToMap : Images.switchToSatellite}
-                style={[
-                  styles.switchMapButton,
-                  Layout.alignItemsCenter,
-                  Layout.justifyContentCenter,
-                  Common.viewWithShadow,
-                ]}
-              />
-            </>
-          )}
-        </Pressable>
-      </View>
+      (!hasHmsSync() && (
+        <TouchableOpacity
+          onPress={changeMapType}
+          style={[
+            styles.switchMapButton,
+            Layout.alignItemsCenter,
+            Layout.justifyContentCenter,
+            Common.viewWithShadow,
+          ]}
+        >
+          <Image
+            source={satelliteViewEnabled ? Images.switchToMap : Images.switchToSatellite}
+            style={[styles.mapTypeImage]}
+          />
+        </TouchableOpacity>
+      )) || <View />
     );
   };
 
@@ -449,12 +446,7 @@ const SelectLocationScreen = () => {
   };
 
   const renderMapChildren = () => {
-    return (
-      <>
-        {renderSwitchViewButton()}
-        {showSRPins && nearbyPinLocations?.length > 0 ? <>{displayPins()}</> : <></>}
-      </>
-    );
+    return <>{showSRPins && nearbyPinLocations?.length > 0 ? <>{displayPins()}</> : <></>}</>;
   };
 
   return (
@@ -633,7 +625,7 @@ const SelectLocationScreen = () => {
           </View>
         </KeyboardAvoidingView>
       )}
-
+      {renderSwitchViewButton()}
       {pinDetailsModal()}
       <LoadingOverlay
         source={loadingImageSource}
@@ -661,6 +653,11 @@ const styles = StyleSheet.create({
   headerFont: {
     fontSize: 19,
   },
+  mapTypeImage: {
+    borderRadius: 10,
+    height: '100%',
+    width: '100%',
+  },
   modal: { backgroundColor: Colors.transparent, height: '100%', width: '100%' },
   modalView: {
     backgroundColor: Colors.black,
@@ -675,11 +672,11 @@ const styles = StyleSheet.create({
     borderColor: Colors.primary,
     borderRadius: 10,
     borderWidth: 2,
+    bottom: Dimensions.get('screen').height - Dimensions.get('screen').height * 0.77,
     display: 'flex',
     height: 60,
     left: 5,
     position: 'absolute',
-    top: 28,
     width: 60,
   },
   textLine: {

@@ -16,7 +16,6 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Dimensions,
-  Pressable,
   Image,
 } from 'react-native';
 import { Tab, Icon } from 'react-native-elements';
@@ -367,34 +366,28 @@ const ServiceRequestScreen = () => {
 
   const renderSwitchViewButton = () => {
     return (
-      <View>
-        <Text>Switch View</Text>
-        <Pressable onPress={changeMapType}>
-          {() => (
-            <>
-              <Image
-                source={satelliteViewEnabled ? Images.switchToMap : Images.switchToSatellite}
-                style={[
-                  styles.switchMapButton,
-                  Layout.alignItemsCenter,
-                  Layout.justifyContentCenter,
-                  Common.viewWithShadow,
-                ]}
-              />
-            </>
-          )}
-        </Pressable>
-      </View>
+      !hasHmsSync() &&
+      ((
+        <TouchableOpacity
+          onPress={changeMapType}
+          style={[
+            styles.switchMapButton,
+            Layout.alignItemsCenter,
+            Layout.justifyContentCenter,
+            Common.viewWithShadow,
+          ]}
+        >
+          <Image
+            source={satelliteViewEnabled ? Images.switchToMap : Images.switchToSatellite}
+            style={[styles.mapTypeImage]}
+          />
+        </TouchableOpacity>
+      ) || <View />)
     );
   };
 
   const renderMapChildren = () => {
-    return (
-      <>
-        {renderSwitchViewButton()}
-        {nearbyPinLocations.length > 0 ? <>{displayPins()}</> : <></>}
-      </>
-    );
+    return nearbyPinLocations.length > 0 ? displayPins() : <></>;
   };
 
   const renderMapViewPins = () => {
@@ -559,11 +552,19 @@ const ServiceRequestScreen = () => {
           <View style={Common.pinContainer}>
             <Icon type="ionicon" name="pin-outline" size={30} color={Colors.primary} />
           </View>
-          <FAB
-            style={[Common.fabAlignment, { marginBottom: screenHeight - screenHeight * 0.85 }]}
-            icon="plus"
-            onPress={_handleOnServiceRequestCreatePress}
-          />
+          <View style={[Layout.rowBetween, styles.bottomButtons]}>
+            {renderSwitchViewButton()}
+            <FAB
+              style={[
+                Gutters.larMargin,
+                {
+                  backgroundColor: Colors.softBlue,
+                },
+              ]}
+              icon="plus"
+              onPress={_handleOnServiceRequestCreatePress}
+            />
+          </View>
           {pinDetailsModal()}
           <LoadingOverlay
             source={loadingImageSource}
@@ -581,12 +582,25 @@ ServiceRequestScreen.propTypes = {};
 ServiceRequestScreen.defaultProps = {};
 
 const styles = StyleSheet.create({
+  bottomButtons: {
+    bottom: 0,
+    left: 5,
+    marginBottom: screenHeight - screenHeight * 0.85,
+    position: 'absolute',
+    right: 5,
+    width: '94%',
+  },
   descriptionFont: {
     fontSize: 16,
   },
   followButton: { width: '40%' },
   headerFont: {
     fontSize: 19,
+  },
+  mapTypeImage: {
+    borderRadius: 10,
+    height: '100%',
+    width: '100%',
   },
   modalView: {
     backgroundColor: Colors.black,
@@ -603,9 +617,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     display: 'flex',
     height: 60,
-    left: 5,
-    position: 'absolute',
-    top: 28,
     width: 60,
   },
   tabItem: {

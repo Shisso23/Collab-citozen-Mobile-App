@@ -35,23 +35,12 @@ const AccountStatement = ({ statement }) => {
         maxScale={8}
         minScale={-10}
         horizontal
-      >
-        <View style={[styles.zoomButtons, Gutters.tinyHPadding]}>
-          <Icon
-            name="squared-plus"
-            type="entypo"
-            size={40}
-            onPress={upDatePdfScale(pdfScale + 1)}
-          />
-          <View style={styles.separator} />
-          <Icon
-            name="squared-minus"
-            type="entypo"
-            size={40}
-            onPress={upDatePdfScale(pdfScale - 1)}
-          />
-        </View>
-      </Pdf>
+      />
+      <View style={[styles.zoomButtons, Gutters.tinyHPadding]}>
+        <Icon name="squared-plus" type="entypo" size={40} onPress={upDatePdfScale(pdfScale + 1)} />
+        <View style={styles.separator} />
+        <Icon name="squared-minus" type="entypo" size={40} onPress={upDatePdfScale(pdfScale - 1)} />
+      </View>
     </SafeAreaView>
   );
 };
@@ -66,7 +55,7 @@ const styles = StyleSheet.create({
   separator: { backgroundColor: Colors.gray, height: 1, width: '100%' },
   zoomButtons: {
     backgroundColor: Colors.white,
-    bottom: 60,
+    bottom: 120,
     position: 'absolute',
     right: 10,
     zIndex: 1,
