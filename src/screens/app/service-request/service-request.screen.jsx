@@ -366,20 +366,23 @@ const ServiceRequestScreen = () => {
 
   const renderSwitchViewButton = () => {
     return (
-      <TouchableOpacity
-        onPress={changeMapType}
-        style={[
-          styles.switchMapButton,
-          Layout.alignItemsCenter,
-          Layout.justifyContentCenter,
-          Common.viewWithShadow,
-        ]}
-      >
-        <Image
-          source={satelliteViewEnabled ? Images.switchToMap : Images.switchToSatellite}
-          style={[styles.mapTypeImage]}
-        />
-      </TouchableOpacity>
+      !hasHmsSync() &&
+      ((
+        <TouchableOpacity
+          onPress={changeMapType}
+          style={[
+            styles.switchMapButton,
+            Layout.alignItemsCenter,
+            Layout.justifyContentCenter,
+            Common.viewWithShadow,
+          ]}
+        >
+          <Image
+            source={satelliteViewEnabled ? Images.switchToMap : Images.switchToSatellite}
+            style={[styles.mapTypeImage]}
+          />
+        </TouchableOpacity>
+      ) || <View />)
     );
   };
 
@@ -549,12 +552,19 @@ const ServiceRequestScreen = () => {
           <View style={Common.pinContainer}>
             <Icon type="ionicon" name="pin-outline" size={30} color={Colors.primary} />
           </View>
-          <FAB
-            style={[Common.fabAlignment, { marginBottom: screenHeight - screenHeight * 0.85 }]}
-            icon="plus"
-            onPress={_handleOnServiceRequestCreatePress}
-          />
-          {renderSwitchViewButton()}
+          <View style={[Layout.rowBetween, styles.bottomButtons]}>
+            {renderSwitchViewButton()}
+            <FAB
+              style={[
+                Gutters.larMargin,
+                {
+                  backgroundColor: Colors.softBlue,
+                },
+              ]}
+              icon="plus"
+              onPress={_handleOnServiceRequestCreatePress}
+            />
+          </View>
           {pinDetailsModal()}
           <LoadingOverlay
             source={loadingImageSource}
@@ -572,6 +582,14 @@ ServiceRequestScreen.propTypes = {};
 ServiceRequestScreen.defaultProps = {};
 
 const styles = StyleSheet.create({
+  bottomButtons: {
+    bottom: 0,
+    left: 5,
+    marginBottom: screenHeight - screenHeight * 0.85,
+    position: 'absolute',
+    right: 5,
+    width: '94%',
+  },
   descriptionFont: {
     fontSize: 16,
   },
@@ -599,9 +617,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     display: 'flex',
     height: 60,
-    left: 5,
-    position: 'absolute',
-    top: Dimensions.get('screen').height - Dimensions.get('screen').height * 0.77,
     width: 60,
   },
   tabItem: {

@@ -202,20 +202,22 @@ const SelectLocationScreen = () => {
 
   const renderSwitchViewButton = () => {
     return (
-      <TouchableOpacity
-        onPress={changeMapType}
-        style={[
-          styles.switchMapButton,
-          Layout.alignItemsCenter,
-          Layout.justifyContentCenter,
-          Common.viewWithShadow,
-        ]}
-      >
-        <Image
-          source={satelliteViewEnabled ? Images.switchToMap : Images.switchToSatellite}
-          style={[styles.mapTypeImage]}
-        />
-      </TouchableOpacity>
+      (!hasHmsSync() && (
+        <TouchableOpacity
+          onPress={changeMapType}
+          style={[
+            styles.switchMapButton,
+            Layout.alignItemsCenter,
+            Layout.justifyContentCenter,
+            Common.viewWithShadow,
+          ]}
+        >
+          <Image
+            source={satelliteViewEnabled ? Images.switchToMap : Images.switchToSatellite}
+            style={[styles.mapTypeImage]}
+          />
+        </TouchableOpacity>
+      )) || <View />
     );
   };
 
@@ -670,11 +672,11 @@ const styles = StyleSheet.create({
     borderColor: Colors.primary,
     borderRadius: 10,
     borderWidth: 2,
+    bottom: Dimensions.get('screen').height - Dimensions.get('screen').height * 0.77,
     display: 'flex',
     height: 60,
     left: 5,
     position: 'absolute',
-    top: Dimensions.get('screen').height - Dimensions.get('screen').height * 0.77,
     width: 60,
   },
   textLine: {
