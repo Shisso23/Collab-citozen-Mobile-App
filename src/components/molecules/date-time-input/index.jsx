@@ -46,12 +46,7 @@ const DateTimeInput = ({
   };
 
   const getDateValue = () => {
-    let date;
-    if (_.isNil(value) || _.isEmpty(value)) {
-      date = new Date();
-    }
-
-    return moment(date).date();
+    return new Date(moment(value).format('YYYY-MM-DD'));
   };
 
   return (
