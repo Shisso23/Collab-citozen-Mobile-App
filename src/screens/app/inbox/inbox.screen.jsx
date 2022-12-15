@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ImageBackground, StyleSheet, View } from 'react-native';
-import { Text, CheckBox } from 'react-native-elements';
+import { Text, CheckBox, Button } from 'react-native-elements';
 import { useDispatch, useSelector } from 'react-redux';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import _ from 'lodash';
@@ -13,14 +13,15 @@ import Notification from '../../../components/molecules/notification';
 import {
   deleteNotificationAction,
   getNotificationsAction,
+  openNotificationAction,
 } from '../../../reducers/notification-reducer/notification.actions';
 import { promptConfirm } from '../../../helpers/prompt.helper';
 import LoadingOverlay from '../../../components/molecules/loading-overlay/index';
+import { Colors } from '../../../theme/Variables';
 
 const loadingImageSource = require('../../../assets/lottie-files/rings-loading.json');
 
 const InboxScreen = () => {
-  const { Colors } = useTheme();
   const { notifications, isLoading } = useSelector((reducers) => reducers.notificationReducer);
   const { Fonts, Layout, Images, Common, Gutters } = useTheme();
   const dispatch = useDispatch();
@@ -151,19 +152,15 @@ const InboxScreen = () => {
         );
         setMultiSelectEnabled(false);
         setLoadingDeleteNotifications(true);
-        Promise.all(
-          selectedNotifications.map((notification) =>
-            dispatch(
-              deleteNotificationAction(
-                _.get(notification, 'obj_id'),
-                moment(new Date()).format('yyyy-mm-DD hh:mm:ss'),
-                _.get(user, 'user_id', ''),
-              ),
-            ),
-          ),
-        ).finally(() => {
-          setLoadingDeleteNotifications(false);
-        });
+        dispatch(
+          deleteNotificationAction(
+            selectedNotifications.map((notification) => _.get(notification, 'obj_id')),
+            moment(new Date()).format('yyyy-mm-DD hh:mm:ss'),
+            _.get(user, 'user_id', ''),
+          ).finally(() => {
+            setLoadingDeleteNotifications(false);
+          }),
+        );
       },
     );
   };
@@ -173,6 +170,18 @@ const InboxScreen = () => {
       setSelectedNotifications([]);
     }
     setAllNotificationsSelected(!allNotificationsSelected);
+  };
+
+  const marNotificationsAsRead = () => {
+    const seenAt = moment(new Date()).format('yyyy-mm-DD hh:mm:ss');
+    dispatch(
+      openNotificationAction(
+        selectedNotifications.map((selectedNotification) => _.get(selectedNotification, 'obj_id')),
+
+        seenAt,
+        _.get(user, 'user_id', ''),
+      ),
+    );
   };
 
   return (
@@ -195,22 +204,36 @@ const InboxScreen = () => {
               styles.selectNotificationView,
             ]}
           >
-            <CheckBox
-              onPress={toggleSelectAll}
-              checked={allNotificationsSelected}
-              containerStyle={styles.checkbox}
-              size={32}
-              title="Select all"
-            />
-            {(multiSelectEnabled && (
-              <Icon
-                name="trash"
-                size={27}
-                backgroundColor="transparent"
-                color={Colors.gray}
-                onPress={deleteNotificationsSelected}
+            {(userNotifications.length > 0 && (
+              <CheckBox
+                onPress={toggleSelectAll}
+                checked={allNotificationsSelected}
+                containerStyle={styles.checkbox}
+                size={32}
+                title="Select all"
               />
             )) || <View />}
+            <View style={Layout.row}>
+              {(multiSelectEnabled && (
+                <Button
+                  title="Mark as read"
+                  type="outline"
+                  titleStyle={styles.marAsReadButtonTitle}
+                  containerStyle={[Gutters.tinyBMargin, Gutters.regularRMargin]}
+                  buttonStyle={styles.markAsReadButtonContainer}
+                  onPress={marNotificationsAsRead}
+                />
+              )) || <View />}
+              {(multiSelectEnabled && (
+                <Icon
+                  name="trash"
+                  size={27}
+                  backgroundColor="transparent"
+                  color={Colors.gray}
+                  onPress={deleteNotificationsSelected}
+                />
+              )) || <View />}
+            </View>
           </View>
 
           {userNotifications.map((notification, index) => {
@@ -256,6 +279,8 @@ const InboxScreen = () => {
 
 const styles = StyleSheet.create({
   checkbox: { padding: 0 },
+  marAsReadButtonTitle: { color: Colors.darkgray, fontSize: 15 },
+  markAsReadButtonContainer: { height: 32 },
   selectNotificationView: {
     width: '100%',
   },

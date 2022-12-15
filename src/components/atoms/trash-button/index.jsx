@@ -31,13 +31,14 @@ const styles = StyleSheet.create({
 TrashButton.propTypes = {
   onPress: PropTypes.func.isRequired,
   containerStyle: ViewPropTypes.style,
-  loading: PropTypes.bool.isRequired,
+  loading: PropTypes.bool,
   iconSize: PropTypes.number,
 };
 
 TrashButton.defaultProps = {
   containerStyle: {},
   iconSize: 20,
+  loading: false,
 };
 
 export default TrashButton;

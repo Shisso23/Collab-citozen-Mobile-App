@@ -45,7 +45,7 @@ const Notification = ({
   const _handleCollapse = () => {
     if (!isSeen && !multiSelectEnabled) {
       const seenAt = Moment(new Date()).format('yyyy-mm-DD hh:mm:ss');
-      dispatch(openNotificationAction(notificationId, seenAt, _.get(user, 'user_id', '')));
+      dispatch(openNotificationAction([notificationId], seenAt, _.get(user, 'user_id', '')));
       dispatch(getUnOpenedNotificationsAction());
       setIsSeen(true);
       onPress();
@@ -62,7 +62,7 @@ const Notification = ({
     const deletedAt = Moment(new Date()).format('yyyy-mm-DD hh:mm:ss');
     promptConfirm('Are you sure?', 'Are you sure you want to delete this item?', 'Delete', () => {
       handleDeleteNotification();
-      dispatch(deleteNotificationAction(notificationId, deletedAt, _.get(user, 'user_id', '')));
+      dispatch(deleteNotificationAction([notificationId], deletedAt, _.get(user, 'user_id', '')));
     });
   };
 
