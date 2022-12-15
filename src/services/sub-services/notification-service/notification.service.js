@@ -87,21 +87,15 @@ const deleteNotification = async (notificationIds, dateTime, userId) => {
 };
 
 const createNotification = async (formData, channelRef) => {
-  const data = formData.interestTypes.map((interestType) =>
-    createNotificationActivityData({
-      title: formData.title,
-      description: formData.description,
-      interestTypeRef: interestType.obj_id,
-      channelRef,
-    }),
-  );
+  const data = createNotificationActivityData({
+    title: formData.title,
+    description: formData.description,
+    interestTypes: formData.interestTypes.map((interestType) => interestType.obj_id).join(';'),
+    channelRef,
+  });
   const createNotificationUrl = globalServiceUrls.createUpdateRecordUrl();
-  return Promise.all(
-    data.map(async (notificationData) => {
-      const response = await authNetworkService.post(createNotificationUrl, notificationData);
-      return response;
-    }),
-  );
+  const response = await authNetworkService.post(createNotificationUrl, data);
+  return response;
 };
 
 export default {

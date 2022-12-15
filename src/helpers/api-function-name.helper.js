@@ -63,13 +63,8 @@ export const dataInitiatePayment = async (functionName, accountNumber, amount) =
 export const notificationActivityData = ({ notificationId, userId, action, dateTime }) =>
   `<User_Notification_Activity><F1>${notificationId}</F1><F2>${userId}</F2><F3>${action}</F3><F4>${dateTime}</F4></User_Notification_Activity>`;
 
-export const createNotificationActivityData = ({
-  title,
-  description,
-  interestTypeRef,
-  channelRef,
-}) =>
-  `<Notifications><F2>${title}</F2><F3>${description}</F3><F5>${channelRef}</F5><F6>${interestTypeRef}</F6></Notifications>`;
+export const createNotificationActivityData = ({ title, description, interestTypes, channelRef }) =>
+  `<Notifications><F2>${title}</F2><F3>${description}</F3><F5>${channelRef}</F5><F6>${interestTypes}</F6><F10>Active</F10></Notifications>`;
 
 export const apiFunctionWithUniqNameChannels = async (functionName, longitude, latitude) => {
   return {
