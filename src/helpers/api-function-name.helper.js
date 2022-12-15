@@ -61,7 +61,7 @@ export const dataInitiatePayment = async (functionName, accountNumber, amount) =
 };
 
 export const notificationActivityData = ({ notificationId, userId, action, dateTime }) =>
-  `<Objects><User_Notification_Activity><F1>${notificationId}</F1><F2>${userId}</F2><F3>${action}</F3><F4>${dateTime}</F4></User_Notification_Activity></Objects>`;
+  `<User_Notification_Activity><F1>${notificationId}</F1><F2>${userId}</F2><F3>${action}</F3><F4>${dateTime}</F4></User_Notification_Activity>`;
 
 export const createNotificationActivityData = ({
   title,

@@ -34,18 +34,18 @@ export const getUnOpenedNotificationsAction = () => {
   };
 };
 
-export const openNotificationAction = async (notificationId, dateTime, userId) => {
+export const openNotificationAction = async (notificationIds, dateTime, userId) => {
   return (dispatch) =>
     notificationService
-      .openNotification(notificationId, dateTime, userId)
+      .openNotification(notificationIds, dateTime, userId)
       .then(() => dispatch(getUnOpenedNotificationsAction()));
 };
 
-export const deleteNotificationAction = async (notificationId, dateTime, userId) => {
+export const deleteNotificationAction = async (notificationIds, dateTime, userId) => {
   return (dispatch) =>
-    notificationService.deleteNotification(notificationId, dateTime, userId).then(() => {
+    notificationService.deleteNotification(notificationIds, dateTime, userId).then(() => {
       const seenAt = moment(new Date()).format('yyyy-mm-DD hh:mm:ss');
-      dispatch(openNotificationAction(notificationId, seenAt, userId)).then(() => {
+      dispatch(openNotificationAction(notificationIds, seenAt, userId)).then(() => {
         dispatch(getUnOpenedNotificationsAction());
       });
     });

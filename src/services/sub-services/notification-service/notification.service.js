@@ -22,13 +22,27 @@ export const getNotifications = async () => {
   });
 };
 
-export const openNotification = (notificationId, dateTime, userId) => {
-  const data = notificationActivityData({
-    notificationId,
-    userId,
-    action: 'Opened',
-    dateTime,
-  });
+export const openNotification = (notificationIds, dateTime, userId) => {
+  let data;
+  if (notificationIds.length === 1) {
+    data = `<Objects>${notificationActivityData({
+      notificationId: notificationIds[0],
+      userId,
+      action: 'Opened',
+      dateTime,
+    })}</Objects>`;
+  } else {
+    data = `<Objects>${notificationIds
+      .map((id) =>
+        notificationActivityData({
+          notificationId: id,
+          userId,
+          action: 'Opened',
+          dateTime,
+        }),
+      )
+      .join('')}</Objects>`;
+  }
   const openNotificationUrl = notificationUrls.openNotificationUrl();
   return authNetworkService.post(openNotificationUrl, data).then((response) => {
     return response;
@@ -46,13 +60,27 @@ export const getUnOpenedNotifications = async () => {
   return response;
 };
 
-const deleteNotification = async (notificationId, dateTime, userId) => {
-  const data = notificationActivityData({
-    notificationId,
-    userId,
-    action: 'Deleted',
-    dateTime,
-  });
+const deleteNotification = async (notificationIds, dateTime, userId) => {
+  let data;
+  if (notificationIds.length === 1) {
+    data = `<Objects>${notificationActivityData({
+      notificationId: notificationIds[0],
+      userId,
+      action: 'Deleted',
+      dateTime,
+    })}</Objects>`;
+  } else {
+    data = `<Objects>${notificationIds
+      .map((id) =>
+        notificationActivityData({
+          notificationId: id,
+          userId,
+          action: 'Deleted',
+          dateTime,
+        }),
+      )
+      .join('')}</Objects>`;
+  }
   const deleteNotificationUrl = notificationUrls.deleteNotificationUrl();
   const response = await authNetworkService.post(deleteNotificationUrl, data);
   return response;
